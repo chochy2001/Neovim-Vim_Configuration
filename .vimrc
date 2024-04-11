@@ -1,10 +1,11 @@
 call plug#begin('~/.vim/plugged')
 
+Plug 'roxma/vim-hug-neovim-rpc'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
-Plug 'ycm-core/YouCompleteMe'
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+"Plug 'ycm-core/YouCompleteMe'
+"Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'dart-lang/dart-vim-plugin'
 Plug 'natebosch/vim-lsc'
@@ -16,10 +17,11 @@ Plug 'altercation/vim-colors-solarized'
 Plug 'joshdick/onedark.vim'
 Plug 'morhetz/gruvbox'
 
-
 call plug#end()
 
 highlight Comment ctermfg=Gray guifg=#6272a4
+
+let g:python3_host_prog = '/Library/Frameworks/Python.framework/Versions/3.11/bin/python3'
 
 let g:deoplete#enable_at_startup = 1
 
@@ -66,12 +68,12 @@ colorscheme onedark
 
 
 " Habilita estilos de texto opcionales para Dracula
-let g:dracula_italic = 1 " Activa el texto en cursiva
-let g:dracula_bold = 1 " Activa el texto en negrita
-let g:dracula_underline = 1 " Activa el texto subrayado
-let g:dracula_undercurl = 1 " Activa el texto subrayado ondulado
-let g:dracula_inverse = 1 " Activa el texto inverso
-let g:dracula_colorterm = 1 " Habilita colores en terminales compatibles
+"let g:dracula_italic = 1 " Activa el texto en cursiva
+"let g:dracula_bold = 1 " Activa el texto en negrita
+"let g:dracula_underline = 1 " Activa el texto subrayado
+"let g:dracula_undercurl = 1 " Activa el texto subrayado ondulado
+"let g:dracula_inverse = 1 " Activa el texto inverso
+"let g:dracula_colorterm = 1 " Habilita colores en terminales compatibles
 
 let mapleader = " "
 nnoremap <leader>pv :Vex<CR>
@@ -89,7 +91,5 @@ nnoremap <C-k> :cnext<CR>
 nnoremap <C-j> :cprev<CR>
 nnoremap <C-E> :copen<CR>
 
-" Mapear la tecla Caps Lock a Esc
-inoremap <C-i> <Esc>
 " Scripts
 command! Fjson :source ~/.vim/scripts/formatear_json.vim
