@@ -92,4 +92,4 @@ nnoremap <C-E> :copen<CR>
 " Mapear la tecla Caps Lock a Esc
 inoremap <C-i> <Esc>
 " Scripts
-command! FormatearJSON :source ~/.vim/scripts/formatear_json.vim
+command! Fjson :source ~/.vim/scripts/formatear_json.vim
