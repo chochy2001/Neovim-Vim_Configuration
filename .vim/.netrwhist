@@ -1,0 +1,12 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhistcnt =2
+let g:netrw_dirhist_2='/Users/jorgesalgadomiranda/.vim/scripts'
+let g:netrw_dirhist_1='/Users/jorgesalgadomiranda/Documents/Apps/IngenieriaTrackerPro'
+let g:netrw_dirhist_0='/Users/jorgesalgadomiranda/Documents/Apps'
+let g:netrw_dirhist_9='/Users/jorgesalgadomiranda/Documents/Apps/IngeTrackerBackend'
+let g:netrw_dirhist_8='/Users/jorgesalgadomiranda/Documents/Apps'
+let g:netrw_dirhist_7='/Users/jorgesalgadomiranda/Documents/Apps/ingenieria_tracker_unam'
+let g:netrw_dirhist_6='/Users/jorgesalgadomiranda/Documents/Apps'
+let g:netrw_dirhist_5='/Users/jorgesalgadomiranda/Documents/Apps/IngeTrackerBackend'
+let g:netrw_dirhist_4='/Users/jorgesalgadomiranda/Documents/Apps'
+let g:netrw_dirhist_3='/Users/jorgesalgadomiranda/Documents/Apps/IngeTrackerBackend'
