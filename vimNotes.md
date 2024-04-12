@@ -117,3 +117,41 @@ Cuando tienes la pantalla dividida con `:Vex` o `:Hex`, puedes usar los siguient
 2. Presiona `O` para mover el cursor al otro extremo de la selección en la dirección opuesta.
 
 Espero que esta guía te resulte útil para comprender y utilizar estos comandos de Vim. Recuerda que la práctica constante es clave para dominar Vim y aprovechar al máximo su potencial. ¡Disfruta editando con Vim!
+
+
+**Registros**
+
+En Vim, los registros son ubicaciones de memoria que se utilizan para almacenar y recuperar texto. Puedes usar registros para copiar, cortar y pegar texto, así como para almacenar macros. Aquí te explico cómo puedes usar los registros en Vim:
+
+1. Ver los registros:
+   - Escribe `:reg` en el modo de comandos para ver el contenido de todos los registros.
+   - Cada registro se identifica con una letra o un símbolo, como `"a`, `"b`, `"1`, etc.
+
+2. Copiar texto en un registro:
+   - En el modo normal, selecciona el texto que deseas copiar usando los comandos de movimiento (por ejemplo, `v` para selección visual).
+   - Presiona `"` seguido de la letra del registro en el que deseas copiar (por ejemplo, `"a` para copiar en el registro `a`).
+   - Presiona `y` para yankar (copiar) el texto seleccionado en el registro.
+
+3. Cortar texto en un registro:
+   - En el modo normal, selecciona el texto que deseas cortar usando los comandos de movimiento.
+   - Presiona `"` seguido de la letra del registro en el que deseas cortar (por ejemplo, `"a` para cortar en el registro `a`).
+   - Presiona `d` para eliminar (cortar) el texto seleccionado y almacenarlo en el registro.
+
+4. Pegar texto desde un registro:
+   - Mueve el cursor a la ubicación donde deseas pegar el texto.
+   - Presiona `"` seguido de la letra del registro desde el cual deseas pegar (por ejemplo, `"a` para pegar desde el registro `a`).
+   - Presiona `p` para pegar el texto después del cursor, o `P` para pegar antes del cursor.
+
+5. Usar registros con macros:
+   - Graba una macro presionando `q` seguido de la letra del registro donde deseas almacenar la macro (por ejemplo, `qa` para almacenar en el registro `a`).
+   - Realiza las acciones que deseas grabar en la macro.
+   - Presiona `q` nuevamente para detener la grabación.
+   - Para ejecutar la macro, presiona `@` seguido de la letra del registro (por ejemplo, `@a` para ejecutar la macro almacenada en el registro `a`).
+
+Algunos registros especiales en Vim incluyen:
+- `""` (registro por defecto): Almacena el último texto yankeado, eliminado o modificado.
+- `"0` (registro de yank): Almacena el último texto yankeado.
+- `"1` a `"9` (registros numerados): Almacenan los últimos 9 textos eliminados o modificados.
+- `"+` (registro del portapapeles del sistema): Permite acceder al portapapeles del sistema operativo.
+
+Estos son los conceptos básicos sobre el uso de registros en Vim. Los registros son una herramienta poderosa para manipular y reutilizar texto de manera eficiente mientras editas en Vim. Experimenta con ellos y verás cómo pueden agilizar tu flujo de trabajo.
