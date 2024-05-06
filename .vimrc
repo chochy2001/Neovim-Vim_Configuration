@@ -1,16 +1,23 @@
 call plug#begin('~/.vim/plugged')
-
+Plug 'kien/ctrlp.vim'
+Plug 'voldikss/vim-floaterm'
 Plug 'roxma/vim-hug-neovim-rpc'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+Plug 'jiangmiao/auto-pairs'
 Plug 'preservim/nerdtree'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-sensible'
+Plug 'sheerun/vim-polyglot'
+Plug 'github/copilot.vim'
 "Plug 'ycm-core/YouCompleteMe'
 "Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+"Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'dart-lang/dart-vim-plugin'
 Plug 'natebosch/vim-lsc'
 Plug 'preservim/tagbar'
@@ -23,11 +30,24 @@ Plug 'morhetz/gruvbox'
 
 call plug#end()
 
+filetype plugin indent on
+
 highlight Comment ctermfg=Gray guifg=#6272a4
 
 let g:python3_host_prog = '/Library/Frameworks/Python.framework/Versions/3.11/bin/python3'
 
 let g:deoplete#enable_at_startup = 1
+
+
+"Terminal flotante
+let g:floaterm_borderchars = '─│─│╭╮╯╰'
+let g:floaterm_bordercolor = 'blue'
+let g:floaterm_title = 'Terminal'
+let g:floaterm_opacity = 0.8
+
+let g:floaterm_shell = 'zsh'
+
+
 
 " Configuración para Go
 let g:go_def_mode='gopls'
@@ -61,13 +81,16 @@ set expandtab
 " Habilita la indentación inteligente
 set smartindent
 
+set termguicolors
+
+
 " Habilita el resaltado de sintaxis en Vim
 syntax enable
 
 " Establece Dracula como el esquema de colores actual
 "colorscheme dracula
 "colorscheme molokai
-colorscheme onedark
+colorscheme dracula 
 "colorscheme gruvbox
 
 
@@ -120,7 +143,16 @@ nnoremap <leader>ga :Git add %<CR>
 " Mapea 'gs' a ':Git status'
 nnoremap <leader>gs :Git status<CR>
 " Mapea 'gp' a ':Git push'
-nnoremap <leader>gp :Git push<CR>
+nnoremap <leader>gps :Git push<CR>
+" Mapea 'gp' a ':Git pull'
+nnoremap <leader>gpl :Git pull<CR>
+
+" Instalar los plugins ya escritos
+nnoremap <leader>pi :PlugInstall<CR>
+
+" Terminal 
+nnoremap <silent> <leader>t :FloatermToggle<CR>
+
 
 
 
