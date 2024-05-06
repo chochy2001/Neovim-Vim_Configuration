@@ -1,4 +1,6 @@
 call plug#begin('~/.vim/plugged')
+Plug 'dense-analysis/ale'
+Plug 'akinsho/flutter-tools.nvim'
 Plug 'mhinz/vim-startify'
 Plug 'dart-lang/dart-vim-plugin'
 Plug 'thosakwe/vim-flutter'
@@ -32,10 +34,28 @@ Plug 'airblade/vim-gitgutter'
 Plug 'easymotion/vim-easymotion'
 Plug 'scrooloose/nerdcommenter'
 Plug 'Yggdroot/indentLine'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " Plug 'ycm-core/YouCompleteMe'
 " Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 " Plug 'neoclide/coc.nvim', {'branch': 'release'}
 call plug#end()
+
+let g:ale_fix_on_save = 1
+let g:ale_linters = {
+    \ 'dart': ['dartanalyzer'],
+    \ 'c': ['clang'],
+    \ 'cpp': ['clang'],
+    \ 'java': ['javac'],
+    \ 'go': ['golangci-lint']
+    \ }
+
+let g:ale_fixers = {
+    \ 'dart': ['dartfmt'],
+    \ 'c': ['clang-format'],
+    \ 'cpp': ['clang-format'],
+    \ 'java': ['google_java_format'],
+    \ 'go': ['gofmt']
+    \ }
 
 let g:startify_custom_header = [
     \ '   ____               __            _     ',
@@ -77,7 +97,7 @@ let g:lsc_auto_map = v:true
 let g:dart_format_on_save = 1
 
 "Numero de lineas para el resaltado de sintaxis
-set synmaxcol=200
+set synmaxcol=2000
 
 " Mantiene al menos 8 líneas visibles por encima y por debajo del cursor
 set scrolloff=8
@@ -103,6 +123,7 @@ set termguicolors
 
 " Habilita el resaltado de sintaxis en Vim
 syntax enable
+syntax on
 
 " Establece Dracula como el esquema de colores actual
 colorscheme dracula 
