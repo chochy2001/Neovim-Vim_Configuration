@@ -1,157 +1,127 @@
-**Comandos de Vim: Una Guía Fácil de Entender**
+# Guía de comandos y configuración de Vim
+
+Este documento explica los comandos y configuraciones utilizados en el archivo `.vimrc` proporcionado, así como algunos comandos adicionales de Vim.
+
+## Configuración del archivo .vimrc
+
+### Plugins
+
+El archivo `.vimrc` utiliza el administrador de plugins `vim-plug` para instalar y gestionar los siguientes plugins:
+
+- `mhinz/vim-startify`: Proporciona una pantalla de inicio personalizable para Vim.
+- `dart-lang/dart-vim-plugin`: Plugin para el lenguaje de programación Dart.
+- `thosakwe/vim-flutter`: Plugin para el framework Flutter.
+- `kien/ctrlp.vim`: Búsqueda y navegación de archivos.
+- `voldikss/vim-floaterm`: Terminal flotante para Vim.
+- `roxma/vim-hug-neovim-rpc`: Soporte para comunicación entre Vim y Neovim.
+- `junegunn/fzf` y `junegunn/fzf.vim`: Búsqueda y navegación de archivos mediante fuzzy finding.
+- `fatih/vim-go`: Plugin para el lenguaje de programación Go.
+- `jiangmiao/auto-pairs`: Inserción automática de pares de caracteres.
+- `preservim/nerdtree`: Explorador de archivos en forma de árbol.
+- `vim-airline/vim-airline` y `vim-airline/vim-airline-themes`: Barra de estado y temas personalizados.
+- `tpope/vim-fugitive`, `tpope/vim-commentary`, `tpope/vim-surround` y `tpope/vim-sensible`: Plugins de Tim Pope para funcionalidades adicionales.
+- `sheerun/vim-polyglot`: Soporte para múltiples lenguajes de programación.
+- `github/copilot.vim`: Integración con GitHub Copilot.
+- `natebosch/vim-lsc`: Soporte para servidor de lenguaje.
+- `preservim/tagbar`: Barra lateral para mostrar etiquetas.
+- `dense-analysis/ale`: Linting y corrección de errores.
+- Varios plugins para esquemas de colores: `dracula/vim`, `tomasr/molokai`, `altercation/vim-colors-solarized`, `joshdick/onedark.vim`, `morhetz/gruvbox`.
+- `luochen1990/rainbow`: Paréntesis de colores.
+- `airblade/vim-gitgutter`: Indicadores de cambios de Git en el margen izquierdo.
+- `easymotion/vim-easymotion`: Navegación rápida dentro del archivo.
+- `scrooloose/nerdcommenter`: Comentado y descomentado de código.
+- `Yggdroot/indentLine`: Líneas de indentación visual.
+
+### Configuraciones generales
+
+- `let mapleader = " "`: Establece la tecla líder como la barra espaciadora.
+- `set synmaxcol=200`: Limita el resaltado de sintaxis a 200 columnas.
+- `set scrolloff=8`: Mantiene al menos 8 líneas visibles por encima y por debajo del cursor al desplazarse.
+- `set number`: Muestra el número de línea absoluto.
+- `set relativenumber`: Muestra el número de línea relativo al cursor.
+- `set tabstop=4 softtabstop=4`: Establece el ancho de tabulación y el ancho de tabulación suave en 4 espacios.
+- `set shiftwidth=4`: Establece el ancho de desplazamiento (indentación) en 4 espacios.
+- `set expandtab`: Convierte las tabulaciones en espacios.
+- `set smartindent`: Habilita la indentación inteligente.
+- `set termguicolors`: Habilita colores verdaderos en la terminal.
+- `syntax enable`: Habilita el resaltado de sintaxis en Vim.
+- `colorscheme dracula`: Establece el esquema de colores Dracula.
+
+### Mapeos de teclas
+
+- `nnoremap <leader>pv :Vex<CR>`: Mapea `<líder>pv` para abrir el explorador de archivos `:Vex`.
+- `nnoremap <leader>ph :Hex<CR>`: Mapea `<líder>ph` para abrir el explorador de archivos `:Hex`.
+- `nnoremap <Leader><CR> :so ~/.vimrc<CR>`: Mapea `<líder><Enter>` para recargar el archivo `.vimrc`.
+- `nnoremap <C-p> :GFiles<CR>`: Mapea `<Control>p` para buscar archivos en el directorio de Git actual y subdirectorios.
+- `nnoremap <C-k> :cnext<CR>`, `nnoremap <C-j> :cprev<CR>`, `nnoremap <C-E> :copen<CR>`: Mapeos para navegación en la lista de errores.
+
+- Mapeos para NERDTree:
+  - `nnoremap <leader>n :NERDTreeFocus<CR>`: Enfoca NERDTree.
+  - `nnoremap <C-n> :NERDTree<CR>`: Abre NERDTree.
+  - `nnoremap <C-t> :NERDTreeToggle<CR>`: Alterna la visibilidad de NERDTree.
+  - `nnoremap <C-f> :NERDTreeFind<CR>`: Encuentra el archivo actual en NERDTree.
+
+- Mapeos para moverse entre buffers:
+  - `nnoremap <leader>bn :bn<CR>`: Ir al siguiente buffer.
+  - `nnoremap <leader>bp :bp<CR>`: Ir al buffer anterior.
+
+- Mapeos para Git:
+  - `nnoremap <leader>gl :Git log<CR>`: Muestra el registro de Git.
+  - `nnoremap <leader>gc :Git commit<CR>`: Realiza un commit en Git.
+  - `nnoremap <leader>ga :Git add %<CR>`: Agrega el archivo actual al área de preparación de Git.
+  - `nnoremap <leader>gs :Git status<CR>`: Muestra el estado actual de Git.
+  - `nnoremap <leader>gps :Git push<CR>`: Realiza un push en Git.
+  - `nnoremap <leader>gpl :Git pull<CR>`: Realiza un pull en Git.
+
+- `nnoremap <leader>pi :PlugInstall<CR>`: Instala los plugins especificados en el archivo `.vimrc`.
+- `nnoremap <silent> <leader>t :FloatermToggle<CR>`: Alterna la visibilidad de la terminal flotante.
+- `nnoremap <leader>st :Startify<CR>`: Abre la pantalla de inicio de Startify.
+- `command! Fjson :source ~/.vim/scripts/formatear_json.vim`: Define un comando personalizado `Fjson` para formatear JSON.
+
+## Comandos adicionales de Vim
+
+- `:set scrolloff=8`: Hace que el desplazamiento hacia abajo sea suave.
+- `:set number`: Muestra los números de línea.
+- `:set relativenumber`: Muestra los números de línea relativos al cursor.
+- `:set norelativenumber`: Desactiva los números de línea relativos.
+- `:Vex`: Abre el explorador de archivos en una ventana vertical.
+- `m<letra mayúscula>`: Marca la posición actual con una letra mayúscula.
+- `'<letra mayúscula>`: Salta a la marca establecida con la letra mayúscula correspondiente.
+- `:GFiles`: Busca archivos en el directorio de Git actual y subdirectorios.
+- `<Control>n` y `<Control>p`: Navega por las opciones de menú desplegables.
+- `<Control>w w`: Salta al siguiente split en orden.
+- `<Control>w h/j/k/l`: Mueve el cursor al split de la izquierda/abajo/arriba/derecha.
+- `/nombreAbuscar`: Busca y resalta las coincidencias de "nombreAbuscar".
+- `:set hls ic`: Resalta las coincidencias de búsqueda.
+- `:set nohls`: Desactiva el resaltado de búsqueda.
+- `/err.*or<CR>`: Busca utilizando una expresión regular.
+- `:s/foo/baz<CR>`: Reemplaza "foo" por "baz" en la línea actual.
+- `:s/foo/baz/g<CR>`: Reemplaza todas las apariciones de "foo" por "baz" en la línea actual.
+- `:s/foo/baz/gc<CR>`: Reemplaza "foo" por "baz" en la línea actual, preguntando por cada aparición.
+- `:%s/foo/bar/gc`: Reemplaza "foo" por "bar" en todo el archivo, preguntando por cada aparición.
+- `{` y `}`: Salta hacia atrás y hacia adelante en los espacios vacíos.
+- `0`: Va al principio de la línea en modo normal.
+- `$`: Va al final de la línea en modo normal.
+- `_`: Va al primer carácter no en blanco de la línea.
+- `vi(` y `ci(`: Selecciona y cambia el contenido dentro de los paréntesis.
+- `:e#`: Regresa al archivo anterior.
+- `:bp` y `:bn`: Navega entre los buffers abiertos.
+- `:ls` o `:buffers`: Muestra la lista de buffers abiertos.
+- `<Control>v`: Selecciona múltiples líneas para edición.
+- `<Control>a` y `<Control>x`: Incrementa y decrementa el número bajo el cursor.
+- `g<Control>a`: Incrementa los números seleccionados de forma secuencial.
+- `o` y `O`: Cambia la selección hacia arriba o hacia abajo en modo de selección visual.
+- `W`: Salta por espacios en blanco.
+- `:4`: Va a la línea 4 del archivo.
+- `gcc`: Comenta o descomenta la línea actual.
+- `gc`: Comenta o descomenta la selección visual.
+- `gc<movimiento>`: Comenta según el movimiento especificado (por ejemplo, `gc3j` comenta las próximas tres líneas).
+- `S(` y `cs"'`: Rodea la selección con paréntesis y cambia las comillas dobles por simples.
+- `<Control>w` (en modo de inserción): Elimina la última palabra escrita.
+- `<Control>u` (en modo de inserción): Elimina toda la línea actual.
+- `<Espacio>t`: Abre una terminal.
+- `<Control>d`: Cierra la terminal.
+- `:PlugClean`: Elimina los plugins no utilizados.
+- `U`: Deshace los cambios.
+- `<Control>r`: Rehace los cambios.
 
-Vim es un editor de texto poderoso con una amplia gama de comandos que pueden ayudarte a ser más eficiente al escribir y editar código. A continuación, te presentamos una lista de comandos útiles de Vim junto con explicaciones detalladas sobre cómo usarlos.
-
-**Configuración básica:**
-
-1. `:set scrolloff=8`: Este comando establece un margen de desplazamiento suave de 8 líneas. Esto significa que cuando te desplazas hacia abajo en el archivo, Vim mantendrá 8 líneas visibles por encima y por debajo de la línea actual, lo que hace que el desplazamiento sea más suave y agradable a la vista.
-
-2. `:set number`: Este comando muestra los números de línea en el lado izquierdo de la pantalla, lo que facilita la navegación y la referencia a líneas específicas.
-
-3. `:set relativenumber`: Este comando muestra los números de línea relativos a la línea actual. La línea actual se muestra como 0, y las líneas anteriores y siguientes se numeran en relación a ella. Esto puede ser útil para comandos que involucran números de línea relativos.
-
-4. `:set norelativenumber`: Este comando desactiva los números de línea relativos y vuelve a la numeración absoluta.
-
-**Navegación de archivos:**
-
-1. `:Vex`: Este comando abre un árbol de directorios en una ventana dividida verticalmente a la izquierda. Puedes usar este árbol para navegar y abrir archivos fácilmente.
-
-2. `let mapleader = " "`: Esta línea establece la tecla líder en la barra espaciadora. La tecla líder se utiliza para crear atajos de teclado personalizados.
-
-3. `nnoremap <leader>pv :Vex<CR>`: Este mapeo te permite abrir el árbol de directorios rápidamente presionando la barra espaciadora seguida de "pv" en el modo normal.
-
-**Marcado de archivos:**
-
-1. Abre el archivo deseado, por ejemplo, `src/sockets.c`, usando `:e src/sockets.c`.
-
-2. Marca el archivo presionando `m` seguido de una letra mayúscula de tu elección. Por ejemplo, puedes usar `mG` para marcar `src/sockets.c` con la letra "G".
-
-3. Repite el proceso con otros archivos, como `src/twitch.c` y `src/another.c`, usando diferentes letras mayúsculas para cada uno.
-
-4. Para navegar rápidamente a un archivo marcado, simplemente presiona `'` seguido de la letra mayúscula que asignaste. Por ejemplo, si marcaste `src/sockets.c` con "G", puedes saltar a ese archivo presionando `'G`.
-
-**Búsqueda de archivos:**
-
-1. Ejecuta `:GFiles` para abrir una ventana de búsqueda de archivos. Puedes navegar por las opciones usando `Ctrl-n` para moverte hacia abajo y `Ctrl-p` para moverte hacia arriba.
-
-**Navegación entre ventanas divididas:**
-
-Cuando tienes la pantalla dividida con `:Vex` o `:Hex`, puedes usar los siguientes atajos para moverte entre las ventanas:
-
-- `Ctrl-w w`: Salta a la siguiente ventana en orden. Si estás en la última ventana, volverá a la primera.
-- `Ctrl-w h`: Mueve el cursor a la ventana de la izquierda.
-- `Ctrl-w j`: Mueve el cursor a la ventana de abajo.
-- `Ctrl-w k`: Mueve el cursor a la ventana de arriba.
-- `Ctrl-w l`: Mueve el cursor a la ventana de la derecha.
-
-**Búsqueda y resaltado:**
-
-1. Para buscar un patrón, usa `/patrón`. Por ejemplo, `/nombreAbuscar` buscará "nombreAbuscar" en el archivo.
-
-2. `:set hls ic` resalta todas las coincidencias de la búsqueda actual.
-
-3. `:set nohls` elimina el resaltado de búsqueda.
-
-4. Puedes usar expresiones regulares en tus búsquedas. Por ejemplo, `/err.\*or<CR>` buscará patrones que comiencen con "err" y terminen con "or", con cualquier cantidad de caracteres en el medio.
-
-**Sustitución de texto:**
-
-1. `:s/foo/baz<CR>` reemplaza la primera aparición de "foo" con "baz" en la línea actual.
-
-2. `:s/foo/baz/g<CR>` reemplaza todas las apariciones de "foo" con "baz" en la línea actual.
-
-3. `:s/foo/baz/gc<CR>` reemplaza todas las apariciones de "foo" con "baz" en la línea actual, pero pide confirmación para cada sustitución.
-
-4. `:%s/foo/bar/gc` realiza una sustitución global (en todo el archivo) de "foo" con "bar", pidiendo confirmación para cada sustitución.
-
-**Movimiento y selección:**
-
-1. `{` te mueve hacia atrás a la línea en blanco anterior, mientras que `}` te mueve hacia adelante a la siguiente línea en blanco.
-
-2. `0` te mueve al principio de la línea en el modo normal.
-
-3. `$` te mueve al final de la línea en el modo normal.
-
-4. `_` te mueve al primer carácter no en blanco de la línea.
-
-5. `vi(` selecciona el texto dentro de los paréntesis. `ci(` elimina el texto dentro de los paréntesis y te pone en el modo de inserción. Esto funciona con otros delimitadores como `"` o `[`.
-
-6. Para seleccionar el texto incluyendo los delimitadores, usa `va` en lugar de `vi`. Por ejemplo, `va"` seleccionará el texto y las comillas que lo rodean.
-
-**Navegación entre buffers:**
-
-1. `:bp` o `:bprevious` te lleva al buffer anterior en la lista de buffers.
-
-2. `:bn` o `:bnext` te lleva al siguiente buffer en la lista de buffers.
-
-3. `:ls` o `:buffers` muestra una lista de todos los buffers abiertos. Puedes cambiar a un buffer específico usando `:buffer <número>`.
-
-**Aplicar comandos a múltiples líneas:**
-
-1. Selecciona las líneas deseadas en el modo visual.
-
-2. Presiona `:`
-
-3. Escribe `normal` seguido del comando que deseas aplicar. Por ejemplo, si quieres insertar "var" al principio de cada línea seleccionada, puedes usar `:'<,'>normal Ivar`.
-
-**Selección y edición con múltiples cursores:**
-
-1. Coloca el cursor en una palabra y presiona `Ctrl-v` para ingresar al modo de selección de bloque visual.
-
-2. Mueve el cursor hacia abajo para seleccionar las instancias de la palabra en las líneas siguientes.
-
-3. Presiona `Ctrl-i` para entrar en el modo de inserción y editar todas las instancias seleccionadas simultáneamente.
-
-4. Escribe el texto deseado y presiona `Esc` para aplicar los cambios.
-
-**Incremento y decremento de números:**
-
-1. Coloca el cursor sobre un número y presiona `Ctrl-a` para incrementarlo. Presiona `Ctrl-x` para decrementarlo.
-
-2. Si tienes múltiples números seleccionados y deseas incrementarlos secuencialmente, selecciónalos en el modo visual y presiona `g Ctrl-a`.
-
-**Ajustar la selección visual:**
-
-1. En el modo de selección visual, presiona `o` para cambiar el cursor al otro extremo de la selección. Esto te permite ajustar fácilmente el inicio o el final de la selección.
-
-2. Presiona `O` para mover el cursor al otro extremo de la selección en la dirección opuesta.
-
-Espero que esta guía te resulte útil para comprender y utilizar estos comandos de Vim. Recuerda que la práctica constante es clave para dominar Vim y aprovechar al máximo su potencial. ¡Disfruta editando con Vim!
-
-
-**Registros**
-
-En Vim, los registros son ubicaciones de memoria que se utilizan para almacenar y recuperar texto. Puedes usar registros para copiar, cortar y pegar texto, así como para almacenar macros. Aquí te explico cómo puedes usar los registros en Vim:
-
-1. Ver los registros:
-   - Escribe `:reg` en el modo de comandos para ver el contenido de todos los registros.
-   - Cada registro se identifica con una letra o un símbolo, como `"a`, `"b`, `"1`, etc.
-
-2. Copiar texto en un registro:
-   - En el modo normal, selecciona el texto que deseas copiar usando los comandos de movimiento (por ejemplo, `v` para selección visual).
-   - Presiona `"` seguido de la letra del registro en el que deseas copiar (por ejemplo, `"a` para copiar en el registro `a`).
-   - Presiona `y` para yankar (copiar) el texto seleccionado en el registro.
-
-3. Cortar texto en un registro:
-   - En el modo normal, selecciona el texto que deseas cortar usando los comandos de movimiento.
-   - Presiona `"` seguido de la letra del registro en el que deseas cortar (por ejemplo, `"a` para cortar en el registro `a`).
-   - Presiona `d` para eliminar (cortar) el texto seleccionado y almacenarlo en el registro.
-
-4. Pegar texto desde un registro:
-   - Mueve el cursor a la ubicación donde deseas pegar el texto.
-   - Presiona `"` seguido de la letra del registro desde el cual deseas pegar (por ejemplo, `"a` para pegar desde el registro `a`).
-   - Presiona `p` para pegar el texto después del cursor, o `P` para pegar antes del cursor.
-
-5. Usar registros con macros:
-   - Graba una macro presionando `q` seguido de la letra del registro donde deseas almacenar la macro (por ejemplo, `qa` para almacenar en el registro `a`).
-   - Realiza las acciones que deseas grabar en la macro.
-   - Presiona `q` nuevamente para detener la grabación.
-   - Para ejecutar la macro, presiona `@` seguido de la letra del registro (por ejemplo, `@a` para ejecutar la macro almacenada en el registro `a`).
-
-Algunos registros especiales en Vim incluyen:
-- `""` (registro por defecto): Almacena el último texto yankeado, eliminado o modificado.
-- `"0` (registro de yank): Almacena el último texto yankeado.
-- `"1` a `"9` (registros numerados): Almacenan los últimos 9 textos eliminados o modificados.
-- `"+` (registro del portapapeles del sistema): Permite acceder al portapapeles del sistema operativo.
-
-Estos son los conceptos básicos sobre el uso de registros en Vim. Los registros son una herramienta poderosa para manipular y reutilizar texto de manera eficiente mientras editas en Vim. Experimenta con ellos y verás cómo pueden agilizar tu flujo de trabajo.
