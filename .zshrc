@@ -21,8 +21,8 @@ export PATH="/opt/homebrew/bin:$PATH"
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 # ZSH_THEME="robbyrussell"
-# ZSH_THEME="agnoster" # (this is one of the fancy ones)
-ZSH_THEME="powerlevel10k/powerlevel10k"
+ZSH_THEME="agnoster" # (this is one of the fancy ones)
+# ZSH_THEME="powerlevel10k/powerlevel10k"
 POWERLEVEL10K_MODE="nerdfont-complete"
 
 

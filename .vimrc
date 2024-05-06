@@ -1,4 +1,7 @@
 call plug#begin('~/.vim/plugged')
+Plug 'mhinz/vim-startify'
+Plug 'dart-lang/dart-vim-plugin'
+Plug 'thosakwe/vim-flutter'
 Plug 'kien/ctrlp.vim'
 Plug 'voldikss/vim-floaterm'
 Plug 'roxma/vim-hug-neovim-rpc'
@@ -24,30 +27,46 @@ Plug 'tomasr/molokai'
 Plug 'altercation/vim-colors-solarized'
 Plug 'joshdick/onedark.vim'
 Plug 'morhetz/gruvbox'
+Plug 'luochen1990/rainbow'
+Plug 'airblade/vim-gitgutter'
+Plug 'easymotion/vim-easymotion'
+Plug 'scrooloose/nerdcommenter'
+Plug 'Yggdroot/indentLine'
 " Plug 'ycm-core/YouCompleteMe'
 " Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 " Plug 'neoclide/coc.nvim', {'branch': 'release'}
-
 call plug#end()
 
-filetype plugin indent on
+let g:startify_custom_header = [
+    \ '   ____               __            _     ',
+    \ '  / ___|__ _ _ __  __|  | ___  ___ (_) ___ ',
+    \ ' | |   / _` | ''_ \/  _` |/ _ \/ __|| |/ __|',
+    \ ' | |__| (_| | |_) | (_| |  __/\__ \| |\__ \',
+    \ '  \____\__,_| .__/ \__,_|\___||___/|_||___/',
+    \ '            |_|                          ',
+    \ ]
 
-highlight Comment ctermfg=Gray guifg=#6272a4
+filetype plugin indent on
 
 let g:python3_host_prog = '/Library/Frameworks/Python.framework/Versions/3.11/bin/python3'
 
 let g:deoplete#enable_at_startup = 1
 
+let g:rainbow_active = 1 "set to 0 if you want to enable it later via :RainbowToggle
+
+" highlight Comment ctermfg=Gray guifg=#ffffbf
+" highlight Function ctermfg=Blue guifg=Blue
+" highlight Class ctermfg=Green guifg=Green
+" highlight String ctermfg=Yellow guifg=Yellow
+" Ejemplo para personalizar colores
+" autocmd Syntax * highlight Class ctermfg=Blue guifg=#268bd2
 
 "Terminal flotante
 let g:floaterm_borderchars = '─│─│╭╮╯╰'
 let g:floaterm_bordercolor = 'blue'
 let g:floaterm_title = 'Terminal'
 let g:floaterm_opacity = 0.8
-
 let g:floaterm_shell = 'zsh'
-
-
 
 " Configuración para Go
 let g:go_def_mode='gopls'
@@ -80,36 +99,21 @@ set expandtab
 
 " Habilita la indentación inteligente
 set smartindent
-
 set termguicolors
-
 
 " Habilita el resaltado de sintaxis en Vim
 syntax enable
 
 " Establece Dracula como el esquema de colores actual
-"colorscheme dracula
-"colorscheme molokai
 colorscheme dracula 
-"colorscheme gruvbox
-
 
 " Habilita estilos de texto opcionales para Dracula
-"let g:dracula_italic = 1 " Activa el texto en cursiva
-"let g:dracula_bold = 1 " Activa el texto en negrita
-"let g:dracula_underline = 1 " Activa el texto subrayado
-"let g:dracula_undercurl = 1 " Activa el texto subrayado ondulado
-"let g:dracula_inverse = 1 " Activa el texto inverso
-"let g:dracula_colorterm = 1 " Habilita colores en terminales compatibles
 let g:airline#extensions#tabline#enabled = 1
 let g:airline_theme = 'dark'
-
-
 
 let mapleader = " "
 nnoremap <leader>pv :Vex<CR>
 nnoremap <leader>ph :Hex<CR>
-
 
 " I use neovim, btw
 nnoremap <Leader><CR> :so ~/.vimrc<CR>
@@ -122,7 +126,6 @@ nnoremap <C-p> :GFiles<CR>
 nnoremap <C-k> :cnext<CR>
 nnoremap <C-j> :cprev<CR>
 nnoremap <C-E> :copen<CR>
-
 
 " NERDTree
 nnoremap <leader>n :NERDTreeFocus<CR>
@@ -153,9 +156,8 @@ nnoremap <leader>pi :PlugInstall<CR>
 " Terminal 
 nnoremap <silent> <leader>t :FloatermToggle<CR>
 
-
-
-
+" para activar startify
+nnoremap <leader>st :Startify<CR>
 
 " Scripts
 command! Fjson :source ~/.vim/scripts/formatear_json.vim
