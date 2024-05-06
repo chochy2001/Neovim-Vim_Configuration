@@ -4,6 +4,10 @@ Plug 'roxma/vim-hug-neovim-rpc'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+Plug 'preservim/nerdtree'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'tpope/vim-fugitive'
 "Plug 'ycm-core/YouCompleteMe'
 "Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -74,10 +78,15 @@ colorscheme onedark
 "let g:dracula_undercurl = 1 " Activa el texto subrayado ondulado
 "let g:dracula_inverse = 1 " Activa el texto inverso
 "let g:dracula_colorterm = 1 " Habilita colores en terminales compatibles
+let g:airline#extensions#tabline#enabled = 1
+let g:airline_theme = 'dark'
+
+
 
 let mapleader = " "
 nnoremap <leader>pv :Vex<CR>
 nnoremap <leader>ph :Hex<CR>
+
 
 " I use neovim, btw
 nnoremap <Leader><CR> :so ~/.vimrc<CR>
@@ -90,6 +99,31 @@ nnoremap <C-p> :GFiles<CR>
 nnoremap <C-k> :cnext<CR>
 nnoremap <C-j> :cprev<CR>
 nnoremap <C-E> :copen<CR>
+
+
+" NERDTree
+nnoremap <leader>n :NERDTreeFocus<CR>
+nnoremap <C-n> :NERDTree<CR>
+nnoremap <C-t> :NERDTreeToggle<CR>
+nnoremap <C-f> :NERDTreeFind<CR>
+
+"Moverse entre buffers
+nnoremap <leader>bn :bn<CR>
+nnoremap <leader>bp :bp<CR>
+
+" Mapea 'gl' a ':Git log'
+nnoremap <leader>gl :Git log<CR>
+" Mapea 'gc' a ':Git commit'
+nnoremap <leader>gc :Git commit<CR>
+" Mapea 'ga' a ':Git add %'
+nnoremap <leader>ga :Git add %<CR>
+" Mapea 'gs' a ':Git status'
+nnoremap <leader>gs :Git status<CR>
+" Mapea 'gp' a ':Git push'
+nnoremap <leader>gp :Git push<CR>
+
+
+
 
 " Scripts
 command! Fjson :source ~/.vim/scripts/formatear_json.vim
