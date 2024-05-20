@@ -1,5 +1,6 @@
 call plug#begin('~/.vim/plugged')
-Plug 'dense-analysis/ale'
+Plug 'artur-shaik/vim-javacomplete2'
+Plug 'vim-syntastic/syntastic'
 Plug 'akinsho/flutter-tools.nvim'
 Plug 'mhinz/vim-startify'
 Plug 'dart-lang/dart-vim-plugin'
@@ -37,7 +38,6 @@ Plug 'Yggdroot/indentLine'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " Plug 'ycm-core/YouCompleteMe'
 " Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-" Plug 'neoclide/coc.nvim', {'branch': 'release'}
 call plug#end()
 
 let g:ale_fix_on_save = 1
@@ -56,6 +56,8 @@ let g:ale_fixers = {
     \ 'java': ['google_java_format'],
     \ 'go': ['gofmt']
     \ }
+let NERDTreeShowHidden=1
+
 
 let g:startify_custom_header = [
     \ '   ____               __            _     ',
@@ -73,6 +75,9 @@ let g:python3_host_prog = '/Library/Frameworks/Python.framework/Versions/3.11/bi
 let g:deoplete#enable_at_startup = 1
 
 let g:rainbow_active = 1 "set to 0 if you want to enable it later via :RainbowToggle
+
+set clipboard=unnamedplus
+
 
 " highlight Comment ctermfg=Gray guifg=#ffffbf
 " highlight Function ctermfg=Blue guifg=Blue
@@ -135,6 +140,11 @@ let g:airline_theme = 'dark'
 let mapleader = " "
 nnoremap <leader>pv :Vex<CR>
 nnoremap <leader>ph :Hex<CR>
+
+" Mapea yp para copiar al portapapeles tanto en modo normal como visual
+nnoremap yp "+yy
+vnoremap yp "+y
+
 
 " I use neovim, btw
 nnoremap <Leader><CR> :so ~/.vimrc<CR>
