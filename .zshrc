@@ -13,6 +13,7 @@ fi
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 #export PATH="/usr/local/bin:$PATH"
+export PATH="/Users/jorgesalgadomiranda/development/flutter/bin:$PATH"
 export PATH="/opt/homebrew/bin:$PATH"
 
 
