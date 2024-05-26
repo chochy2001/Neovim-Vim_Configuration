@@ -16,6 +16,17 @@ export ZSH="$HOME/.oh-my-zsh"
 export PATH="/Users/jorgesalgadomiranda/development/flutter/bin:$PATH"
 export PATH="/opt/homebrew/bin:$PATH"
 
+server='root@89.116.51.156:/root'
+unalias upload 2>/dev/null
+function upload {
+    local file_path="$1"
+    scp "$file_path" root@89.116.51.156:/root
+}
+
+
+
+
+
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
