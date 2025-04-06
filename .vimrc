@@ -1,6 +1,9 @@
 call plug#begin('~/.vim/plugged')
 Plug 'artur-shaik/vim-javacomplete2'
 Plug 'vim-syntastic/syntastic'
+Plug 'udalov/kotlin-vim'
+Plug 'hsanson/vim-android'
+Plug 'keith/swift.vim'
 Plug 'akinsho/flutter-tools.nvim'
 Plug 'mhinz/vim-startify'
 Plug 'dart-lang/dart-vim-plugin'
@@ -20,6 +23,7 @@ Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-sensible'
 Plug 'sheerun/vim-polyglot'
+Plug 'ycm-core/YouCompleteMe'
 Plug 'github/copilot.vim'
 Plug 'dart-lang/dart-vim-plugin'
 Plug 'natebosch/vim-lsc'
@@ -131,7 +135,7 @@ syntax enable
 syntax on
 
 " Establece Dracula como el esquema de colores actual
-colorscheme dracula 
+colorscheme dracula
 
 " Habilita estilos de texto opcionales para Dracula
 let g:airline#extensions#tabline#enabled = 1
@@ -185,7 +189,7 @@ nnoremap <leader>gpl :Git pull<CR>
 " Instalar los plugins ya escritos
 nnoremap <leader>pi :PlugInstall<CR>
 
-" Terminal 
+" Terminal
 nnoremap <silent> <leader>t :FloatermToggle<CR>
 
 " para activar startify
