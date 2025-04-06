@@ -1,5 +1,7 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhistcnt =5
+let g:netrw_dirhistcnt =7
+let g:netrw_dirhist_7='/Users/jorgesalgadomiranda'
+let g:netrw_dirhist_6='/Users/jorgesalgadomiranda/Documents/Apps/BasesDatosIngenieriaTracker'
 let g:netrw_dirhist_5='/Users/jorgesalgadomiranda/Documents/Dart/api'
 let g:netrw_dirhist_4='/Users/jorgesalgadomiranda/Documents/Dart'
 let g:netrw_dirhist_3='/Users/jorgesalgadomiranda/Documents/Dart/excel'
@@ -8,5 +10,3 @@ let g:netrw_dirhist_1='/Users/jorgesalgadomiranda'
 let g:netrw_dirhist_0='/Users/jorgesalgadomiranda/Documents/GoImageConvertion'
 let g:netrw_dirhist_9='/'
 let g:netrw_dirhist_8='/Users'
-let g:netrw_dirhist_7='/Users/jorgesalgadomiranda'
-let g:netrw_dirhist_6='/Users/jorgesalgadomiranda/Documents'

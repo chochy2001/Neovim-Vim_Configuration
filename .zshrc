@@ -4,7 +4,6 @@
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
-
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 #alias vim='/usr/local/bin/vim'
@@ -22,6 +21,13 @@ function upload {
     local file_path="$1"
     scp "$file_path" root@89.116.51.156:/root
 }
+
+export JAVA_HOME=/opt/homebrew/Cellar/openjdk@17/17.0.14/libexec/openjdk.jdk/Contents/Home
+export PATH=$JAVA_HOME/bin:$PATH
+
+
+alias unamios='cd /Users/jorgesalgadomiranda/Documents/Apps/TiendaUNAM/ios'
+alias unamandroid='cd /Users/jorgesalgadomiranda/Documents/Apps/TiendaUNAM/android-2023'
 
 
 
@@ -131,3 +137,9 @@ source /opt/homebrew/share/powerlevel10k/powerlevel10k.zsh-theme
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/jorgesalgadomiranda/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/jorgesalgadomiranda/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/jorgesalgadomiranda/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/jorgesalgadomiranda/google-cloud-sdk/completion.zsh.inc'; fi

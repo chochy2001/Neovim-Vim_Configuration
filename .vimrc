@@ -145,7 +145,8 @@ nnoremap <leader>ph :Hex<CR>
 nnoremap yp "+yy
 vnoremap yp "+y
 
-
+" Salir del modo inserción usando jj o jk
+inoremap <leader>jk <Esc>
 " I use neovim, btw
 nnoremap <Leader><CR> :so ~/.vimrc<CR>
 "Busca archivos en el directorio de git actual y subdirectorios
