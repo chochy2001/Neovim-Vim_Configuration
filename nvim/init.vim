@@ -60,8 +60,6 @@ let g:ale_fixers = {
     \ 'java': ['google_java_format'],
     \ 'go': ['gofmt']
     \ }
-let NERDTreeShowHidden=1
-
 
 let g:startify_custom_header = [
     \ '   ____               __            _     ',
@@ -162,12 +160,6 @@ nnoremap <C-p> :GFiles<CR>
 nnoremap <C-k> :cnext<CR>
 nnoremap <C-j> :cprev<CR>
 nnoremap <C-E> :copen<CR>
-
-" NERDTree
-nnoremap <leader>n :NERDTreeFocus<CR>
-nnoremap <C-n> :NERDTree<CR>
-nnoremap <C-t> :NERDTreeToggle<CR>
-nnoremap <C-f> :NERDTreeFind<CR>
 
 "Moverse entre buffers
 nnoremap <leader>bn :bn<CR>

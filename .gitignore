@@ -1,0 +1,20 @@
+# Ignora todo
+*
+
+# No ignores archivos de configuración importantes
+!.vimrc
+!.ideavimrc
+!vimNotes.txt
+!vimNotes.md
+!README.md
+!.zshrc
+!.gitignore
+
+# Neovim config
+!.config/
+!.config/nvim/
+!.config/nvim/init.lua
+!.config/nvim/lua/
+!.config/nvim/lua/keymaps/
+!.config/nvim/lua/keymaps/*.lua
+
