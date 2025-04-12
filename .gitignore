@@ -1,7 +1,7 @@
 # Ignora todo
 *
 
-# No ignores archivos de configuración importantes
+# No ignores archivos específicos
 !.vimrc
 !.ideavimrc
 !vimNotes.txt
@@ -13,8 +13,11 @@
 # Neovim config
 !.config/
 !.config/nvim/
-!.config/nvim/init.lua
-!.config/nvim/lua/
-!.config/nvim/lua/keymaps/
-!.config/nvim/lua/keymaps/*.lua
+!.config/nvim/**
 
+# Ignorar plugins clonados (packer, plug, etc.)
+.config/nvim/pack/
+.config/nvim/plugin/packer_compiled.lua
+
+# Archivos basura del sistema
+*.DS_Store
