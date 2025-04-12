@@ -1,0 +1,257 @@
+call plug#begin('~/.local/share/nvim/plugged')
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
+Plug 'simrat39/symbols-outline.nvim'
+Plug 'L3MON4D3/LuaSnip'
+Plug 'saadparwaiz1/cmp_luasnip'
+Plug 'nvim-tree/nvim-web-devicons'
+Plug 'nvim-tree/nvim-tree.lua'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+Plug 'nvim-telescope/telescope-ui-select.nvim'
+Plug 'rcarriga/nvim-notify'
+Plug 'stevearc/dressing.nvim'
+Plug 'williamboman/mason-lspconfig.nvim'
+Plug 'nvim-telescope/telescope-file-browser.nvim'
+Plug 'hrsh7th/nvim-cmp'
+Plug 'neovim/nvim-lspconfig'
+Plug 'williamboman/mason.nvim'
+Plug 'nvim-lualine/lualine.nvim'
+Plug 'lewis6991/gitsigns.nvim'
+Plug 'folke/which-key.nvim'
+Plug 'artur-shaik/vim-javacomplete2'
+Plug 'ray-x/go.nvim'
+Plug 'olexsmir/gopher.nvim'
+Plug 'nvim-lua/lsp-status.nvim'
+Plug 'nvim-treesitter/nvim-treesitter'
+Plug 'udalov/kotlin-vim'
+Plug 'hsanson/vim-android'
+Plug 'keith/swift.vim'
+Plug 'akinsho/flutter-tools.nvim'
+Plug 'mhinz/vim-startify'
+Plug 'voldikss/vim-floaterm'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+Plug 'jiangmiao/auto-pairs'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-sensible'
+Plug 'preservim/tagbar'
+Plug 'dracula/vim', { 'as': 'dracula' }
+Plug 'tomasr/molokai'
+Plug 'altercation/vim-colors-solarized'
+Plug 'joshdick/onedark.vim'
+Plug 'morhetz/gruvbox'
+Plug 'luochen1990/rainbow'
+Plug 'airblade/vim-gitgutter'
+Plug 'easymotion/vim-easymotion'
+Plug 'scrooloose/nerdcommenter'
+Plug 'Yggdroot/indentLine'
+call plug#end()
+
+lua << EOF
+vim.notify = require("notify")
+require("dressing").setup()
+require("symbols-outline").setup()
+local luasnip = require'luasnip'
+EOF
+
+lua << EOF
+local opts = { noremap=true, silent=true }
+vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
+vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, opts)
+EOF
+
+
+lua << EOF
+require("mason").setup()
+require("mason-lspconfig").setup()
+
+-- LSP servers que necesitas
+local lspconfig = require("lspconfig")
+
+-- Ejemplo para Go
+lspconfig.gopls.setup{}
+
+-- Ejemplo para Dart
+lspconfig.dartls.setup{}
+
+-- Ejemplo para Kotlin
+lspconfig.kotlin_language_server.setup{}
+
+-- Ejemplo para Swift
+lspconfig.sourcekit.setup{}
+
+-- nvim-cmp
+local cmp = require'cmp'
+cmp.setup({
+  mapping = {
+    ['<C-Space>'] = cmp.mapping.complete(),
+    ['<CR>'] = cmp.mapping.confirm({ select = true }),
+  },
+  sources = {
+    { name = 'nvim_lsp' },
+    { name = 'buffer' },
+  }
+})
+EOF
+
+
+lua << EOF
+require('telescope').setup {
+  extensions = {
+    file_browser = {
+      -- Configuraciones opcionales
+    },
+  },
+}
+require('telescope').load_extension('file_browser')
+EOF
+
+lua << EOF
+require'nvim-tree'.setup {}
+EOF
+
+lua << EOF
+require("which-key").setup {}
+EOF
+
+
+
+let g:startify_custom_header = [
+    \ '   ____               __            _     ',
+    \ '  / ___|__ _ _ __  __|  | ___  ___ (_) ___ ',
+    \ ' | |   / _` | ''_ \/  _` |/ _ \/ __|| |/ __|',
+    \ ' | |__| (_| | |_) | (_| |  __/\__ \| |\__ \',
+    \ '  \____\__,_| .__/ \__,_|\___||___/|_||___/',
+    \ '            |_|                          ',
+    \ ]
+
+filetype plugin indent on
+
+let g:python3_host_prog = '/Library/Frameworks/Python.framework/Versions/3.11/bin/python3'
+
+let g:rainbow_active = 1 "set to 0 if you want to enable it later via :RainbowToggle
+
+set clipboard=unnamedplus
+
+
+" highlight Comment ctermfg=Gray guifg=#ffffbf
+" highlight Function ctermfg=Blue guifg=Blue
+" highlight Class ctermfg=Green guifg=Green
+" highlight String ctermfg=Yellow guifg=Yellow
+" Ejemplo para personalizar colores
+" autocmd Syntax * highlight Class ctermfg=Blue guifg=#268bd2
+
+"Terminal flotante
+let g:floaterm_borderchars = '─│─│╭╮╯╰'
+let g:floaterm_bordercolor = 'blue'
+let g:floaterm_title = 'Terminal'
+let g:floaterm_opacity = 0.8
+let g:floaterm_shell = 'zsh'
+
+"Numero de lineas para el resaltado de sintaxis
+set synmaxcol=2000
+
+" Mantiene al menos 8 líneas visibles por encima y por debajo del cursor
+set scrolloff=8
+
+" Muestra el número de línea absoluto
+set number
+
+" Muestra el número de línea relativo al cursor
+set relativenumber
+
+" Establece el ancho de tabulación y el ancho de tabulación suave en 4 espacios
+set tabstop=4 softtabstop=4
+
+" Establece el ancho de desplazamiento (indentación) en 4 espacios
+set shiftwidth=4
+
+" Convierte las tabulaciones en espacios
+set expandtab
+
+" Habilita la indentación inteligente
+set smartindent
+set termguicolors
+
+" Habilita el resaltado de sintaxis en Vim
+syntax enable
+syntax on
+
+" Establece Dracula como el esquema de colores actual
+colorscheme dracula
+
+" Habilita estilos de texto opcionales para Dracula
+let g:airline#extensions#tabline#enabled = 1
+let g:airline_theme = 'dark'
+
+let mapleader = " "
+nnoremap <leader>pv :Vex<CR>
+nnoremap <leader>ph :Hex<CR>
+
+" Mapea yp para copiar al portapapeles tanto en modo normal como visual
+nnoremap yp "+yy
+vnoremap yp "+y
+
+
+" Usa Ctrl-J para aceptar sugerencias de Copilot
+let g:copilot_no_tab_map = v:true
+imap <silent><script><expr> <Tab> copilot#Accept("\<CR>")
+
+
+" Salir del modo inserción usando jj o jk
+inoremap <leader>jk <Esc>
+
+" I use neovim, btw
+nnoremap <Leader><CR> :source ~/.config/nvim/init.vim<CR>
+
+"Busca archivos en el directorio de git actual y subdirectorios
+nnoremap <C-p> :Telescope git_files<CR>
+
+nnoremap <leader>fb :Telescope file_browser<CR>
+
+" Buscar archivos en el directorio actual y subdirectorios
+"nnoremap <C-p> :Files<CR>
+" I don't know if I love these remaps yet.  I am considering doing
+" <leader>c(k|j|o)
+nnoremap <C-k> :cnext<CR>
+nnoremap <C-j> :cprev<CR>
+nnoremap <C-E> :copen<CR>
+
+"Moverse entre buffers
+nnoremap <leader>bn :bn<CR>
+nnoremap <leader>bp :bp<CR>
+
+" Mapea 'gl' a ':Git log'
+nnoremap <leader>gl :Git log<CR>
+" Mapea 'gc' a ':Git commit'
+nnoremap <leader>gc :Git commit<CR>
+" Mapea 'ga' a ':Git add %'
+nnoremap <leader>ga :Git add %<CR>
+" Mapea 'gs' a ':Git status'
+nnoremap <leader>gs :Git status<CR>
+" Mapea 'gp' a ':Git push'
+nnoremap <leader>gps :Git push<CR>
+" Mapea 'gp' a ':Git pull'
+nnoremap <leader>gpl :Git pull<CR>
+
+" Instalar los plugins ya escritos
+nnoremap <leader>pi :PlugInstall<CR>
+nnoremap <leader>pc :PlugClean<CR>
+
+" Terminal
+nnoremap <silent> <leader>t :FloatermToggle<CR>
+tnoremap <Esc> <C-\><C-n>
+
+autocmd FileType markdown nnoremap <buffer> <leader>mp :MarkdownPreview<CR>
+
+" para activar startify
+nnoremap <leader>st :Startify<CR>
+
+" Scripts
+command! Fjson :source ~/.vim/scripts/formatear_json.vim
