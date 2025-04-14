@@ -104,8 +104,6 @@ return require("packer").startup(function(use)
 	use("lewis6991/gitsigns.nvim")
 	use("folke/which-key.nvim")
 	use("akinsho/flutter-tools.nvim")
-	use("mhinz/vim-startify")
-	use("voldikss/vim-floaterm")
 	use({
 		"junegunn/fzf",
 		run = function()
@@ -158,10 +156,6 @@ return require("packer").startup(function(use)
 	---- Alternativa moderna a Startify con íconos y layout configurable
 	use({
 		"glepnir/dashboard-nvim",
-		event = "VimEnter",
-		config = function()
-			require("dashboard").setup({})
-		end,
 		requires = { "nvim-tree/nvim-web-devicons" },
 	})
 
