@@ -1,0 +1,684 @@
+diff --git a/.config/nvim/init.lua b/.config/nvim/init.lua
+index fe9c17d..92a3ae2 100644
+--- a/.config/nvim/init.lua
++++ b/.config/nvim/init.lua
+@@ -7,8 +7,6 @@ require("settings")
+ require("keymaps")
+ require("lsp")
+ require("plugin.colors")
+-require("plugin.treesitter")
+ require("plugin.harpoon")
+ require("plugin.undotree")
+ require("mappings")
+-require("plugin.null")
+diff --git a/.config/nvim/lua/keymaps/core.lua b/.config/nvim/lua/keymaps/core.lua
+index eaf8a41..0521953 100644
+--- a/.config/nvim/lua/keymaps/core.lua
++++ b/.config/nvim/lua/keymaps/core.lua
+@@ -3,4 +3,6 @@ local opts = { noremap = true, silent = true }
+ 
+ vim.api.nvim_set_keymap('i', 'jj', '<Esc>', opts)
+ vim.api.nvim_set_keymap('n', '<leader><CR>', ':luafile ~/.config/nvim/init.lua<CR>', opts)
++vim.keymap.set("n", "<leader>ot", ":TagbarToggle<CR>", { noremap = true, silent = true, desc = "Toggle Tagbar" })
++
+ 
+diff --git a/.config/nvim/lua/keymaps/git.lua b/.config/nvim/lua/keymaps/git.lua
+index 9b138db..6360ed7 100644
+--- a/.config/nvim/lua/keymaps/git.lua
++++ b/.config/nvim/lua/keymaps/git.lua
+@@ -1,9 +1,41 @@
+---Git lua
+-local opts = { noremap = true, silent = true }
+-vim.api.nvim_set_keymap('n', '<leader>gl', ':Git log<CR>', opts)
+-vim.api.nvim_set_keymap('n', '<leader>gc', ':Git commit<CR>', opts)
+-vim.api.nvim_set_keymap('n', '<leader>ga', ':Git add %<CR>', opts)
+-vim.api.nvim_set_keymap('n', '<leader>gs', ':Git status<CR>', opts)
+-vim.api.nvim_set_keymap('n', '<leader>gps', ':Git push<CR>', opts)
+-vim.api.nvim_set_keymap('n', '<leader>gpl', ':Git pull<CR>', opts)
++-- ~/.config/nvim/lua/keymaps/git.lua
++-- VERSION UNIFICADA USANDO vim.keymap.set y CORREGIDA
+ 
++local opts_noremap_silent = { noremap = true, silent = true } -- Define opciones comunes una vez
++local builtin_telescope = require("telescope.builtin")
++local wk = require("which-key")
++
++-- Definición de Mapeos (usando vim.keymap.set con 'desc' para que which-key los recoja)
++vim.keymap.set("n", "<leader>gl", ":Git log<CR>", { desc = "Git Log (fugitive)", noremap = true, silent = true })
++vim.keymap.set("n", "<leader>gc", ":Git commit<CR>", { desc = "Git Commit (fugitive)", noremap = true, silent = true })
++vim.keymap.set("n", "<leader>ga", ":Git add %<CR>", { desc = "Git Add File (fugitive)", noremap = true, silent = true })
++vim.keymap.set("n", "<leader>gs", ":Git status<CR>", { desc = "Git Status (fugitive)", noremap = true, silent = true })
++vim.keymap.set("n", "<leader>gps", ":Git push<CR>", { desc = "Git Push", noremap = true, silent = true })
++vim.keymap.set("n", "<leader>gpl", ":Git pull<CR>", { desc = "Git Pull", noremap = true, silent = true })
++vim.keymap.set("n", "<leader>gg", ":Neogit<CR>", { desc = "Neogit UI", noremap = true, silent = true })
++vim.keymap.set(
++	"n",
++	"<leader>gC",
++	builtin_telescope.git_commits, -- Directamente la función aquí
++	{ desc = "Git Commits (Telescope)", noremap = true, silent = true }
++)
++vim.keymap.set(
++	"n",
++	"<leader>gb",
++	builtin_telescope.git_branches, -- Directamente la función aquí
++	{ desc = "Git Branches (Telescope)", noremap = true, silent = true }
++)
++vim.keymap.set(
++	"n",
++	"<leader>gS",
++	builtin_telescope.git_status, -- Directamente la función aquí
++	{ desc = "Git Status (Telescope)", noremap = true, silent = true }
++)
++
++-- == Registro con which-key (SIMPLIFICADO) ==
++-- Solo registramos los grupos. Los mapeos individuales se recogen automáticamente
++-- porque usamos la opción `desc` en `vim.keymap.set` arriba.
++wk.register({
++	["<leader>g"] = { name = "+Git" }, -- Usando 'name' para grupo es otra forma común
++	["<leader>gp"] = { name = "+Push/Pull" },
++})
+diff --git a/.config/nvim/lua/keymaps/startify.lua b/.config/nvim/lua/keymaps/startify.lua
+index 4ce87fc..857e3b3 100644
+--- a/.config/nvim/lua/keymaps/startify.lua
++++ b/.config/nvim/lua/keymaps/startify.lua
+@@ -1,49 +1,49 @@
+ require("dashboard").setup({
+-	-- Solo cuando se esté en el buffer del dashboard
+-	vim.api.nvim_create_autocmd("FileType", {
+-		pattern = "dashboard",
+-		callback = function()
+-			local map = vim.api.nvim_buf_set_keymap
+-			local opts = { noremap = true, silent = true, nowait = true }
++    -- Solo cuando se esté en el buffer del dashboard
++    vim.api.nvim_create_autocmd("FileType", {
++        pattern = "dashboard",
++        callback = function()
++            local map = vim.api.nvim_buf_set_keymap
++            local opts = { noremap = true, silent = true, nowait = true }
+ 
+-			-- Vincula las teclas 1-9 a las acciones
+-			map(0, "n", "1", ":Telescope find_files<CR>", opts)
+-			map(0, "n", "2", ":Telescope live_grep<CR>", opts)
+-			map(0, "n", "3", ":Telescope oldfiles<CR>", opts)
+-			map(0, "n", "4", ":Neotree toggle<CR>", opts)
+-			map(0, "n", "5", ":ToggleTerm<CR>", opts)
+-			map(0, "n", "6", ":edit ~/.config/nvim/lua/plugins.lua<CR>", opts)
+-			map(0, "n", "7", ":PackerSync<CR>", opts)
+-			map(0, "n", "8", ":Mason<CR>", opts)
+-		end,
+-	}),
++            -- Vincula las teclas 1-9 a las acciones
++            map(0, "n", "1", ":Telescope find_files<CR>", opts)
++            map(0, "n", "2", ":Telescope live_grep<CR>", opts)
++            map(0, "n", "3", ":Telescope oldfiles<CR>", opts)
++            map(0, "n", "4", ":Neotree toggle<CR>", opts)
++            map(0, "n", "5", ":ToggleTerm<CR>", opts)
++            map(0, "n", "6", ":edit ~/.config/nvim/lua/plugins.lua<CR>", opts)
++            map(0, "n", "7", ":PackerSync<CR>", opts)
++            map(0, "n", "8", ":Mason<CR>", opts)
++        end,
++    }),
+ 
+-	theme = "doom",
+-	config = {
+-		header = {
+-			[[  ______                             __                      __           ]],
+-			[[ /      \                           |  \                    |  \          ]],
+-			[[|  $$$$$$\  ______    ______    ____| $$  ______    _______  \$$  _______ ]],
+-			[[| $$   \$$ |      \  /      \  /      $$ /      \  /       \|  \ /       \]],
+-			[[| $$        \$$$$$$\|  $$$$$$\|  $$$$$$$|  $$$$$$\|  $$$$$$$| $$|  $$$$$$$]],
+-			[[| $$   __  /      $$| $$  | $$| $$  | $$| $$    $$ \$$    \ | $$ \$$    \ ]],
+-			[[| $$__/  \|  $$$$$$$| $$__/ $$| $$__| $$| $$$$$$$$ _\$$$$$$\| $$ _\$$$$$$\ ]],
+-			[[ \$$    $$ \$$    $$| $$    $$ \$$    $$ \$$     \|       $$| $$|       $$]],
+-			[[  \$$$$$$   \$$$$$$$| $$$$$$$   \$$$$$$$  \$$$$$$$ \$$$$$$$  \$$ \$$$$$$$ ]],
+-			[[                    | $$                                                  ]],
+-			[[                    | $$                                                  ]],
+-			[[                     \$$                                                  ]],
+-		},
+-		center = {
+-			{ icon = "1️⃣ ", desc = " Find File             ", action = "Telescope find_files" },
+-			{ icon = "2️⃣ ", desc = " Find Word             ", action = "Telescope live_grep" },
+-			{ icon = "3️⃣ ", desc = " Recent Files          ", action = "Telescope oldfiles" },
+-			{ icon = "4️⃣ ", desc = " File Explorer         ", action = "Neotree toggle" },
+-			{ icon = "5️⃣ ", desc = " Toggle Terminal       ", action = "ToggleTerm" },
+-			{ icon = "6️⃣ ", desc = " Edit Config           ", action = "edit ~/.config/nvim/lua/plugins.lua" },
+-			{ icon = "7️⃣ ", desc = " Plugin Sync (Packer)  ", action = "PackerSync" },
+-			{ icon = "8️⃣ ", desc = " LSP Installer (Mason) ", action = "Mason" },
+-		},
+-		footer = { "🚀  Que el código te acompañe, Chochy 🧠" },
+-	},
++    theme = "doom",
++    config = {
++        header = {
++            [[  ______                             __                      __           ]],
++            [[ /      \                           |  \                    |  \          ]],
++            [[|  $$$$$$\  ______    ______    ____| $$  ______    _______  \$$  _______ ]],
++            [[| $$   \$$ |      \  /      \  /      $$ /      \  /       \|  \ /       \]],
++            [[| $$        \$$$$$$\|  $$$$$$\|  $$$$$$$|  $$$$$$\|  $$$$$$$| $$|  $$$$$$$]],
++            [[| $$   __  /      $$| $$  | $$| $$  | $$| $$    $$ \$$    \ | $$ \$$    \ ]],
++            [[  | $$__/  \|  $$$$$$$| $$__/ $$| $$__| $$| $$$$$$$$ _\$$$$$$\| $$ _\$$$$$$\ ]],
++            [[ \$$    $$ \$$    $$| $$    $$ \$$    $$ \$$     \|       $$| $$|       $$]],
++            [[  \$$$$$$   \$$$$$$$| $$$$$$$   \$$$$$$$  \$$$$$$$ \$$$$$$$  \$$ \$$$$$$$ ]],
++            [[                    | $$                                                  ]],
++            [[                    | $$                                                  ]],
++            [[                     \$$                                                  ]],
++        },
++        center = {
++            { icon = "1️⃣ ", desc = " Find File             ", action = "Telescope find_files" },
++            { icon = "2️⃣ ", desc = " Find Word             ", action = "Telescope live_grep" },
++            { icon = "3️⃣ ", desc = " Recent Files          ", action = "Telescope oldfiles" },
++            { icon = "4️⃣ ", desc = " File Explorer         ", action = "Neotree toggle" },
++            { icon = "5️⃣ ", desc = " Toggle Terminal       ", action = "ToggleTerm" },
++            { icon = "6️⃣ ", desc = " Edit Config           ", action = "edit ~/.config/nvim/lua/plugins.lua" },
++            { icon = "7️⃣ ", desc = " Plugin Sync (Packer)  ", action = "PackerSync" },
++            { icon = "8️⃣ ", desc = " LSP Installer (Mason) ", action = "Mason" },
++        },
++        footer = { "🚀  Que el código te acompañe, Chochy 🧠" },
++    },
+ })
+diff --git a/.config/nvim/lua/plugin/null.lua b/.config/nvim/lua/plugin/null.lua
+deleted file mode 100644
+index 71be585..0000000
+--- a/.config/nvim/lua/plugin/null.lua
++++ /dev/null
+@@ -1,50 +0,0 @@
+-local null_ls = require("null-ls")
+-
+-local formatting = null_ls.builtins.formatting
+-local diagnostics = null_ls.builtins.diagnostics
+-
+--- Grupo de autocomandos
+-local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
+-
+-null_ls.setup({
+-	sources = {
+-		-- FORMATTERS
+-		formatting.gofmt,
+-		formatting.golines,
+-		formatting.ktlint,
+-		formatting.google_java_format,
+-		formatting.dart_format,
+-		formatting.clang_format.with({
+-			filetypes = { "java", "xml" },
+-		}),
+-		formatting.stylua,
+-
+-		-- Swift usando stdin para evitar conflictos de escritura
+-		formatting.swift_format.with({
+-			command = "swift-format",
+-			args = {
+-				"--assume-filename",
+-				"$FILENAME",
+-			},
+-			to_stdin = true,
+-		}),
+-
+-		-- LINTERS
+-		diagnostics.golangci_lint,
+-		diagnostics.ktlint,
+-	},
+-
+-	-- Formateo al guardar
+-	on_attach = function(client, bufnr)
+-		if client.supports_method("textDocument/formatting") then
+-			vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
+-			vim.api.nvim_create_autocmd("BufWritePre", {
+-				group = augroup,
+-				buffer = bufnr,
+-				callback = function()
+-					vim.lsp.buf.format({ bufnr = bufnr })
+-				end,
+-			})
+-		end
+-	end,
+-})
+diff --git a/.config/nvim/lua/plugin/treesitter.lua b/.config/nvim/lua/plugin/treesitter.lua
+deleted file mode 100644
+index adc3a0f..0000000
+--- a/.config/nvim/lua/plugin/treesitter.lua
++++ /dev/null
+@@ -1,25 +0,0 @@
+-require'nvim-treesitter.configs'.setup {
+-  -- A list of parser names, or "all" (the listed parsers MUST always be installed)
+-  ensure_installed = { "dart", "go", "typescript", "javascript", "java", "kotlin", "c", "lua", "vim", "vimdoc", "query", "markdown", "markdown_inline" },
+-
+-  -- Install parsers synchronously (only applied to `ensure_installed`)
+-  sync_install = false,
+-
+-  -- Automatically install missing parsers when entering buffer
+-  -- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
+-  auto_install = true,
+-
+-  -- List of parsers to ignore installing (or "all")
+-  ignore_install = { "javascript" },
+-
+-  highlight = {
+-    enable = true,
+-
+-
+-    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
+-    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
+-    -- Using this option may slow down your editor, and you may see some duplicate highlights.
+-    -- Instead of true it can also be a list of languages
+-    additional_vim_regex_highlighting = false,
+-  },
+-}
+diff --git a/.config/nvim/lua/plugins.lua b/.config/nvim/lua/plugins.lua
+index fea3d04..f34b89d 100644
+--- a/.config/nvim/lua/plugins.lua
++++ b/.config/nvim/lua/plugins.lua
+@@ -26,6 +26,7 @@ vim.cmd([[
+ -- Manejo seguro de 'require'
+ local status_ok, packer = pcall(require, "packer")
+ if not status_ok then
++	vim.notify("Error: No se pudo cargar Packer", vim.log.levels.ERROR)
+ 	return
+ end
+ 
+@@ -38,144 +39,197 @@ packer.init({
+ 	},
+ })
+ 
+--- Lista de plugins
+-
++-- [[ INICIO DE LA LISTA DE PLUGINS ]] --
+ return require("packer").startup(function(use)
++	-- Core Packer
++	use("wbthomason/packer.nvim")
++
++	-- Dependencias y Utilidades
++	use("nvim-lua/plenary.nvim")
++	use("nvim-tree/nvim-web-devicons")
++
++	-- Formateo
+ 	use({
+ 		"stevearc/conform.nvim",
++		event = { "BufWritePre" },
++		cmd = { "ConformInfo" },
+ 		config = function()
+-			require("conform").setup({
++			local conform = require("conform")
++			conform.setup({
++				notify_on_error = false,
++				lsp_fallback = true,
+ 				formatters_by_ft = {
+-					swift = { "swift_format" },
++					lua = { "stylua" },
+ 					go = { "gofmt", "golines" },
+-					kotlin = { "ktlint" },
+ 					java = { "google-java-format" },
++					kotlin = { "ktlint" },
+ 					dart = { "dart_format" },
+-					xml = { "clang_format" },
++					swift = { "swift_format" },
++					sql = { "sqlfluff" },
++					sh = { "shfmt" },
++					xml = { "xmllint" },
++					python = { "black", "isort" },
++					c = { "clang_format" },
++					cpp = { "clang_format" },
++					javascript = { "prettier" },
++					typescript = { "prettier" },
++					javascriptreact = { "prettier" },
++					typescriptreact = { "prettier" },
++					json = { "prettier" },
++					yaml = { "prettier" },
++					markdown = { "prettier" },
++					html = { "prettier" },
++					css = { "prettier" },
++					scss = { "prettier" },
+ 				},
+ 				formatters = {
+-					swift_format = {
+-						command = "swift-format",
+-						args = { "--in-place" },
+-						stdin = false,
+-					},
++					swift_format = { command = "swift-format", stdin = true },
++					shfmt = { prepend_args = { "-i", "2" } },
++					sqlfluff = { command = "sqlfluff", args = { "format", "--dialect", "ansi", "-" }, stdin = true },
++					prettier = { args = { "--stdin-filepath", vim.api.nvim_buf_get_name(0) } },
++				},
++				format_on_save = {
++					timeout_ms = 500,
++					lsp_fallback = true,
+ 				},
+-				format_on_save = function(bufnr)
+-					local ignore_filetypes = { "oil" }
+-					if vim.tbl_contains(ignore_filetypes, vim.bo[bufnr].filetype) then
+-						return
+-					end
+-					return { timeout_ms = 500, lsp_fallback = true }
+-				end,
+-				log_level = vim.log.levels.ERROR,
+ 			})
++			vim.api.nvim_create_user_command("FormatInfo", function()
++				conform.info()
++			end, {})
+ 		end,
+ 	})
+ 
+-	use("nvimtools/none-ls.nvim")
+-	use("wbthomason/packer.nvim") -- Gestor de plugins
+-	use("nvim-treesitter/nvim-treesitter", { run = "TSUpdate" })
++	-- Snippets
++	use("L3MON4D3/LuaSnip")
++	use("rafamadriz/friendly-snippets")
++	use("saadparwaiz1/cmp_luasnip")
++
++	-- Treesitter
++	use({
++		"nvim-treesitter/nvim-treesitter",
++		run = ":TSUpdate",
++		config = function()
++			require("nvim-treesitter.configs").setup({
++				ensure_installed = {
++					"dart",
++					"go",
++					"typescript",
++					"javascript",
++					"java",
++					"kotlin",
++					"c",
++					"lua",
++					"vim",
++					"vimdoc",
++					"query",
++					"markdown",
++					"markdown_inline",
++					"sql",
++					"html",
++					"css",
++					"json",
++					"yaml",
++					"bash",
++				},
++				sync_install = false,
++				auto_install = true,
++				highlight = { enable = true },
++				rainbow = { enable = true, extended_mode = true, max_file_lines = 1000 },
++			})
++		end,
++	})
+ 	use("nvim-treesitter/playground")
+-	use("nvim-lua/plenary.nvim") -- don't forget to add this one if you don't have it yet!
++
++	-- Movimiento / Edición
+ 	use({
+ 		"ThePrimeagen/harpoon",
+ 		branch = "harpoon2",
+ 		requires = { { "nvim-lua/plenary.nvim" } },
+ 	})
+ 	use("mbbill/undotree")
+-
+-	-- Plugins aquí
++	use("tpope/vim-surround")
++	use("easymotion/vim-easymotion")
+ 	use({
+-		"iamcco/markdown-preview.nvim",
+-		run = function()
+-			vim.fn["mkdp#util#install"]()
++		"windwp/nvim-autopairs",
++		event = "InsertEnter",
++		config = function()
++			require("nvim-autopairs").setup({})
++			local cmp_ok, cmp = pcall(require, "cmp")
++			local cmp_autopairs_ok, cmp_autopairs = pcall(require, "nvim-autopairs.completion.cmp")
++			if cmp_ok and cmp_autopairs_ok then
++				cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
++			end
+ 		end,
+-		ft = "markdown",
+ 	})
+-	use("simrat39/symbols-outline.nvim")
+-	use("nvim-tree/nvim-web-devicons")
+-	use("nvim-tree/nvim-tree.lua")
+-	use("nvim-telescope/telescope.nvim")
+-	use("nvim-telescope/telescope-ui-select.nvim")
+-	use("rcarriga/nvim-notify")
+-	use("stevearc/dressing.nvim")
+-	use("nvim-telescope/telescope-file-browser.nvim")
+-	use("nvim-lualine/lualine.nvim")
+-	use("lewis6991/gitsigns.nvim")
+-	use("folke/which-key.nvim")
+-	use("akinsho/flutter-tools.nvim")
+ 	use({
+-		"junegunn/fzf",
+-		run = function()
+-			vim.fn["fzf#install"]()
++		"numToStr/Comment.nvim",
++		config = function()
++			require("Comment").setup()
+ 		end,
+ 	})
+-	use({ "rose-pine/neovim", as = "rose-pine" })
+-	use("junegunn/fzf.vim")
+-	use("jiangmiao/auto-pairs")
+-	use("vim-airline/vim-airline")
+-	use("vim-airline/vim-airline-themes")
+-	use("tpope/vim-fugitive")
+-	use("tpope/vim-commentary")
+-	use("tpope/vim-surround")
+-
+-	-- Temas y colores
+-	use({ "dracula/vim", as = "dracula" })
+-	use("tomasr/molokai")
+-	use("altercation/vim-colors-solarized")
+-	use("joshdick/onedark.vim")
+-	use("morhetz/gruvbox")
+ 
+-	-- Otros complementos útiles
+-	use("preservim/tagbar")
+-	use("luochen1990/rainbow")
+-	use("airblade/vim-gitgutter")
+-	use("easymotion/vim-easymotion")
+-	use("scrooloose/nerdcommenter")
+-	use("Yggdroot/indentLine")
+-
+-	-- Lenguajes específicos
+-	use("artur-shaik/vim-javacomplete2")
+-	use("ray-x/go.nvim")
+-	use("olexsmir/gopher.nvim")
+-	use("nvim-lua/lsp-status.nvim")
+-	use("udalov/kotlin-vim")
+-	use("hsanson/vim-android")
+-	use("keith/swift.vim")
+-
+-	-- Nueva configuración de LSP
++	-- LSP
+ 	use("neovim/nvim-lspconfig")
+ 	use("williamboman/mason.nvim")
+ 	use("williamboman/mason-lspconfig.nvim")
+ 	use("hrsh7th/nvim-cmp")
+ 	use("hrsh7th/cmp-nvim-lsp")
+-	use("L3MON4D3/LuaSnip")
+-	use("saadparwaiz1/cmp_luasnip")
++	use("nvim-lua/lsp-status.nvim") -- Puedes considerar eliminarlo si Lualine es suficiente
+ 
+-	--Estetica y UI
+-	---- Alternativa moderna a Startify con íconos y layout configurable
++	-- UI / UX
++	use("nvim-telescope/telescope.nvim")
++	use("nvim-telescope/telescope-ui-select.nvim")
++	use("nvim-telescope/telescope-file-browser.nvim")
++	use("rcarriga/nvim-notify")
++	use("stevearc/dressing.nvim")
++	use({
++		"nvim-lualine/lualine.nvim",
++		requires = { "nvim-tree/nvim-web-devicons" },
++		config = function()
++			-- Pega aquí tu configuración de lualine.lua si la tenías separada
++			require("lualine").setup({
++				options = {
++					theme = "auto",
++					section_separators = { left = "", right = "" },
++					component_separators = { left = "", right = "" },
++					icons_enabled = true,
++				},
++				sections = {
++					lualine_a = { "mode" },
++					lualine_b = { "branch", "diff" },
++					lualine_c = { { "filename", path = 1 }, { "diagnostics", sources = { "nvim_lsp" } } },
++					lualine_x = { "filetype", "encoding", "fileformat" },
++					lualine_y = { "progress" },
++					lualine_z = { "location" },
++				},
++			})
++		end,
++	})
++	use("echasnovski/mini.icons")
++	use({
++		"folke/which-key.nvim",
++		config = function()
++			vim.o.timeout = true
++			vim.o.timeoutlen = 300
++			require("which-key").setup({})
++		end,
++	})
+ 	use({
+ 		"glepnir/dashboard-nvim",
+ 		requires = { "nvim-tree/nvim-web-devicons" },
+ 	})
+-
+-	-- Cursor animado al moverse
+ 	use({
+ 		"gen740/SmoothCursor.nvim",
+ 		config = function()
+ 			require("smoothcursor").setup()
+ 		end,
+ 	})
+-
+-	-- Mejores líneas de indentación (más visual que indentLine)
+ 	use({
+ 		"lukas-reineke/indent-blankline.nvim",
+ 		config = function()
+ 			require("ibl").setup()
+ 		end,
+ 	})
+-
+-	-- Diagnóstico mejorado para errores, referencias y más
+ 	use({
+ 		"folke/trouble.nvim",
+ 		requires = "nvim-tree/nvim-web-devicons",
+@@ -183,48 +237,98 @@ return require("packer").startup(function(use)
+ 			require("trouble").setup()
+ 		end,
+ 	})
+-	-- Framework de testing para múltiples lenguajes
+ 	use({
+-		"nvim-neotest/neotest",
++		"akinsho/toggleterm.nvim",
++		tag = "*",
++		config = function()
++			-- Pega aquí tu configuración de toggleterm (de keymaps/terminal.lua)
++			require("toggleterm").setup({
++				size = function(term)
++					if term.direction == "horizontal" then
++						return vim.o.lines * 0.4
++					end
++					if term.direction == "vertical" then
++						return vim.o.columns * 0.4
++					end
++				end,
++				direction = "float",
++				float_opts = { border = "curved", winblend = 3 },
++				-- ... otras opciones que tenías ...
++			})
++		end,
++	})
++	use({
++		"nvim-neo-tree/neo-tree.nvim",
++		branch = "v3.x",
+ 		requires = {
+ 			"nvim-lua/plenary.nvim",
+-			"nvim-treesitter/nvim-treesitter",
+-			"antoinemadec/FixCursorHold.nvim",
++			"nvim-tree/nvim-web-devicons",
++			"MunifTanjim/nui.nvim",
+ 		},
++		config = function()
++			require("neo-tree").setup({
++				close_if_last_window = true,
++				popup_border_style = "rounded",
++				enable_git_status = true,
++				enable_diagnostics = true,
++				filesystem = {
++					filtered_items = { visible = true, hide_dotfiles = false, hide_gitignored = true },
++					follow_current_file = true,
++					hijack_netrw_behavior = "open_current",
++					use_libuv_file_watcher = true,
++				},
++				window = { position = "left", width = 30, mappings = { ["H"] = "toggle_hidden" } },
++			})
++		end,
+ 	})
+ 
+-	-- Alternativa moderna a Floaterm con múltiples terminales
++	-- Git
++	use("tpope/vim-fugitive")
++	use("lewis6991/gitsigns.nvim")
+ 	use({
+-		"akinsho/toggleterm.nvim",
+-		tag = "*",
++		"NeogitOrg/neogit",
++		requires = { "nvim-lua/plenary.nvim", "sindrets/diffview.nvim", "nvim-telescope/telescope.nvim" },
+ 		config = function()
+-			require("toggleterm").setup()
++			require("neogit").setup({ integrations = { telescope = true, diffview = true } })
+ 		end,
+ 	})
++	use("sindrets/diffview.nvim")
+ 
+-	-- Plugin moderno para comentar código
++	-- Testing
+ 	use({
+-		"numToStr/Comment.nvim",
+-		config = function()
+-			require("Comment").setup()
+-		end,
++		"nvim-neotest/neotest",
++		requires = { "nvim-lua/plenary.nvim", "nvim-treesitter/nvim-treesitter", "antoinemadec/FixCursorHold.nvim" },
+ 	})
+ 
+-	-- Explorador de archivos más completo que nvim-tree
++	-- Lenguajes Específicos
++	use("akinsho/flutter-tools.nvim")
++
++	-- Temas
++	use({ "dracula/vim", as = "dracula" })
++	use("tomasr/molokai")
++	use("altercation/vim-colors-solarized")
++	use("joshdick/onedark.vim")
++	use("morhetz/gruvbox")
++	use({ "rose-pine/neovim", as = "rose-pine" })
++
++	-- Otros
++	use("preservim/tagbar")
+ 	use({
+-		"nvim-neo-tree/neo-tree.nvim",
+-		branch = "v3.x",
+-		requires = {
+-			"nvim-lua/plenary.nvim",
+-			"nvim-tree/nvim-web-devicons", -- optional
+-			"MunifTanjim/nui.nvim",
+-		},
+-		config = function()
+-			require("neo-tree").setup()
++		"iamcco/markdown-preview.nvim",
++		run = function()
++			vim.fn["mkdp#util#install"]()
++		end,
++		ft = "markdown",
++	})
++	use("junegunn/fzf", {
++		run = function()
++			vim.fn["fzf#install"]()
+ 		end,
+ 	})
++	use("junegunn/fzf.vim")
+ 
++	-- Sincronizar al final si es el primer inicio
+ 	if packer_bootstrap then
+ 		require("packer").sync()
+ 	end
+-end)
++end) -- Fin de packer.startup
