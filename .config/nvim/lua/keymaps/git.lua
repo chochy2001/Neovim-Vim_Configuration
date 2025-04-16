@@ -32,10 +32,10 @@ vim.keymap.set(
 	{ desc = "Git Status (Telescope)", noremap = true, silent = true }
 )
 
--- == Registro con which-key (SIMPLIFICADO) ==
+-- == Registro con which-key (NUEVO FORMATO) ==
 -- Solo registramos los grupos. Los mapeos individuales se recogen automáticamente
 -- porque usamos la opción `desc` en `vim.keymap.set` arriba.
 wk.register({
-	["<leader>g"] = { name = "+Git" }, -- Usando 'name' para grupo es otra forma común
-	["<leader>gp"] = { name = "+Push/Pull" },
+	{ "<leader>g", group = "Git" }, -- <<< CAMBIO AQUÍ: Nuevo formato
+	{ "<leader>gp", group = "Push/Pull" }, -- <<< CAMBIO AQUÍ: Nuevo formato
 })

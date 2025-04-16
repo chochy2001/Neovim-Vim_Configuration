@@ -28,11 +28,7 @@ export PATH=$JAVA_HOME/bin:$PATH
 
 alias unamios='cd /Users/jorgesalgadomiranda/Documents/Apps/TiendaUNAM/ios'
 alias unamandroid='cd /Users/jorgesalgadomiranda/Documents/Apps/TiendaUNAM/android-2023'
-
-
-
-
-
+alias apps='cd "/Users/jorgesalgadomiranda/Documents/Apps"'
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
