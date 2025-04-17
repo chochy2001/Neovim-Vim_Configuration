@@ -1,80 +1,62 @@
 " ~/.ideavimrc
-" Traducción de la configuración de Neovim Lua a IdeaVim Vimscript
+" Traducción y corrección basada en feedback para macOS
 
 " -----------------------------------------------------------------------------
 " Líder y Plugins
 " -----------------------------------------------------------------------------
 let mapleader = " "
 
-" Habilitar soporte para vim-surround (si usas las funcionalidades)
+" Habilita la emulación integrada de IdeaVim para vim-surround
+" Permite usar ys, cs, ds para añadir/cambiar/borrar pares circundantes.
+" Quítalo si no usas esta funcionalidad.
 set surround
 
-" IdeaVim puede cargar algunos plugins de Vimscript.
-" Descomenta si quieres usar EasyMotion directamente en el IDE.
-" Necesitarás configurar la ruta o dejar que IdeaVim los gestione.
+" Plugins Vimscript (Opcional - Descomenta si los necesitas/instalas)
 " Plug 'easymotion/vim-easymotion'
-" Plug 'tpope/vim-commentary' " Alternativa si no quieres usar la acción del IDE
-
-" Llama a :PlugInstall después de añadir líneas Plug la primera vez.
+" Plug 'tpope/vim-commentary'
 
 " -----------------------------------------------------------------------------
 " Settings (Traducción de lua/settings.lua)
 " -----------------------------------------------------------------------------
-set number          " Mostrar número de línea
-set relativenumber  " Mostrar números de línea relativos
-set tabstop=4       " Tamaño de tabulación
-set shiftwidth=4    " Tamaño de sangría
-set expandtab       " Usar espacios en lugar de tabs
-set smartindent     " Sangría inteligente
-set termguicolors   " Habilitar colores de 24 bits (si el IDE lo soporta)
-set clipboard=unnamedplus " Usar el portapapeles del sistema
-set scrolloff=8     " Mantener 8 líneas de contexto arriba/abajo del cursor
-set cursorline      " Resaltar la línea actual
-set colorcolumn=80  " Mostrar una columna guía en la columna 80
-set laststatus=2    " Siempre mostrar la barra de estado (manejada por el IDE)
-set showcmd         " Mostrar comando parcial (manejado por el IDE)
-set noshowmode      " No mostrar el modo (IdeaVim lo añade por defecto)
-
-" Opciones que no aplican o son manejadas por el IDE:
-" synmaxcol (rendimiento, menos relevante en IDEs)
-" colorscheme (manejado por el tema del IDE)
-" python3_host_prog (específico de Neovim)
-
+set number
+set relativenumber
+set tabstop=4
+set shiftwidth=4
+set expandtab
+set smartindent
+set termguicolors
+set clipboard=unnamedplus
+set scrolloff=8
+set cursorline
+set colorcolumn=80
+set laststatus=2
+set showcmd
+set noshowmode
 
 " -----------------------------------------------------------------------------
 " Core Keymaps (Traducción de lua/keymaps/core.lua)
 " -----------------------------------------------------------------------------
-imap jj <Esc>  
 " Salir de modo inserción con jj
+imap jj <Esc>
 
-" <leader><CR> para recargar init.lua no es aplicable.
-" Usa :source ~/.ideavimrc para recargar esta configuración.
-" o la acción :action Reload Source
-
-" :TagbarToggle -> Mostrar Estructura del Archivo
-nnoremap <leader>ot :action ShowStructurePopup<CR>
-
+" Mostrar Estructura del Archivo (antes Tagbar)
+" Prueba el atajo nativo Cmd+F12 si este no funciona.
+nnoremap <leader>ot :action FileStructurePopup<CR>
 
 " -----------------------------------------------------------------------------
-" Telescope / Búsqueda (Traducción de lua/keymaps/telescope.lua)
-" Las acciones del IDE reemplazan a Telescope.
+" Búsqueda / Navegación (Reemplazo de Telescope)
 " -----------------------------------------------------------------------------
-" <C-p> (git_files) -> Buscar Archivos (Similar a Ctrl+Shift+N o Cmd+Shift+O)
-nnoremap <C-p> :action FindFile<CR>
-" <leader>pf (find_files) -> Buscar Archivos
-nnoremap <leader>pf :action FindFile<CR>
-" <leader>pg (live_grep) -> Buscar en Archivos (Similar a Ctrl+Shift+F o Cmd+Shift+F)
+" Buscar Archivos (Equivalente a Cmd+Shift+O) 
+nnoremap <C-p> :action GotoFile<CR>
+nnoremap <leader>pf :action GotoFile<CR>
+
+" Buscar en Archivos (Equivalente a Cmd+Shift+F)
 nnoremap <leader>pg :action FindInPath<CR>
-" <leader>fb (file_browser) -> Abrir vista de Proyecto/Navegador
+
+" Activar/Enfocar ventana de Proyecto (antes file_browser)
 nnoremap <leader>fb :action ActivateProjectToolWindow<CR>
 
-" Harpoon - Sin equivalente directo para la lista.
-" <C-e> (Harpoon Menu) - Omitido
-" <leader>a (Harpoon Add) - Omitido
-" Mapeos <leader>1 a <leader>9: Se mapean a marcas (bookmarks) del IDE como sustituto.
-" Usa 'm' seguido de la tecla para *poner* la marca (ej. m1), y ' seguido de la tecla para *ir* (ej. '1)
-" O puedes usar los atajos del IDE para bookmarks (ej. Ctrl+Shift+1 para poner/quitar, Ctrl+1 para ir)
-" nnoremap <leader>a m<leader> " Ejemplo: marcar con líder-a
+" Harpoon sustituido por Marcas/Bookmarks (Funcionando según tu feedback)
 nnoremap <leader>1 '1
 nnoremap <leader>2 '2
 nnoremap <leader>3 '3
@@ -84,127 +66,112 @@ nnoremap <leader>6 '6
 nnoremap <leader>7 '7
 nnoremap <leader>8 '8
 nnoremap <leader>9 '9
-" <C-S-P> / <C-S-N> (Harpoon prev/next) - Omitido
-
 
 " -----------------------------------------------------------------------------
-" Buffers / Tabs (Traducción de lua/keymaps/buffers.lua)
-" En IDEs, los buffers son manejados como Tabs.
+" Buffers / Tabs (Funcionando según tu feedback)
 " -----------------------------------------------------------------------------
 nnoremap <leader>bn :action NextTab<CR>
 nnoremap <leader>bp :action PreviousTab<CR>
 
-
 " -----------------------------------------------------------------------------
-" Terminal (Traducción de lua/keymaps/terminal.lua)
+" Terminal
 " -----------------------------------------------------------------------------
-" Abrir/Cerrar la ventana de Terminal del IDE
+" Abrir/Enfocar/Ocultar ventana de Terminal (Debería alternar)
 nnoremap <leader>t :action ActivateTerminalToolWindow<CR>
-" Esc para salir del modo terminal en IdeaVim
+" Salir del *modo* terminal (regresa al editor, no cierra la ventana)
 tnoremap <Esc> <C-\><C-n>
 
-" Los mapeos específicos de dirección de ToggleTerm (th, tv, tt) no aplican directamente.
-
-
 " -----------------------------------------------------------------------------
-" Git (Traducción de lua/keymaps/git.lua)
-" Se usan las acciones de VCS (Version Control System) del IDE.
+" Git / VCS
+" IMPORTANTE: Asegúrate que la integración Git funciona en el IDE
+" (Menús Git, Ventana de Herramientas Git Cmd+9) antes de usar estos atajos.
 " -----------------------------------------------------------------------------
-" :Git log -> Mostrar historial de Git
+" Mostrar historial de Git
 nnoremap <leader>gl :action Vcs.ShowTabbedLog<CR>
-" :Git commit -> Abrir diálogo de Commit
+" Abrir diálogo de Commit (Equivalente a Cmd+K)
 nnoremap <leader>gc :action CheckinProject<CR>
-" :Git add % -> Añadir archivo actual a VCS
+" Añadir archivo actual a VCS
 nnoremap <leader>ga :action Vcs.Add<CR>
-" :Git status -> Mostrar ventana de Cambios Locales
-nnoremap <leader>gs :action ChangesView.Show<CR>
-" :Git push -> Abrir diálogo de Push
+" Mostrar ventana de Cambios Locales / VCS (Equivalente a Cmd+9)
+nnoremap <leader>gs :action ActivateVersionControlToolWindow<CR>
+" Abrir diálogo de Push (Equivalente a Cmd+Shift+K)
 nnoremap <leader>gps :action Vcs.Push<CR>
-" :Git pull -> Actualizar Proyecto (Pull)
+" Actualizar Proyecto (Pull) (Equivalente a Cmd+T)
 nnoremap <leader>gpl :action Vcs.UpdateProject<CR>
-" :Neogit -> Mostrar ventana de Cambios (equivalente más cercano)
-nnoremap <leader>gg :action ChangesView.Show<CR>
-" Telescope git commits -> Mostrar historial de Git
+" Mostrar ventana de Cambios / VCS (antes Neogit)
+nnoremap <leader>gg :action ActivateVersionControlToolWindow<CR>
+" Mostrar historial de Git (antes Telescope git commits)
 nnoremap <leader>gC :action Vcs.ShowTabbedLog<CR>
-" Telescope git branches -> Mostrar Ramas
+" Mostrar Ramas
 nnoremap <leader>gb :action Vcs.Branches<CR>
-" Telescope git status -> Mostrar ventana de Cambios
-nnoremap <leader>gS :action ChangesView.Show<CR>
-
-
-" -----------------------------------------------------------------------------
-" JSON Formatting (Traducción de lua/keymaps/json.lua)
-" :Fjson -> Usar acción de formateo del IDE
-" -----------------------------------------------------------------------------
-nnoremap <leader>fj :action ReformatCode<CR> 
-vnoremap <leader>fj :action ReformatCode<CR> 
-" Asumiendo fj como atajo deseado
-
+" Mostrar ventana de Cambios / VCS (antes Telescope git status)
+nnoremap <leader>gS :action ActivateVersionControlToolWindow<CR>
 
 " -----------------------------------------------------------------------------
-" Neotree / Project Explorer (Traducción de lua/keymaps/neotree.lua)
+" Formateo (Traducción de lua/keymaps/json.lua y conform)
 " -----------------------------------------------------------------------------
-" :Neotree toggle -> Activar/Enfocar ventana de Proyecto
+" Formatear código (Equivalente a Cmd+Option+L)
+nnoremap <leader>fj :action ReformatCode<CR>
+vnoremap <leader>fj :action ReformatCode<CR>
+
+" -----------------------------------------------------------------------------
+" Project Explorer / Navegación (Reemplazo de Neotree)
+" -----------------------------------------------------------------------------
+" Activar/Enfocar ventana de Proyecto
 nnoremap <leader>pv :action ActivateProjectToolWindow<CR>
-" :Neotree buffers -> Mostrar archivos recientes (similar)
-nnoremap <leader>nbr :action ShowRecentFiles<CR>
-" :Neotree git_status -> Mostrar ventana de Cambios
-nnoremap <leader>ng :action ChangesView.Show<CR>
-
+" Mostrar archivos recientes (Equivalente a Cmd+E)
+nnoremap <leader>nbr :action RecentFiles<CR>
+" Mostrar ventana de Cambios / VCS (antes Neotree git status)
+nnoremap <leader>ng :action ActivateVersionControlToolWindow<CR>
 
 " -----------------------------------------------------------------------------
-" Undotree (Traducción de lua/plugin/undotree.lua)
+" Historial Local (Reemplazo de Undotree)
 " -----------------------------------------------------------------------------
-" :UndotreeToggle -> Mostrar Historial Local (similar)
-nnoremap <leader>u :action Vcs.ShowLocalHistory<CR>
-
+" Mostrar Historial Local del archivo actual
+nnoremap <leader>u :action LocalHistory.ShowHistory<CR>
 
 " -----------------------------------------------------------------------------
 " LSP Keymaps (Traducción de lua/lsp.lua on_attach)
+" Asegúrate de que el LSP/IntelliSense del IDE esté activo para el lenguaje.
 " -----------------------------------------------------------------------------
-" K -> Mostrar documentación/hover (Ya funciona por defecto en IdeaVim)
-" gd -> Ir a definición (Ya funciona por defecto)
-" gD -> Ir a declaración (Ya funciona por defecto)
-" gi -> Ir a implementación (Ya funciona por defecto)
-nnoremap go :action GotoTypeDeclaration<CR>      
-" Ir a definición de tipo
-nnoremap gr :action FindUsages<CR>               
-" Buscar usos/referencias
-nnoremap gs :action ParameterInfo<CR>            
-" Mostrar ayuda de signatura/parámetros
-nnoremap <leader>rn :action RenameElement<CR>    
-" Renombrar símbolo
-nnoremap <leader>ca :action ShowIntentionActions<CR> 
-" Mostrar acciones de código/intenciones
-" <C-k> en modo inserción -> Mostrar ayuda de parámetros
-inoremap <C-k> <Esc>:action ParameterInfo<CR>a
+" K -> Mostrar documentación/hover (Default)
+" gd -> Ir a definición (Default)
+" gD -> Ir a declaración (Default)
+" gi -> Ir a implementación (Default)
 
+" Ir a definición de tipo
+nnoremap go :action GotoTypeDeclaration<CR>
+" Buscar usos/referencias (Equivalente a Option+F7)
+nnoremap gr :action FindUsages<CR>
+" Mostrar ayuda de signatura/parámetros (Equivalente a Cmd+P)
+nnoremap gs :action ParameterInfo<CR>
+" Renombrar símbolo (Equivalente a Shift+F6)
+nnoremap <leader>rn :action RenameElement<CR>
+" Mostrar acciones de código/intenciones (Equivalente a Option+Enter)
+nnoremap <leader>ca :action ShowIntentionActions<CR>
+" Mostrar ayuda de parámetros en modo inserción
+inoremap <C-k> <Cmd>action ParameterInfo<CR>
 
 " -----------------------------------------------------------------------------
 " Mappings Generales (Traducción de lua/mappings.lua)
 " -----------------------------------------------------------------------------
-nnoremap <leader>b <C-o> 
-" O usa :action Back<CR> si <C-o> no funciona bien
-nnoremap <leader>f <C-i> 
-" O usa :action Forward<CR> si <C-i> no funciona bien
-
+" Ir atrás/adelante en el historial de navegación
+nnoremap <leader>b :action Back<CR>
+nnoremap <leader>f :action Forward<CR>
+" Alternativamente, prueba <C-o> y <C-i> directamente si funcionan mejor
+" nnoremap <leader>b <C-o>
+" nnoremap <leader>f <C-i>
 
 " -----------------------------------------------------------------------------
 " Otros Plugins / Funcionalidades
 " -----------------------------------------------------------------------------
-" vim-surround ya está habilitado con 'set surround' arriba.
-" nvim-autopairs: Generalmente manejado por el IDE.
-" Comment.nvim: Usar la acción del IDE para comentar.
+" Comentar/Descomentar línea o selección (Equivalente a Cmd+/)
 nnoremap gcc :action CommentByLineComment<CR>
-vnoremap gc :action CommentByLineComment<CR>
-" O si prefieres la versión de tpope (necesitas el Plug arriba):
-" nnoremap gcc :Commentary<CR>
-" vnoremap gcc :Commentary<CR>
+vnoremap gc :action CommentByLineComment<CR> 
+" Corregido: era gcc también
 
 " -----------------------------------------------------------------------------
 " Fin de la configuración de .ideavimrc
 " -----------------------------------------------------------------------------
 
-" Para aplicar los cambios, guarda este archivo como ~/.ideavimrc
-" y luego ejecuta ':source ~/.ideavimrc' en el modo comando de IdeaVim
-" o reinicia el IDE.
+" Guarda como ~/.ideavimrc y recarga con ':source ~/.ideavimrc' o reiniciando el IDE.
