@@ -1,184 +1,210 @@
-call plug#begin('~/.vim/plugged')
-Plug 'dense-analysis/ale'
-Plug 'akinsho/flutter-tools.nvim'
-Plug 'mhinz/vim-startify'
-Plug 'dart-lang/dart-vim-plugin'
-Plug 'thosakwe/vim-flutter'
-Plug 'kien/ctrlp.vim'
-Plug 'voldikss/vim-floaterm'
-Plug 'roxma/vim-hug-neovim-rpc'
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
-Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
-Plug 'jiangmiao/auto-pairs'
-Plug 'preservim/nerdtree'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-surround'
-Plug 'tpope/vim-sensible'
-Plug 'sheerun/vim-polyglot'
-Plug 'github/copilot.vim'
-Plug 'dart-lang/dart-vim-plugin'
-Plug 'natebosch/vim-lsc'
-Plug 'preservim/tagbar'
-Plug 'dense-analysis/ale'
-Plug 'dracula/vim', { 'as': 'dracula' }
-Plug 'tomasr/molokai'
-Plug 'altercation/vim-colors-solarized'
-Plug 'joshdick/onedark.vim'
-Plug 'morhetz/gruvbox'
-Plug 'luochen1990/rainbow'
-Plug 'airblade/vim-gitgutter'
-Plug 'easymotion/vim-easymotion'
-Plug 'scrooloose/nerdcommenter'
-Plug 'Yggdroot/indentLine'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-" Plug 'ycm-core/YouCompleteMe'
-" Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-" Plug 'neoclide/coc.nvim', {'branch': 'release'}
-call plug#end()
+" ~/.ideavimrc
+" Traducción de la configuración de Neovim Lua a IdeaVim Vimscript
 
-let g:ale_fix_on_save = 1
-let g:ale_linters = {
-    \ 'dart': ['dartanalyzer'],
-    \ 'c': ['clang'],
-    \ 'cpp': ['clang'],
-    \ 'java': ['javac'],
-    \ 'go': ['golangci-lint']
-    \ }
-
-let g:ale_fixers = {
-    \ 'dart': ['dartfmt'],
-    \ 'c': ['clang-format'],
-    \ 'cpp': ['clang-format'],
-    \ 'java': ['google_java_format'],
-    \ 'go': ['gofmt']
-    \ }
-
-let g:startify_custom_header = [
-    \ '   ____               __            _     ',
-    \ '  / ___|__ _ _ __  __|  | ___  ___ (_) ___ ',
-    \ ' | |   / _` | ''_ \/  _` |/ _ \/ __|| |/ __|',
-    \ ' | |__| (_| | |_) | (_| |  __/\__ \| |\__ \',
-    \ '  \____\__,_| .__/ \__,_|\___||___/|_||___/',
-    \ '            |_|                          ',
-    \ ]
-
-filetype plugin indent on
-
-let g:python3_host_prog = '/Library/Frameworks/Python.framework/Versions/3.11/bin/python3'
-
-let g:deoplete#enable_at_startup = 1
-
-let g:rainbow_active = 1 "set to 0 if you want to enable it later via :RainbowToggle
-
-" highlight Comment ctermfg=Gray guifg=#ffffbf
-" highlight Function ctermfg=Blue guifg=Blue
-" highlight Class ctermfg=Green guifg=Green
-" highlight String ctermfg=Yellow guifg=Yellow
-" Ejemplo para personalizar colores
-" autocmd Syntax * highlight Class ctermfg=Blue guifg=#268bd2
-
-"Terminal flotante
-let g:floaterm_borderchars = '─│─│╭╮╯╰'
-let g:floaterm_bordercolor = 'blue'
-let g:floaterm_title = 'Terminal'
-let g:floaterm_opacity = 0.8
-let g:floaterm_shell = 'zsh'
-
-" Configuración para Go
-let g:go_def_mode='gopls'
-let g:go_info_mode='gopls'
-
-" Configuración para Dart
-let g:lsc_auto_map = v:true
-let g:dart_format_on_save = 1
-
-"Numero de lineas para el resaltado de sintaxis
-set synmaxcol=2000
-
-" Mantiene al menos 8 líneas visibles por encima y por debajo del cursor
-set scrolloff=8
-
-" Muestra el número de línea absoluto
-set number
-
-" Muestra el número de línea relativo al cursor
-set relativenumber
-
-" Establece el ancho de tabulación y el ancho de tabulación suave en 4 espacios
-set tabstop=4 softtabstop=4
-
-" Establece el ancho de desplazamiento (indentación) en 4 espacios
-set shiftwidth=4
-
-" Convierte las tabulaciones en espacios
-set expandtab
-
-" Habilita la indentación inteligente
-set smartindent
-set termguicolors
-
-" Habilita el resaltado de sintaxis en Vim
-syntax enable
-syntax on
-
-" Establece Dracula como el esquema de colores actual
-colorscheme dracula 
-
-" Habilita estilos de texto opcionales para Dracula
-let g:airline#extensions#tabline#enabled = 1
-let g:airline_theme = 'dark'
-
+" -----------------------------------------------------------------------------
+" Líder y Plugins
+" -----------------------------------------------------------------------------
 let mapleader = " "
-nnoremap <leader>pv :Vex<CR>
-nnoremap <leader>ph :Hex<CR>
 
-" I use neovim, btw
-nnoremap <Leader><CR> :so ~/.vimrc<CR>
-"Busca archivos en el directorio de git actual y subdirectorios
-nnoremap <C-p> :GFiles<CR>
-" Buscar archivos en el directorio actual y subdirectorios
-"nnoremap <C-p> :Files<CR>
-" I don't know if I love these remaps yet.  I am considering doing
-" <leader>c(k|j|o)
-nnoremap <C-k> :cnext<CR>
-nnoremap <C-j> :cprev<CR>
-nnoremap <C-E> :copen<CR>
+" Habilitar soporte para vim-surround (si usas las funcionalidades)
+set surround
 
-" NERDTree
-nnoremap <leader>n :NERDTreeFocus<CR>
-nnoremap <C-n> :NERDTree<CR>
-nnoremap <C-t> :NERDTreeToggle<CR>
-nnoremap <C-f> :NERDTreeFind<CR>
+" IdeaVim puede cargar algunos plugins de Vimscript.
+" Descomenta si quieres usar EasyMotion directamente en el IDE.
+" Necesitarás configurar la ruta o dejar que IdeaVim los gestione.
+" Plug 'easymotion/vim-easymotion'
+" Plug 'tpope/vim-commentary' " Alternativa si no quieres usar la acción del IDE
 
-"Moverse entre buffers
-nnoremap <leader>bn :bn<CR>
-nnoremap <leader>bp :bp<CR>
+" Llama a :PlugInstall después de añadir líneas Plug la primera vez.
 
-" Mapea 'gl' a ':Git log'
-nnoremap <leader>gl :Git log<CR>
-" Mapea 'gc' a ':Git commit'
-nnoremap <leader>gc :Git commit<CR>
-" Mapea 'ga' a ':Git add %'
-nnoremap <leader>ga :Git add %<CR>
-" Mapea 'gs' a ':Git status'
-nnoremap <leader>gs :Git status<CR>
-" Mapea 'gp' a ':Git push'
-nnoremap <leader>gps :Git push<CR>
-" Mapea 'gp' a ':Git pull'
-nnoremap <leader>gpl :Git pull<CR>
+" -----------------------------------------------------------------------------
+" Settings (Traducción de lua/settings.lua)
+" -----------------------------------------------------------------------------
+set number          " Mostrar número de línea
+set relativenumber  " Mostrar números de línea relativos
+set tabstop=4       " Tamaño de tabulación
+set shiftwidth=4    " Tamaño de sangría
+set expandtab       " Usar espacios en lugar de tabs
+set smartindent     " Sangría inteligente
+set termguicolors   " Habilitar colores de 24 bits (si el IDE lo soporta)
+set clipboard=unnamedplus " Usar el portapapeles del sistema
+set scrolloff=8     " Mantener 8 líneas de contexto arriba/abajo del cursor
+set cursorline      " Resaltar la línea actual
+set colorcolumn=80  " Mostrar una columna guía en la columna 80
+set laststatus=2    " Siempre mostrar la barra de estado (manejada por el IDE)
+set showcmd         " Mostrar comando parcial (manejado por el IDE)
+set noshowmode      " No mostrar el modo (IdeaVim lo añade por defecto)
 
-" Instalar los plugins ya escritos
-nnoremap <leader>pi :PlugInstall<CR>
+" Opciones que no aplican o son manejadas por el IDE:
+" synmaxcol (rendimiento, menos relevante en IDEs)
+" colorscheme (manejado por el tema del IDE)
+" python3_host_prog (específico de Neovim)
 
-" Terminal 
-nnoremap <silent> <leader>t :FloatermToggle<CR>
 
-" para activar startify
-nnoremap <leader>st :Startify<CR>
+" -----------------------------------------------------------------------------
+" Core Keymaps (Traducción de lua/keymaps/core.lua)
+" -----------------------------------------------------------------------------
+imap jj <Esc>  
+" Salir de modo inserción con jj
 
-" Scripts
-command! Fjson :source ~/.vim/scripts/formatear_json.vim
+" <leader><CR> para recargar init.lua no es aplicable.
+" Usa :source ~/.ideavimrc para recargar esta configuración.
+" o la acción :action Reload Source
+
+" :TagbarToggle -> Mostrar Estructura del Archivo
+nnoremap <leader>ot :action ShowStructurePopup<CR>
+
+
+" -----------------------------------------------------------------------------
+" Telescope / Búsqueda (Traducción de lua/keymaps/telescope.lua)
+" Las acciones del IDE reemplazan a Telescope.
+" -----------------------------------------------------------------------------
+" <C-p> (git_files) -> Buscar Archivos (Similar a Ctrl+Shift+N o Cmd+Shift+O)
+nnoremap <C-p> :action FindFile<CR>
+" <leader>pf (find_files) -> Buscar Archivos
+nnoremap <leader>pf :action FindFile<CR>
+" <leader>pg (live_grep) -> Buscar en Archivos (Similar a Ctrl+Shift+F o Cmd+Shift+F)
+nnoremap <leader>pg :action FindInPath<CR>
+" <leader>fb (file_browser) -> Abrir vista de Proyecto/Navegador
+nnoremap <leader>fb :action ActivateProjectToolWindow<CR>
+
+" Harpoon - Sin equivalente directo para la lista.
+" <C-e> (Harpoon Menu) - Omitido
+" <leader>a (Harpoon Add) - Omitido
+" Mapeos <leader>1 a <leader>9: Se mapean a marcas (bookmarks) del IDE como sustituto.
+" Usa 'm' seguido de la tecla para *poner* la marca (ej. m1), y ' seguido de la tecla para *ir* (ej. '1)
+" O puedes usar los atajos del IDE para bookmarks (ej. Ctrl+Shift+1 para poner/quitar, Ctrl+1 para ir)
+" nnoremap <leader>a m<leader> " Ejemplo: marcar con líder-a
+nnoremap <leader>1 '1
+nnoremap <leader>2 '2
+nnoremap <leader>3 '3
+nnoremap <leader>4 '4
+nnoremap <leader>5 '5
+nnoremap <leader>6 '6
+nnoremap <leader>7 '7
+nnoremap <leader>8 '8
+nnoremap <leader>9 '9
+" <C-S-P> / <C-S-N> (Harpoon prev/next) - Omitido
+
+
+" -----------------------------------------------------------------------------
+" Buffers / Tabs (Traducción de lua/keymaps/buffers.lua)
+" En IDEs, los buffers son manejados como Tabs.
+" -----------------------------------------------------------------------------
+nnoremap <leader>bn :action NextTab<CR>
+nnoremap <leader>bp :action PreviousTab<CR>
+
+
+" -----------------------------------------------------------------------------
+" Terminal (Traducción de lua/keymaps/terminal.lua)
+" -----------------------------------------------------------------------------
+" Abrir/Cerrar la ventana de Terminal del IDE
+nnoremap <leader>t :action ActivateTerminalToolWindow<CR>
+" Esc para salir del modo terminal en IdeaVim
+tnoremap <Esc> <C-\><C-n>
+
+" Los mapeos específicos de dirección de ToggleTerm (th, tv, tt) no aplican directamente.
+
+
+" -----------------------------------------------------------------------------
+" Git (Traducción de lua/keymaps/git.lua)
+" Se usan las acciones de VCS (Version Control System) del IDE.
+" -----------------------------------------------------------------------------
+" :Git log -> Mostrar historial de Git
+nnoremap <leader>gl :action Vcs.ShowTabbedLog<CR>
+" :Git commit -> Abrir diálogo de Commit
+nnoremap <leader>gc :action CheckinProject<CR>
+" :Git add % -> Añadir archivo actual a VCS
+nnoremap <leader>ga :action Vcs.Add<CR>
+" :Git status -> Mostrar ventana de Cambios Locales
+nnoremap <leader>gs :action ChangesView.Show<CR>
+" :Git push -> Abrir diálogo de Push
+nnoremap <leader>gps :action Vcs.Push<CR>
+" :Git pull -> Actualizar Proyecto (Pull)
+nnoremap <leader>gpl :action Vcs.UpdateProject<CR>
+" :Neogit -> Mostrar ventana de Cambios (equivalente más cercano)
+nnoremap <leader>gg :action ChangesView.Show<CR>
+" Telescope git commits -> Mostrar historial de Git
+nnoremap <leader>gC :action Vcs.ShowTabbedLog<CR>
+" Telescope git branches -> Mostrar Ramas
+nnoremap <leader>gb :action Vcs.Branches<CR>
+" Telescope git status -> Mostrar ventana de Cambios
+nnoremap <leader>gS :action ChangesView.Show<CR>
+
+
+" -----------------------------------------------------------------------------
+" JSON Formatting (Traducción de lua/keymaps/json.lua)
+" :Fjson -> Usar acción de formateo del IDE
+" -----------------------------------------------------------------------------
+nnoremap <leader>fj :action ReformatCode<CR> 
+vnoremap <leader>fj :action ReformatCode<CR> 
+" Asumiendo fj como atajo deseado
+
+
+" -----------------------------------------------------------------------------
+" Neotree / Project Explorer (Traducción de lua/keymaps/neotree.lua)
+" -----------------------------------------------------------------------------
+" :Neotree toggle -> Activar/Enfocar ventana de Proyecto
+nnoremap <leader>pv :action ActivateProjectToolWindow<CR>
+" :Neotree buffers -> Mostrar archivos recientes (similar)
+nnoremap <leader>nbr :action ShowRecentFiles<CR>
+" :Neotree git_status -> Mostrar ventana de Cambios
+nnoremap <leader>ng :action ChangesView.Show<CR>
+
+
+" -----------------------------------------------------------------------------
+" Undotree (Traducción de lua/plugin/undotree.lua)
+" -----------------------------------------------------------------------------
+" :UndotreeToggle -> Mostrar Historial Local (similar)
+nnoremap <leader>u :action Vcs.ShowLocalHistory<CR>
+
+
+" -----------------------------------------------------------------------------
+" LSP Keymaps (Traducción de lua/lsp.lua on_attach)
+" -----------------------------------------------------------------------------
+" K -> Mostrar documentación/hover (Ya funciona por defecto en IdeaVim)
+" gd -> Ir a definición (Ya funciona por defecto)
+" gD -> Ir a declaración (Ya funciona por defecto)
+" gi -> Ir a implementación (Ya funciona por defecto)
+nnoremap go :action GotoTypeDeclaration<CR>      
+" Ir a definición de tipo
+nnoremap gr :action FindUsages<CR>               
+" Buscar usos/referencias
+nnoremap gs :action ParameterInfo<CR>            
+" Mostrar ayuda de signatura/parámetros
+nnoremap <leader>rn :action RenameElement<CR>    
+" Renombrar símbolo
+nnoremap <leader>ca :action ShowIntentionActions<CR> 
+" Mostrar acciones de código/intenciones
+" <C-k> en modo inserción -> Mostrar ayuda de parámetros
+inoremap <C-k> <Esc>:action ParameterInfo<CR>a
+
+
+" -----------------------------------------------------------------------------
+" Mappings Generales (Traducción de lua/mappings.lua)
+" -----------------------------------------------------------------------------
+nnoremap <leader>b <C-o> 
+" O usa :action Back<CR> si <C-o> no funciona bien
+nnoremap <leader>f <C-i> 
+" O usa :action Forward<CR> si <C-i> no funciona bien
+
+
+" -----------------------------------------------------------------------------
+" Otros Plugins / Funcionalidades
+" -----------------------------------------------------------------------------
+" vim-surround ya está habilitado con 'set surround' arriba.
+" nvim-autopairs: Generalmente manejado por el IDE.
+" Comment.nvim: Usar la acción del IDE para comentar.
+nnoremap gcc :action CommentByLineComment<CR>
+vnoremap gc :action CommentByLineComment<CR>
+" O si prefieres la versión de tpope (necesitas el Plug arriba):
+" nnoremap gcc :Commentary<CR>
+" vnoremap gcc :Commentary<CR>
+
+" -----------------------------------------------------------------------------
+" Fin de la configuración de .ideavimrc
+" -----------------------------------------------------------------------------
+
+" Para aplicar los cambios, guarda este archivo como ~/.ideavimrc
+" y luego ejecuta ':source ~/.ideavimrc' en el modo comando de IdeaVim
+" o reinicia el IDE.

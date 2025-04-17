@@ -40,15 +40,14 @@ lspconfig_defaults.capabilities =
 -- Usa los nombres que lspconfig espera (a veces alias)
 local servers = {
 	-- Backend & Mobile
-	gopls = {},
-	jdtls = {},
+	gopls = {}, --lspconfig para go
+	jdtls = {}, -- lspconfig para java-language-server
 	kotlin_language_server = {}, -- lspconfig usa este nombre
-	dartls = {}, -- lspconfig usa este nombre (del SDK)
-	-- sourcekit_lsp = {},       -- Swift (Descomentar tras instalar)
+	dartls = {}, -- lspconfig para dart
 
 	-- SQL & Docker
-	sqlls = {},
-	dockerls = {}, -- lspconfig usa este nombre
+	sqlls = {}, -- lspconfign para sql-language-server
+	dockerls = {}, -- lspconfig para dockerfile-language-server
 
 	-- Web & Comunes
 	html = {}, -- lspconfig usa 'html'
