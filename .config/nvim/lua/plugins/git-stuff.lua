@@ -12,25 +12,28 @@ return {
         end,
     },
     -- Dependencia para Neogit
-  { "sindrets/diffview.nvim", cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewToggleFiles", "DiffviewFocusFiles" } },
-  -- Interfaz de Git tipo Magit
-  {
-    "NeogitOrg/neogit",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "sindrets/diffview.nvim",
-      "nvim-telescope/telescope.nvim", -- Opcional, para selectores
+    {
+        "sindrets/diffview.nvim",
+        cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewToggleFiles", "DiffviewFocusFiles" },
     },
-    cmd = "Neogit", -- Cargar al usar el comando
-    config = function()
-      require("neogit").setup({
-        integrations = {
-          telescope = true, -- Activar si usas telescope
-          diffview = true, -- Activar integración con diffview
+    -- Interfaz de Git tipo Magit
+    {
+        "NeogitOrg/neogit",
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+            "sindrets/diffview.nvim",
+            "nvim-telescope/telescope.nvim", -- Opcional, para selectores
         },
-        -- ... otras configuraciones de Neogit ...
-      })
-       vim.keymap.set("n", "<leader>gg", ":Neogit<CR>", { desc = "Open Neogit" })
-    end,
-  },
+        cmd = "Neogit",             -- Cargar al usar el comando
+        config = function()
+            require("neogit").setup({
+                integrations = {
+                    telescope = true, -- Activar si usas telescope
+                    diffview = true, -- Activar integración con diffview
+                },
+                -- ... otras configuraciones de Neogit ...
+            })
+            vim.keymap.set("n", "<leader>gg", ":Neogit<CR>", { desc = "Open Neogit" })
+        end,
+    },
 }
