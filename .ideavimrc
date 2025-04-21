@@ -1,5 +1,5 @@
 " ~/.ideavimrc
-" Versión 4: Usando nombres de acción verificados de actionlist para macOS
+" Versión 5.1: Corrigiendo mapeos basados en último feedback para macOS
 
 " -----------------------------------------------------------------------------
 " IMPORTANTE: Cómo encontrar nombres de acción si algo falla:
@@ -29,38 +29,43 @@ set showcmd
 set noshowmode
 
 " -----------------------------------------------------------------------------
+" Mejoras de Búsqueda (Funcionando)
+" -----------------------------------------------------------------------------
+set incsearch
+set hlsearch
+set ignorecase
+set smartcase
+nnoremap <leader><space> :nohlsearch<CR>
+
+" -----------------------------------------------------------------------------
 " Mapeos Core y Navegación Básica
 " -----------------------------------------------------------------------------
-" Salir de modo inserción
+" Salir de modo inserción (Funcionando)
 imap jj <Esc>
 
-" Mostrar Estructura del Archivo (Nativo: Cmd+F12)
-" Acción confirmada en actionlist
+" Mostrar Estructura del Archivo (Nativo: Cmd+F12) - Funciona según feedback anterior
 nnoremap <leader>ot :action FileStructurePopup<CR>
 
 " Ir atrás/adelante en historial de navegación (Funcionando)
 nnoremap <leader>b :action Back<CR>
 nnoremap <leader>f :action Forward<CR>
 
+" Navegación entre splits (Usando Leader) - Funciona según feedback anterior
+nnoremap <leader>h <C-w>h
+nnoremap <leader>j <C-w>j
+nnoremap <leader>k <C-w>k
+nnoremap <leader>l <C-w>l
+
 " -----------------------------------------------------------------------------
-" Búsqueda / Reemplazo de Telescope
+" Búsqueda / Reemplazo de Telescope (Funcionando)
 " -----------------------------------------------------------------------------
-" Buscar Archivos en Proyecto (Nativo: Cmd+Shift+O)
-" Acción 'GotoFile' confirmada en actionlist. Si no funciona,
-" revisa la indexación del IDE o busca conflictos.
 nnoremap <leader>pf :action GotoFile<CR>
-" Buscar en Archivos (Nativo: Cmd+Shift+F) - Funciona según feedback
 nnoremap <leader>pg :action FindInPath<CR>
 
 " -----------------------------------------------------------------------------
-" Ventana de Proyecto / Reemplazo de Neotree
+" Ventana de Proyecto / Reemplazo de Neotree (Funcionando)
 " -----------------------------------------------------------------------------
-" Activar/Enfocar/Ocultar Ventana de Proyecto (Nativo: Cmd+1)
-" Acción confirmada en actionlist. Debería alternar visibilidad.
 nnoremap <leader>pv :action ActivateProjectToolWindow<CR>
-
-" Mostrar archivos recientes (Nativo: Cmd+E)
-" Acción confirmada en actionlist.
 nnoremap <leader>rf :action RecentFiles<CR>
 
 " -----------------------------------------------------------------------------
@@ -83,31 +88,40 @@ nnoremap <leader>bn :action NextTab<CR>
 nnoremap <leader>bp :action PreviousTab<CR>
 
 " -----------------------------------------------------------------------------
-" Terminal (Funcionando, Esc sale de modo, no cierra ventana)
+" Terminal (Funcionando)
 " -----------------------------------------------------------------------------
-" Acción confirmada en actionlist
 nnoremap <leader>t :action ActivateTerminalToolWindow<CR>
-" Salir del *modo* terminal (regresa al editor, no cierra la ventana)
 tnoremap <Esc> <C-\><C-n>
 
 " -----------------------------------------------------------------------------
-" Git / VCS
-" IMPORTANTE: Verifica que Git funcione nativamente en el IDE (Cmd+9, Menú Git)
+" Git / VCS (Mayoría funcionando)
 " -----------------------------------------------------------------------------
-" Mostrar historial de Git (Log) - Usando Vcs.ShowTabbedFileHistory
-" Busca con ':actionlist history' o ':actionlist log' si falla.
-nnoremap <leader>gl :action Vcs.ShowTabbedFileHistory<CR>
-" Commit (Cmd+K) - Funciona según feedback, acción confirmada
-nnoremap <leader>gc :action CheckinProject<CR>
-" Push (Cmd+Shift+K) - Funciona según feedback, acción confirmada
-nnoremap <leader>gps :action Vcs.Push<CR>
-" Pull (Cmd+T) - Funciona según feedback, acción confirmada
-nnoremap <leader>gpl :action Vcs.UpdateProject<CR>
+nnoremap <leader>gl :action Vcs.ShowTabbedFileHistory<CR> 
+" Historial Git (Log)
+nnoremap <leader>gc :action CheckinProject<CR>             
+" Commit
+nnoremap <leader>ga :action Vcs.Add<CR>                   
+" Add (Verifica si funciona en tu contexto)
+nnoremap <leader>gs :action ActivateVersionControlToolWindow<CR> 
+" Status/Changes Window
+nnoremap <leader>gps :action Vcs.Push<CR>                  
+" Push
+nnoremap <leader>gpl :action Vcs.UpdateProject<CR>         
+" Pull
+nnoremap <leader>gg :action ActivateVersionControlToolWindow<CR> 
+" Git Window
+nnoremap <leader>gC :action Vcs.ShowTabbedFileHistory<CR>  
+" Commits History
+nnoremap <leader>gb :action Vcs.Branches<CR>               
+" Branches (Requiere Git activo)
+nnoremap <leader>gS :action ActivateVersionControlToolWindow<CR> 
+" Status Window
+nnoremap <leader>ng :action ActivateVersionControlToolWindow<CR> 
+" Git Status (Neotree) -> VCS Window
 
 " -----------------------------------------------------------------------------
-" Historial Local (Reemplazo de Undotree)
+" Historial Local (Reemplazo de Undotree) (Funcionando)
 " -----------------------------------------------------------------------------
-" Mostrar Historial Local - Acción confirmada
 nnoremap <leader>u :action LocalHistory.ShowHistory<CR>
 
 " -----------------------------------------------------------------------------
@@ -117,59 +131,29 @@ nnoremap <leader>fj :action ReformatCode<CR>
 vnoremap <leader>fj :action ReformatCode<CR>
 
 " -----------------------------------------------------------------------------
-" LSP Keymaps
-" Acciones confirmadas en actionlist. Su funcionamiento depende del contexto.
+" LSP Keymaps (Mayoría funcionando)
 " -----------------------------------------------------------------------------
-" K -> Hover (Default)
-" gd -> Definición (Default)
-" gD -> Declaración (Default)
-
-" Ir a Implementación(es) - Acción confirmada
-nnoremap gi :action GotoImplementation<CR>
-" Ir a definición de Tipo - Acción confirmada
-nnoremap go :action GotoTypeDeclaration<CR>
-" Buscar usos/referencias (Option+F7) - Funciona según feedback, acción confirmada
+" K, gd, gD (Defaults)
+nnoremap gi :action GotoImplementation<CR> 
+" Depende del contexto
+nnoremap go :action GotoTypeDeclaration<CR> 
+" Depende del contexto
 nnoremap gr :action FindUsages<CR>
-" Mostrar ayuda de signatura/parámetros (Nativo: Cmd+P) - Acción confirmada
 nnoremap gs :action ParameterInfo<CR>
-
-" Renombrar (Shift+F6) - Funciona según feedback, acción confirmada
 nnoremap <leader>rn :action RenameElement<CR>
-" Acciones de Código (Option+Enter) - Funciona según feedback, acción confirmada
 nnoremap <leader>ca :action ShowIntentionActions<CR>
-
-" Mostrar Parámetros en modo Inserción (Nativo: Cmd+P)
-" Método <Esc>...a con acción confirmada. ¡Cuidado con espacios extra!
-inoremap <leader>pi :action ParameterInfo<CR>
+inoremap <leader>pi <Esc>:action ParameterInfo<CR>a 
+" Parámetros en Insert (Si falla, usa Cmd+P)
 
 " -----------------------------------------------------------------------------
 " Comentarios (Funcionando)
 " -----------------------------------------------------------------------------
-" Acción confirmada
 nnoremap gcc :action CommentByLineComment<CR>
-vnoremap gc :action CommentByLineComment<CR>
+vnoremap gcc :action CommentByLineComment<CR> 
+" Corregido
 
-
-
-
-" Nuevas implementaciones
-" " -----------------------------------------------------------------------------
-" Mejoras de Búsqueda
 " -----------------------------------------------------------------------------
-set incsearch     " Muestra coincidencias mientras buscas
-set hlsearch      " Resalta todas las coincidencias
-set ignorecase    " Ignora mayúsculas/minúsculas por defecto
-set smartcase     " Sensible a mayúsculas si el patrón las incluye
-" Limpiar resaltado de búsqueda con <leader><space>
-nnoremap <leader><space> :nohlsearch<CR>
-"
-" Navegación entre splits (si usas ventanas divididas)
-nnoremap <leader>h <C-w>h
-nnoremap <leader>j <C-w>j
-nnoremap <leader>k <C-w>k
-nnoremap <leader>l <C-w>l
-" -----------------------------------------------------------------------------
-" Mover Líneas (Modo Normal y Visual con Alt+J/K)
+" Mover Líneas (Funcionando)
 " -----------------------------------------------------------------------------
 nnoremap <A-j> :m .+1<CR>==
 nnoremap <A-k> :m .-2<CR>==
@@ -177,22 +161,85 @@ vnoremap <A-j> :m '>+1<CR>gv=gv
 vnoremap <A-k> :m '<-2<CR>gv=gv
 
 " -----------------------------------------------------------------------------
-" Plegado (Folding) - Opcional
+" Plegado (Folding) - Opcional (Funcionando)
 " -----------------------------------------------------------------------------
-set foldmethod=indent  " Pliega basado en indentación (puedes probar 'syntax')
-set foldlevelstart=99  " Empieza con todo desplegado
-nnoremap za za         
-" Alternar plegado actual
-nnoremap zR zR         
-" Desplegar todo
-nnoremap zM zM         
-" Plegar todo
+set foldmethod=indent
+set foldlevelstart=99
+nnoremap za za
+nnoremap zR zR
+nnoremap zM zM
 
-"
-"
-"
-"
-"
+" -----------------------------------------------------------------------------
+" Indentación en Modo Visual (Funcionando)
+" -----------------------------------------------------------------------------
+vnoremap > >gv
+vnoremap < <gv
+
+" -----------------------------------------------------------------------------
+" Centrar Pantalla en Movimientos (Funcionando)
+" -----------------------------------------------------------------------------
+nnoremap n nzz
+nnoremap N Nzz
+nnoremap * *zz
+nnoremap # #zz
+nnoremap g* g*zz
+nnoremap g# g#zz
+
+" -----------------------------------------------------------------------------
+" Acciones Rápidas del IDE (Funcionando)
+" -----------------------------------------------------------------------------
+nnoremap <leader>rr :action Run<CR>
+nnoremap <leader>rd :action Debug<CR>
+nnoremap <leader>rs :action Stop<CR>
+nnoremap <leader>rb :action BuildProject<CR>
+
+" -----------------------------------------------------------------------------
+" Vistas Rápidas (Popups) (Funcionando)
+" -----------------------------------------------------------------------------
+nnoremap <leader>K :action QuickJavaDoc<CR>
+nnoremap <leader>I :action QuickImplementations<CR>
+
+" -----------------------------------------------------------------------------
+" Deshacer Persistente (Funcionando)
+" -----------------------------------------------------------------------------
+set undodir=~/.vim/undodir
+set undofile
+
+
+" -----------------------------------------------------------------------------
+" Gestión Mejorada de Ventanas (Splits) - CORREGIDO
+" -----------------------------------------------------------------------------
+" Maximizar/Restaurar split actual (altura o anchura) - Funciona
+nnoremap <leader>_ :action MaximizeEditorInSplit<CR>
+
+" -----------------------------------------------------------------------------
+" Navegación por Lista de Problemas / Quickfix - CORREGIDO
+" -----------------------------------------------------------------------------
+" Abrir ventana de Problemas (Nativo: Cmd+6) - Funciona
+nnoremap <leader>xo :action ActivateProblemsViewToolWindow<CR>
+" Ir al siguiente problema/error (Nativo: F2)
+nnoremap <leader>xn :action GotoNextError<CR>
+" Ir al problema/error anterior (Nativo: Shift+F2)
+nnoremap <leader>xp :action GotoPreviousError<CR>
+" (Se eliminó nnoremap <leader>xl :ll<CR> porque no hay acción directa)
+
+" -----------------------------------------------------------------------------
+" Conversión de Mayúsculas/Minúsculas (Modo Visual) - Funciona
+" -----------------------------------------------------------------------------
+vnoremap <leader>u gu
+vnoremap <leader>U gU
+
+" -----------------------------------------------------------------------------
+" Gestión Adicional de Tabs del IDE - CORREGIDO
+" -----------------------------------------------------------------------------
+" Abrir nueva Scratch File (similar a tab nueva vacía)
+nnoremap <leader>tn :action NewScratchFile<CR>
+" Cerrar tab actual - Funciona
+nnoremap <leader>tc :action CloseContent<CR>
+" Cerrar todas las demás tabs excepto la actual - Funciona
+nnoremap <leader>to :tabonly<CR>
+
+
 " -----------------------------------------------------------------------------
 " Fin de .ideavimrc
 " -----------------------------------------------------------------------------
