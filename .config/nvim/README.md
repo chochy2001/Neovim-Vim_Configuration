@@ -45,15 +45,15 @@ Al abrir `nvim`, Packer se instalará automáticamente si no está presente y si
 
 ## ⌨️ Atajos de teclado útiles
 
-| Combinación           | Acción                                      |
-|-----------------------|---------------------------------------------|
-| `jj` / `jk`           | Salir del modo inserción                    |
-| `<C-p>`               | Buscar archivos del repo con Telescope      |
+| Combinación           | Acción                                     |
+| --------------------- | ------------------------------------------ |
+| `jj` / `jk`           | Salir del modo inserción                   |
+| `<C-p>`               | Buscar archivos del repo con Telescope     |
 | `<leader>fb`          | Abrir explorador de archivos con Telescope |
 | `<leader>t`           | Abrir/cerrar la terminal flotante          |
-| `<leader>bn / bp`     | Siguiente/anterior buffer                   |
+| `<leader>bn / bp`     | Siguiente/anterior buffer                  |
 | `<leader>gl/gc/ga/gs` | Comandos de Git: log, commit, add, status  |
-| `<leader>gps/gpl`     | Git push / pull                             |
+| `<leader>gps/gpl`     | Git push / pull                            |
 | `<leader>pi / pc`     | Instalar / limpiar plugins con Plug        |
 | `<leader>st`          | Mostrar Startify                           |
 | `Fjson`               | Ejecutar script para formatear JSON        |
@@ -69,6 +69,7 @@ vim.cmd([[colorscheme dracula]])
 ```
 
 Puedes usar cualquiera de los siguientes:
+
 - `dracula`
 - `onedark`
 - `gruvbox`
@@ -78,6 +79,7 @@ Puedes usar cualquiera de los siguientes:
 ## 🧠 LSP Integrado
 
 Lenguajes soportados actualmente:
+
 - Go (`gopls`)
 - Dart (`dartls`)
 - Kotlin (`kotlin_language_server`)
@@ -100,12 +102,14 @@ Recuerda tener instalado `yarn`.
 ## 🤖 Autocompletado
 
 Con `nvim-cmp`, puedes usar:
+
 - `<C-Space>` para sugerencias
 - `<CR>` para aceptar
 
 ## ⚙️ Personalización
 
 Puedes personalizar tus atajos y configuraciones modificando los archivos:
+
 - `keymaps.lua` para mappings
 - `settings.lua` para opciones
 - `plugins.lua` para añadir o quitar plugins
