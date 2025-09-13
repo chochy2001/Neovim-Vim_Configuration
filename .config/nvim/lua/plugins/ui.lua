@@ -5,8 +5,40 @@ return {
         "rcarriga/nvim-notify",
         event = "VeryLazy",
         config = function()
-            vim.notify = require("notify")
-            -- Puedes configurar notify aquí si quieres
+            -- Preserve existing vim.notify wrapper (from error-suppressor.lua)
+            local original_notify = vim.notify
+            local notify_plugin = require("notify")
+
+            vim.notify = function(msg, level, opts)
+                -- First run through our error suppression logic
+                if type(original_notify) == "function" then
+                    -- If original_notify doesn't display (returns early), respect that
+                    local should_suppress = false
+                    if type(msg) == "string" then
+                        local error_patterns = {
+                            "E5248.*Invalid character in group name",
+                            "BufWinLeave Autocommands",
+                            "BufModifiedSet Autocommands",
+                            "nvim_exec2.*Error executing lua callback",
+                            "attempt to index field 'cmd'",
+                            "Error opening file.*vim/_editor%.lua"
+                        }
+                        for _, pattern in ipairs(error_patterns) do
+                            if msg:find(pattern) then
+                                should_suppress = true
+                                break
+                            end
+                        end
+                    end
+
+                    if should_suppress then
+                        return -- Suppress this message completely
+                    end
+                end
+
+                -- If not suppressed, use the fancy notify plugin
+                return notify_plugin(msg, level, opts)
+            end
         end,
     },
     -- Reemplaza vim.ui.input y vim.ui.select
