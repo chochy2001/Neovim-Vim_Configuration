@@ -1,4 +1,6 @@
 " ~/.ideavimrc - Revisado y Ampliado
+" 🍎 OPTIMIZADO PARA macOS (MacBook Pro)
+" Configuración sincronizada con Neovim para flujo de trabajo consistente
 
 " -----------------------------------------------------------------------------
 " Líder y Configuración Básica
@@ -76,26 +78,40 @@ vnoremap <leader>U gU
 " -----------------------------------------------------------------------------
 " Emulación Telescope (Búsqueda/Navegación Archivos)
 " -----------------------------------------------------------------------------
-nnoremap <leader>pf :action GotoFile<CR>          
+nnoremap <leader>pf :action GotoFile<CR>
 " Buscar archivo por nombre
-nnoremap <leader>pg :action FindInPath<CR>        
+nnoremap <leader>pg :action FindInPath<CR>
 " Buscar texto en proyecto (grep)
-nnoremap <leader>ps :action GotoSymbol<CR>        
+nnoremap <leader>ps :action GotoSymbol<CR>
 " Buscar símbolo (clase, método, var)
-nnoremap <leader>fb :action Switcher<CR>          
+nnoremap <leader>fb :action Switcher<CR>
 " Cambiar entre archivos/tabs recientes (buffers)
-nnoremap <leader>rf :action RecentFiles<CR>       
+nnoremap <leader>rf :action RecentFiles<CR>
 " Archivos recientes
+
+" Double Shift para búsqueda rápida (nativo en IntelliJ)
+" NOTA: Shift+Shift es nativo en IntelliJ, no necesita mapping
+" Alternativa sincronizada con Neovim: doble coma
+nnoremap ,, :action GotoFile<CR>
+" Buscar archivos con doble coma (sincronizado con Neovim)
 
 " -----------------------------------------------------------------------------
 " Emulación Neo-tree (Vista Proyecto)
 " -----------------------------------------------------------------------------
-nnoremap <leader>pv :action ActivateProjectToolWindow<CR> 
+nnoremap <leader>pv :action ActivateProjectToolWindow<CR>
 " Abrir/Enfocar vista Proyecto
-nnoremap <leader>e :action ActivateProjectToolWindow<CR>  
+nnoremap <leader>e :action ActivateProjectToolWindow<CR>
 " Alias (como en tu nvim)
-nnoremap <leader>fe :action SelectInProjectView<CR>     
+nnoremap <leader>fe :action SelectInProjectView<CR>
 " Resaltar archivo actual en Proyecto
+nnoremap <leader>fr :action SelectInProjectView<CR>
+" Revelar archivo actual en árbol (como Neovim)
+
+" Navegación rápida proyecto (macOS optimized)
+" Cmd+1 - Enfocar proyecto, Cmd+Shift+1 - Toggle proyecto (nativo IntelliJ macOS)
+" NOTA: En macOS, IntelliJ usa Cmd en lugar de Ctrl por defecto
+" En Neovim están mapeados como <D-1> (Cmd+1) y <D-S-1> (Cmd+Shift+1)
+" También disponible: <C-1> como alternativa
 
 " -----------------------------------------------------------------------------
 " Emulación Harpoon (Marcas Rápidas)
@@ -114,15 +130,22 @@ nnoremap <leader>9 '9
 " -----------------------------------------------------------------------------
 " Gestión de Buffers / Tabs del IDE
 " -----------------------------------------------------------------------------
-nnoremap <leader>bn :action NextTab<CR>           
+" Navegación rápida (sincronizado con Neovim)
+nnoremap <S-l> :action NextTab<CR>
+" Siguiente tab/buffer (Shift+L)
+nnoremap <S-h> :action PreviousTab<CR>
+" Tab/buffer anterior (Shift+H)
+
+" Navegación alternativa con leader
+nnoremap <leader>bn :action NextTab<CR>
 " Tab siguiente
-nnoremap <leader>bp :action PreviousTab<CR>       
+nnoremap <leader>bp :action PreviousTab<CR>
 " Tab anterior
-nnoremap <leader>tc :action CloseContent<CR>      
+nnoremap <leader>tc :action CloseContent<CR>
 " Cerrar tab actual
-nnoremap <leader>to :action CloseAllEditorsButActive<CR> 
+nnoremap <leader>to :action CloseAllEditorsButActive<CR>
 " Cerrar otras tabs (mejor que :tabonly)
-nnoremap <leader>tn :action NewScratchFile<CR>    
+nnoremap <leader>tn :action NewScratchFile<CR>
 " Nuevo archivo temporal (Scratch)
 
 " -----------------------------------------------------------------------------
