@@ -1,0 +1,1049 @@
+diff --git a/.config/nvim/README.md b/.config/nvim/README.md
+index bb4b15d..929fefb 100644
+--- a/.config/nvim/README.md
++++ b/.config/nvim/README.md
+@@ -45,15 +45,15 @@ Al abrir `nvim`, Packer se instalará automáticamente si no está presente y si
+ 
+ ## ⌨️ Atajos de teclado útiles
+ 
+-| Combinación           | Acción                                      |
+-|-----------------------|---------------------------------------------|
+-| `jj` / `jk`           | Salir del modo inserción                    |
+-| `<C-p>`               | Buscar archivos del repo con Telescope      |
++| Combinación           | Acción                                     |
++| --------------------- | ------------------------------------------ |
++| `jj` / `jk`           | Salir del modo inserción                   |
++| `<C-p>`               | Buscar archivos del repo con Telescope     |
+ | `<leader>fb`          | Abrir explorador de archivos con Telescope |
+ | `<leader>t`           | Abrir/cerrar la terminal flotante          |
+-| `<leader>bn / bp`     | Siguiente/anterior buffer                   |
++| `<leader>bn / bp`     | Siguiente/anterior buffer                  |
+ | `<leader>gl/gc/ga/gs` | Comandos de Git: log, commit, add, status  |
+-| `<leader>gps/gpl`     | Git push / pull                             |
++| `<leader>gps/gpl`     | Git push / pull                            |
+ | `<leader>pi / pc`     | Instalar / limpiar plugins con Plug        |
+ | `<leader>st`          | Mostrar Startify                           |
+ | `Fjson`               | Ejecutar script para formatear JSON        |
+@@ -69,6 +69,7 @@ vim.cmd([[colorscheme dracula]])
+ ```
+ 
+ Puedes usar cualquiera de los siguientes:
++
+ - `dracula`
+ - `onedark`
+ - `gruvbox`
+@@ -78,6 +79,7 @@ Puedes usar cualquiera de los siguientes:
+ ## 🧠 LSP Integrado
+ 
+ Lenguajes soportados actualmente:
++
+ - Go (`gopls`)
+ - Dart (`dartls`)
+ - Kotlin (`kotlin_language_server`)
+@@ -100,12 +102,14 @@ Recuerda tener instalado `yarn`.
+ ## 🤖 Autocompletado
+ 
+ Con `nvim-cmp`, puedes usar:
++
+ - `<C-Space>` para sugerencias
+ - `<CR>` para aceptar
+ 
+ ## ⚙️ Personalización
+ 
+ Puedes personalizar tus atajos y configuraciones modificando los archivos:
++
+ - `keymaps.lua` para mappings
+ - `settings.lua` para opciones
+ - `plugins.lua` para añadir o quitar plugins
+diff --git a/.config/nvim/lazy-lock.json b/.config/nvim/lazy-lock.json
+index f81a14d..b8e4266 100644
+--- a/.config/nvim/lazy-lock.json
++++ b/.config/nvim/lazy-lock.json
+@@ -34,7 +34,9 @@
+   "nvim-web-devicons": { "branch": "master", "commit": "855c97005c8eebcdd19846f2e54706bffd40ee96" },
+   "oil.nvim": { "branch": "master", "commit": "685cdb4ffa74473d75a1b97451f8654ceeab0f4a" },
+   "onedark": { "branch": "main", "commit": "390b893d361c356ac1b00778d849815f2aa44ae4" },
++  "playground": { "branch": "master", "commit": "ba48c6a62a280eefb7c85725b0915e021a1a0749" },
+   "plenary.nvim": { "branch": "master", "commit": "857c5ac632080dba10aae49dba902ce3abf91b35" },
++  "rainbow-delimiters.nvim": { "branch": "master", "commit": "55ad4fb76ab68460f700599b7449385f0c4e858e" },
+   "rose-pine": { "branch": "main", "commit": "96ff3993a67356ee85d1cdab9be652cdc1c5d1ac" },
+   "solarized": { "branch": "master", "commit": "528a59f26d12278698bb946f8fb82a63711eec21" },
+   "swagger-preview.nvim": { "branch": "master", "commit": "9b9bc21096890a1bd0f221a940d04dbab87a38aa" },
+diff --git a/.config/nvim/lua/plugins/catppuccin.lua b/.config/nvim/lua/plugins/catppuccin.lua
+deleted file mode 100644
+index c1d0ef2..0000000
+--- a/.config/nvim/lua/plugins/catppuccin.lua
++++ /dev/null
+@@ -1,11 +0,0 @@
+-return {
+-    {
+-        "catppuccin/nvim",
+-        lazy = false,
+-        name = "catppuccin",
+-        priority = 1000,
+-        config = function()
+-            vim.cmd.colorscheme("catppuccin-mocha")
+-        end,
+-    },
+-}
+diff --git a/.config/nvim/lua/plugins/dashboard.lua b/.config/nvim/lua/plugins/dashboard.lua
+index 2f3d198..1579e80 100644
+--- a/.config/nvim/lua/plugins/dashboard.lua
++++ b/.config/nvim/lua/plugins/dashboard.lua
+@@ -1,64 +1,66 @@
+ return {
+-  {
+-    "glepnir/dashboard-nvim",
+-    event = "VimEnter", -- Carga el dashboard cuando Neovim se inicia
+-    dependencies = { "nvim-tree/nvim-web-devicons" }, -- Necesita devicons para los iconos
+-    config = function()
+-      local dashboard = require("dashboard")
+-      dashboard.setup({
+-        -- Tu configuración de tema y contenido se mantiene igual
+-        theme = "doom",
+-        config = {
+-          header = {
+-			[[  ______                             __                      __           ]],
+-			[[ /      \                           |  \                    |  \          ]],
+-			[[|  $$$$$$\  ______    ______    ____| $$  ______    _______  \$$  _______ ]],
+-			[[| $$   \$$ |      \  /      \  /      $$ /      \  /       \|  \ /       \]],
+-			[[| $$        \$$$$$$\|  $$$$$$\|  $$$$$$$|  $$$$$$\|  $$$$$$$| $$|  $$$$$$$]],
+-			[[| $$   __  /      $$| $$  | $$| $$  | $$| $$    $$ \$$    \ | $$ \$$    \ ]],
+-			[[| $$__/  \|  $$$$$$$| $$__/ $$| $$__| $$| $$$$$$$$ _\$$$$$$\| $$ _\$$$$$$\ ]],
+-			[[ \$$    $$ \$$    $$| $$    $$ \$$    $$ \$$     \|       $$| $$|       $$]],
+-			[[  \$$$$$$   \$$$$$$$| $$$$$$$   \$$$$$$$  \$$$$$$$ \$$$$$$$  \$$ \$$$$$$$ ]],
+-			[[                    | $$                                                  ]],
+-			[[                    | $$                                                  ]],
+-			[[                     \$$                                                  ]],
+-		},
+-          center = {
+-            -- Ajusta la acción para 'Plugin Sync' si usas lazy.nvim
+-            { icon = "1️⃣ ", desc = " Find File             ", action = "Telescope find_files" },
+-            { icon = "2️⃣ ", desc = " Find Word             ", action = "Telescope live_grep" },
+-            { icon = "3️⃣ ", desc = " Recent Files          ", action = "Telescope oldfiles" },
+-            { icon = "4️⃣ ", desc = " File Explorer         ", action = "Neotree toggle" },
+-            { icon = "5️⃣ ", desc = " Toggle Terminal       ", action = "ToggleTerm" },
+-            { icon = "6️⃣ ", desc = " Edit Config           ", action = "edit ~/.config/nvim/lua/plugins.lua" }, -- Asegúrate que esta ruta sea correcta para tu config de lazy
+-            { icon = "7️⃣ ", desc = " Plugin Sync (Lazy)    ", action = "Lazy sync" }, -- Cambiado de PackerSync a Lazy sync
+-            { icon = "8️⃣ ", desc = " LSP Installer (Mason) ", action = "Mason" },
+-          },
+-          footer = { "🚀  Que el código te acompañe, Chochy 🧠" },
+-        },
+-      })
++    {
++        "glepnir/dashboard-nvim",
++        event = "VimEnter",                         -- Carga el dashboard cuando Neovim se inicia
++        dependencies = { "nvim-tree/nvim-web-devicons" }, -- Necesita devicons para los iconos
++        config = function()
++            local dashboard = require("dashboard")
++            dashboard.setup({
++                -- Tu configuración de tema y contenido se mantiene igual
++                theme = "doom",
++                config = {
++                    header = {
++                        [[  ______                             __                      __           ]],
++                        [[ /      \                           |  \                    |  \          ]],
++                        [[|  $$$$$$\  ______    ______    ____| $$  ______    _______  \$$  _______ ]],
++                        [[| $$   \$$ |      \  /      \  /      $$ /      \  /       \|  \ /       \]],
++                        [[| $$        \$$$$$$\|  $$$$$$\|  $$$$$$$|  $$$$$$\|  $$$$$$$| $$|  $$$$$$$]],
++                        [[| $$   __  /      $$| $$  | $$| $$  | $$| $$    $$ \$$    \ | $$ \$$    \ ]],
++                        [[| $$__/  \|  $$$$$$$| $$__/ $$| $$__| $$| $$$$$$$$ _\$$$$$$\| $$ _\$$$$$$\ ]],
++                        [[ \$$    $$ \$$    $$| $$    $$ \$$    $$ \$$     \|       $$| $$|       $$]],
++                        [[  \$$$$$$   \$$$$$$$| $$$$$$$   \$$$$$$$  \$$$$$$$ \$$$$$$$  \$$ \$$$$$$$ ]],
++                        [[                    | $$                                                  ]],
++                        [[                    | $$                                                  ]],
++                        [[                     \$$                                                  ]],
++                    },
++                    center = {
++                        -- Ajusta la acción para 'Plugin Sync' si usas lazy.nvim
++                        { icon = "1️⃣ ", desc = " Find File             ", action = "Telescope find_files" },
++                        { icon = "2️⃣ ", desc = " Find Word             ", action = "Telescope live_grep" },
++                        { icon = "3️⃣ ", desc = " Recent Files          ", action = "Telescope oldfiles" },
++                        { icon = "4️⃣ ", desc = " File Explorer         ", action = "Neotree toggle" },
++                        { icon = "5️⃣ ", desc = " Toggle Terminal       ", action = "ToggleTerm" },
++                        {
++                            icon = "6️⃣ ",
++                            desc = " Edit Config           ",
++                            action = "edit ~/.config/nvim/lua/plugins.lua",
++                        }, -- Asegúrate que esta ruta sea correcta para tu config de lazy
++                        { icon = "7️⃣ ", desc = " Plugin Sync (Lazy)    ", action = "Lazy sync" }, -- Cambiado de PackerSync a Lazy sync
++                        { icon = "8️⃣ ", desc = " LSP Installer (Mason) ", action = "Mason" },
++                    },
++                    footer = { "🚀  Que el código te acompañe, Chochy 🧠" },
++                },
++            })
+ 
+-      -- El autocmd para los keymaps debe definirse DESPUÉS de llamar a setup
+-      -- o dentro de la función config, pero fuera de la tabla de setup.
+-      vim.api.nvim_create_autocmd("FileType", {
+-        pattern = "dashboard",
+-        callback = function()
+-          local map = vim.api.nvim_buf_set_keymap
+-          local opts = { noremap = true, silent = true, nowait = true }
++            -- El autocmd para los keymaps debe definirse DESPUÉS de llamar a setup
++            -- o dentro de la función config, pero fuera de la tabla de setup.
++            vim.api.nvim_create_autocmd("FileType", {
++                pattern = "dashboard",
++                callback = function()
++                    local map = vim.api.nvim_buf_set_keymap
++                    local opts = { noremap = true, silent = true, nowait = true }
+ 
+-          -- Mismos mapeos que tenías
+-          map(0, "n", "1", ":Telescope find_files<CR>", opts)
+-          map(0, "n", "2", ":Telescope live_grep<CR>", opts)
+-          map(0, "n", "3", ":Telescope oldfiles<CR>", opts)
+-          map(0, "n", "4", ":Neotree toggle<CR>", opts)
+-          map(0, "n", "5", ":ToggleTerm<CR>", opts)
+-          map(0, "n", "6", ":edit ~/.config/nvim/lua/plugins.lua<CR>", opts) -- Verifica esta ruta
+-          map(0, "n", "7", ":Lazy sync<CR>", opts) -- Cambiado de PackerSync
+-          map(0, "n", "8", ":Mason<CR>", opts)
++                    -- Mismos mapeos que tenías
++                    map(0, "n", "1", ":Telescope find_files<CR>", opts)
++                    map(0, "n", "2", ":Telescope live_grep<CR>", opts)
++                    map(0, "n", "3", ":Telescope oldfiles<CR>", opts)
++                    map(0, "n", "4", ":Neotree toggle<CR>", opts)
++                    map(0, "n", "5", ":ToggleTerm<CR>", opts)
++                    map(0, "n", "6", ":edit ~/.config/nvim/lua/plugins.lua<CR>", opts) -- Verifica esta ruta
++                    map(0, "n", "7", ":Lazy sync<CR>", opts)            -- Cambiado de PackerSync
++                    map(0, "n", "8", ":Mason<CR>", opts)
++                end,
++            })
+         end,
+-      })
+-    end,
+-  },
+-
+-
+-} 
++    },
++}
+diff --git a/.config/nvim/lua/plugins/editing.lua b/.config/nvim/lua/plugins/editing.lua
+index 17feb7c..b59ee66 100644
+--- a/.config/nvim/lua/plugins/editing.lua
++++ b/.config/nvim/lua/plugins/editing.lua
+@@ -1,40 +1,40 @@
+ -- lua/plugins/editing.lua
+ return {
+-  -- Movimiento fácil
+-  { "easymotion/vim-easymotion", event = "VeryLazy" },
+-  -- Rodea texto fácilmente (ej. ysiw" para rodear palabra con "")
+-  { "tpope/vim-surround", event = "VeryLazy" },
+-  -- Auto-cierre de paréntesis, comillas, etc.
+-  {
+-    "windwp/nvim-autopairs",
+-    event = "InsertEnter", -- Cargar solo al entrar en modo inserción
+-    config = function()
+-      require("nvim-autopairs").setup({})
+-      -- Integración con nvim-cmp si está presente
+-      local cmp_ok, cmp = pcall(require, "cmp")
+-      if cmp_ok then
+-        local cmp_autopairs_ok, cmp_autopairs = pcall(require, "nvim-autopairs.completion.cmp")
+-        if cmp_autopairs_ok then
+-          cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
+-        end
+-      end
+-    end,
+-  },
+-  -- Comentar código fácilmente (gc, gcc, etc.)
+-  {
+-    "numToStr/Comment.nvim",
+-    event = "VeryLazy", -- O usa 'keys' si tienes mapeos específicos para cargar
+-    config = function()
+-      require("Comment").setup()
+-    end,
+-  },
+-  -- Barra de tags (necesita ctags instalado externamente)
+-  {
+-    "preservim/tagbar",
+-    cmd = "TagbarToggle", -- Cargar al usar el comando
+-    -- Puedes añadir un keymap aquí si quieres
+-    -- config = function()
+-    --   vim.keymap.set("n", "<F8>", ":TagbarToggle<CR>", { desc = "Toggle Tagbar" })
+-    -- end
+-  },
++    -- Movimiento fácil
++    { "easymotion/vim-easymotion", event = "VeryLazy" },
++    -- Rodea texto fácilmente (ej. ysiw" para rodear palabra con "")
++    { "tpope/vim-surround",        event = "VeryLazy" },
++    -- Auto-cierre de paréntesis, comillas, etc.
++    {
++        "windwp/nvim-autopairs",
++        event = "InsertEnter", -- Cargar solo al entrar en modo inserción
++        config = function()
++            require("nvim-autopairs").setup({})
++            -- Integración con nvim-cmp si está presente
++            local cmp_ok, cmp = pcall(require, "cmp")
++            if cmp_ok then
++                local cmp_autopairs_ok, cmp_autopairs = pcall(require, "nvim-autopairs.completion.cmp")
++                if cmp_autopairs_ok then
++                    cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
++                end
++            end
++        end,
++    },
++    -- Comentar código fácilmente (gc, gcc, etc.)
++    {
++        "numToStr/Comment.nvim",
++        event = "VeryLazy", -- O usa 'keys' si tienes mapeos específicos para cargar
++        config = function()
++            require("Comment").setup()
++        end,
++    },
++    -- Barra de tags (necesita ctags instalado externamente)
++    {
++        "preservim/tagbar",
++        cmd = "TagbarToggle", -- Cargar al usar el comando
++        -- Puedes añadir un keymap aquí si quieres
++        -- config = function()
++        --   vim.keymap.set("n", "<F8>", ":TagbarToggle<CR>", { desc = "Toggle Tagbar" })
++        -- end
++    },
+ }
+diff --git a/.config/nvim/lua/plugins/git-stuff.lua b/.config/nvim/lua/plugins/git-stuff.lua
+index 644a36f..6ccc058 100644
+--- a/.config/nvim/lua/plugins/git-stuff.lua
++++ b/.config/nvim/lua/plugins/git-stuff.lua
+@@ -12,25 +12,28 @@ return {
+         end,
+     },
+     -- Dependencia para Neogit
+-  { "sindrets/diffview.nvim", cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewToggleFiles", "DiffviewFocusFiles" } },
+-  -- Interfaz de Git tipo Magit
+-  {
+-    "NeogitOrg/neogit",
+-    dependencies = {
+-      "nvim-lua/plenary.nvim",
+-      "sindrets/diffview.nvim",
+-      "nvim-telescope/telescope.nvim", -- Opcional, para selectores
++    {
++        "sindrets/diffview.nvim",
++        cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewToggleFiles", "DiffviewFocusFiles" },
+     },
+-    cmd = "Neogit", -- Cargar al usar el comando
+-    config = function()
+-      require("neogit").setup({
+-        integrations = {
+-          telescope = true, -- Activar si usas telescope
+-          diffview = true, -- Activar integración con diffview
++    -- Interfaz de Git tipo Magit
++    {
++        "NeogitOrg/neogit",
++        dependencies = {
++            "nvim-lua/plenary.nvim",
++            "sindrets/diffview.nvim",
++            "nvim-telescope/telescope.nvim", -- Opcional, para selectores
+         },
+-        -- ... otras configuraciones de Neogit ...
+-      })
+-       vim.keymap.set("n", "<leader>gg", ":Neogit<CR>", { desc = "Open Neogit" })
+-    end,
+-  },
++        cmd = "Neogit",             -- Cargar al usar el comando
++        config = function()
++            require("neogit").setup({
++                integrations = {
++                    telescope = true, -- Activar si usas telescope
++                    diffview = true, -- Activar integración con diffview
++                },
++                -- ... otras configuraciones de Neogit ...
++            })
++            vim.keymap.set("n", "<leader>gg", ":Neogit<CR>", { desc = "Open Neogit" })
++        end,
++    },
+ }
+diff --git a/.config/nvim/lua/plugins/lua-line.lua b/.config/nvim/lua/plugins/lua-line.lua
+index 41b3a35..9f4aa36 100644
+--- a/.config/nvim/lua/plugins/lua-line.lua
++++ b/.config/nvim/lua/plugins/lua-line.lua
+@@ -1,29 +1,29 @@
+ -- lua/plugins/lualine.lua
+ return {
+-  {
+-    "nvim-lualine/lualine.nvim",
+-    -- Asegúrate que devicons se cargue, lazy.nvim suele manejarlo bien
+-    dependencies = { "nvim-tree/nvim-web-devicons" },
+-    event = "VeryLazy", -- Cargarla cuando la UI esté lista
+-    config = function()
+-      require("lualine").setup({
+-        options = {
+-          theme = "auto", -- Usa el tema de colorscheme o elige uno específico
+-          section_separators = { left = "", right = "" },
+-          component_separators = { left = "", right = "" },
+-          icons_enabled = true,
+-          -- ... otras opciones globales si las necesitas ...
+-        },
+-        sections = {
+-          lualine_a = { "mode" },
+-          lualine_b = { "branch", "diff" },
+-          lualine_c = { { "filename", path = 1 }, { "diagnostics", sources = { "nvim_lsp" } } },
+-          lualine_x = { "filetype", "encoding", "fileformat" },
+-          lualine_y = { "progress" },
+-          lualine_z = { "location" },
+-        },
+-        -- ... otras secciones o configuraciones ...
+-      })
+-    end,
+-  },
++    {
++        "nvim-lualine/lualine.nvim",
++        -- Asegúrate que devicons se cargue, lazy.nvim suele manejarlo bien
++        dependencies = { "nvim-tree/nvim-web-devicons" },
++        event = "VeryLazy", -- Cargarla cuando la UI esté lista
++        config = function()
++            require("lualine").setup({
++                options = {
++                    theme = "auto", -- Usa el tema de colorscheme o elige uno específico
++                    section_separators = { left = "", right = "" },
++                    component_separators = { left = "", right = "" },
++                    icons_enabled = true,
++                    -- ... otras opciones globales si las necesitas ...
++                },
++                sections = {
++                    lualine_a = { "mode" },
++                    lualine_b = { "branch", "diff" },
++                    lualine_c = { { "filename", path = 1 }, { "diagnostics", sources = { "nvim_lsp" } } },
++                    lualine_x = { "filetype", "encoding", "fileformat" },
++                    lualine_y = { "progress" },
++                    lualine_z = { "location" },
++                },
++                -- ... otras secciones o configuraciones ...
++            })
++        end,
++    },
+ }
+diff --git a/.config/nvim/lua/plugins/markdown.lua b/.config/nvim/lua/plugins/markdown.lua
+deleted file mode 100644
+index 8995f45..0000000
+--- a/.config/nvim/lua/plugins/markdown.lua
++++ /dev/null
+@@ -1,16 +0,0 @@
+--- lua/plugins/markdown.lua
+-return {
+-  {
+-    "iamcco/markdown-preview.nvim",
+-    -- Construir al instalar/actualizar
+-    build = function() vim.fn["mkdp#util#install"]() end,
+-    -- Cargar solo para archivos markdown
+-    ft = { "markdown" },
+-    -- Cargar también con el comando
+-    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+-    config = function ()
+-        -- Puedes configurar variables globales si es necesario
+-        -- vim.g.mkdp_filetypes = { "markdown" }
+-    end
+-  },
+-}
+diff --git a/.config/nvim/lua/plugins/neo-tree.lua b/.config/nvim/lua/plugins/neo-tree.lua
+index 5197bd8..e5a5790 100644
+--- a/.config/nvim/lua/plugins/neo-tree.lua
++++ b/.config/nvim/lua/plugins/neo-tree.lua
+@@ -1,13 +1,13 @@
+ return {
+-	"nvim-neo-tree/neo-tree.nvim",
+-	branch = "v3.x",
+-	dependencies = {
+-		"nvim-lua/plenary.nvim",
+-		"nvim-tree/nvim-web-devicons",
+-		"MunifTanjim/nui.nvim",
+-	},
+-	config = function()
+-        vim.keymap.set("n","<leader>pv", ":Neotree toggle<CR>",{})
+-		vim.keymap.set("n", "<leader>bf", ":Neotree buffers reveal float<CR>", {})
+-	end,
++    "nvim-neo-tree/neo-tree.nvim",
++    branch = "v3.x",
++    dependencies = {
++        "nvim-lua/plenary.nvim",
++        "nvim-tree/nvim-web-devicons",
++        "MunifTanjim/nui.nvim",
++    },
++    config = function()
++        vim.keymap.set("n", "<leader>pv", ":Neotree toggle<CR>", {})
++        vim.keymap.set("n", "<leader>bf", ":Neotree buffers reveal float<CR>", {})
++    end,
+ }
+diff --git a/.config/nvim/lua/plugins/none-ls.lua b/.config/nvim/lua/plugins/none-ls.lua
+index 479779e..5566758 100644
+--- a/.config/nvim/lua/plugins/none-ls.lua
++++ b/.config/nvim/lua/plugins/none-ls.lua
+@@ -1,21 +1,68 @@
+ -- Archivo: lua/plugins/none-ls.lua
+ return {
+     "nvimtools/none-ls.nvim",
++    dependencies = { "nvim-lua/plenary.nvim" },
+     config = function()
+         local null_ls = require("null-ls")
+-        null_ls.setup({
+-            -- Añade un retraso (ej. 250ms) antes de ejecutar fuentes tras un cambio
+-            debounce = 250, -- Puedes ajustar este valor
++        local formatting = null_ls.builtins.formatting
++        local diagnostics = null_ls.builtins.diagnostics
+ 
++        null_ls.setup({
++            debounce = 250,
++            -- Fuentes para los lenguajes que usas (¡Instala las herramientas con Mason!)
+             sources = {
+-                null_ls.builtins.formatting.stylua,
+-                null_ls.builtins.formatting.prettier,
+-                null_ls.builtins.diagnostics.erb_lint,
+-                null_ls.builtins.diagnostics.rubocop,
+-                null_ls.builtins.formatting.rubocop,
++                -- === Formateadores ===
++                -- Lua
++                formatting.stylua,
++                -- Go (Elige uno o usa gopls)
++                formatting.gofmt,
++                -- formatting.goimports,
++                -- Kotlin
++                formatting.ktlint,
++                -- Java
++                formatting.google_java_format,
++                -- Web (JS/TS/HTML/CSS/JSON/YAML/MD...)
++                formatting.prettier.with({ -- Configuración extra opcional para prettier
++                    -- extra_filetypes = { "toml" },
++                    -- extra_args = { "--no-semi", "--single-quote" },
++                }),
++                -- SQL
++                formatting.sqlfluff.with({ -- Configuración extra opcional
++                    -- extra_args = { "--dialect", "mysql" },
++                }),
++                -- C/C++ (Si aplica)
++                formatting.clang_format,
++                -- Shell (Si aplica)
++                -- formatting.shfmt,
++
++                -- === Diagnósticos (Linters) ===
++                -- Go (Opcional si usas el LSP)
++                diagnostics.golangci_lint,
++                -- Docker
++                diagnostics.hadolint,
++                -- Swift
++                diagnostics.swiftlint,
++                diagnostics.erb_lint,
++                -- JS/TS (Opcional si usas eslint-lsp)
++                diagnostics.eslint_d,
+             },
++
++            -- Configuración para formatear al guardar
++            on_attach = function(client, bufnr)
++                if client.supports_method("textDocument/formatting") then
++                    local format_augroup = vim.api.nvim_create_augroup("FormatOnSave", { clear = true })
++                    vim.api.nvim_create_autocmd("BufWritePre", {
++                        group = format_augroup,
++                        buffer = bufnr,
++                        callback = function()
++                            vim.lsp.buf.format({ bufnr = bufnr, timeout_ms = 5000 })
++                        end,
++                    })
++                end
++            end,
++            -- debug = true, -- Descomenta para logs detallados si algo falla
+         })
+ 
+-        vim.keymap.set("n", "<leader>ff", vim.lsp.buf.format, {})
++        vim.keymap.set("n", "<leader>ff", vim.lsp.buf.format, { desc = "Format Buffer" })
+     end,
+ }
+diff --git a/.config/nvim/lua/plugins/nvim-tmux-navigation.lua b/.config/nvim/lua/plugins/nvim-tmux-navigation.lua
+index fc13dbd..2934833 100644
+--- a/.config/nvim/lua/plugins/nvim-tmux-navigation.lua
++++ b/.config/nvim/lua/plugins/nvim-tmux-navigation.lua
+@@ -1,10 +1,10 @@
+ return {
+-	"alexghergh/nvim-tmux-navigation",
+-	config = function()
+-		require("nvim-tmux-navigation").setup({})
+-		vim.keymap.set("n", "<C-h>", "<Cmd>NvimTmuxNavigateLeft<CR>", {})
+-		vim.keymap.set("n", "<C-j>", "<Cmd>NvimTmuxNavigateDown<CR>", {})
+-		vim.keymap.set("n", "<C-k>", "<Cmd>NvimTmuxNavigateUp<CR>", {})
+-		vim.keymap.set("n", "<C-l>", "<Cmd>NvimTmuxNavigateRight<CR>", {})
+-	end,
++    "alexghergh/nvim-tmux-navigation",
++    config = function()
++        require("nvim-tmux-navigation").setup({})
++        vim.keymap.set("n", "<C-h>", "<Cmd>NvimTmuxNavigateLeft<CR>", {})
++        vim.keymap.set("n", "<C-j>", "<Cmd>NvimTmuxNavigateDown<CR>", {})
++        vim.keymap.set("n", "<C-k>", "<Cmd>NvimTmuxNavigateUp<CR>", {})
++        vim.keymap.set("n", "<C-l>", "<Cmd>NvimTmuxNavigateRight<CR>", {})
++    end,
+ }
+diff --git a/.config/nvim/lua/plugins/oil.lua b/.config/nvim/lua/plugins/oil.lua
+index 73529a9..7026956 100644
+--- a/.config/nvim/lua/plugins/oil.lua
++++ b/.config/nvim/lua/plugins/oil.lua
+@@ -1,8 +1,8 @@
+ return {
+-	"stevearc/oil.nvim",
+-	config = function()
+-		local oil = require("oil")
+-		oil.setup()
+-		vim.keymap.set("n", "-", oil.toggle_float, {})
+-	end,
++    "stevearc/oil.nvim",
++    config = function()
++        local oil = require("oil")
++        oil.setup()
++        vim.keymap.set("n", "-", oil.toggle_float, {})
++    end,
+ }
+diff --git a/.config/nvim/lua/plugins/swagger-preview.lua b/.config/nvim/lua/plugins/swagger-preview.lua
+index bee64cd..3955225 100644
+--- a/.config/nvim/lua/plugins/swagger-preview.lua
++++ b/.config/nvim/lua/plugins/swagger-preview.lua
+@@ -1,5 +1,5 @@
+ return {
+-	"vinnymeller/swagger-preview.nvim",
+-	build = "npm install -g swagger-ui-watcher",
+-	config = true,
++    "vinnymeller/swagger-preview.nvim",
++    build = "npm install -g swagger-ui-watcher",
++    config = true,
+ }
+diff --git a/.config/nvim/lua/plugins/terminal.lua b/.config/nvim/lua/plugins/terminal.lua
+index e3930c6..e895f64 100644
+--- a/.config/nvim/lua/plugins/terminal.lua
++++ b/.config/nvim/lua/plugins/terminal.lua
+@@ -1,55 +1,55 @@
+ return {
+-  {
+-    "akinsho/toggleterm.nvim",
+-    version = "*", -- Puedes especificar una versión o tag si lo prefieres
+-    -- Carga perezosa: Se carga cuando se ejecuta el comando :ToggleTerm
+-    -- o cuando se usa uno de los atajos definidos en 'keys'.
+-    cmd = "ToggleTerm",
+-    keys = {
+-      -- Atajos que activarán la carga del plugin si aún no está cargado
+-      { "<leader>th", "<cmd>ToggleTerm direction=horizontal<CR>", desc = "ToggleTerm (Horizontal)" },
+-      { "<leader>tv", "<cmd>ToggleTerm direction=vertical<CR>", desc = "ToggleTerm (Vertical)" },
+-      { "<leader>tt", "<cmd>ToggleTerm direction=tab<CR>", desc = "ToggleTerm (Tab)" },
+-    },
+-    config = function()
+-      -- Aquí va toda tu configuración de setup original
+-      require("toggleterm").setup({
+-        size = function(term)
+-          if term.direction == "horizontal" then
+-            return vim.o.lines * 0.6
+-          elseif term.direction == "vertical" then
+-            return vim.o.columns * 0.6
+-          end
+-        end,
+-        -- open_mapping = [[<leader>t]], -- Comentado, ya manejado por 'keys' de lazy.nvim
+-        hide_numbers = true,
+-        shade_filetypes = {},
+-        shade_terminals = true,
+-        shading_factor = 2,
+-        start_in_insert = true,
+-        insert_mappings = true, -- Mantenlo si quieres los mapeos por defecto en modo inserción
+-        terminal_mappings = true, -- Mantenlo si quieres los mapeos por defecto en modo terminal
+-        persist_size = true,
+-        direction = "float", -- default
+-        float_opts = {
+-          border = "curved",
+-          winblend = 3,
++    {
++        "akinsho/toggleterm.nvim",
++        version = "*", -- Puedes especificar una versión o tag si lo prefieres
++        -- Carga perezosa: Se carga cuando se ejecuta el comando :ToggleTerm
++        -- o cuando se usa uno de los atajos definidos en 'keys'.
++        cmd = "ToggleTerm",
++        keys = {
++            -- Atajos que activarán la carga del plugin si aún no está cargado
++            { "<leader>th", "<cmd>ToggleTerm direction=horizontal<CR>", desc = "ToggleTerm (Horizontal)" },
++            { "<leader>tv", "<cmd>ToggleTerm direction=vertical<CR>",   desc = "ToggleTerm (Vertical)" },
++            { "<leader>tt", "<cmd>ToggleTerm direction=tab<CR>",        desc = "ToggleTerm (Tab)" },
+         },
+-      })
++        config = function()
++            -- Aquí va toda tu configuración de setup original
++            require("toggleterm").setup({
++                size = function(term)
++                    if term.direction == "horizontal" then
++                        return vim.o.lines * 0.6
++                    elseif term.direction == "vertical" then
++                        return vim.o.columns * 0.6
++                    end
++                end,
++                -- open_mapping = [[<leader>t]], -- Comentado, ya manejado por 'keys' de lazy.nvim
++                hide_numbers = true,
++                shade_filetypes = {},
++                shade_terminals = true,
++                shading_factor = 2,
++                start_in_insert = true,
++                insert_mappings = true, -- Mantenlo si quieres los mapeos por defecto en modo inserción
++                terminal_mappings = true, -- Mantenlo si quieres los mapeos por defecto en modo terminal
++                persist_size = true,
++                direction = "float", -- default
++                float_opts = {
++                    border = "curved",
++                    winblend = 3,
++                },
++            })
+ 
+-      -- Atajos / Mapeos adicionales que se deben definir DESPUÉS del setup.
+-      -- El mapeo para <Esc> en modo terminal es un buen ejemplo.
+-      local opts_silent = { silent = true } -- noremap=true es el valor por defecto para vim.keymap.set
++            -- Atajos / Mapeos adicionales que se deben definir DESPUÉS del setup.
++            -- El mapeo para <Esc> en modo terminal es un buen ejemplo.
++            local opts_silent = { silent = true } -- noremap=true es el valor por defecto para vim.keymap.set
+ 
+-      -- Esc para salir de modo terminal (t)
+-      vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", opts_silent)
++            -- Esc para salir de modo terminal (t)
++            vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", opts_silent)
+ 
+-      -- Si NO hubieras usado la tabla 'keys' de lazy.nvim para los atajos principales,
+-      -- los definirías aquí también:
+-      -- vim.keymap.set("n", "<leader>t", "<cmd>ToggleTerm<CR>", opts_silent)
+-      -- vim.keymap.set("n", "<leader>th", "<cmd>ToggleTerm direction=horizontal<CR>", opts_silent)
+-      -- vim.keymap.set("n", "<leader>tv", "<cmd>ToggleTerm direction=vertical<CR>", opts_silent)
+-      -- vim.keymap.set("n", "<leader>tt", "<cmd>ToggleTerm direction=tab<CR>", opts_silent)
+-    end,
+-  },
++            -- Si NO hubieras usado la tabla 'keys' de lazy.nvim para los atajos principales,
++            -- los definirías aquí también:
++            -- vim.keymap.set("n", "<leader>t", "<cmd>ToggleTerm<CR>", opts_silent)
++            -- vim.keymap.set("n", "<leader>th", "<cmd>ToggleTerm direction=horizontal<CR>", opts_silent)
++            -- vim.keymap.set("n", "<leader>tv", "<cmd>ToggleTerm direction=vertical<CR>", opts_silent)
++            -- vim.keymap.set("n", "<leader>tt", "<cmd>ToggleTerm direction=tab<CR>", opts_silent)
++        end,
++    },
+ }
+diff --git a/.config/nvim/lua/plugins/themes.lua b/.config/nvim/lua/plugins/themes.lua
+index c0b4657..fe5186a 100644
+--- a/.config/nvim/lua/plugins/themes.lua
++++ b/.config/nvim/lua/plugins/themes.lua
+@@ -1,11 +1,20 @@
+ -- lua/plugins/themes.lua
+ return {
+-  -- Temas que quieres tener disponibles para cambiar con :colorscheme
+-  { "dracula/vim",        name = "dracula",   lazy = true },
+-  { "tomasr/molokai",     name = "molokai",   lazy = true },
+-  { "altercation/vim-colors-solarized", name = "solarized", lazy = true },
+-  { "joshdick/onedark.vim", name = "onedark",   lazy = true },
+-  { "morhetz/gruvbox",    name = "gruvbox",   lazy = true },
+-  { "rose-pine/neovim",   name = "rose-pine", lazy = false, priority = 1000 }, -- Ejemplo si quieres rose-pine por defecto
+-   -- Catppuccin ya está en su propio archivo y se carga primero
++    -- Temas que quieres tener disponibles para cambiar con :colorscheme
++    {
++        "dracula/vim",
++        name = "dracula",
++        lazy = false,
++        priority = 1000,
++        config = function()
++            vim.cmd.colorscheme("dracula")
++        end,
++    },
++    -- Agregar config al theme que se quiere usar
++    { "tomasr/molokai",                   name = "molokai",    lazy = true },
++    { "altercation/vim-colors-solarized", name = "solarized",  lazy = true },
++    { "joshdick/onedark.vim",             name = "onedark",    lazy = true },
++    { "morhetz/gruvbox",                  name = "gruvbox",    lazy = true },
++    { "rose-pine/neovim",                 name = "rose-pine",  lazy = true },
++    { "catppuccin/nvim",                  name = "catppuccin", lazy = true },
+ }
+diff --git a/.config/nvim/lua/plugins/treesitter.lua b/.config/nvim/lua/plugins/treesitter.lua
+index 8ccdfe3..05f0936 100644
+--- a/.config/nvim/lua/plugins/treesitter.lua
++++ b/.config/nvim/lua/plugins/treesitter.lua
+@@ -1,14 +1,32 @@
++-- lua/plugins/treesitter.lua (AÑADIENDO RAINBOW DELIMITERS)
+ return {
+     {
+         "nvim-treesitter/nvim-treesitter",
+         build = ":TSUpdate",
++        event = { "BufReadPre", "BufNewFile" },
++        dependencies = {
++            "nvim-treesitter/playground",
++            "hiphish/rainbow-delimiters.nvim", -- <-- AÑADIDO
++        },
+         config = function()
+-            local config = require("nvim-treesitter.configs")
+-            config.setup({
++            local ts_configs = require("nvim-treesitter.configs")
++            ts_configs.setup({
++                ensure_installed = {
++                    -- tu lista de lenguajes
++                },
++                sync_install = false,
+                 auto_install = true,
+                 highlight = { enable = true },
+                 indent = { enable = true },
++                -- NO necesitas la sección 'rainbow' aquí para rainbow-delimiters
+             })
++
++            -- Configuración específica de rainbow-delimiters (OPCIONAL, usa defaults si no pones esto)
++            -- Debe hacerse DESPUÉS de cargar Treesitter
++            -- Podrías ponerlo en un `vim.defer_fn` o confiar en que se cargue por dependencia
++            pcall(require, "rainbow-delimiters.setup") -- Llama al setup del plugin de rainbow
+         end,
+     },
++    -- Ya está listado como dependencia arriba
++    -- { "hiphish/rainbow-delimiters.nvim" }
+ }
+diff --git a/.config/nvim/lua/plugins/trouble.lua b/.config/nvim/lua/plugins/trouble.lua
+index c6d92b8..b330705 100644
+--- a/.config/nvim/lua/plugins/trouble.lua
++++ b/.config/nvim/lua/plugins/trouble.lua
+@@ -1,25 +1,24 @@
+ -- lua/plugins/trouble.lua
+ return {
+-  {
+-    "folke/trouble.nvim",
+-    -- Asegúrate que devicons esté disponible
+-    dependencies = { "nvim-tree/nvim-web-devicons" },
+-    -- Carga bajo demanda con comandos o teclas
+-    cmd = { "TroubleToggle", "Trouble" },
+-    keys = {
+-       { "<leader>xx", "<cmd>TroubleToggle<cr>", desc = "Toggle Trouble" },
+-       { "<leader>xw", "<cmd>TroubleToggle workspace_diagnostics<cr>", desc = "Workspace Diagnostics" },
+-       { "<leader>xd", "<cmd>TroubleToggle document_diagnostics<cr>", desc = "Document Diagnostics" },
+-       { "<leader>xl", "<cmd>TroubleToggle loclist<cr>", desc = "Location List" },
+-       { "<leader>xq", "<cmd>TroubleToggle quickfix<cr>", desc = "Quickfix List" },
+-       { "gR", "<cmd>TroubleToggle lsp_references<cr>", desc = "LSP References" },
++    {
++        "folke/trouble.nvim",
++        -- Asegúrate que devicons esté disponible
++        dependencies = { "nvim-tree/nvim-web-devicons" },
++        -- Carga bajo demanda con comandos o teclas
++        cmd = { "TroubleToggle", "Trouble" },
++        keys = {
++            { "<leader>xx", "<cmd>TroubleToggle<cr>",                       desc = "Toggle Trouble" },
++            { "<leader>xw", "<cmd>TroubleToggle workspace_diagnostics<cr>", desc = "Workspace Diagnostics" },
++            { "<leader>xd", "<cmd>TroubleToggle document_diagnostics<cr>",  desc = "Document Diagnostics" },
++            { "<leader>xl", "<cmd>TroubleToggle loclist<cr>",               desc = "Location List" },
++            { "<leader>xq", "<cmd>TroubleToggle quickfix<cr>",              desc = "Quickfix List" },
++            { "gR",         "<cmd>TroubleToggle lsp_references<cr>",        desc = "LSP References" },
++        },
++        config = function()
++            require("trouble").setup({
++                -- Tu configuración de Trouble aquí (ej. iconos, etc.)
++                -- icons = false, -- ejemplo
++            })
++        end,
+     },
+-    config = function()
+-      require("trouble").setup({
+-        -- Tu configuración de Trouble aquí (ej. iconos, etc.)
+-        -- icons = false, -- ejemplo
+-      })
+-    end,
+-  },
+ }
+-
+diff --git a/.config/nvim/lua/plugins/ui.lua b/.config/nvim/lua/plugins/ui.lua
+index af951de..e28ba35 100644
+--- a/.config/nvim/lua/plugins/ui.lua
++++ b/.config/nvim/lua/plugins/ui.lua
+@@ -1,35 +1,34 @@
+-
+ -- lua/plugins/ui.lua
+ return {
+-  -- Notificaciones mejoradas
+-  {
+-    "rcarriga/nvim-notify",
+-    event = "VeryLazy",
+-    config = function()
+-      vim.notify = require("notify")
+-      -- Puedes configurar notify aquí si quieres
+-    end,
+-  },
+-  -- Reemplaza vim.ui.input y vim.ui.select
+-  { "stevearc/dressing.nvim", event = "VeryLazy" },
+-  -- Iconos (usados por lualine, trouble, etc.)
+-  { "echasnovski/mini.icons", event = "VeryLazy" },
+-  -- Cursor suave (efecto visual)
+-  {
+-    "gen740/SmoothCursor.nvim",
+-    event = "VeryLazy",
+-    config = function()
+-      require("smoothcursor").setup()
+-    end,
+-  },
+-  -- Líneas de indentación visuales
+-  {
+-    "lukas-reineke/indent-blankline.nvim",
+-    main = "ibl", -- Nombre principal del módulo
+-    event = "VeryLazy", -- O "BufReadPre" si quieres que aparezcan inmediatamente
+-    opts = {}, -- Usa opts para configuración simple o config = function() para compleja
+-    -- config = function()
+-    --   require("ibl").setup() -- Puedes poner config más detallada aquí
+-    -- end
+-  },
++    -- Notificaciones mejoradas
++    {
++        "rcarriga/nvim-notify",
++        event = "VeryLazy",
++        config = function()
++            vim.notify = require("notify")
++            -- Puedes configurar notify aquí si quieres
++        end,
++    },
++    -- Reemplaza vim.ui.input y vim.ui.select
++    { "stevearc/dressing.nvim", event = "VeryLazy" },
++    -- Iconos (usados por lualine, trouble, etc.)
++    { "echasnovski/mini.icons", event = "VeryLazy" },
++    -- Cursor suave (efecto visual)
++    {
++        "gen740/SmoothCursor.nvim",
++        event = "VeryLazy",
++        config = function()
++            require("smoothcursor").setup()
++        end,
++    },
++    -- Líneas de indentación visuales
++    {
++        "lukas-reineke/indent-blankline.nvim",
++        main = "ibl", -- Nombre principal del módulo
++        event = "VeryLazy", -- O "BufReadPre" si quieres que aparezcan inmediatamente
++        opts = {},    -- Usa opts para configuración simple o config = function() para compleja
++        -- config = function()
++        --   require("ibl").setup() -- Puedes poner config más detallada aquí
++        -- end
++    },
+ }
+diff --git a/.config/nvim/lua/plugins/undotree.lua b/.config/nvim/lua/plugins/undotree.lua
+index cb1c35a..1c9e371 100644
+--- a/.config/nvim/lua/plugins/undotree.lua
++++ b/.config/nvim/lua/plugins/undotree.lua
+@@ -1,24 +1,24 @@
+ -- Contenido para: lua/plugins/undotree.lua
+ return {
+-  {
+-    "mbbill/undotree",
+-    -- Carga perezosa: El plugin se cargará la primera vez que
+-    -- se ejecute el comando :UndotreeToggle (ya sea manualmente
+-    -- o a través del atajo de teclado).
+-    cmd = "UndotreeToggle",
+-    config = function()
+-      -- Tu atajo de teclado para mostrar/ocultar undotree
+-      vim.keymap.set("n", "<leader>u", ":UndotreeToggle<CR>", {
+-        desc = "Toggle Undotree", -- Descripción opcional para which-key u otros
+-        noremap = true,
+-        silent = true
+-      })
++    {
++        "mbbill/undotree",
++        -- Carga perezosa: El plugin se cargará la primera vez que
++        -- se ejecute el comando :UndotreeToggle (ya sea manualmente
++        -- o a través del atajo de teclado).
++        cmd = "UndotreeToggle",
++        config = function()
++            -- Tu atajo de teclado para mostrar/ocultar undotree
++            vim.keymap.set("n", "<leader>u", ":UndotreeToggle<CR>", {
++                desc = "Toggle Undotree", -- Descripción opcional para which-key u otros
++                noremap = true,
++                silent = true,
++            })
+ 
+-      -- (Opcional) Puedes configurar variables globales de undotree aquí si lo necesitas
+-      -- Ejemplo: vim.g.undotree_WindowLayout = 2 -- Cambia la disposición de la ventana
+-      -- Ejemplo: vim.g.undotree_SetFocusWhenToggle = 1 -- Pone el foco en la ventana de undotree al abrirla
+-    end,
+-    -- No necesitamos la tabla 'keys' explícitamente aquí porque 'cmd' ya maneja
+-    -- la carga perezosa cuando se invoca el comando desde el keymap.
+-  }
++            -- (Opcional) Puedes configurar variables globales de undotree aquí si lo necesitas
++            -- Ejemplo: vim.g.undotree_WindowLayout = 2 -- Cambia la disposición de la ventana
++            -- Ejemplo: vim.g.undotree_SetFocusWhenToggle = 1 -- Pone el foco en la ventana de undotree al abrirla
++        end,
++        -- No necesitamos la tabla 'keys' explícitamente aquí porque 'cmd' ya maneja
++        -- la carga perezosa cuando se invoca el comando desde el keymap.
++    },
+ }
+diff --git a/.config/nvim/lua/plugins/vim-test.lua b/.config/nvim/lua/plugins/vim-test.lua
+index f5da78e..3e9fde5 100644
+--- a/.config/nvim/lua/plugins/vim-test.lua
++++ b/.config/nvim/lua/plugins/vim-test.lua
+@@ -1,14 +1,14 @@
+ return {
+-	"vim-test/vim-test",
+-	dependencies = {
+-		"preservim/vimux",
+-	},
+-	config = function()
+-		vim.keymap.set("n", "<leader>T", ":TestNearest<CR>", {})
+-		vim.keymap.set("n", "<leader>Tf", ":TestFile<CR>", {})
+-		vim.keymap.set("n", "<leader>Ta", ":TestSuite<CR>", {})
+-		vim.keymap.set("n", "<leader>Tl", ":TestLast<CR>", {})
+-		vim.keymap.set("n", "<leader>Tg", ":TestVisit<CR>", {})
+-		vim.cmd("let test#strategy = 'vimux'")
+-	end,
++    "vim-test/vim-test",
++    dependencies = {
++        "preservim/vimux",
++    },
++    config = function()
++        vim.keymap.set("n", "<leader>T", ":TestNearest<CR>", {})
++        vim.keymap.set("n", "<leader>Tf", ":TestFile<CR>", {})
++        vim.keymap.set("n", "<leader>Ta", ":TestSuite<CR>", {})
++        vim.keymap.set("n", "<leader>Tl", ":TestLast<CR>", {})
++        vim.keymap.set("n", "<leader>Tg", ":TestVisit<CR>", {})
++        vim.cmd("let test#strategy = 'vimux'")
++    end,
+ }
+diff --git a/.config/nvim/lua/plugins/which-key.lua b/.config/nvim/lua/plugins/which-key.lua
+index 153d3e1..c0a7319 100644
+--- a/.config/nvim/lua/plugins/which-key.lua
++++ b/.config/nvim/lua/plugins/which-key.lua
+@@ -1,20 +1,20 @@
+ return {
+-  {
+-    "folke/which-key.nvim",
+-    event = "VeryLazy", -- Carga el plugin muy pronto, después de VimEnter
+-    config = function()
+-      -- Opciones de Vim relacionadas con el tiempo de espera para los mapeos
+-      vim.o.timeout = true
+-      vim.o.timeoutlen = 300 -- Tiempo en milisegundos para esperar la siguiente tecla
++    {
++        "folke/which-key.nvim",
++        event = "VeryLazy", -- Carga el plugin muy pronto, después de VimEnter
++        config = function()
++            -- Opciones de Vim relacionadas con el tiempo de espera para los mapeos
++            vim.o.timeout = true
++            vim.o.timeoutlen = 300 -- Tiempo en milisegundos para esperar la siguiente tecla
+ 
+-      -- Configuración de which-key
+-      require("which-key").setup({
+-        -- Puedes añadir tu configuración personalizada de which-key aquí dentro {}
+-        -- o dejarlo vacío {} para usar la configuración por defecto.
+-        -- Ejemplo:
+-        -- plugins = { spelling = true },
+-        -- window = { border = "single" },
+-      })
+-    end,
+-  },
++            -- Configuración de which-key
++            require("which-key").setup({
++                -- Puedes añadir tu configuración personalizada de which-key aquí dentro {}
++                -- o dejarlo vacío {} para usar la configuración por defecto.
++                -- Ejemplo:
++                -- plugins = { spelling = true },
++                -- window = { border = "single" },
++            })
++        end,
++    },
+ }
+diff --git a/.config/nvim/lua/vim-options.lua b/.config/nvim/lua/vim-options.lua
+index 38b297a..5cec6b3 100644
+--- a/.config/nvim/lua/vim-options.lua
++++ b/.config/nvim/lua/vim-options.lua
+@@ -7,11 +7,11 @@ vim.opt.shiftwidth = 4
+ vim.opt.expandtab = true
+ vim.opt.smartindent = true
+ vim.opt.termguicolors = true
+-vim.opt.clipboard = 'unnamedplus'
++vim.opt.clipboard = "unnamedplus"
+ vim.opt.scrolloff = 8
+ vim.opt.synmaxcol = 2000
+ vim.opt.cursorline = true
+-vim.opt.colorcolumn = '80'
++vim.opt.colorcolumn = "80"
+ 
+ vim.opt.swapfile = false
+ 
+@@ -20,4 +20,5 @@ vim.keymap.set("n", "<c-k>", ":wincmd k<CR>")
+ vim.keymap.set("n", "<c-j>", ":wincmd j<CR>")
+ vim.keymap.set("n", "<c-h>", ":wincmd h<CR>")
+ vim.keymap.set("n", "<c-l>", ":wincmd l<CR>")
++vim.keymap.set("i", "jj", "<Esc>")
+ vim.wo.number = true
