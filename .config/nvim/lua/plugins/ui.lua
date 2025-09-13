@@ -9,35 +9,24 @@ return {
             local original_notify = vim.notify
             local notify_plugin = require("notify")
 
+            -- Simplified approach: preserve the filtering chain
             vim.notify = function(msg, level, opts)
-                -- First run through our error suppression logic
-                if type(original_notify) == "function" then
-                    -- If original_notify doesn't display (returns early), respect that
-                    local should_suppress = false
-                    if type(msg) == "string" then
-                        local error_patterns = {
-                            "E5248.*Invalid character in group name",
-                            "BufWinLeave Autocommands",
-                            "BufModifiedSet Autocommands",
-                            "nvim_exec2.*Error executing lua callback",
-                            "attempt to index field 'cmd'",
-                            "Error opening file.*vim/_editor%.lua"
-                        }
-                        for _, pattern in ipairs(error_patterns) do
-                            if msg:find(pattern) then
-                                should_suppress = true
-                                break
-                            end
-                        end
-                    end
+                -- Save the current vim.notify (which will be this function)
+                local current_notify = vim.notify
 
-                    if should_suppress then
-                        return -- Suppress this message completely
-                    end
-                end
+                -- Temporarily replace vim.notify with our fancy notify plugin
+                -- This is what will get called if the message passes all filters
+                vim.notify = notify_plugin
 
-                -- If not suppressed, use the fancy notify plugin
-                return notify_plugin(msg, level, opts)
+                -- Call the original wrapper chain
+                -- If it returns early (suppressed), notify_plugin won't be called
+                -- If it passes through, notify_plugin will be called instead of the original
+                local result = original_notify(msg, level, opts)
+
+                -- Restore our wrapper function
+                vim.notify = current_notify
+
+                return result
             end
         end,
     },

@@ -11,11 +11,11 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- Core fixes - consolidated and necessary only
-require("disable-mason")          -- Disable Mason in favor of system LSPs
-require("silence-all-deprecations") -- Silence specific known deprecation warnings
-require("error-suppressor")       -- Intelligent error suppression for E5248
-require("fix-lsp-conflicts")      -- Fix LSP conflicts between plugins
+-- Core fixes - consolidated and necessary only (safe loading)
+pcall(require, "disable-mason")          -- Disable Mason in favor of system LSPs
+pcall(require, "silence-all-deprecations") -- Silence specific known deprecation warnings
+pcall(require, "error-suppressor")       -- Intelligent error suppression for E5248
+pcall(require, "fix-lsp-conflicts")      -- Fix LSP conflicts between plugins
 
 require("vim-options")
 require("lazy").setup("plugins")
