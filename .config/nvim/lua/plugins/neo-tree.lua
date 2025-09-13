@@ -5,44 +5,151 @@ return {
 		"nvim-lua/plenary.nvim",
 		"nvim-tree/nvim-web-devicons",
 		"MunifTanjim/nui.nvim",
-		-- Opcional: '3rd/image.nvim' si quieres previsualización de imágenes
 	},
+	cmd = "Neotree",
+	keys = {
+		{ "<leader>pv", "<cmd>Neotree filesystem toggle<cr>", desc = "Toggle NeoTree filesystem" },
+		{ "<leader>bf", "<cmd>Neotree buffers reveal float<cr>", desc = "NeoTree buffers" },
+	},
+	init = function()
+		-- Configuración inicial para evitar errores
+		vim.g.neo_tree_remove_legacy_commands = 1
+	end,
 	config = function()
-		-- Mantén tus mapeos de teclas
-		vim.keymap.set("n", "<leader>pv", ":Neotree filesystem reveal left<CR>", {}) -- Cambiado para que sea más específico
-		vim.keymap.set("n", "<leader>bf", ":Neotree buffers reveal float<CR>", {})
+		-- Configuración con manejo de errores
+		local status_ok, neo_tree = pcall(require, "neo-tree")
+		if not status_ok then
+			vim.notify("Neo-tree no se pudo cargar", vim.log.levels.ERROR)
+			return
+		end
 
-		-- Configura Neo-tree
-		require("neo-tree").setup({
-			-- Puedes añadir otras opciones generales aquí si quieres
-			close_if_last_window = true, -- Buena opción para cerrar neotree automáticamente
+		-- Asegurar que nvim-web-devicons esté disponible
+		local web_devicons_ok, web_devicons = pcall(require, "nvim-web-devicons")
+		if not web_devicons_ok then
+			vim.notify("nvim-web-devicons no está disponible", vim.log.levels.WARN)
+		end
 
+		neo_tree.setup({
+			close_if_last_window = true,
+			popup_border_style = "rounded",
+			enable_git_status = true,
+			enable_diagnostics = true,
+			use_popups_for_input = false,
+
+			-- Configuración segura del filesystem
 			filesystem = {
-				-- Opciones específicas para la vista del sistema de archivos
 				filtered_items = {
-					visible = true, -- Asegúrate de que la lógica de filtrado esté activa (es el valor por defecto)
-					-- =====> ESTA ES LA OPCIÓN CLAVE <=====
-					hide_dotfiles = false, -- Cambia a 'false' para MOSTRAR archivos/directorios ocultos (que empiezan por '.')
-					-- =====> ESTA ES LA OPCIÓN CLAVE <=====
-					hide_gitignored = true, -- Puedes mantener esto en 'true' si quieres seguir ocultando archivos de .gitignore
-					hide_hidden = false, -- Similar a hide_dotfiles, asegúrate de que esté en false.
-					-- never_show = { ".DS_Store", "thumbs.db" }, -- Opcional: lista de archivos que NUNCA quieres ver
+					visible = true,
+					hide_dotfiles = false,
+					hide_gitignored = false,
+					hide_hidden = false,
+					never_show = { ".DS_Store", "thumbs.db" },
 				},
-				follow_current_file = { -- Opcional: útil para que Neotree siga al archivo activo
+				follow_current_file = {
 					enabled = true,
+					leave_dirs_open = false,
 				},
-				-- Puedes añadir más configuraciones de filesystem aquí...
+				group_empty_dirs = false,
+				hijack_netrw_behavior = "open_default",
+				use_libuv_file_watcher = false, -- Deshabilitado para evitar errores
 			},
-			window = {
-				-- Configuraciones de la ventana de Neotree
-				mappings = {
-					["h"] = "parent_or_close_node", -- Cambiado para que 'h' cierre el nodo o suba al padre
-					["l"] = "child_or_open", -- Cambiado para que 'l' abra el nodo o entre en el directorio
-				},
-			},
-			-- Puedes configurar otras fuentes como 'buffers', 'git_status' aquí si las usas
-		})
 
-		print("Neo-tree configurado para mostrar archivos ocultos.") -- Mensaje de confirmación opcional
+			-- Configuración segura de la ventana
+			window = {
+				position = "left",
+				width = 30,
+				mapping_options = {
+					noremap = true,
+					nowait = true,
+				},
+				mappings = {
+					["<space>"] = {
+						"toggle_node",
+						nowait = false,
+					},
+					["<2-LeftMouse>"] = "open",
+					["<cr>"] = "open",
+					["<esc>"] = "cancel",
+					["P"] = { "toggle_preview", config = { use_float = true } },
+					["l"] = "focus_preview",
+					["S"] = "open_split",
+					["s"] = "open_vsplit",
+					["t"] = "open_tabnew",
+					["w"] = "open_with_window_picker",
+					["C"] = "close_node",
+					["z"] = "close_all_nodes",
+					["a"] = {
+						"add",
+						config = {
+							show_path = "none"
+						}
+					},
+					["A"] = "add_directory",
+					["d"] = "delete",
+					["r"] = "rename",
+					["y"] = "copy_to_clipboard",
+					["x"] = "cut_to_clipboard",
+					["p"] = "paste_from_clipboard",
+					["c"] = "copy",
+					["m"] = "move",
+					["q"] = "close_window",
+					["R"] = "refresh",
+					["?"] = "show_help",
+					["<"] = "prev_source",
+					[">"] = "next_source",
+					["i"] = "show_file_details",
+				}
+			},
+
+			-- Configuración por defecto ROBUSTA
+			default_component_configs = {
+				container = {
+					enable_character_fade = true
+				},
+				indent = {
+					indent_size = 2,
+					padding = 1,
+					with_markers = true,
+					indent_marker = "│",
+					last_indent_marker = "└",
+					highlight = "NeoTreeIndentMarker",
+					with_expanders = nil,
+					expander_collapsed = "",
+					expander_expanded = "",
+					expander_highlight = "NeoTreeExpander",
+				},
+				icon = {
+					folder_closed = "",
+					folder_open = "",
+					folder_empty = "󰜌",
+					folder_empty_open = "󰜌",
+					-- ICONO POR DEFECTO OBLIGATORIO - nunca vacío
+					default = "",
+					highlight = "NeoTreeFileIcon"
+				},
+				modified = {
+					symbol = "[+]",
+					highlight = "NeoTreeModified",
+				},
+				name = {
+					trailing_slash = false,
+					use_git_status_colors = true,
+					highlight = "NeoTreeFileName",
+				},
+				git_status = {
+					symbols = {
+						added     = "+",
+						modified  = "~",
+						deleted   = "-",
+						renamed   = "R",
+						untracked = "?",
+						ignored   = "!",
+						unstaged  = "U",
+						staged    = "S",
+						conflict  = "C",
+					}
+				},
+			},
+		})
 	end,
 }

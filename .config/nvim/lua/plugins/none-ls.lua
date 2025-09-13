@@ -1,68 +1,139 @@
--- Archivo: lua/plugins/none-ls.lua
+-- Configuración simplificada de none-ls que funciona inmediatamente
 return {
 	"nvimtools/none-ls.nvim",
 	dependencies = { "nvim-lua/plenary.nvim" },
+	event = { "BufReadPre", "BufNewFile" },
 	config = function()
 		local null_ls = require("null-ls")
 		local formatting = null_ls.builtins.formatting
 		local diagnostics = null_ls.builtins.diagnostics
+		local code_actions = null_ls.builtins.code_actions
 
 		null_ls.setup({
-			debounce = 250,
-			-- Fuentes para los lenguajes que usas (¡Instala las herramientas con Mason!)
+			debounce = 150,
+			debug = false,
+			-- Solo herramientas básicas que generalmente están disponibles
 			sources = {
-				-- === Formateadores ===
-				-- Lua
-				formatting.stylua,
-				-- Go (Elige uno o usa gopls)
-				formatting.gofmt,
-				-- formatting.goimports,
-				-- Kotlin
-				formatting.ktlint,
-				-- Java
-				formatting.google_java_format,
-				-- Web (JS/TS/HTML/CSS/JSON/YAML/MD...)
-				formatting.prettier.with({ -- Configuración extra opcional para prettier
-					-- extra_filetypes = { "toml" },
-					-- extra_args = { "--no-semi", "--single-quote" },
-				}),
-				-- SQL
-				formatting.sqlfluff.with({ -- Configuración extra opcional
-					-- extra_args = { "--dialect", "mysql" },
-				}),
-				-- C/C++ (Si aplica)
-				formatting.clang_format,
-				-- Shell (Si aplica)
-				-- formatting.shfmt,
+				-- === FORMATEADORES BÁSICOS ===
 
-				-- === Diagnósticos (Linters) ===
-				-- Go (Opcional si usas el LSP)
-				diagnostics.golangci_lint,
-				-- Docker
-				diagnostics.hadolint,
-				-- Swift
-				diagnostics.swiftlint,
-				diagnostics.erb_lint,
-				-- JS/TS (Opcional si usas eslint-lsp)
-				-- diagnostics.eslint_d,
+				-- C/C++ - clang-format (viene con Xcode)
+				formatting.clang_format.with({
+					extra_args = {
+						"--style={BasedOnStyle: llvm, IndentWidth: 4, ColumnLimit: 100}",
+					},
+					filetypes = { "c", "cpp", "objc", "objcpp" },
+				}),
+
+				-- Dart/Flutter - dart format (viene con Flutter SDK)
+				formatting.dart_format,
+
+				-- Lua - stylua (instalar con Mason)
+				formatting.stylua.with({
+					extra_args = { "--indent-type", "Spaces", "--indent-width", "4" },
+				}),
+
+				-- Web technologies - prettier (instalar con Mason)
+				formatting.prettier.with({
+					extra_filetypes = { "toml" },
+					extra_args = {
+						"--tab-width", "2",
+						"--semi", "true",
+						"--single-quote", "false",
+						"--trailing-comma", "es5"
+					},
+				}),
+
+				-- Git code actions (siempre disponible)
+				code_actions.gitsigns,
 			},
 
-			-- Configuración para formatear al guardar
+			-- Configuración conservadora para formatear al guardar
 			on_attach = function(client, bufnr)
 				if client.supports_method("textDocument/formatting") then
-					local format_augroup = vim.api.nvim_create_augroup("FormatOnSave", { clear = true })
-					vim.api.nvim_create_autocmd("BufWritePre", {
-						group = format_augroup,
-						buffer = bufnr,
-						callback = function()
-							vim.lsp.buf.format({ bufnr = bufnr, timeout_ms = 5000 })
-						end,
-					})
+					-- Solo auto-formatear archivos seguros
+					local safe_auto_format = {
+						"lua", "dart", "json"
+					}
+
+					local filetype = vim.bo[bufnr].filetype
+					if vim.tbl_contains(safe_auto_format, filetype) then
+						local format_augroup = vim.api.nvim_create_augroup("SafeAutoFormat_" .. bufnr, { clear = true })
+						vim.api.nvim_create_autocmd("BufWritePre", {
+							group = format_augroup,
+							buffer = bufnr,
+							callback = function()
+								-- Timeout corto para evitar bloqueos
+								pcall(function()
+									vim.lsp.buf.format({
+										bufnr = bufnr,
+										timeout_ms = 1000,
+										filter = function(client)
+											return client.name == "null-ls"
+										end
+									})
+								end)
+							end,
+						})
+					end
 				end
+
+				-- Keymaps seguros del buffer
+				local opts = { buffer = bufnr, silent = true }
+				vim.keymap.set("n", "<leader>f", function()
+					pcall(function()
+						vim.lsp.buf.format({
+							bufnr = bufnr,
+							timeout_ms = 3000,
+							async = false
+						})
+					end)
+				end, vim.tbl_extend("force", opts, { desc = "Format Buffer (Safe)" }))
 			end,
-			-- debug = true, -- Descomenta para logs detallados si algo falla
+
+			-- Configuración de seguridad
+			should_attach = function(bufnr)
+				-- No adjuntar a buffers muy grandes
+				local max_filesize = 50 * 1024 -- 50 KB
+				local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(bufnr))
+				if ok and stats and stats.size > max_filesize then
+					return false
+				end
+
+				-- No adjuntar a tipos de archivo problemáticos
+				local excluded_filetypes = { "help", "alpha", "dashboard", "neo-tree", "Trouble", "lazy" }
+				if vim.tbl_contains(excluded_filetypes, vim.bo[bufnr].filetype) then
+					return false
+				end
+
+				return true
+			end,
+
+			update_in_insert = false,
 		})
 
-		vim.keymap.set("n", "<leader>ff", vim.lsp.buf.format, { desc = "Format Buffer" })
+		-- Keymaps globales seguros
+		vim.keymap.set("n", "<leader>ff", function()
+			pcall(function()
+				vim.lsp.buf.format({ timeout_ms = 3000 })
+			end)
+		end, { desc = "Format Buffer (Safe)" })
+
+		-- Comando para verificar herramientas disponibles
+		vim.api.nvim_create_user_command("CheckFormatters", function()
+			local available = {}
+			local sources = null_ls.get_sources()
+
+			for _, source in ipairs(sources) do
+				if source.name then
+					table.insert(available, source.name)
+				end
+			end
+
+			if #available > 0 then
+				vim.notify("Available formatters: " .. table.concat(available, ", "), vim.log.levels.INFO)
+			else
+				vim.notify("No formatters currently loaded", vim.log.levels.WARN)
+			end
+		end, { desc = "Check available formatters" })
 	end,
 }

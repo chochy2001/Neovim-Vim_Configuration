@@ -12,7 +12,10 @@ return {
             local ts_configs = require("nvim-treesitter.configs")
             ts_configs.setup({
                 ensure_installed = {
-                    -- tu lista de lenguajes
+                    "lua", "vim", "vimdoc", "query", -- Nvim essentials
+                    "javascript", "typescript", "tsx", "html", "css", "json",
+                    "python", "go", "rust", "kotlin", "java", "swift",
+                    "markdown", "yaml", "toml", "dockerfile", "bash",
                 },
                 sync_install = false,
                 auto_install = true,

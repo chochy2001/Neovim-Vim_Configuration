@@ -7,7 +7,9 @@ return {
         lazy = false,
         priority = 1000,
         config = function()
-            vim.cmd.colorscheme("dracula")
+            pcall(function()
+                vim.cmd("colorscheme dracula")
+            end)
         end,
     },
     -- Agregar config al theme que se quiere usar
