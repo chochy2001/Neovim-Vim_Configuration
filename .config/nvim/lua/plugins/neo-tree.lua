@@ -11,12 +11,9 @@ return {
 		{ "<leader>pv", "<cmd>Neotree filesystem toggle<cr>", desc = "Toggle NeoTree filesystem" },
 		{ "<leader>bf", "<cmd>Neotree buffers reveal float<cr>", desc = "NeoTree buffers" },
 	},
-	init = function()
-		-- Configuración inicial para evitar errores
-		vim.g.neo_tree_remove_legacy_commands = 1
-	end,
 	config = function()
 		-- Configuración con manejo de errores
+		vim.g.neo_tree_remove_legacy_commands = 1
 		local status_ok, neo_tree = pcall(require, "neo-tree")
 		if not status_ok then
 			vim.notify("Neo-tree no se pudo cargar", vim.log.levels.ERROR)
