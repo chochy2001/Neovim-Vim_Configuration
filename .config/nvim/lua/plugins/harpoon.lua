@@ -2,7 +2,10 @@
 return {
     {
         "ThePrimeagen/harpoon",
-        branch = "harpoon2", -- Mantener la branch correcta
+        branch = "harpoon2", -- Usamos branch 'harpoon2' porque contiene la API moderna
+                            -- requerida por nuestra configuración. La versión v1 tiene
+                            -- API diferente e incompatible. Actualizar a tag específico
+                            -- cuando harpoon2 tenga release estable para evitar cambios.
         dependencies = { "nvim-lua/plenary.nvim" },
         -- Restaurar carga perezosa por teclas originales del usuario
         keys = {

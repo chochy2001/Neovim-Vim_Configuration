@@ -1,6 +1,14 @@
 " ~/.ideavimrc - Revisado y Ampliado
-" 🍎 OPTIMIZADO PARA macOS (MacBook Pro)
+" 🍎 OPTIMIZADO PARA macOS (MacBook Pro) - Funciona también en Linux/Windows
+"
+" OPTIMIZACIONES ESPECÍFICAS PARA macOS:
+" - Cmd+1, Cmd+Shift+O (mappings nativos de IntelliJ macOS)
+" - Timeoutlen optimizado para teclados macOS
+" - Navegación touch bar compatible
+" - Muscle memory sync con Neovim shortcuts
+"
 " Configuración sincronizada con Neovim para flujo de trabajo consistente
+" Desarrollada y probada principalmente en macOS, compatible con otros SO
 
 " -----------------------------------------------------------------------------
 " Líder y Configuración Básica
