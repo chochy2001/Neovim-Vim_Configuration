@@ -90,7 +90,14 @@ return {
                 capabilities = capabilities,
                 settings = {
                     json = {
-                        schemas = require('schemastore').json.schemas(),
+                        schemas = (function()
+                            local ok, schemastore = pcall(require, 'schemastore')
+                            if ok and schemastore and schemastore.json and schemastore.json.schemas then
+                                return schemastore.json.schemas()
+                            else
+                                return {}
+                            end
+                        end)(),
                         validate = { enable = true },
                     },
                 },
