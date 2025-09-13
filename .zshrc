@@ -28,7 +28,10 @@ export PATH=$JAVA_HOME/bin:$PATH
 
 alias unamios='cd /Users/jorgesalgadomiranda/Documents/Apps/TiendaUNAM/ios'
 alias unamandroid='cd /Users/jorgesalgadomiranda/Documents/Apps/TiendaUNAM/android-2023'
+alias unamweb='cd /Users/jorgesalgadomiranda/Documents/Apps/tienda_en_linea_unam'
 alias apps='cd "/Users/jorgesalgadomiranda/Documents/Apps"'
+alias menu='cd /Users/jorgesalgadomiranda/Documents/Apps/menuRestaurante'
+alias menuBack='cd /Users/jorgesalgadomiranda/Documents/Apps/CapmenuBack'
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -143,3 +146,6 @@ if [ -f '/Users/jorgesalgadomiranda/google-cloud-sdk/completion.zsh.inc' ]; then
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+# PATH is managed by NVM automatically - no need for hardcoded version
+export PATH="$HOME/bin:$PATH"
+export PATH="$PATH":"$HOME/.pub-cache/bin"
