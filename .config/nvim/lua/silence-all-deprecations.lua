@@ -4,11 +4,28 @@
 -- Guardar la función vim.deprecate original
 local original_deprecate = vim.deprecate
 
--- Reemplazar completamente vim.deprecate para silenciar todo
+-- Reemplazar vim.deprecate para silenciar SOLO deprecaciones específicas
 vim.deprecate = function(name, alternative, version, plugin, stacklevel)
-    -- Silenciar COMPLETAMENTE todos los warnings de deprecación
-    -- No hacer nada - esto efectivamente los silencia a todos
-    return
+    -- Silenciar SOLO deprecaciones específicas conocidas
+    local deprecation_patterns = {
+        "is deprecated",
+        "deprecated.*Use.*instead",
+        "start_client.*deprecated",
+        "buf_get_clients.*deprecated",
+        "nvim_buf_get_clients.*deprecated",
+        "vim%.lsp%.diagnostic"
+    }
+
+    if type(name) == "string" then
+        for _, pattern in ipairs(deprecation_patterns) do
+            if name:find(pattern) then
+                return -- Silenciar solo deprecaciones conocidas
+            end
+        end
+    end
+
+    -- Para otros casos, llamar a la función original
+    return original_deprecate(name, alternative, version, plugin, stacklevel)
 end
 
 -- Interceptar vim.notify SOLO para deprecaciones específicas
