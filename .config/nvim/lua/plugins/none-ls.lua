@@ -33,6 +33,8 @@ return {
 				}),
 
 				-- Web technologies - prettier (instalar con Mason)
+				-- NOTA: Usar configuración global. Para usar .prettierrc del proyecto,
+				-- comentar extra_args y prettier respetará archivos de configuración locales
 				formatting.prettier.with({
 					extra_filetypes = { "toml" },
 					extra_args = {
@@ -41,6 +43,8 @@ return {
 						"--single-quote", "false",
 						"--trailing-comma", "es5"
 					},
+					-- Alternativa: Sin extra_args permite que .prettierrc controle el formateo
+					-- extra_args = {},
 				}),
 
 				-- Git code actions (siempre disponible)
@@ -83,7 +87,7 @@ return {
 					pcall(function()
 						vim.lsp.buf.format({
 							bufnr = bufnr,
-							timeout_ms = 3000,
+							timeout_ms = 1500,
 							async = false
 						})
 					end)
@@ -114,7 +118,7 @@ return {
 		-- Keymaps globales seguros
 		vim.keymap.set("n", "<leader>ff", function()
 			pcall(function()
-				vim.lsp.buf.format({ timeout_ms = 3000 })
+				vim.lsp.buf.format({ timeout_ms = 1500 })
 			end)
 		end, { desc = "Format Buffer (Safe)" })
 

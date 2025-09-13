@@ -33,8 +33,8 @@ return {
                         {
                             icon = "6️⃣ ",
                             desc = " Edit Config           ",
-                            action = "edit ~/.config/nvim/",
-                        }, -- Asegúrate que esta ruta sea correcta para tu config de lazy
+                            action = "edit ~/.config/nvim/init.lua",
+                        }, -- Abre archivo de configuración principal
                         { icon = "7️⃣ ", desc = " Plugin Sync (Lazy)    ", action = "Lazy sync" }, -- Cambiado de PackerSync a Lazy sync
                         { icon = "8️⃣ ", desc = " LSP Installer (Mason) ", action = "Mason" },
                     },
@@ -56,7 +56,7 @@ return {
                     map(0, "n", "3", ":Telescope oldfiles<CR>", opts)
                     map(0, "n", "4", ":Neotree toggle<CR>", opts)
                     map(0, "n", "5", ":ToggleTerm<CR>", opts)
-                    map(0, "n", "6", ":edit ~/.config/nvim/<CR>", opts) -- Open config directory
+                    map(0, "n", "6", ":edit ~/.config/nvim/init.lua<CR>", opts) -- Open config file
                     map(0, "n", "7", ":Lazy sync<CR>", opts)            -- Cambiado de PackerSync
                     map(0, "n", "8", ":Mason<CR>", opts)
                 end,
