@@ -17,6 +17,13 @@ vim.notify = function(msg, level, opts)
 
         for _, pattern in ipairs(error_patterns) do
             if msg:find(pattern) then
+                -- Log errores suprimidos para debugging (opcional)
+                local log_file = vim.fn.stdpath("cache") .. "/suppressed_errors.log"
+                local f = io.open(log_file, "a")
+                if f then
+                    f:write(os.date("[%Y-%m-%d %H:%M:%S] ") .. "SUPPRESSED: " .. msg .. "\n")
+                    f:close()
+                end
                 return -- Silenciar SOLO el mensaje visual
             end
         end

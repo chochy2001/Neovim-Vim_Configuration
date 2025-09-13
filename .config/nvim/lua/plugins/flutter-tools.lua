@@ -7,6 +7,7 @@ return {
         dependencies = {
             "nvim-lua/plenary.nvim",
             "stevearc/dressing.nvim", -- UI opcional mejorada
+            "mfussenegger/nvim-dap", -- Requerido para debugging
         },
         config = function()
             require("flutter-tools").setup({
@@ -26,7 +27,12 @@ return {
                     run_via_dap = true, -- usar nvim-dap
                     exception_breakpoints = {},
                     register_configurations = function(paths)
-                        require("dap").configurations.dart = {
+                        local dap_ok, dap = pcall(require, "dap")
+                        if not dap_ok then
+                            vim.notify("nvim-dap not available for Flutter debugging", vim.log.levels.WARN)
+                            return
+                        end
+                        dap.configurations.dart = {
                             {
                                 type = "dart",
                                 request = "launch",
