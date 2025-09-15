@@ -1,8 +1,8 @@
 # 🧠 Neovim + IntelliJ Ultra Configuration | Configuración Ultra Completa
 
-> **EN**: Modern Neovim configuration with Lazy.nvim, native LSP, and 69+ optimized plugins for multi-language development (Flutter/Dart, Swift, Kotlin, C/C++, etc.) + synchronized IntelliJ keymaps. **🍎 Optimized for macOS (MacBook Pro)**.
+> **EN**: Modern Neovim configuration with Lazy.nvim, native LSP, and 47+ meticulously optimized plugins featuring 200+ synchronized commands for multi-language development (Flutter/Dart, Swift, Kotlin, C/C++, etc.) + complete IntelliJ IDEA keymaps synchronization. **🍎 Optimized for macOS (MacBook Pro)**.
 >
-> **ES**: Configuración moderna de Neovim con Lazy.nvim, LSP nativo, y más de 69 plugins optimizados para desarrollo en múltiples lenguajes + keymaps sincronizados con IntelliJ. **🍎 Optimizado para macOS (MacBook Pro)**.
+> **ES**: Configuración moderna de Neovim con Lazy.nvim, LSP nativo, y más de 47 plugins meticulosamente optimizados con 200+ comandos sincronizados para desarrollo en múltiples lenguajes + sincronización completa de keymaps con IntelliJ IDEA. **🍎 Optimizado para macOS (MacBook Pro)**.
 
 ---
 
@@ -246,6 +246,130 @@ cp ~/.config/nvim/.ideavimrc ~/
 
 ---
 
+### 💻 Terminal & Task Management | Terminal y Gestión de Tareas
+
+#### Neovim (toggleterm + overseer + code_runner)
+| Keymap | Command | EN Description | ES Descripción |
+|--------|---------|----------------|----------------|
+| `<leader>th` | `:ToggleTerm direction=horizontal` | Horizontal terminal | Terminal horizontal |
+| `<leader>tv` | `:ToggleTerm direction=vertical` | Vertical terminal | Terminal vertical |
+| `<leader>tt` | `:ToggleTerm direction=tab` | Terminal in tab | Terminal en pestaña |
+| `<leader>tf` | `:ToggleTerm direction=float` | Floating terminal | Terminal flotante |
+| `<leader>tg` | LazyGit terminal | Git interface | Interfaz Git |
+| `<leader>tn` | Node.js terminal | Node terminal | Terminal Node |
+| `<leader>tu` | Htop terminal | System monitor | Monitor sistema |
+| `<leader>tp` | Python terminal | Python REPL | REPL Python |
+| `<leader>tF` | Flutter terminal | Flutter console | Consola Flutter |
+
+#### Task Management (Overseer)
+| Keymap | Command | EN Description | ES Descripción |
+|--------|---------|----------------|----------------|
+| `<leader>oo` | `:OverseerToggle` | Toggle task list | Alternar lista tareas |
+| `<leader>or` | `:OverseerRun` | Run task | Ejecutar tarea |
+| `<leader>oi` | `:OverseerInfo` | Task info | Info de tarea |
+| `<leader>ob` | `:OverseerBuild` | Build project | Construir proyecto |
+
+#### Code Runner
+| Keymap | Command | EN Description | ES Descripción |
+|--------|---------|----------------|----------------|
+| `<leader>r` | `:RunCode` | Run current file | Ejecutar archivo actual |
+| `<leader>rf` | `:RunFile` | Run file | Ejecutar archivo |
+| `<leader>rp` | `:RunProject` | Run project | Ejecutar proyecto |
+| `<leader>rc` | `:RunClose` | Close runner | Cerrar ejecutor |
+
+#### IntelliJ IDEA (Built-in Terminal)
+| Keymap | Action | EN Description | ES Descripción |
+|--------|--------|----------------|----------------|
+| `<leader>tt` | `:action ActivateTerminalToolWindow` | Open terminal | Abrir terminal |
+| `<leader>rr` | `:action Run` | Run | Ejecutar |
+| `<leader>rb` | `:action BuildProject` | Build | Construir |
+
+---
+
+### 📁 Session & Workspace Management | Gestión de Sesiones y Workspace
+
+#### Neovim (persistence + project + winshift)
+| Keymap | Command | EN Description | ES Descripción |
+|--------|---------|----------------|----------------|
+| `<leader>qs` | Restore session | Restore session | Restaurar sesión |
+| `<leader>ql` | Restore last session | Restore last session | Restaurar última sesión |
+| `<leader>qd` | Don't save session | Don't save session | No guardar sesión |
+| `<leader>fp` | `:Telescope projects` | Find projects | Buscar proyectos |
+| `<leader>wm` | `:WinShift` | Move window | Mover ventana |
+| `<leader>ws` | `:WinShift swap` | Swap windows | Intercambiar ventanas |
+
+#### IntelliJ IDEA (Project Management)
+| Keymap | Action | EN Description | ES Descripción |
+|--------|--------|----------------|----------------|
+| `<leader>fp` | `:action ManageRecentProjects` | Recent projects | Proyectos recientes |
+| `<leader>wm` | `:action MoveEditorToOppositeTabGroup` | Move editor | Mover editor |
+| `<leader>ws` | `:action MoveTabToOppositeTabGroup` | Swap tab groups | Intercambiar grupos |
+
+---
+
+### 🤖 AI Development | Desarrollo con IA
+
+#### Neovim (GitHub Copilot)
+| Keymap | Command | EN Description | ES Descripción |
+|--------|---------|----------------|----------------|
+| `Tab` | Accept suggestion | Accept Copilot suggestion | Aceptar sugerencia Copilot |
+| `<C-]>` | Next suggestion | Next suggestion | Siguiente sugerencia |
+| `<C-[>` | Previous suggestion | Previous suggestion | Sugerencia anterior |
+| `<C-\>` | Dismiss suggestion | Dismiss suggestion | Descartar sugerencia |
+
+#### IntelliJ IDEA (GitHub Copilot Plugin)
+| Action | EN Description | ES Descripción |
+|--------|----------------|----------------|
+| Tab | Accept suggestion | Aceptar sugerencia |
+| Alt+] | Next suggestion | Siguiente sugerencia |
+| Alt+[ | Previous suggestion | Sugerencia anterior |
+| Esc | Dismiss | Descartar |
+
+---
+
+### 🔧 Advanced UI & Productivity | UI Avanzada y Productividad
+
+#### Neovim (trouble + zen-mode + undotree)
+| Keymap | Command | EN Description | ES Descripción |
+|--------|---------|----------------|----------------|
+| `<leader>xx` | `:TroubleToggle` | Toggle trouble list | Alternar lista problemas |
+| `<leader>xw` | `:TroubleToggle workspace_diagnostics` | Workspace diagnostics | Diagnósticos workspace |
+| `<leader>xd` | `:TroubleToggle document_diagnostics` | Document diagnostics | Diagnósticos documento |
+| `<leader>xl` | `:TroubleToggle loclist` | Location list | Lista ubicaciones |
+| `<leader>xq` | `:TroubleToggle quickfix` | Quickfix list | Lista quickfix |
+| `gR` | `:TroubleToggle lsp_references` | LSP references | Referencias LSP |
+| `<leader>zz` | `:ZenMode` | Focus mode | Modo concentración |
+| `<leader>u` | `:UndotreeToggle` | Undo history | Historial deshacer |
+
+#### IntelliJ IDEA (Problems & Focus)
+| Keymap | Action | EN Description | ES Descripción |
+|--------|--------|----------------|----------------|
+| `<leader>xo` | `:action ActivateProblemsViewToolWindow` | Open problems | Abrir problemas |
+| `<leader>xn` | `:action GotoNextError` | Next error | Siguiente error |
+| `<leader>xp` | `:action GotoPreviousError` | Previous error | Error anterior |
+| `<leader>u` | `:action LocalHistory.ShowHistory` | Local history | Historial local |
+
+---
+
+### 🍎 macOS Specific Navigation | Navegación Específica macOS
+
+#### Neovim (macOS optimized)
+| Keymap | Command | EN Description | ES Descripción |
+|--------|---------|----------------|----------------|
+| `<D-1>` | Focus Neo-tree | Focus project (Cmd+1) | Enfocar proyecto (Cmd+1) |
+| `<D-S-1>` | Toggle Neo-tree | Toggle project (Cmd+Shift+1) | Alternar proyecto (Cmd+Shift+1) |
+| `<D-S-o>` | `:Neotree filesystem reveal` | Reveal file (Cmd+Shift+O) | Revelar archivo (Cmd+Shift+O) |
+| `<C-1>` | Focus Neo-tree | Alternative focus (Ctrl+1) | Enfoque alternativo (Ctrl+1) |
+
+#### IntelliJ IDEA (Native macOS)
+| Native Shortcut | EN Description | ES Descripción |
+|-----------------|----------------|----------------|
+| `Cmd+1` | Focus Project Tool Window | Enfocar ventana proyecto |
+| `Cmd+Shift+1` | Toggle Project Tool Window | Alternar ventana proyecto |
+| `Cmd+Shift+O` | Navigate to File | Navegar a archivo |
+
+---
+
 ### 🎨 Formatting & Linting | Formateo y Linting
 
 #### Neovim (none-ls + LSP)
@@ -326,16 +450,37 @@ cp ~/.config/nvim/.ideavimrc ~/
 - **flutter-tools.nvim** - Integrated Flutter | Flutter integrado
 - **copilot.vim** - GitHub Copilot AI | IA GitHub Copilot
 
-### 🔧 Terminal & Testing | Terminal y Pruebas
-- **toggleterm.nvim** - Integrated terminal | Terminal integrada
+### 🔧 Terminal & Task Management | Terminal y Gestión de Tareas
+- **toggleterm.nvim** - Advanced integrated terminal | Terminal integrada avanzada
+- **overseer.nvim** - Task runner | Ejecutor de tareas
+- **code_runner.nvim** - Run code instantly | Ejecutar código al instante
 - **vim-test** - Testing framework | Framework de pruebas
 - **vimux** - Tmux integration | Integración con tmux
 
-### 📝 Utilities | Utilidades
+### 📝 Productivity & UI | Productividad e Interfaz
 - **trouble.nvim** - Problem list | Lista de problemas
 - **undotree** - Change history | Historial de cambios
 - **dashboard-nvim** - Start screen | Pantalla de inicio
 - **persistence.nvim** - Session persistence | Persistencia de sesiones
+- **project.nvim** - Project management | Gestión de proyectos
+- **winshift.nvim** - Window management | Gestión de ventanas
+- **zen-mode.nvim** - Focus mode | Modo concentración
+- **twilight.nvim** - Code highlighting | Resaltado de código
+- **nvim-notify** - Enhanced notifications | Notificaciones mejoradas
+- **dressing.nvim** - UI enhancements | Mejoras de interfaz
+- **smoothcursor.nvim** - Smooth cursor animation | Animación suave del cursor
+
+### 🎨 Enhanced Appearance | Apariencia Mejorada
+- **mini.icons** - Icon collection | Colección de iconos
+- **nvim-web-devicons** - File icons | Iconos de archivos
+- **indent-blankline.nvim** - Indentation guides | Guías de indentación
+- **rainbow-delimiters.nvim** - Colored delimiters | Delimitadores coloreados
+
+### 🔧 Development Tools | Herramientas de Desarrollo
+- **nvim-tmux-navigation** - Seamless navigation | Navegación fluida
+- **tagbar** - Code structure | Estructura de código
+- **vim-easymotion** - Enhanced movement | Movimiento mejorado
+- **schemastore.nvim** - JSON schema support | Soporte esquemas JSON
 
 ---
 

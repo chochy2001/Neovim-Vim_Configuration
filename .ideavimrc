@@ -501,6 +501,18 @@ nnoremap <leader>ws :action MoveTabToOppositeTabGroup<CR>
 nnoremap - :action ActivateProjectToolWindow<CR>
 " Oil.nvim equivalent - como Neovim -
 
+" Session Management Commands - SINCRONIZADO CON persistence.nvim
+nnoremap <leader>qs :action RestoreSession<CR>
+" Restore Session - como Neovim <leader>qs
+nnoremap <leader>ql :action RestoreLastSession<CR>
+" Restore Last Session - como Neovim <leader>ql
+nnoremap <leader>qd :action StopSession<CR>
+" Don't Save Session - como Neovim <leader>qd
+
+" Zen Mode / Focus Mode - SINCRONIZADO CON zen-mode.nvim
+nnoremap <leader>zz :action ToggleFullScreen<CR>
+" Zen Mode / Focus Mode - como Neovim <leader>zz
+
 " Additional Format Commands - SINCRONIZADO
 " Nota: <leader>f ya está configurado arriba
 nnoremap <leader>ff :action ReformatCode<CR>
