@@ -88,6 +88,8 @@ vnoremap <leader>U gU
 " -----------------------------------------------------------------------------
 nnoremap <leader>pf :action GotoFile<CR>
 " Buscar archivo por nombre
+nnoremap <leader>pe :action ActivateProjectToolWindow<CR>
+" Project Explore (Focus Neo-tree equivalent)
 nnoremap <leader>pg :action FindInPath<CR>
 " Buscar texto en proyecto (grep)
 nnoremap <leader>ps :action GotoSymbol<CR>
@@ -219,7 +221,9 @@ nnoremap <leader>td :action Vcs.ShowDiff<CR>
 nnoremap <leader>gg :action ActivateVersionControlToolWindow<CR>
 " Open Neogit (como Neovim)
 nnoremap <leader>gc :action CheckinProject<CR>
-" Neogit commit (como Neovim)
+" Fugitive commit (como Neovim - básico)
+nnoremap <leader>gcn :action CheckinProject<CR>
+" Neogit commit (como Neovim - avanzado)
 nnoremap <leader>gp :action Vcs.UpdateProject<CR>
 " Neogit pull (como Neovim)
 nnoremap <leader>gP :action Vcs.Push<CR>

@@ -12,7 +12,7 @@ return {
 		{ "<leader>bf", "<cmd>Neotree buffers reveal float<cr>", desc = "NeoTree buffers" },
 		-- IntelliJ-like navigation between tree and editor
 		{ "<C-S-o>", "<cmd>Neotree filesystem reveal<cr>", desc = "Reveal current file in tree" },
-		{ "<leader>pf", "<cmd>Neotree filesystem focus<cr>", desc = "Focus NeoTree" },
+		{ "<leader>pe", "<cmd>Neotree filesystem focus<cr>", desc = "Focus NeoTree (Project Explore)" },
 	},
 	config = function()
 		-- Configuración con manejo de errores
