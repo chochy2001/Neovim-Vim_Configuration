@@ -180,7 +180,7 @@ return {
                 },
             })
             vim.keymap.set("n", "<leader>gg", "<cmd>Neogit<CR>", { desc = "Open Neogit" })
-            vim.keymap.set("n", "<leader>gc", "<cmd>Neogit commit<CR>", { desc = "Neogit Commit" })
+            vim.keymap.set("n", "<leader>gcn", "<cmd>Neogit commit<CR>", { desc = "Neogit Commit" })
             vim.keymap.set("n", "<leader>gp", "<cmd>Neogit pull<CR>", { desc = "Neogit Pull" })
             vim.keymap.set("n", "<leader>gP", "<cmd>Neogit push<CR>", { desc = "Neogit Push" })
         end,

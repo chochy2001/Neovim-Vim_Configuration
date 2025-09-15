@@ -57,10 +57,11 @@ return {
             -- Keymaps básicos
             local opts = { silent = true }
             vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", opts)
-            vim.keymap.set("t", "<C-h>", "<C-\\><C-n><C-w>h", opts)
-            vim.keymap.set("t", "<C-j>", "<C-\\><C-n><C-w>j", opts)
-            vim.keymap.set("t", "<C-k>", "<C-\\><C-n><C-w>k", opts)
-            vim.keymap.set("t", "<C-l>", "<C-\\><C-n><C-w>l", opts)
+            -- Usar Alt+hjkl para evitar conflicto con nvim-tmux-navigation (<C-hjkl>)
+            vim.keymap.set("t", "<A-h>", "<C-\\><C-n><C-w>h", opts)
+            vim.keymap.set("t", "<A-j>", "<C-\\><C-n><C-w>j", opts)
+            vim.keymap.set("t", "<A-k>", "<C-\\><C-n><C-w>k", opts)
+            vim.keymap.set("t", "<A-l>", "<C-\\><C-n><C-w>l", opts)
 
             -- Terminales específicos para lenguajes
             local Terminal = require('toggleterm.terminal').Terminal
