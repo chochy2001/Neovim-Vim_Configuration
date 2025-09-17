@@ -16,9 +16,11 @@ vim.opt.colorcolumn = "80"
 vim.opt.swapfile = false
 
 -- Navigate vim panes better
-vim.keymap.set("n", "<c-k>", ":wincmd k<CR>")
-vim.keymap.set("n", "<c-j>", ":wincmd j<CR>")
-vim.keymap.set("n", "<c-h>", ":wincmd h<CR>")
-vim.keymap.set("n", "<c-l>", ":wincmd l<CR>")
+-- NOTA: Comentado para evitar conflicto con nvim-tmux-navigation
+-- que maneja la navegación de ventanas de manera más inteligente
+-- vim.keymap.set("n", "<c-k>", ":wincmd k<CR>")
+-- vim.keymap.set("n", "<c-j>", ":wincmd j<CR>")
+-- vim.keymap.set("n", "<c-h>", ":wincmd h<CR>")
+-- vim.keymap.set("n", "<c-l>", ":wincmd l<CR>")
 vim.keymap.set("i", "jj", "<Esc>")
 vim.wo.number = true

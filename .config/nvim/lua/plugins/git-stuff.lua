@@ -14,6 +14,13 @@ return {
         }
     },
 
+    -- vim-rhubarb para soporte de GitHub con fugitive
+    {
+        "tpope/vim-rhubarb",
+        dependencies = { "tpope/vim-fugitive" },
+        event = "VeryLazy",
+    },
+
     -- GitSigns mejorado con configuración completa
     {
         "lewis6991/gitsigns.nvim",
@@ -61,14 +68,14 @@ return {
             local gs = require("gitsigns")
             local opts = { silent = true }
 
-            -- Navigation
-            vim.keymap.set("n", "]c", function()
+            -- Navigation con leader
+            vim.keymap.set("n", "<leader>hn", function()
                 if vim.wo.diff then return "]c" end
                 vim.schedule(function() gs.next_hunk() end)
                 return "<Ignore>"
             end, vim.tbl_extend("force", opts, { expr = true, desc = "Git: Next Hunk" }))
 
-            vim.keymap.set("n", "[c", function()
+            vim.keymap.set("n", "<leader>hP", function()
                 if vim.wo.diff then return "[c" end
                 vim.schedule(function() gs.prev_hunk() end)
                 return "<Ignore>"
@@ -86,8 +93,8 @@ return {
             vim.keymap.set("n", "<leader>hd", gs.diffthis, vim.tbl_extend("force", opts, { desc = "Git: Diff This" }))
             vim.keymap.set("n", "<leader>td", gs.toggle_deleted, vim.tbl_extend("force", opts, { desc = "Git: Toggle Deleted" }))
 
-            -- Text object
-            vim.keymap.set({'o', 'x'}, 'ih', ':<C-U>Gitsigns select_hunk<CR>')
+            -- Text object con leader (para visual mode)
+            vim.keymap.set({'o', 'x'}, '<leader>ih', ':<C-U>Gitsigns select_hunk<CR>', { desc = "Git: Select Hunk" })
         end,
     },
 
@@ -180,7 +187,7 @@ return {
                 },
             })
             vim.keymap.set("n", "<leader>gg", "<cmd>Neogit<CR>", { desc = "Open Neogit" })
-            vim.keymap.set("n", "<leader>gc", "<cmd>Neogit commit<CR>", { desc = "Neogit Commit" })
+            vim.keymap.set("n", "<leader>gcn", "<cmd>Neogit commit<CR>", { desc = "Neogit Commit" })
             vim.keymap.set("n", "<leader>gp", "<cmd>Neogit pull<CR>", { desc = "Neogit Pull" })
             vim.keymap.set("n", "<leader>gP", "<cmd>Neogit push<CR>", { desc = "Neogit Push" })
         end,
@@ -208,8 +215,8 @@ return {
             vim.keymap.set('n', '<leader>ct', '<Plug>(git-conflict-theirs)', { desc = "Git Conflict: Choose Theirs" })
             vim.keymap.set('n', '<leader>cb', '<Plug>(git-conflict-both)', { desc = "Git Conflict: Choose Both" })
             vim.keymap.set('n', '<leader>c0', '<Plug>(git-conflict-none)', { desc = "Git Conflict: Choose None" })
-            vim.keymap.set('n', ']x', '<Plug>(git-conflict-prev-conflict)', { desc = "Git Conflict: Previous" })
-            vim.keymap.set('n', '[x', '<Plug>(git-conflict-next-conflict)', { desc = "Git Conflict: Next" })
+            vim.keymap.set('n', '<leader>cp', '<Plug>(git-conflict-prev-conflict)', { desc = "Git Conflict: Previous" })
+            vim.keymap.set('n', '<leader>cn', '<Plug>(git-conflict-next-conflict)', { desc = "Git Conflict: Next" })
         end
     },
 }

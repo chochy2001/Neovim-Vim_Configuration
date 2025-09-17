@@ -11,8 +11,8 @@ return {
 		{ "<leader>pv", "<cmd>Neotree filesystem toggle<cr>", desc = "Toggle NeoTree filesystem" },
 		{ "<leader>bf", "<cmd>Neotree buffers reveal float<cr>", desc = "NeoTree buffers" },
 		-- IntelliJ-like navigation between tree and editor
-		{ "<C-S-o>", "<cmd>Neotree filesystem reveal<cr>", desc = "Reveal current file in tree" },
-		{ "<leader>pf", "<cmd>Neotree filesystem focus<cr>", desc = "Focus NeoTree" },
+		{ "<leader>fr", "<cmd>Neotree filesystem reveal<cr>", desc = "Reveal current file in tree" },
+		{ "<leader>pe", "<cmd>Neotree filesystem focus<cr>", desc = "Focus NeoTree (Project Explore)" },
 	},
 	config = function()
 		-- Configuración con manejo de errores
@@ -71,7 +71,7 @@ return {
 					["<cr>"] = "open",
 					["<esc>"] = "cancel",
 					-- IntelliJ-like navigation
-					["<C-l>"] = "focus_preview", -- Focus back to editor
+					["<leader>fe"] = "focus_preview", -- Focus back to editor
 					["o"] = "open",
 					["P"] = { "toggle_preview", config = { use_float = true } },
 					["l"] = "focus_preview",
@@ -155,28 +155,29 @@ return {
 			},
 		})
 
-		-- Keymaps adicionales para navegación tipo IntelliJ (macOS optimized)
-		-- Nota: Optimizado para MacBook Pro con teclado US/Spanish
-		vim.keymap.set("n", "<D-1>", "<cmd>Neotree filesystem focus<cr>", { desc = "Focus NeoTree (Cmd+1)" })
-		vim.keymap.set("n", "<D-S-1>", "<cmd>Neotree filesystem toggle<cr>", { desc = "Toggle NeoTree (Cmd+Shift+1)" })
-		-- Alternativa con Ctrl para usuarios que prefieren Ctrl
-		vim.keymap.set("n", "<C-1>", "<cmd>Neotree filesystem focus<cr>", { desc = "Focus NeoTree (Ctrl+1)" })
+		-- Keymaps adicionales para navegación universal (compatible con todas las terminales)
+		-- Alternativas universales sin dependencia de macOS
+		vim.keymap.set("n", "<leader>1", "<cmd>Neotree filesystem focus<cr>", { desc = "Focus NeoTree (Leader+1)" })
+		vim.keymap.set("n", "<leader>pf", "<cmd>Neotree filesystem focus<cr>", { desc = "Project Focus" })
 
-		-- Keymap para revelar archivo actual en el árbol (macOS optimized)
-		vim.keymap.set("n", "<leader>fr", "<cmd>Neotree filesystem reveal<cr>", { desc = "Reveal file in tree" })
-		-- Equivalente a Cmd+Shift+O en IntelliJ para macOS
-		vim.keymap.set("n", "<D-S-o>", "<cmd>Neotree filesystem reveal<cr>", { desc = "Reveal file (Cmd+Shift+O)" })
+		-- Keymap para revelar archivo actual en el árbol (ya existe en keys arriba)
 
-		-- Auto-comandos para mejorar la navegación
-		vim.api.nvim_create_autocmd("BufEnter", {
+		-- Auto-comandos para mejorar la navegación (versión segura)
+		vim.api.nvim_create_autocmd("FileType", {
 			group = vim.api.nvim_create_augroup("NeotreeNavigation", { clear = true }),
-			pattern = "*",
-			callback = function()
-				-- Si estamos en neo-tree, mapear teclas para volver al editor
-				if vim.bo.filetype == "neo-tree" then
-					vim.keymap.set("n", "<Tab>", "<C-w>l", { buffer = true, desc = "Focus editor" })
-					vim.keymap.set("n", "<S-Tab>", "<C-w>h", { buffer = true, desc = "Focus tree" })
+			pattern = "neo-tree",
+			callback = function(ev)
+				-- Verificar que el buffer es válido
+				if not vim.api.nvim_buf_is_valid(ev.buf) then
+					return
 				end
+
+				-- Solo mapear en buffers de neo-tree usando leader
+				local opts = { buffer = ev.buf, silent = true, noremap = true }
+				pcall(function()
+					vim.keymap.set("n", "<leader>we", "<C-w>l", vim.tbl_extend("force", opts, { desc = "Window: Focus editor" }))
+					vim.keymap.set("n", "<leader>wt", "<C-w>h", vim.tbl_extend("force", opts, { desc = "Window: Focus tree" }))
+				end)
 			end,
 		})
 

@@ -24,34 +24,22 @@ return {
                 },
             })
             local builtin = require("telescope.builtin")
-            vim.keymap.set("n", "<leader>pf", builtin.find_files, {})
-            vim.keymap.set("n", "<leader>pg", builtin.live_grep, {})
-            vim.keymap.set("n", "<leader><leader>", builtin.oldfiles, {})
+            -- Categoria Find/Files unificada con prefijo <leader>f*
+            vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = "Find Files" })
+            vim.keymap.set("n", "<leader>fg", builtin.live_grep, { desc = "Find Grep" })
+            vim.keymap.set("n", "<leader>fo", builtin.oldfiles, { desc = "Find Old Files" })
+            vim.keymap.set("n", "<leader>fb", builtin.buffers, { desc = "Find Buffers" })
+            vim.keymap.set("n", "<leader>fh", builtin.help_tags, { desc = "Find Help" })
+            vim.keymap.set("n", "<leader>fc", builtin.commands, { desc = "Find Commands" })
+            vim.keymap.set("n", "<leader>fk", builtin.keymaps, { desc = "Find Keymaps" })
 
-            -- Double Shift to open file finder (like IntelliJ)
-            -- Using a more reliable approach with double tap detection
-            local function setup_double_shift()
-                local shift_pressed_time = 0
-                local double_shift_timeout = 300 -- milliseconds
+            -- Alternativas de acceso rápido con leader
+            vim.keymap.set("n", "<leader><leader>", builtin.find_files, { desc = "Quick Find Files" })
+            vim.keymap.set("n", "<leader>fd", builtin.find_files, { desc = "Find Files (duplicate)" })
 
-                vim.keymap.set('n', '<S-Space>', function()
-                    local current_time = vim.fn.reltime()
-                    local time_diff = vim.fn.reltimefloat(vim.fn.reltime(shift_pressed_time, current_time)) * 1000
-
-                    if time_diff < double_shift_timeout then
-                        -- Double shift detected, open file finder
-                        builtin.find_files()
-                    else
-                        -- Single shift, just update the time
-                        shift_pressed_time = current_time
-                    end
-                end, { desc = "Double Shift to find files" })
-            end
-
-            -- Alternative simpler approach: use a custom sequence
-            vim.keymap.set("n", "<leader><leader>f", builtin.find_files, { desc = "Quick find files (Double Leader + f)" })
-            -- Even simpler: use double leader as it's already mapped but add 'f' for files
-            vim.keymap.set("n", ",,", builtin.find_files, { desc = "Quick find files (Double comma)" })
+            -- Mappings adicionales que funcionan bien
+            vim.keymap.set("n", "<leader>.", builtin.find_files, { desc = "Quick Find Files" })
+            vim.keymap.set("n", ",,", builtin.find_files, { desc = "Quick Find Files" })
 
             require("telescope").load_extension("ui-select")
         end,
