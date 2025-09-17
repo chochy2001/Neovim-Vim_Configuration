@@ -9,8 +9,8 @@ return {
         dependencies = { "nvim-lua/plenary.nvim" },
         -- Restaurar carga perezosa por teclas originales del usuario
         keys = {
-            { "<leader>a", desc = "Harpoon: Add File" },
-            { "<leader>h", desc = "Harpoon: Toggle UI" },
+            { "<leader>ma", desc = "Harpoon: Add File" },
+            { "<leader>mm", desc = "Harpoon: Toggle UI" },
             { "<leader>1", desc = "Harpoon: Go To 1" },
             { "<leader>2", desc = "Harpoon: Go To 2" },
             { "<leader>3", desc = "Harpoon: Go To 3" },
@@ -20,8 +20,8 @@ return {
             { "<leader>7", desc = "Harpoon: Go To 7" },
             { "<leader>8", desc = "Harpoon: Go To 8" },
             { "<leader>9", desc = "Harpoon: Go To 9" },
-            { "<C-S-P>",   desc = "Harpoon: Previous" },
-            { "<C-S-N>",   desc = "Harpoon: Next" },
+            { "<leader>mp", desc = "Harpoon: Previous" },
+            { "<leader>mn", desc = "Harpoon: Next" },
         },
         config = function()
             -- Requerir harpoon aquí
@@ -35,17 +35,17 @@ return {
             -- Opciones comunes para los mapeos (noremap=true es default en lua)
             local opts = { silent = true }
 
-            -- Añadir archivo
-            map("n", "<leader>a", function()
+            -- Añadir archivo (cambiado a <leader>ma para categoría Marks)
+            map("n", "<leader>ma", function()
                 -- Obtener objeto lista y llamar a su método :add
                 harpoon:list():add()
             end, { desc = "Harpoon: Add File", silent = true }) -- Añadido silent=true
 
-            -- Mostrar/ocultar menú (con <C-h>)
-            map("n", "<leader>h", function()
+            -- Mostrar/ocultar menú (cambiado a <leader>mm para categoría Marks)
+            map("n", "<leader>mm", function()
                 -- Obtener objeto lista y pasarlo a toggle_quick_menu
                 harpoon.ui:toggle_quick_menu(harpoon:list())
-            end, { desc = "Harpoon: Toggle UI", silent = true }) -- Añadido silent=true
+            end, { desc = "Harpoon: Toggle UI", silent = true })
 
             -- Seleccionar archivos 1-9
             map("n", "<leader>1", function()
@@ -85,11 +85,11 @@ return {
             end, { desc = "Harpoon: Go To 9", silent = true })
 
             -- Navegar anterior/siguiente
-            map("n", "<C-S-P>", function()
+            map("n", "<leader>mp", function()
                 harpoon:list():prev()
             end, { desc = "Harpoon: Previous", silent = true })
 
-            map("n", "<C-S-N>", function()
+            map("n", "<leader>mn", function()
                 harpoon:list():next()
             end, { desc = "Harpoon: Next", silent = true })
         end,

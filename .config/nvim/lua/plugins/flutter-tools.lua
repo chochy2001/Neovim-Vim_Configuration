@@ -10,7 +10,14 @@ return {
             "mfussenegger/nvim-dap", -- Requerido para debugging
         },
         config = function()
-            require("flutter-tools").setup({
+            -- Configuración segura de flutter-tools con manejo de errores
+            local ok, flutter_tools = pcall(require, "flutter-tools")
+            if not ok then
+                vim.notify("flutter-tools.nvim no se pudo cargar", vim.log.levels.WARN)
+                return
+            end
+
+            flutter_tools.setup({
                 ui = {
                     border = "rounded",
                     notification_style = "nvim-notify",
@@ -53,8 +60,8 @@ return {
                         }
                     end,
                 },
-                flutter_path = nil, -- Detecta automáticamente
-                flutter_lookup_cmd = "which flutter", -- comando para encontrar flutter
+                flutter_path = "/Users/jorgesalgadomiranda/development/flutter/bin/flutter", -- Ruta específica
+                flutter_lookup_cmd = nil, -- Usar ruta específica en lugar de which
                 root_patterns = { ".git", "pubspec.yaml" },
                 fvm = false, -- true si usas Flutter Version Management
                 widget_guides = {
@@ -79,45 +86,14 @@ return {
                     auto_open = false,
                 },
                 lsp = {
-                    color = { -- color de widgets Flutter
-                        enabled = true,
-                        background = false,
-                        background_color = nil,
-                        foreground = false,
-                        virtual_text = true,
-                        virtual_text_str = "■",
+                    -- COMPLETAMENTE DESHABILITADO - usamos configuración manual en lsp-config.lua
+                    -- Esto evita conflictos de transport y múltiples clientes LSP
+                    enable = false,
+                    auto_start = false,
+                    color = {
+                        enabled = false,
                     },
-                    on_attach = function(_, bufnr)
-                        -- Keymaps específicos para Flutter cuando LSP se adjunta
-                        local opts = { buffer = bufnr, silent = true }
-                        vim.keymap.set("n", "<leader>Fo", "<cmd>FlutterOutlineToggle<cr>",
-                            vim.tbl_extend("force", opts, { desc = "Flutter: Toggle Outline" }))
-                        vim.keymap.set("n", "<leader>Fr", "<cmd>FlutterReload<cr>",
-                            vim.tbl_extend("force", opts, { desc = "Flutter: Hot Reload" }))
-                        vim.keymap.set("n", "<leader>FR", "<cmd>FlutterRestart<cr>",
-                            vim.tbl_extend("force", opts, { desc = "Flutter: Hot Restart" }))
-                        vim.keymap.set("n", "<leader>Fd", "<cmd>FlutterDevTools<cr>",
-                            vim.tbl_extend("force", opts, { desc = "Flutter: Open DevTools" }))
-                        vim.keymap.set("n", "<leader>Fc", "<cmd>FlutterLogClear<cr>",
-                            vim.tbl_extend("force", opts, { desc = "Flutter: Clear Log" }))
-                        vim.keymap.set("n", "<leader>Fq", "<cmd>FlutterQuit<cr>",
-                            vim.tbl_extend("force", opts, { desc = "Flutter: Quit" }))
-                    end,
-                    capabilities = require("cmp_nvim_lsp").default_capabilities(),
-                    -- settings para el LSP de Dart
-                    settings = {
-                        showTodos = true,
-                        completeFunctionCalls = true,
-                        analysisExcludedFolders = {
-                            vim.fn.expand("$HOME/AppData/Local/Pub/Cache"),
-                            vim.fn.expand("$HOME/.pub-cache"),
-                            vim.fn.expand("/opt/homebrew"),
-                            vim.fn.expand("$HOME/tools/flutter"),
-                        },
-                        renameFilesWithClasses = "prompt",
-                        enableSnippets = true,
-                        updateImportsOnRename = true,
-                    }
+                    -- Sin configuración on_attach ya que LSP está deshabilitado
                 }
             })
 

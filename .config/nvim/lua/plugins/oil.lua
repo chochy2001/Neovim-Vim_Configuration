@@ -44,12 +44,12 @@ return {
             keymaps = {
                 ["g?"] = "actions.show_help",
                 ["<CR>"] = "actions.select",
-                ["<C-s>"] = "actions.select_vsplit",
-                ["<C-h>"] = "actions.select_split",
+                ["sv"] = "actions.select_vsplit",
+                ["sh"] = "actions.select_split",
                 ["<C-t>"] = "actions.select_tab",
                 ["<C-p>"] = "actions.preview",
                 ["<C-c>"] = "actions.close",
-                ["<C-l>"] = "actions.refresh",
+                ["gr"] = "actions.refresh",
                 ["-"] = "actions.parent",
                 ["_"] = "actions.open_cwd",
                 ["`"] = "actions.cd",
@@ -79,13 +79,21 @@ return {
             return
         end
 
-        -- Keymap con manejo de errores
-        vim.keymap.set("n", "-", function()
+        -- Keymap con manejo de errores usando leader
+        vim.keymap.set("n", "<leader>-", function()
             local toggle_ok = pcall(oil.toggle_float)
             if not toggle_ok then
                 vim.notify("Error abriendo Oil.nvim", vim.log.levels.ERROR)
             end
-        end, { desc = "Open parent directory" })
+        end, { desc = "Oil: Open parent directory" })
+
+        -- Alternativa más clara sin conflictos
+        vim.keymap.set("n", "<leader>oe", function()
+            local toggle_ok = pcall(oil.toggle_float)
+            if not toggle_ok then
+                vim.notify("Error abriendo Oil.nvim", vim.log.levels.ERROR)
+            end
+        end, { desc = "Oil: Open File Explorer" })
 
         print("✅ Oil.nvim configurado correctamente")
     end,

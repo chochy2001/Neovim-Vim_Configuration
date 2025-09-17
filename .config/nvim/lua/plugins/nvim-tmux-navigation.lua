@@ -1,10 +1,8 @@
 return {
     "alexghergh/nvim-tmux-navigation",
+    enabled = false, -- Deshabilitado para evitar conflictos de Control
     config = function()
-        require("nvim-tmux-navigation").setup({})
-        vim.keymap.set("n", "<C-h>", "<Cmd>NvimTmuxNavigateLeft<CR>", {})
-        vim.keymap.set("n", "<C-j>", "<Cmd>NvimTmuxNavigateDown<CR>", {})
-        vim.keymap.set("n", "<C-k>", "<Cmd>NvimTmuxNavigateUp<CR>", {})
-        vim.keymap.set("n", "<C-l>", "<Cmd>NvimTmuxNavigateRight<CR>", {})
+        -- Plugin deshabilitado - usar <leader>w* para navegación de ventanas
+        -- Los keymaps están en terminal.lua con leader
     end,
 }
