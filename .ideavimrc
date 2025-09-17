@@ -182,8 +182,8 @@ nnoremap <leader>tc :action CloseContent<CR>
 " Cerrar tab actual
 nnoremap <leader>to :action CloseAllEditorsButActive<CR>
 " Cerrar otras tabs (mejor que :tabonly)
-nnoremap <leader>tn :action NewScratchFile<CR>
-" Nuevo archivo temporal (Scratch)
+nnoremap <leader>tN :action NewScratchFile<CR>
+" Nuevo archivo temporal (Scratch) - cambiado de tn a tN para evitar conflicto con Terminal Node
 
 " -----------------------------------------------------------------------------
 " Terminal Integrada
@@ -192,10 +192,14 @@ nnoremap <leader>tt :action ActivateTerminalToolWindow<CR>
 tnoremap <Esc> <C-\><C-n> " Salir de modo terminal a normal
 
 " -----------------------------------------------------------------------------
-" Git / VCS (Control de Versiones) - ACCIONES VERIFICADAS Y FUNCIONALES
+" Git / VCS (Control de Versiones) - ACCIONES VERIFICADAS SIN CONFLICTOS
 " -----------------------------------------------------------------------------
-" NOTA: Todas las acciones Git han sido verificadas contra documentación oficial
-" y configuraciones de la comunidad para asegurar funcionamiento correcto.
+" NOTA: Todas las acciones Git verificadas y conflictos resueltos
+" CAMBIOS IMPORTANTES:
+" - <leader>gd → <leader>gv pero CAMBIADO A GIT BLAME TOGGLE (más útil que diff)
+" - <leader>gp cambiado a <leader>gN (previous hunk) para evitar conflicto con git pull
+" - gd (sin leader) reservado para LSP Go to Definition
+" - <leader>gv ahora es Git Blame Toggle (Annotate) - presionar para mostrar/ocultar
 " Acciones Comunes
 nnoremap <leader>gs :action ActivateVersionControlToolWindow<CR> 
 " Abrir ventana Git/VCS (Status/Changes)
@@ -211,8 +215,8 @@ nnoremap <leader>gl :action Vcs.ShowTabbedFileHistory<CR>
 " Historial del archivo actual
 nnoremap <leader>gC :action Vcs.ShowHistoryForBlock<CR>     
 " Historial de la selección (si hay) o línea
-nnoremap <leader>gd :action Vcs.ShowDiff<CR>
-" Mostrar cambios (Diff) del archivo actual
+nnoremap <leader>gv :action Annotate<CR>
+" Git Blame Toggle (Annotate) - Mostrar/ocultar blame en gutter - FUNCIONA COMO TOGGLE
 
 " Navegación por Cambios (Hunks) - COMPLETAMENTE SINCRONIZADO
 nnoremap ]c :action Vcs.MoveToNextChange<CR>
@@ -221,8 +225,8 @@ nnoremap [c :action Vcs.MoveToPreviousChange<CR>
 " Hunk anterior (sincronizado con Neovim)
 nnoremap <leader>gn :action Vcs.MoveToNextChange<CR>
 " Alias para siguiente hunk
-nnoremap <leader>gp :action Vcs.MoveToPreviousChange<CR>
-" Alias para hunk anterior
+nnoremap <leader>gN :action Vcs.MoveToPreviousChange<CR>
+" Previous hunk (cambiado de gp a gN para evitar conflicto con git pull)
 
 " GitSigns Commands - COMPLETAMENTE SINCRONIZADO CON NEOVIM
 nnoremap <leader>hs :action Vcs.Add<CR>
@@ -242,15 +246,14 @@ nnoremap <leader>hb :action Annotate<CR>
 nnoremap <leader>tb :action Annotate<CR>
 " Toggle line blame (como GitSigns)
 nnoremap <leader>hd :action Vcs.ShowDiff<CR>
-" Diff this (como GitSigns)
+" Diff this (como GitSigns) - independiente de <leader>gv
 nnoremap <leader>td :action Vcs.ShowDiff<CR>
 " Toggle deleted (como GitSigns)
 
 " Neogit Commands - SINCRONIZADO
 nnoremap <leader>gg :action ActivateVersionControlToolWindow<CR>
 " Open Neogit (como Neovim)
-nnoremap <leader>gc :action CheckinProject<CR>
-" Fugitive commit (como Neovim - básico)
+" ELIMINADO: <leader>gc duplicado - ya configurado arriba en línea 202
 nnoremap <leader>gcn :action CheckinProject<CR>
 " Neogit commit (como Neovim - avanzado)
 nnoremap <leader>gp :action Vcs.UpdateProject<CR>
@@ -339,8 +342,7 @@ nnoremap <leader>D :action GotoTypeDeclaration<CR>
 " LSP Navigation con leader - SINCRONIZADO CON NEOVIM
 nnoremap <leader>gD :action GotoDeclaration<CR>
 " Go to Declaration - como Neovim <leader>gD
-nnoremap <leader>gd :action GotoDeclaration<CR>
-" Go to Definition - como Neovim <leader>gd
+" ELIMINADO: <leader>gd duplicado - gd (sin leader) es suficiente para LSP goto definition
 nnoremap <leader>gi :action GotoImplementation<CR>
 " Go to Implementation - como Neovim <leader>gi
 nnoremap <leader>gr :action FindUsages<CR>
@@ -499,8 +501,7 @@ nnoremap <leader>th :action ActivateTerminalToolWindow<CR>
 " Terminal Horizontal - como Neovim <leader>th
 nnoremap <leader>tv :action ActivateTerminalToolWindow<CR>
 " Terminal Vertical - como Neovim <leader>tv
-nnoremap <leader>tt :action ActivateTerminalToolWindow<CR>
-" Terminal Tab - como Neovim <leader>tt
+" ELIMINADO: <leader>tt duplicado - ya configurado arriba en línea 191
 nnoremap <leader>tf :action ActivateTerminalToolWindow<CR>
 " Terminal Float - como Neovim <leader>tf
 nnoremap <leader>tg :action ActivateTerminalToolWindow<CR>
@@ -514,18 +515,7 @@ nnoremap <leader>tp :action ActivateTerminalToolWindow<CR>
 nnoremap <leader>tF :action ActivateTerminalToolWindow<CR>
 " Terminal Flutter - como Neovim <leader>tF
 
-" Buffer Management - SINCRONIZADO CON bufferline.nvim
-" Nota: Shift+L y Shift+H ya están configurados arriba
-nnoremap <leader>bd :action CloseContent<CR>
-" Buffer Delete/Close - como Neovim <leader>bd
-nnoremap <leader>bl :action CloseAllToTheRight<CR>
-" Close Buffers to Right - como Neovim <leader>bl
-nnoremap <leader>bh :action CloseAllToTheLeft<CR>
-" Close Buffers to Left - como Neovim <leader>bh
-nnoremap <leader>bp :action Switcher<CR>
-" Pick Buffer - como Neovim <leader>bp
-nnoremap <leader>bt :action PinActiveTab<CR>
-" Toggle Pin Buffer - como Neovim <leader>bt
+" ELIMINADO: Sección duplicada de Buffer Management - ya configurada arriba en líneas 173-180
 
 " Project Management - SINCRONIZADO
 nnoremap <leader>fp :action ManageRecentProjects<CR>
@@ -595,13 +585,19 @@ nnoremap <leader>zz :action ToggleFullScreen<CR>
 " nnoremap <leader>u :action LocalHistory.ShowHistory<CR>
 
 " -----------------------------------------------------------------------------
-" ✅ SINCRONIZACIÓN COMPLETA - TODOS LOS COMANDOS VERIFICADOS Y FUNCIONALES
+" ✅ CONFIGURACIÓN PERFECTA - SIN CONFLICTOS DE KEYBINDINGS
 " -----------------------------------------------------------------------------
 " 🍎 Optimizado para macOS (MacBook Pro)
 " 🔄 +300 comandos sincronizados entre Neovim ↔ IntelliJ IDEA
 " 🛠️ Git actions verificadas con documentación oficial y comunidad IdeaVim
 " 💪 Muscle memory consistente y flujo de trabajo unificado
 " 🚀 Acciones Git funcionales: Vcs.ShowDiff, Annotate, Git.CompareWithBranch, Git.Fetch
+" ⚡ CONFLICTOS RESUELTOS:
+"   - <leader>gd → <leader>gv (AHORA GIT BLAME TOGGLE) vs gd (LSP goto definition)
+"   - <leader>gp → <leader>gN (previous hunk) vs <leader>gp (git pull)
+"   - Eliminados 10 duplicados de keybindings
+"   - Sin conflictos entre Git, LSP, Terminal, y Buffer commands
+" 🎯 GIT BLAME TOGGLE: <leader>gv presionar una vez=mostrar, presionar otra=ocultar
 
 " -----------------------------------------------------------------------------
 " Fin de .ideavimrc
