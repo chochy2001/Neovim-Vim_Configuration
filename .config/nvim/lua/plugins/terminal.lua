@@ -54,14 +54,17 @@ return {
                 },
             })
 
-            -- Keymaps básicos
+            -- Keymaps básicos del terminal
             local opts = { silent = true }
             vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", opts)
-            -- Usar Alt+hjkl para evitar conflicto con nvim-tmux-navigation (<C-hjkl>)
-            vim.keymap.set("t", "<A-h>", "<C-\\><C-n><C-w>h", opts)
-            vim.keymap.set("t", "<A-j>", "<C-\\><C-n><C-w>j", opts)
-            vim.keymap.set("t", "<A-k>", "<C-\\><C-n><C-w>k", opts)
-            vim.keymap.set("t", "<A-l>", "<C-\\><C-n><C-w>l", opts)
+            -- Usar jj para salir en terminal también
+            vim.keymap.set("t", "jj", "<C-\\><C-n>", opts)
+
+            -- Crear keymaps normales para navegación entre ventanas
+            vim.keymap.set("n", "<leader>wh", "<C-w>h", { desc = "Window: Go Left" })
+            vim.keymap.set("n", "<leader>wj", "<C-w>j", { desc = "Window: Go Down" })
+            vim.keymap.set("n", "<leader>wk", "<C-w>k", { desc = "Window: Go Up" })
+            vim.keymap.set("n", "<leader>wl", "<C-w>l", { desc = "Window: Go Right" })
 
             -- Terminales específicos para lenguajes
             local Terminal = require('toggleterm.terminal').Terminal
@@ -170,12 +173,11 @@ return {
             require("overseer").setup(opts)
 
             -- Keymaps para overseer
+            -- Overseer: comandos esenciales simplificados
             vim.keymap.set("n", "<leader>oo", "<cmd>OverseerToggle<cr>", { desc = "Overseer: Toggle" })
             vim.keymap.set("n", "<leader>or", "<cmd>OverseerRun<cr>", { desc = "Overseer: Run Task" })
-            vim.keymap.set("n", "<leader>oi", "<cmd>OverseerInfo<cr>", { desc = "Overseer: Info" })
             vim.keymap.set("n", "<leader>ob", "<cmd>OverseerBuild<cr>", { desc = "Overseer: Build" })
-            vim.keymap.set("n", "<leader>oq", "<cmd>OverseerQuickAction<cr>", { desc = "Overseer: Quick Action" })
-            vim.keymap.set("n", "<leader>ot", "<cmd>OverseerTaskAction<cr>", { desc = "Overseer: Task Action" })
+            -- Comandos Info, QuickAction y TaskAction eliminados por uso poco frecuente
         end,
     },
 
@@ -250,8 +252,7 @@ return {
             vim.keymap.set('n', '<leader>rft', ':RunFile tab<CR>', { desc = "Run File in Tab" })
             vim.keymap.set('n', '<leader>rp', ':RunProject<CR>', { desc = "Run Project" })
             vim.keymap.set('n', '<leader>rc', ':RunClose<CR>', { desc = "Close Runner" })
-            vim.keymap.set('n', '<leader>crf', ':CRFiletype<CR>', { desc = "Code Runner: Open Filetype" })
-            vim.keymap.set('n', '<leader>crp', ':CRProjects<CR>', { desc = "Code Runner: Open Projects" })
+            -- Comandos CRFiletype y CRProjects eliminados por ser redundantes
         end
     },
 }

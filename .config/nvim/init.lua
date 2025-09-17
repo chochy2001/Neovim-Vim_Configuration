@@ -11,11 +11,9 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- Core fixes - consolidated and necessary only (safe loading)
-pcall(require, "disable-mason")          -- Disable Mason in favor of system LSPs
-pcall(require, "silence-all-deprecations") -- Silence specific known deprecation warnings
-pcall(require, "error-suppressor")       -- Intelligent error suppression for E5248
-pcall(require, "fix-lsp-conflicts")      -- Fix LSP conflicts between plugins
+-- Core fixes - solo los necesarios tras limpieza
+pcall(require, "fix-flutter-neotree-conflict")  -- Fix para conflicto flutter-tools + neo-tree
+pcall(require, "lsp-utils")                      -- Utilidades LSP y manejo de errores
 
 require("vim-options")
 require("lazy").setup("plugins")

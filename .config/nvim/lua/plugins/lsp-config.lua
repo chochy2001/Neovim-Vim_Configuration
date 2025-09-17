@@ -27,26 +27,49 @@ return {
                 },
             })
 
-            -- 2. Dart LSP (Flutter/Dart - lenguaje principal)
-            if vim.fn.executable("dart") == 1 then
+            -- 2. Dart LSP (configuración robusta con manejo de errores)
+            local dart_path = "/Users/jorgesalgadomiranda/development/flutter/bin/dart"
+            if vim.fn.executable(dart_path) == 1 then
                 lspconfig.dartls.setup({
                     capabilities = capabilities,
-                    cmd = { "dart", "language-server", "--protocol=lsp" },
+                    cmd = { dart_path, "language-server", "--protocol=lsp" },
                     filetypes = { "dart" },
+                    root_dir = function(fname)
+                        return lspconfig.util.root_pattern("pubspec.yaml")(fname) or
+                               lspconfig.util.root_pattern(".git")(fname) or
+                               vim.fn.getcwd()
+                    end,
+                    single_file_support = true,
                     init_options = {
-                        onlyAnalyzeProjectsWithOpenFiles = false,
+                        onlyAnalyzeProjectsWithOpenFiles = true, -- Más conservador
                         suggestFromUnimportedLibraries = true,
                         closingLabels = true,
                         outline = true,
-                        flutterOutline = true,
+                        flutterOutline = false,
                     },
                     settings = {
                         dart = {
                             completeFunctionCalls = true,
-                            showTodos = true,
+                            showTodos = false, -- Deshabilitar para reducir carga
+                            enableSnippets = true,
+                            updateImportsOnRename = true,
+                            lineLength = 80,
                         }
-                    }
+                    },
+                    on_attach = function(client, bufnr)
+                        -- Configuración específica para dart
+                        if client.server_capabilities.documentFormattingProvider then
+                            vim.api.nvim_create_autocmd("BufWritePre", {
+                                buffer = bufnr,
+                                callback = function()
+                                    vim.lsp.buf.format({ bufnr = bufnr, timeout_ms = 2000 })
+                                end,
+                            })
+                        end
+                    end,
                 })
+            else
+                vim.notify("Dart executable not found at: " .. dart_path, vim.log.levels.WARN)
             end
 
             -- 3. C/C++ LSP (lenguaje principal)
@@ -86,22 +109,25 @@ return {
             end
 
             -- 6. JSON LSP (configuraciones)
-            lspconfig.jsonls.setup({
-                capabilities = capabilities,
-                settings = {
-                    json = {
-                        schemas = (function()
-                            local ok, schemastore = pcall(require, 'schemastore')
-                            if ok and schemastore and schemastore.json and schemastore.json.schemas then
-                                return schemastore.json.schemas()
-                            else
-                                return {}
-                            end
-                        end)(),
-                        validate = { enable = true },
+            if vim.fn.executable("vscode-json-language-server") == 1 then
+                lspconfig.jsonls.setup({
+                    capabilities = capabilities,
+                    cmd = { "vscode-json-language-server", "--stdio" },
+                    settings = {
+                        json = {
+                            schemas = (function()
+                                local ok, schemastore = pcall(require, 'schemastore')
+                                if ok and schemastore and schemastore.json and schemastore.json.schemas then
+                                    return schemastore.json.schemas()
+                                else
+                                    return {}
+                                end
+                            end)(),
+                            validate = { enable = true },
+                        },
                     },
-                },
-            })
+                })
+            end
 
             -- 7. YAML LSP (configuraciones Flutter/Android)
             if vim.fn.executable("yaml-language-server") == 1 then
@@ -131,30 +157,28 @@ return {
                 callback = function(ev)
                     local opts = { buffer = ev.buf, silent = true }
 
-                    -- Navegación
-                    vim.keymap.set("n", "gD", vim.lsp.buf.declaration, vim.tbl_extend("force", opts, { desc = "Go to Declaration" }))
-                    vim.keymap.set("n", "gd", vim.lsp.buf.definition, vim.tbl_extend("force", opts, { desc = "Go to Definition" }))
-                    vim.keymap.set("n", "gi", vim.lsp.buf.implementation, vim.tbl_extend("force", opts, { desc = "Go to Implementation" }))
-                    vim.keymap.set("n", "gr", vim.lsp.buf.references, vim.tbl_extend("force", opts, { desc = "References" }))
-                    vim.keymap.set("n", "<leader>D", vim.lsp.buf.type_definition, vim.tbl_extend("force", opts, { desc = "Type Definition" }))
+                    -- Navegación LSP con leader
+                    vim.keymap.set("n", "<leader>gD", vim.lsp.buf.declaration, vim.tbl_extend("force", opts, { desc = "Go to Declaration" }))
+                    vim.keymap.set("n", "<leader>gd", vim.lsp.buf.definition, vim.tbl_extend("force", opts, { desc = "Go to Definition" }))
+                    vim.keymap.set("n", "<leader>gi", vim.lsp.buf.implementation, vim.tbl_extend("force", opts, { desc = "Go to Implementation" }))
+                    vim.keymap.set("n", "<leader>gr", vim.lsp.buf.references, vim.tbl_extend("force", opts, { desc = "References" }))
+                    vim.keymap.set("n", "<leader>gT", vim.lsp.buf.type_definition, vim.tbl_extend("force", opts, { desc = "Type Definition" }))
 
-                    -- Información
-                    vim.keymap.set("n", "K", vim.lsp.buf.hover, vim.tbl_extend("force", opts, { desc = "Hover Documentation" }))
-                    vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, vim.tbl_extend("force", opts, { desc = "Signature Help" }))
+                    -- Información LSP con leader
+                    vim.keymap.set("n", "<leader>lh", vim.lsp.buf.hover, vim.tbl_extend("force", opts, { desc = "LSP: Hover Documentation" }))
+                    vim.keymap.set("n", "<leader>ls", vim.lsp.buf.signature_help, vim.tbl_extend("force", opts, { desc = "LSP: Signature Help" }))
 
                     -- Acciones
                     vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "Rename Symbol" }))
                     vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, vim.tbl_extend("force", opts, { desc = "Code Action" }))
-                    vim.keymap.set("n", "<leader>f", function()
+                    vim.keymap.set("n", "<leader>lf", function()
                         vim.lsp.buf.format { async = true }
-                    end, vim.tbl_extend("force", opts, { desc = "Format Document" }))
+                    end, vim.tbl_extend("force", opts, { desc = "LSP: Format Document" }))
 
-                    -- Workspace
-                    vim.keymap.set("n", "<leader>wa", vim.lsp.buf.add_workspace_folder, vim.tbl_extend("force", opts, { desc = "Add Workspace Folder" }))
-                    vim.keymap.set("n", "<leader>wr", vim.lsp.buf.remove_workspace_folder, vim.tbl_extend("force", opts, { desc = "Remove Workspace Folder" }))
-                    vim.keymap.set("n", "<leader>wl", function()
+                    -- Workspace (comandos simplificados para uso ocasional)
+                    vim.keymap.set("n", "<leader>lw", function()
                         print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-                    end, vim.tbl_extend("force", opts, { desc = "List Workspace Folders" }))
+                    end, vim.tbl_extend("force", opts, { desc = "LSP: List Workspace Folders" }))
                 end,
             })
 
