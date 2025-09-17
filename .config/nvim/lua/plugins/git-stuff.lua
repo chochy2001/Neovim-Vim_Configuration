@@ -8,7 +8,8 @@ return {
             { "<leader>gs", "<cmd>Git<cr>", desc = "Git Status" },
             { "<leader>gw", "<cmd>Gwrite<cr>", desc = "Git Write" },
             { "<leader>gc", "<cmd>Git commit<cr>", desc = "Git Commit" },
-            { "<leader>gd", "<cmd>Gdiffsplit<cr>", desc = "Git Diff Split" },
+            { "<leader>gds", "<cmd>Gdiffsplit<cr>", desc = "Git Diff Split" },
+            { "<leader>gv", "<cmd>Git blame<cr>", desc = "Git Blame Toggle" },
             { "<leader>gB", "<cmd>Git blame<cr>", desc = "Git Blame" },
             { "<leader>gb", "<cmd>GBrowse<cr>", desc = "Git Browse" },
         }
