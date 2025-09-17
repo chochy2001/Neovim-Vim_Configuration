@@ -117,12 +117,12 @@ return {
 			update_in_insert = false,
 		})
 
-		-- Keymaps globales seguros
-		vim.keymap.set("n", "<leader>ff", function()
+		-- Keymaps globales seguros (sincronizado con LSP <leader>lf)
+		vim.keymap.set("n", "<leader>lf", function()
 			pcall(function()
 				vim.lsp.buf.format({ timeout_ms = 1500 })
 			end)
-		end, { desc = "Format Buffer (Safe)" })
+		end, { desc = "LSP: Format Buffer (Safe)" })
 
 		-- Comando para verificar herramientas disponibles
 		vim.api.nvim_create_user_command("CheckFormatters", function()

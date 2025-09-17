@@ -123,14 +123,18 @@ return {
                 }
             })
 
-            -- Keymaps para bufferline
-            vim.keymap.set("n", "<S-l>", ":BufferLineCycleNext<CR>", { desc = "Next Buffer" })
-            vim.keymap.set("n", "<S-h>", ":BufferLineCyclePrev<CR>", { desc = "Previous Buffer" })
-            vim.keymap.set("n", "<leader>bd", ":BufferLinePickClose<CR>", { desc = "Pick Buffer to Close" })
-            vim.keymap.set("n", "<leader>bl", ":BufferLineCloseRight<CR>", { desc = "Close Buffers to Right" })
-            vim.keymap.set("n", "<leader>bh", ":BufferLineCloseLeft<CR>", { desc = "Close Buffers to Left" })
-            vim.keymap.set("n", "<leader>bp", ":BufferLinePick<CR>", { desc = "Pick Buffer" })
+            -- Keymaps para bufferline usando leader
+            vim.keymap.set("n", "<leader>bn", ":BufferLineCycleNext<CR>", { desc = "Buffer: Next" })
+            vim.keymap.set("n", "<leader>bP", ":BufferLineCyclePrev<CR>", { desc = "Buffer: Previous" })
+            vim.keymap.set("n", "<leader>bd", ":BufferLinePickClose<CR>", { desc = "Buffer: Pick to Close" })
+            vim.keymap.set("n", "<leader>bl", ":BufferLineCloseRight<CR>", { desc = "Buffer: Close Right" })
+            vim.keymap.set("n", "<leader>bh", ":BufferLineCloseLeft<CR>", { desc = "Buffer: Close Left" })
+            vim.keymap.set("n", "<leader>bp", ":BufferLinePick<CR>", { desc = "Buffer: Pick" })
             vim.keymap.set("n", "<leader>bt", ":BufferLineTogglePin<CR>", { desc = "Toggle Pin Buffer" })
+
+            -- Shift mappings que funcionaban bien
+            vim.keymap.set("n", "<S-l>", ":BufferLineCycleNext<CR>", { desc = "Buffer: Next" })
+            vim.keymap.set("n", "<S-h>", ":BufferLineCyclePrev<CR>", { desc = "Buffer: Previous" })
         end
     },
 
