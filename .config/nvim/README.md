@@ -1,8 +1,8 @@
 # 🧠 Neovim + IntelliJ Ultra Configuration | Configuración Ultra Completa
 
-> **EN**: Professional Neovim configuration with Lazy.nvim, native LSP, and 70+ meticulously optimized plugins featuring 300+ synchronized commands for multi-language development (Flutter/Dart, Swift, Kotlin, C/C++, etc.) + complete IntelliJ IDEA keymaps synchronization. **🍎 Optimized for macOS (MacBook Pro)**.
+> **EN**: Professional Neovim configuration with Lazy.nvim, native LSP, and 70+ meticulously optimized plugins featuring **113 unique verified commands** for multi-language development (Flutter/Dart, Swift, Kotlin, C/C++, etc.) + complete Android Studio/IntelliJ IDEA keymaps synchronization. **🍎 Optimized for macOS (MacBook Pro)**.
 >
-> **ES**: Configuración profesional de Neovim con Lazy.nvim, LSP nativo, y más de 70 plugins meticulosamente optimizados con 300+ comandos sincronizados para desarrollo en múltiples lenguajes + sincronización completa de keymaps con IntelliJ IDEA. **🍎 Optimizado para macOS (MacBook Pro)**.
+> **ES**: Configuración profesional de Neovim con Lazy.nvim, LSP nativo, y más de 70 plugins meticulosamente optimizados con **113 comandos únicos verificados** para desarrollo en múltiples lenguajes + sincronización completa de keymaps con Android Studio/IntelliJ IDEA. **🍎 Optimizado para macOS (MacBook Pro)**.
 
 ---
 
@@ -383,7 +383,7 @@ npm install -g vscode-langservers-extracted  # Para JSON, HTML, CSS, ESLint
 
 ### 📋 Complete .ideavimrc Integration
 
-The included `.ideavimrc` provides **300+ synchronized commands** between Neovim and IntelliJ IDEA:
+The included `.ideavimrc` provides **113 unique verified commands** between Neovim and Android Studio/IntelliJ IDEA:
 
 ### English Setup
 1. **Copy the configuration**: `cp ~/.config/nvim/.ideavimrc ~/`
