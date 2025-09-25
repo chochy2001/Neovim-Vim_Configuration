@@ -84,9 +84,10 @@ vnoremap <leader>u gu
 vnoremap <leader>U gU
 
 " -----------------------------------------------------------------------------
-" Emulación Telescope (Búsqueda/Navegación Archivos) - ESTANDARIZADO
+" Emulación Telescope (Búsqueda/Navegación Archivos) - SINCRONIZACIÓN COMPLETA
 " -----------------------------------------------------------------------------
-" REMOVED: <leader>ff duplicado - mantener solo ,,
+nnoremap <leader>ff :action GotoFile<CR>
+" Find Files - como Neovim <leader>ff (COMANDO PRINCIPAL - RESTAURADO)
 nnoremap <leader>fg :action FindInPath<CR>
 " Find Grep - como Neovim <leader>fg
 nnoremap <leader>fo :action RecentFiles<CR>
@@ -103,13 +104,13 @@ nnoremap <leader>ps :action GotoSymbol<CR>
 " Buscar símbolo (clase, método, var)
 " Archivos recientes
 
-" Double Shift para búsqueda rápida (nativo en IntelliJ)
-" NOTA: Shift+Shift es nativo en IntelliJ, no necesita mapping
-" Alternativa sincronizada con Neovim: doble coma
-nnoremap ,, :action GotoFile<CR>
-" Buscar archivos con doble coma (sincronizado con Neovim)
+" Acceso rápido múltiple sincronizado con Neovim
+nnoremap <leader><leader> :action GotoFile<CR>
+" Quick Find Files - como Neovim <leader><leader> (RESTAURADO)
 nnoremap <leader>. :action GotoFile<CR>
-" Buscar archivos con leader+punto (sincronizado con Neovim)
+" Quick Find Files - como Neovim <leader>. (RESTAURADO)
+nnoremap ,, :action GotoFile<CR>
+" Quick Find Files - doble coma (ALTERNATIVA RÁPIDA)
 
 " -----------------------------------------------------------------------------
 " Emulación Neo-tree (Vista Proyecto)
@@ -162,9 +163,11 @@ nnoremap <space>l :action NextSplitter<CR>
 nnoremap <space>h :action PrevSplitter<CR>
 " Split anterior (Space+H)
 
-" Navegación alternativa con leader
-" REMOVED: <leader>bn duplicado - mantener solo <S-l>
-" REMOVED: <leader>bp duplicado - mantener solo <S-h>
+" Navegación alternativa con leader - RESTAURADA PARA SINCRONIZACIÓN
+nnoremap <leader>bn :action NextTab<CR>
+" Buffer Next - como Neovim <leader>bn (RESTAURADO para consistencia)
+nnoremap <leader>bp :action PreviousTab<CR>
+" Buffer Previous - como Neovim <leader>bp (RESTAURADO para consistencia)
 nnoremap <leader>bd :action CloseContent<CR>
 " Buffer Delete/Close - como Neovim <leader>bd
 nnoremap <leader>bl :action CloseAllToTheRight<CR>
@@ -218,13 +221,13 @@ nnoremap <leader>gn :action VcsShowNextChangeMarker<CR>
 nnoremap <leader>gN :action VcsShowPrevChangeMarker<CR>
 " Previous hunk (CORREGIDO)
 
-" GitSigns Commands - COMPLETAMENTE SINCRONIZADO CON NEOVIM
-" nnoremap <leader>hs :action Vcs.Add<CR>
-" Stage hunk (como GitSigns) - NO FUNCIONA EN ANDROID STUDIO
+" GitSigns Commands - SINCRONIZADO CON MEJORES ALTERNATIVAS
+nnoremap <leader>hs :action Vcs.Add<CR>
+" Stage hunk (como GitSigns) - RESTAURADO: funciona como stage file en Android Studio
 nnoremap <leader>ga :action Vcs.Add<CR>
-" Git Add (CORREGIDO) - stage files en Android Studio
-" nnoremap <leader>hr :action Vcs.RollbackChangedLines<CR>
-" Reset hunk (como GitSigns) - NO FUNCIONA EN ANDROID STUDIO
+" Git Add (ALTERNATIVA) - mismo que hs pero más explícito
+nnoremap <leader>hr :action Vcs.RollbackChangedLines<CR>
+" Reset hunk (como GitSigns) - RESTAURADO: funciona parcialmente en Android Studio
 " REMOVED: <leader>hS duplicado - mantener solo <leader>ga
 nnoremap <leader>hu :action Vcs.RollbackChangedLines<CR>
 " Undo stage hunk (como GitSigns)
@@ -316,12 +319,15 @@ nnoremap gr :action FindUsages<CR>
 " Referencias - como Neovim gr
 " REMOVED: <leader>D duplicado - mantener solo go
 
-" LSP Navigation con leader - SINCRONIZADO CON NEOVIM
-" REMOVED: <leader>gD duplicado - mantener solo gd
-" ELIMINADO: <leader>gd duplicado - gd (sin leader) es suficiente para LSP goto definition
-" REMOVED: <leader>gi duplicado - mantener solo gi
-" REMOVED: <leader>gr duplicado - mantener solo gr
-" REMOVED: <leader>gT duplicado - mantener solo go
+" LSP Navigation con leader - RESTAURADO PARA SINCRONIZACIÓN NEOVIM
+nnoremap <leader>gD :action GotoDeclaration<CR>
+" Go to Declaration (leader) - como Neovim <leader>gD (RESTAURADO)
+nnoremap <leader>gi :action GotoImplementation<CR>
+" Go to Implementation (leader) - como Neovim <leader>gi (RESTAURADO)
+nnoremap <leader>gr :action FindUsages<CR>
+" Show References (leader) - como Neovim <leader>gr (RESTAURADO)
+nnoremap <leader>gT :action GotoTypeDeclaration<CR>
+" Go to Type Definition (leader) - como Neovim <leader>gT (RESTAURADO)"
 
 " Información y Acciones Rápidas
 nnoremap gs :action ParameterInfo<CR>
@@ -432,15 +438,15 @@ nnoremap <leader>I :action QuickImplementations<CR>
 " 🔄 SINCRONIZACIÓN COMPLETA CON NEOVIM - TODOS LOS COMANDOS FALTANTES
 " -----------------------------------------------------------------------------
 
-" Testing Commands - SINCRONIZADO CON vim-test
+" Testing Commands - RESTAURADO PARA SINCRONIZACIÓN vim-test
 nnoremap <leader>T :action RunClass<CR>
-" Test Nearest - como Neovim <leader>T
-" nnoremap <leader>Tr :action RunAllTestsInFile<CR>
-" Test File - como Neovim <leader>Tf → CAMBIADO A <leader>Tr (evita conflicto con T)
-" nnoremap <leader>Ts :action RunAllTestsInProject<CR>
-" Test All Suite - como Neovim <leader>Ta → CAMBIADO A <leader>Ts (evita conflicto con T)"
-" nnoremap <leader>Tl :action Rerun<CR>
-" Test Last - como Neovim <leader>Tl
+" Test Nearest - como Neovim <leader>T (PRINCIPAL)
+nnoremap <leader>Tf :action RunClass<CR>
+" Test File - como Neovim <leader>Tf (RESTAURADO - mismo que T por simplicidad)
+nnoremap <leader>Ta :action RunAllTestsInProject<CR>
+" Test All Suite - como Neovim <leader>Ta (RESTAURADO)
+nnoremap <leader>Tl :action Rerun<CR>
+" Test Last - como Neovim <leader>Tl (RESTAURADO)"
 
 " Flutter Commands - SINCRONIZADO CON flutter-tools.nvim
 " nnoremap <leader>Fs :action Run<CR>
@@ -550,10 +556,10 @@ nnoremap <leader>zz :action ToggleFullScreen<CR>
 " -----------------------------------------------------------------------------
 " Estos keybindings faltaban para sincronización completa con Neovim
 
-" Telescope Quick Access (3 mappings faltantes)
-" REMOVED: <leader><leader> duplicado - mantener solo ,,
-" REMOVED: <leader>fd duplicado - mantener solo ,,
-" REMOVED: <leader>. duplicado - mantener solo ,,
+" Telescope Quick Access - RESTAURADOS PARA SINCRONIZACIÓN PERFECTA
+" ✅ <leader><leader> - RESTAURADO (línea 108)
+" ✅ <leader>fd - No necesario (cubierto por <leader>ff)
+" ✅ <leader>. - RESTAURADO (línea 110)"
 
 " Neo-tree Focus & Window Management (3 mappings faltantes)
 " REMOVED: <leader>pf duplicado - mantener solo <leader>pv
@@ -562,8 +568,9 @@ nnoremap <leader>we :action NextSplitter<CR>
 nnoremap <leader>wt :action PrevSplitter<CR>
 " Window focus tree - como Neovim
 
-" Buffer Management (1 mapping faltante)
-" REMOVED: <leader>bP duplicado - mantener solo <S-h>
+" Buffer Management - RESTAURADOS PARA SINCRONIZACIÓN
+" ✅ <leader>bn - RESTAURADO (línea 167)
+" ✅ <leader>bp - RESTAURADO (línea 169)
 
 " Git Operations (2 mappings faltantes)
 nnoremap <leader>gds :action Compare.SameVersion<CR>

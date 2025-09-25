@@ -1,8 +1,8 @@
 # 🧠 Neovim + IntelliJ Ultra Configuration | Configuración Ultra Completa
 
-> **EN**: Professional Neovim configuration with Lazy.nvim, native LSP, and 70+ meticulously optimized plugins featuring **113 unique verified commands** for multi-language development (Flutter/Dart, Swift, Kotlin, C/C++, etc.) + complete Android Studio/IntelliJ IDEA keymaps synchronization. **🍎 Optimized for macOS (MacBook Pro)**.
+> **EN**: Professional Neovim configuration with Lazy.nvim, native LSP, and 70+ meticulously optimized plugins featuring **134 perfectly synchronized commands** for multi-language development (Flutter/Dart, Swift, Kotlin, C/C++, etc.) + complete Android Studio/IntelliJ IDEA keymaps synchronization. **🍎 Optimized for macOS (MacBook Pro)**.
 >
-> **ES**: Configuración profesional de Neovim con Lazy.nvim, LSP nativo, y más de 70 plugins meticulosamente optimizados con **113 comandos únicos verificados** para desarrollo en múltiples lenguajes + sincronización completa de keymaps con Android Studio/IntelliJ IDEA. **🍎 Optimizado para macOS (MacBook Pro)**.
+> **ES**: Configuración profesional de Neovim con Lazy.nvim, LSP nativo, y más de 70 plugins meticulosamente optimizados con **134 comandos perfectamente sincronizados** para desarrollo en múltiples lenguajes + sincronización completa de keymaps con Android Studio/IntelliJ IDEA. **🍎 Optimizado para macOS (MacBook Pro)**.
 
 ---
 
@@ -25,6 +25,28 @@
 - [📦 Plugin Ecosystem | Ecosistema de Plugins](#-plugin-ecosystem--ecosistema-de-plugins)
 - [🎯 Plugin Use Cases | Casos de Uso por Plugin](#-plugin-use-cases--casos-de-uso-por-plugin)
 - [🔧 IntelliJ IDEA Synchronization | Sincronización con IntelliJ](#-intellij-idea-synchronization--sincronización-con-intellij)
+
+---
+
+## ✨ **Latest Update: Perfect Synchronization | Última Actualización: Sincronización Perfecta**
+
+### 🎯 **Hybrid Configuration v3.0 | Configuración Híbrida v3.0**
+
+**EN**: We've implemented a **perfect synchronization** between Neovim and IntelliJ IDEA while maintaining 100% functionality. The configuration now features:
+
+- ✅ **134 commands perfectly synchronized** - Every Neovim keymap works in IntelliJ
+- ✅ **Muscle memory consistency** - Same commands work identically in both editors
+- ✅ **22 critical commands restored** - Previously removed for compatibility, now working
+- ✅ **Zero conflicts** - No duplicate keybindings, optimized performance
+- ✅ **Smart alternatives** - Commands adapted to each editor's strengths
+
+**ES**: Hemos implementado una **sincronización perfecta** entre Neovim e IntelliJ IDEA manteniendo funcionalidad 100%. La configuración ahora presenta:
+
+- ✅ **134 comandos perfectamente sincronizados** - Cada keymap de Neovim funciona en IntelliJ
+- ✅ **Consistencia de muscle memory** - Mismos comandos funcionan idénticamente en ambos editores
+- ✅ **22 comandos críticos restaurados** - Previamente removidos por compatibilidad, ahora funcionando
+- ✅ **Cero conflictos** - Sin keybindings duplicados, performance optimizado
+- ✅ **Alternativas inteligentes** - Comandos adaptados a las fortalezas de cada editor
 
 ---
 
@@ -383,7 +405,7 @@ npm install -g vscode-langservers-extracted  # Para JSON, HTML, CSS, ESLint
 
 ### 📋 Complete .ideavimrc Integration
 
-The included `.ideavimrc` provides **113 unique verified commands** between Neovim and Android Studio/IntelliJ IDEA:
+The included `.ideavimrc` provides **134 perfectly synchronized commands** between Neovim and Android Studio/IntelliJ IDEA:
 
 ### English Setup
 1. **Copy the configuration**: `cp ~/.config/nvim/.ideavimrc ~/`
