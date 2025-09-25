@@ -98,7 +98,8 @@ nnoremap <leader>fh :action HelpTopics<CR>
 " Find Help - como Neovim <leader>fh
 nnoremap <leader>fc :action GotoAction<CR>
 " Find Commands - como Neovim <leader>fc
-" REMOVED: <leader>fk - NO FUNCIONA
+nnoremap <leader>fk :action Keymap<CR>
+" Find Keymaps - como Neovim <leader>fk (RESTAURADO - CRÍTICO PARA SINCRONIZACIÓN)
 " REMOVED: <leader>pe duplicado - mantener solo <leader>pv
 nnoremap <leader>ps :action GotoSymbol<CR>
 " Buscar símbolo (clase, método, var)
@@ -137,6 +138,10 @@ nnoremap <leader>ma :action ToggleBookmark<CR>
 " Harpoon Add File - como Neovim <leader>ma (agregar bookmark)
 nnoremap <leader>mb :action ShowBookmarks<CR>
 " Show Bookmarks - como Neovim (ver bookmarks creados)
+nnoremap <leader>mp :action PreviousTab<CR>
+" Harpoon Previous - como Neovim <leader>mp (RESTAURADO - aproximación con tabs)
+nnoremap <leader>mn :action NextTab<CR>
+" Harpoon Next - como Neovim <leader>mn (RESTAURADO - aproximación con tabs)
 nnoremap <leader>1 '1
 nnoremap <leader>2 '2
 nnoremap <leader>3 '3
@@ -212,6 +217,8 @@ nnoremap <leader>gC :action Vcs.ShowHistoryForBlock<CR>
 " Historial de la selección (si hay) o línea
 nnoremap <leader>gv :action Annotate<CR>
 " Git Blame Toggle (Annotate) - Mostrar/ocultar blame en gutter - FUNCIONA COMO TOGGLE
+nnoremap <leader>gB :action Annotate<CR>
+" Git Blame - como Neovim <leader>gB (SINCRONIZACIÓN PERFECTA - mismo que gv)
 
 " Navegación por Cambios (Hunks) - COMPLETAMENTE SINCRONIZADO
 " REMOVED: ]c duplicado - mantener solo <leader>gn
@@ -338,9 +345,11 @@ inoremap <C-space> <C-x><C-o>
 " Forzar autocompletado
 " REMOVED: <C-s> duplicado - mantener solo gs
 
-" LSP Información con leader - SINCRONIZADO CON NEOVIM
-" REMOVED: <leader>lh duplicado - mantener solo K
-" REMOVED: <leader>ls duplicado - mantener solo gs
+" LSP Información con leader - RESTAURADO PARA SINCRONIZACIÓN PERFECTA
+nnoremap <leader>lh :action QuickJavaDoc<CR>
+" LSP Hover Documentation - como Neovim <leader>lh (SINCRONIZACIÓN CRÍTICA)
+nnoremap <leader>ls :action ParameterInfo<CR>
+" LSP Signature Help - como Neovim <leader>ls (SINCRONIZACIÓN CRÍTICA)
 
 " Formateo - SINCRONIZADO CON NEOVIM
 nnoremap <leader>lf :action ReformatCode<CR>
@@ -361,12 +370,15 @@ nnoremap <leader>rn :action RenameElement<CR>
 " Emulación Trouble (Lista de Problemas/Errores del IDE)
 " -----------------------------------------------------------------------------
 nnoremap <leader>xx :action ActivateProblemsViewToolWindow<CR>
-" Toggle Trouble - como Neovim <leader>xx
-" REMOVED: <leader>xw duplicado - mantener solo <leader>xx
-" REMOVED: <leader>xd duplicado - mantener solo <leader>xx
-" REMOVED: <leader>xl duplicado - mantener solo <leader>xx
-" REMOVED: <leader>xq duplicado - mantener solo <leader>xx
-" REMOVED: <leader>xo duplicado - mantener solo <leader>xx
+" Toggle Trouble - como Neovim <leader>xx (COMANDO PRINCIPAL)
+nnoremap <leader>xw :action ActivateProblemsViewToolWindow<CR>
+" Workspace Diagnostics - como Neovim <leader>xw (RESTAURADO - mismo que xx)
+nnoremap <leader>xd :action ActivateProblemsViewToolWindow<CR>
+" Document Diagnostics - como Neovim <leader>xd (RESTAURADO - mismo que xx)
+nnoremap <leader>xl :action ActivateProblemsViewToolWindow<CR>
+" Location List - como Neovim <leader>xl (RESTAURADO - mismo que xx)
+nnoremap <leader>xq :action ActivateProblemsViewToolWindow<CR>
+" Quickfix List - como Neovim <leader>xq (RESTAURADO - mismo que xx)"
 nnoremap <leader>xn :action GotoNextError<CR>
 " Ir al siguiente Error/Warning
 nnoremap <leader>xp :action GotoPreviousError<CR>
@@ -449,8 +461,8 @@ nnoremap <leader>Tl :action Rerun<CR>
 " Test Last - como Neovim <leader>Tl (RESTAURADO)"
 
 " Flutter Commands - SINCRONIZADO CON flutter-tools.nvim
-" nnoremap <leader>Fs :action Run<CR>
-" Flutter Start App - como Neovim <leader>Fs (DESHABILITADO - no funciona bien)
+nnoremap <leader>Fs :action RunConfiguration<CR>
+" Flutter Start App - como Neovim <leader>Fs (RESTAURADO - usa RunConfiguration)
 nnoremap <leader>Fr :action Flutter.HotReload<CR>
 " Flutter Reload - como Neovim <leader>Fr
 nnoremap <leader>FR :action Flutter.HotRestart<CR>
@@ -468,16 +480,14 @@ nnoremap <leader>Fo :action Flutter.Outline<CR>
 nnoremap <leader>Fc :action Flutter.ClearLog<CR>
 " Flutter Clear Log - como Neovim <leader>Fc
 
-" Terminal Commands - SINCRONIZADO CON toggleterm.nvim
-" REMOVED: <leader>th duplicado - mantener solo <leader>tt
-" REMOVED: <leader>tv duplicado - mantener solo <leader>tt
-" ELIMINADO: <leader>tt duplicado - ya configurado arriba en línea 191
-" REMOVED: <leader>tf duplicado - mantener solo <leader>tt
-" REMOVED: <leader>tg duplicado - mantener solo <leader>tt
-" REMOVED: <leader>tn duplicado - mantener solo <leader>tt
-" REMOVED: <leader>tu duplicado - mantener solo <leader>tt
-" REMOVED: <leader>tp duplicado - mantener solo <leader>tt
-" REMOVED: <leader>tF duplicado - mantener solo <leader>tt
+" Terminal Commands - RESTAURADOS PARA SINCRONIZACIÓN PERFECTA toggleterm.nvim
+nnoremap <leader>th :action ActivateTerminalToolWindow<CR>
+" Terminal Horizontal - como Neovim <leader>th (RESTAURADO)
+nnoremap <leader>tv :action ActivateTerminalToolWindow<CR>
+" Terminal Vertical - como Neovim <leader>tv (RESTAURADO)
+nnoremap <leader>tf :action ActivateTerminalToolWindow<CR>
+" Terminal Float - como Neovim <leader>tf (RESTAURADO)
+" NOTA: <leader>tt ya está configurado arriba como comando principal
 
 " ELIMINADO: Sección duplicada de Buffer Management - ya configurada arriba en líneas 173-180
 
