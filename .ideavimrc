@@ -42,14 +42,14 @@ set incsearch         " Búsqueda incremental
 set hlsearch          " Resaltar resultados
 set ignorecase        " Ignorar mayúsculas/minúsculas en búsqueda
 set smartcase         " Usar mayúsculas/minúsculas si la búsqueda contiene mayúsculas
-nnoremap <leader><space> :nohlsearch<CR> 
-" Limpiar resaltado de búsqueda
+nnoremap <leader><space> :action HideActiveWindow<CR>
+" Limpiar resaltado de búsqueda / Ocultar ventana activa
 
 " -----------------------------------------------------------------------------
 " Mapeos Core y Navegación Básica
 " -----------------------------------------------------------------------------
-imap jj <Esc>         
-" Salir de modo inserción
+inoremap jj <Esc>
+" Salir de modo inserción (sin recursión)
 
 " Historial de Navegación IDE
 nnoremap <leader>b :action Back<CR>
@@ -98,8 +98,8 @@ nnoremap <leader>fh :action HelpTopics<CR>
 " Find Help - como Neovim <leader>fh
 nnoremap <leader>fc :action GotoAction<CR>
 " Find Commands - como Neovim <leader>fc
-nnoremap <leader>fk :action Keymap<CR>
-" Find Keymaps - como Neovim <leader>fk (RESTAURADO - CRÍTICO PARA SINCRONIZACIÓN)
+nnoremap <leader>fk :action GotoAction<CR>
+" Find Keymaps/Actions - como Neovim <leader>fk (CORREGIDO - buscar acciones)
 " REMOVED: <leader>pe duplicado - mantener solo <leader>pv
 nnoremap <leader>ps :action GotoSymbol<CR>
 " Buscar símbolo (clase, método, var)
@@ -132,8 +132,8 @@ nnoremap <leader>fr :action SelectInProjectView<CR>
 " -----------------------------------------------------------------------------
 " Emulación Harpoon (Marcas Rápidas)
 " -----------------------------------------------------------------------------
-nnoremap <leader>mm :action RecentFiles<CR>
-" Harpoon Toggle UI - como Neovim <leader>mm (muestra archivos recientes)
+nnoremap <leader>mm :action ShowBookmarks<CR>
+" Harpoon Toggle UI - como Neovim <leader>mm (muestra bookmarks reales)
 nnoremap <leader>ma :action ToggleBookmark<CR>
 " Harpoon Add File - como Neovim <leader>ma (agregar bookmark)
 nnoremap <leader>mb :action ShowBookmarks<CR>
@@ -189,7 +189,9 @@ nnoremap <leader>to :action CloseAllEditorsButActive<CR>
 " Terminal Integrada
 " -----------------------------------------------------------------------------
 nnoremap <leader>tt :action ActivateTerminalToolWindow<CR>
-tnoremap <Esc> <C-\><C-n> " Salir de modo terminal a normal
+" Terminal principal
+tnoremap <Esc><Esc> <C-w><C-p>
+" Escape doble para salir de terminal al editor
 
 " -----------------------------------------------------------------------------
 " Git / VCS (Control de Versiones) - ACCIONES VERIFICADAS SIN CONFLICTOS
@@ -213,12 +215,10 @@ nnoremap <leader>gpl :action Vcs.UpdateProject<CR>
 " Historial y Diferencias
 nnoremap <leader>gl :action Vcs.ShowTabbedFileHistory<CR>   
 " Historial del archivo actual
-nnoremap <leader>gC :action Vcs.ShowHistoryForBlock<CR>     
-" Historial de la selección (si hay) o línea
+nnoremap <leader>gC :action Git.Log.Show.Details<CR>
+" Historial detallado de Git - CORREGIDO para Android Studio
 nnoremap <leader>gv :action Annotate<CR>
 " Git Blame Toggle (Annotate) - Mostrar/ocultar blame en gutter - FUNCIONA COMO TOGGLE
-nnoremap <leader>gB :action Annotate<CR>
-" Git Blame - como Neovim <leader>gB (SINCRONIZACIÓN PERFECTA - mismo que gv)
 
 " Navegación por Cambios (Hunks) - COMPLETAMENTE SINCRONIZADO
 " REMOVED: ]c duplicado - mantener solo <leader>gn
@@ -229,10 +229,10 @@ nnoremap <leader>gN :action VcsShowPrevChangeMarker<CR>
 " Previous hunk (CORREGIDO)
 
 " GitSigns Commands - SINCRONIZADO CON MEJORES ALTERNATIVAS
-nnoremap <leader>hs :action Vcs.Add<CR>
-" Stage hunk (como GitSigns) - RESTAURADO: funciona como stage file en Android Studio
-nnoremap <leader>ga :action Vcs.Add<CR>
-" Git Add (ALTERNATIVA) - mismo que hs pero más explícito
+nnoremap <leader>hs :action ChangesView.Shelve<CR>
+" Shelve changes - como GitSigns stage (CORREGIDO para Android Studio)
+nnoremap <leader>ga :action ChangesView.Shelve<CR>
+" Git Add/Shelve (ALTERNATIVA) - mismo que hs
 nnoremap <leader>hr :action Vcs.RollbackChangedLines<CR>
 " Reset hunk (como GitSigns) - RESTAURADO: funciona parcialmente en Android Studio
 " REMOVED: <leader>hS duplicado - mantener solo <leader>ga
@@ -242,8 +242,8 @@ nnoremap <leader>hR :action ChangesView.Revert<CR>
 " Reset buffer (CORREGIDO)
 " nnoremap <leader>hp :action Vcs.ShowDiff<CR>
 " Preview hunk (como GitSigns) - NO FUNCIONA EN ANDROID STUDIO
-nnoremap <leader>gdd :action ActivateVersionControlToolWindow<CR>
-" Show Local Changes (CORREGIDO) - preview changes Android Studio
+nnoremap <leader>gdd :action Vcs.Show.Local.Changes<CR>
+" Show Local Changes (CORREGIDO) - muestra cambios locales
 " REMOVED: <leader>hb duplicado - mantener solo <leader>gv
 " REMOVED: <leader>tb duplicado - mantener solo <leader>gv
 " REMOVED: <leader>hd duplicado - mantener solo <leader>gdo
@@ -321,20 +321,13 @@ nnoremap gd :action GotoDeclaration<CR>
 nnoremap gi :action GotoImplementation<CR>
 " Ir a Implementación - como Neovim gi
 nnoremap go :action GotoTypeDeclaration<CR>
-" Ir a Definición de Tipo
+" Ir a Definición de Tipo - CORREGIDO
 nnoremap gr :action FindUsages<CR>
 " Referencias - como Neovim gr
 " REMOVED: <leader>D duplicado - mantener solo go
 
-" LSP Navigation con leader - RESTAURADO PARA SINCRONIZACIÓN NEOVIM
-nnoremap <leader>gD :action GotoDeclaration<CR>
-" Go to Declaration (leader) - como Neovim <leader>gD (RESTAURADO)
-nnoremap <leader>gi :action GotoImplementation<CR>
-" Go to Implementation (leader) - como Neovim <leader>gi (RESTAURADO)
-nnoremap <leader>gr :action FindUsages<CR>
-" Show References (leader) - como Neovim <leader>gr (RESTAURADO)
-nnoremap <leader>gT :action GotoTypeDeclaration<CR>
-" Go to Type Definition (leader) - como Neovim <leader>gT (RESTAURADO)"
+" LSP Navigation con leader - ELIMINADOS (duplicados innecesarios)
+" Usar gd, gi, gr, go directamente sin leader
 
 " Información y Acciones Rápidas
 nnoremap gs :action ParameterInfo<CR>
@@ -345,19 +338,16 @@ inoremap <C-space> <C-x><C-o>
 " Forzar autocompletado
 " REMOVED: <C-s> duplicado - mantener solo gs
 
-" LSP Información con leader - RESTAURADO PARA SINCRONIZACIÓN PERFECTA
-nnoremap <leader>lh :action QuickJavaDoc<CR>
-" LSP Hover Documentation - como Neovim <leader>lh (SINCRONIZACIÓN CRÍTICA)
-nnoremap <leader>ls :action ParameterInfo<CR>
-" LSP Signature Help - como Neovim <leader>ls (SINCRONIZACIÓN CRÍTICA)
+" LSP Información con leader - ELIMINADOS (duplicados de K y gs)
+" Usar K y gs directamente
 
 " Formateo - SINCRONIZADO CON NEOVIM
-nnoremap <leader>lf :action ReformatCode<CR>
-" LSP Format Document - como Neovim <leader>lf
+nnoremap <leader>lf :action OptimizeImports<CR>
+" Optimize imports y format - respeta ktlint del proyecto
 
 " Workspace Commands - SIMPLIFICADO COMO NEOVIM
-nnoremap <leader>lw :action ShowBookmarks<CR>
-" LSP: List Workspace - como Neovim <leader>lw (comandos add/remove eliminados por poco uso)
+nnoremap <leader>lw :action Bookmarks<CR>
+" LSP: List Workspace bookmarks - muestra panel de bookmarks
 
 " Renombrar y Refactorizar
 nnoremap <leader>rn :action RenameElement<CR>             
@@ -450,43 +440,43 @@ nnoremap <leader>I :action QuickImplementations<CR>
 " 🔄 SINCRONIZACIÓN COMPLETA CON NEOVIM - TODOS LOS COMANDOS FALTANTES
 " -----------------------------------------------------------------------------
 
-" Testing Commands - RESTAURADO PARA SINCRONIZACIÓN vim-test
+" Testing Commands - CORREGIDOS para Android Studio
 nnoremap <leader>T :action RunClass<CR>
-" Test Nearest - como Neovim <leader>T (PRINCIPAL)
-nnoremap <leader>Tf :action RunClass<CR>
-" Test File - como Neovim <leader>Tf (RESTAURADO - mismo que T por simplicidad)
-nnoremap <leader>Ta :action RunAllTestsInProject<CR>
-" Test All Suite - como Neovim <leader>Ta (RESTAURADO)
+" Test/Run Class - como Neovim <leader>T (ejecuta clase actual)
+nnoremap <leader>Tf :action Run<CR>
+" Test/Run File - como Neovim <leader>Tf (ejecuta configuración actual)
+nnoremap <leader>Ta :action RunAll<CR>
+" Test All Suite - como Neovim <leader>Ta (ejecuta todos los tests)
 nnoremap <leader>Tl :action Rerun<CR>
-" Test Last - como Neovim <leader>Tl (RESTAURADO)"
+" Test Last - como Neovim <leader>Tl (re-ejecuta último)
 
-" Flutter Commands - SINCRONIZADO CON flutter-tools.nvim
-nnoremap <leader>Fs :action RunConfiguration<CR>
-" Flutter Start App - como Neovim <leader>Fs (RESTAURADO - usa RunConfiguration)
+" Flutter Commands - CORREGIDOS para Android Studio
+nnoremap <leader>Fs :action Run<CR>
+" Flutter Start App - como Neovim <leader>Fs (ejecuta aplicación)
 nnoremap <leader>Fr :action Flutter.HotReload<CR>
-" Flutter Reload - como Neovim <leader>Fr
-nnoremap <leader>FR :action Flutter.HotRestart<CR>
-" Flutter Restart - como Neovim <leader>FR
-nnoremap <leader>Fq :action Flutter.Stop<CR>
-" Flutter Quit - como Neovim <leader>Fq
-nnoremap <leader>Fd :action Flutter.OpenDevTools<CR>
+" Flutter Hot Reload - como Neovim <leader>Fr (Cmd+\)
+nnoremap <leader>FR :action Flutter.Restart<CR>
+" Flutter Hot Restart - como Neovim <leader>FR (Shift+Cmd+\)
+nnoremap <leader>Fq :action Stop<CR>
+" Flutter Quit - como Neovim <leader>Fq (para ejecución)
+nnoremap <leader>Fd :action Flutter.Open.DevTools<CR>
 " Flutter DevTools - como Neovim <leader>Fd
-nnoremap <leader>FD :action RunConfiguration<CR>
-" Flutter Devices - como Neovim <leader>FD
-" nnoremap <leader>Fe :action RunConfiguration<CR>
-" Flutter Emulators - como Neovim <leader>Fe (DESHABILITADO - no funciona bien)
-nnoremap <leader>Fo :action Flutter.Outline<CR>
-" Flutter Outline - como Neovim <leader>Fo
-nnoremap <leader>Fc :action Flutter.ClearLog<CR>
-" Flutter Clear Log - como Neovim <leader>Fc
+nnoremap <leader>FD :action DeviceAndSnapshotComboBox<CR>
+" Flutter Devices selector - como Neovim <leader>FD
+nnoremap <leader>Fe :action AvdManager<CR>
+" Flutter Emulators - abrir AVD Manager
+nnoremap <leader>Fo :action ActivateStructureToolWindow<CR>
+" Flutter Outline - estructura del archivo
+nnoremap <leader>Fc :action AndroidLogcatToolWindowFactory.CloseLogcatConsole<CR>
+" Flutter Clear Log - limpiar logcat
 
-" Terminal Commands - RESTAURADOS PARA SINCRONIZACIÓN PERFECTA toggleterm.nvim
+" Terminal Commands - DIFERENCIADOS para Android Studio
 nnoremap <leader>th :action ActivateTerminalToolWindow<CR>
-" Terminal Horizontal - como Neovim <leader>th (RESTAURADO)
-nnoremap <leader>tv :action ActivateTerminalToolWindow<CR>
-" Terminal Vertical - como Neovim <leader>tv (RESTAURADO)
-nnoremap <leader>tf :action ActivateTerminalToolWindow<CR>
-" Terminal Float - como Neovim <leader>tf (RESTAURADO)
+" Terminal Horizontal - como Neovim <leader>th (ventana terminal abajo)
+nnoremap <leader>tv :action Terminal.OpenInTerminal<CR>
+" Terminal Vertical - como Neovim <leader>tv (terminal en directorio actual)
+nnoremap <leader>tf :action Terminal.OpenInTerminal<CR>
+" Terminal Float/New - como Neovim <leader>tf (nueva sesión terminal)
 " NOTA: <leader>tt ya está configurado arriba como comando principal
 
 " ELIMINADO: Sección duplicada de Buffer Management - ya configurada arriba en líneas 173-180
@@ -519,8 +509,8 @@ nnoremap <leader>oq :action RunClass<CR>
 " Window Management - SINCRONIZADO CON winshift.nvim
 nnoremap <leader>wm :action MoveEditorToOppositeTabGroup<CR>
 " WinShift Move - como Neovim <leader>wm
-nnoremap <leader>ws :action MoveTabToOppositeTabGroup<CR>
-" WinShift Swap - como Neovim <leader>ws
+nnoremap <leader>ws :action MoveEditorToOppositeTabGroup<CR>
+" WinShift Swap - como Neovim <leader>ws (mover editor a grupo opuesto)
 
 " Oil.nvim equivalent - File Explorer Direct Access
 " REMOVED: - duplicado - mantener solo <leader>pv
