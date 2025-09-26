@@ -10,7 +10,7 @@ return {
         -- Restaurar carga perezosa por teclas originales del usuario
         keys = {
             { "<leader>ma", desc = "Harpoon: Add File" },
-            { "<leader>mm", desc = "Harpoon: Toggle UI" },
+            { "<leader>mh", desc = "Harpoon: Toggle UI" },
             { "<leader>1", desc = "Harpoon: Go To 1" },
             { "<leader>2", desc = "Harpoon: Go To 2" },
             { "<leader>3", desc = "Harpoon: Go To 3" },
@@ -41,8 +41,8 @@ return {
                 harpoon:list():add()
             end, { desc = "Harpoon: Add File", silent = true }) -- Añadido silent=true
 
-            -- Mostrar/ocultar menú (cambiado a <leader>mm para categoría Marks)
-            map("n", "<leader>mm", function()
+            -- Mostrar/ocultar menú (cambiado a <leader>mh para evitar conflicto con bookmarks)
+            map("n", "<leader>mh", function()
                 -- Obtener objeto lista y pasarlo a toggle_quick_menu
                 harpoon.ui:toggle_quick_menu(harpoon:list())
             end, { desc = "Harpoon: Toggle UI", silent = true })

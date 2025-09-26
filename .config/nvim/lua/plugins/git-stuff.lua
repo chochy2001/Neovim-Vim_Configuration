@@ -12,6 +12,11 @@ return {
             { "<leader>gv", "<cmd>Git blame<cr>", desc = "Git Blame Toggle" },
             { "<leader>gB", "<cmd>Git blame<cr>", desc = "Git Blame" },
             { "<leader>gb", "<cmd>GBrowse<cr>", desc = "Git Browse" },
+            -- AGREGADOS: comandos faltantes para sincronización completa
+            { "<leader>gl", "<cmd>Git log --oneline<cr>", desc = "Git File History" },
+            { "<leader>gC", "<cmd>Git log --graph --oneline --all<cr>", desc = "Git Log Details" },
+            { "<leader>gf", "<cmd>Git fetch<cr>", desc = "Git Fetch" },
+            { "<leader>gcb", "<cmd>Git diff HEAD~1<cr>", desc = "Git Compare with Branch" },
         }
     },
 
@@ -84,6 +89,7 @@ return {
 
             -- Actions principales
             vim.keymap.set("n", "<leader>hs", gs.stage_hunk, vim.tbl_extend("force", opts, { desc = "Git: Stage Hunk" }))
+            vim.keymap.set("n", "<leader>ga", gs.stage_hunk, vim.tbl_extend("force", opts, { desc = "Git: Add/Stage Hunk (alias)" })) -- AGREGADO: duplicado para sincronización
             vim.keymap.set("n", "<leader>hr", gs.reset_hunk, vim.tbl_extend("force", opts, { desc = "Git: Reset Hunk" }))
             vim.keymap.set("n", "<leader>hS", gs.stage_buffer, vim.tbl_extend("force", opts, { desc = "Git: Stage Buffer" }))
             vim.keymap.set("n", "<leader>hu", gs.undo_stage_hunk, vim.tbl_extend("force", opts, { desc = "Git: Undo Stage Hunk" }))
@@ -92,6 +98,7 @@ return {
             vim.keymap.set("n", "<leader>hb", function() gs.blame_line{full=true} end, vim.tbl_extend("force", opts, { desc = "Git: Blame Line" }))
             vim.keymap.set("n", "<leader>tb", gs.toggle_current_line_blame, vim.tbl_extend("force", opts, { desc = "Git: Toggle Line Blame" }))
             vim.keymap.set("n", "<leader>hd", gs.diffthis, vim.tbl_extend("force", opts, { desc = "Git: Diff This" }))
+            vim.keymap.set("n", "<leader>gdd", gs.diffthis, vim.tbl_extend("force", opts, { desc = "Git: Show Local Changes (alias)" })) -- AGREGADO
             vim.keymap.set("n", "<leader>td", gs.toggle_deleted, vim.tbl_extend("force", opts, { desc = "Git: Toggle Deleted" }))
 
             -- Text object con leader (para visual mode)
@@ -218,6 +225,10 @@ return {
             vim.keymap.set('n', '<leader>c0', '<Plug>(git-conflict-none)', { desc = "Git Conflict: Choose None" })
             vim.keymap.set('n', '<leader>cp', '<Plug>(git-conflict-prev-conflict)', { desc = "Git Conflict: Previous" })
             vim.keymap.set('n', '<leader>cn', '<Plug>(git-conflict-next-conflict)', { desc = "Git Conflict: Next" })
+
+            -- AGREGADOS: Window navigation commands para sincronización completa
+            vim.keymap.set('n', '<leader>we', '<C-w>l', { desc = "Window: Focus Editor (right split)" })
+            vim.keymap.set('n', '<leader>wt', '<C-w>h', { desc = "Window: Focus Tree (left split)" })
         end
     },
 }

@@ -179,6 +179,10 @@ return {
                     vim.keymap.set("n", "<leader>lw", function()
                         print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
                     end, vim.tbl_extend("force", opts, { desc = "LSP: List Workspace Folders" }))
+
+                    -- AGREGADOS: comandos LSP faltantes para sincronización completa
+                    vim.keymap.set("i", "<C-space>", "<C-x><C-o>", vim.tbl_extend("force", opts, { desc = "Force LSP Completion" }))
+                    vim.keymap.set("n", "<leader>I", vim.lsp.buf.implementation, vim.tbl_extend("force", opts, { desc = "Quick Implementations" }))
                 end,
             })
 

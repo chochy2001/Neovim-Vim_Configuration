@@ -97,10 +97,21 @@ return {
                 }
             })
 
-            -- Keymaps globales para Flutter
+            -- Keymaps globales para Flutter - sincronizado con .ideavimrc
+            -- Hot Reload y Restart principales (coinciden con Android Studio)
+            vim.keymap.set("n", "<leader>Fr", "<cmd>FlutterReload<cr>", { desc = "Flutter: Hot Reload" })
+            vim.keymap.set("n", "<leader>FR", "<cmd>FlutterRestart<cr>", { desc = "Flutter: Hot Restart" })
+            vim.keymap.set("n", "<leader>Fd", "<cmd>FlutterDevTools<cr>", { desc = "Flutter: DevTools" })
+
+            -- Comandos adicionales útiles (no conflictan con .ideavimrc)
             vim.keymap.set("n", "<leader>Fs", "<cmd>FlutterRun<cr>", { desc = "Flutter: Start App" })
             vim.keymap.set("n", "<leader>FD", "<cmd>FlutterDevices<cr>", { desc = "Flutter: Select Device" })
             vim.keymap.set("n", "<leader>Fe", "<cmd>FlutterEmulators<cr>", { desc = "Flutter: Start Emulator" })
+
+            -- AGREGADOS: comandos Flutter faltantes para sincronización completa
+            vim.keymap.set("n", "<leader>Fq", "<cmd>FlutterQuit<cr>", { desc = "Flutter: Quit/Stop" })
+            vim.keymap.set("n", "<leader>Fo", "<cmd>FlutterOutlineToggle<cr>", { desc = "Flutter: Toggle Outline" })
+            vim.keymap.set("n", "<leader>Fc", "<cmd>FlutterLogClear<cr>", { desc = "Flutter: Clear Log" })
         end,
     },
 

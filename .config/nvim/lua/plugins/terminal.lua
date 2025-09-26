@@ -5,10 +5,7 @@ return {
         version = "*",
         cmd = "ToggleTerm",
         keys = {
-            { "<leader>th", "<cmd>ToggleTerm direction=horizontal<CR>", desc = "Terminal (Horizontal)" },
-            { "<leader>tv", "<cmd>ToggleTerm direction=vertical<CR>", desc = "Terminal (Vertical)" },
-            { "<leader>tt", "<cmd>ToggleTerm direction=tab<CR>", desc = "Terminal (Tab)" },
-            { "<leader>tf", "<cmd>ToggleTerm direction=float<CR>", desc = "Terminal (Float)" },
+            { "<leader>tt", "<cmd>ToggleTerm direction=float<CR>", desc = "Terminal (Main)" },
         },
         config = function()
             require("toggleterm").setup({
@@ -54,17 +51,13 @@ return {
                 },
             })
 
-            -- Keymaps básicos del terminal
+            -- Terminal keymaps - sincronizado con .ideavimrc
             local opts = { silent = true }
-            vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", opts)
-            -- Usar jj para salir en terminal también
+            -- Terminal escape - sincronizado con IntelliJ
             vim.keymap.set("t", "jj", "<C-\\><C-n>", opts)
+            vim.keymap.set("t", "<C-[><C-[>", "<C-\\><C-n>", opts) -- Ctrl+[ doble como alternativa
 
-            -- Crear keymaps normales para navegación entre ventanas
-            vim.keymap.set("n", "<leader>wh", "<C-w>h", { desc = "Window: Go Left" })
-            vim.keymap.set("n", "<leader>wj", "<C-w>j", { desc = "Window: Go Down" })
-            vim.keymap.set("n", "<leader>wk", "<C-w>k", { desc = "Window: Go Up" })
-            vim.keymap.set("n", "<leader>wl", "<C-w>l", { desc = "Window: Go Right" })
+            -- Window navigation keymaps ya están en vim-options.lua - evitar duplicados
 
             -- Terminales específicos para lenguajes
             local Terminal = require('toggleterm.terminal').Terminal
@@ -144,6 +137,12 @@ return {
             vim.keymap.set("n", "<leader>tu", "<cmd>lua _htop_toggle()<CR>", { desc = "Htop Terminal" })
             vim.keymap.set("n", "<leader>tp", "<cmd>lua _python_toggle()<CR>", { desc = "Python Terminal" })
             vim.keymap.set("n", "<leader>tF", "<cmd>lua _flutter_toggle()<CR>", { desc = "Flutter Terminal" })
+
+            -- AGREGADOS: Build/Run/Debug commands para sincronización completa
+            vim.keymap.set("n", "<leader>rr", ":RunCode<CR>", { desc = "Run Class/File" })
+            vim.keymap.set("n", "<leader>rd", ":lua print('Debug not implemented in terminal context')<CR>", { desc = "Debug (placeholder)" })
+            vim.keymap.set("n", "<leader>rs", ":lua vim.fn.jobstop(-1)<CR>", { desc = "Stop Running Process" })
+            vim.keymap.set("n", "<leader>rb", ":!make<CR>", { desc = "Build/Sync Project" })
         end,
     },
 
@@ -177,7 +176,9 @@ return {
             vim.keymap.set("n", "<leader>oo", "<cmd>OverseerToggle<cr>", { desc = "Overseer: Toggle" })
             vim.keymap.set("n", "<leader>or", "<cmd>OverseerRun<cr>", { desc = "Overseer: Run Task" })
             vim.keymap.set("n", "<leader>ob", "<cmd>OverseerBuild<cr>", { desc = "Overseer: Build" })
-            -- Comandos Info, QuickAction y TaskAction eliminados por uso poco frecuente
+            -- AGREGADO: comando Overseer faltante para sincronización completa
+            vim.keymap.set("n", "<leader>oi", "<cmd>OverseerInfo<cr>", { desc = "Overseer: Info/Edit Configurations" })
+            -- Comandos QuickAction y TaskAction eliminados por uso poco frecuente
         end,
     },
 
