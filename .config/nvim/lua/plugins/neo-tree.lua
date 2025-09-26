@@ -156,8 +156,8 @@ return {
 		})
 
 		-- Keymaps adicionales para navegación universal (compatible con todas las terminales)
+		-- ELIMINADO: <leader>1 conflicta con harpoon del .ideavimrc
 		-- Alternativas universales sin dependencia de macOS
-		vim.keymap.set("n", "<leader>1", "<cmd>Neotree filesystem focus<cr>", { desc = "Focus NeoTree (Leader+1)" })
 		vim.keymap.set("n", "<leader>pf", "<cmd>Neotree filesystem focus<cr>", { desc = "Project Focus" })
 
 		-- Keymap para revelar archivo actual en el árbol (ya existe en keys arriba)

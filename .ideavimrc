@@ -42,8 +42,8 @@ set incsearch         " Búsqueda incremental
 set hlsearch          " Resaltar resultados
 set ignorecase        " Ignorar mayúsculas/minúsculas en búsqueda
 set smartcase         " Usar mayúsculas/minúsculas si la búsqueda contiene mayúsculas
-nnoremap <leader><space> :action HideActiveWindow<CR>
-" Limpiar resaltado de búsqueda / Ocultar ventana activa
+nnoremap <leader><leader> :nohl<CR>
+" Limpiar resaltado de búsqueda - CORREGIDO con Esc antes
 
 " -----------------------------------------------------------------------------
 " Mapeos Core y Navegación Básica
@@ -98,16 +98,12 @@ nnoremap <leader>fh :action HelpTopics<CR>
 " Find Help - como Neovim <leader>fh
 nnoremap <leader>fc :action GotoAction<CR>
 " Find Commands - como Neovim <leader>fc
-nnoremap <leader>fk :action GotoAction<CR>
-" Find Keymaps/Actions - como Neovim <leader>fk (CORREGIDO - buscar acciones)
+" ELIMINADO: <leader>fk duplicado - usar <leader>fc
 " REMOVED: <leader>pe duplicado - mantener solo <leader>pv
 nnoremap <leader>ps :action GotoSymbol<CR>
 " Buscar símbolo (clase, método, var)
 " Archivos recientes
 
-" Acceso rápido múltiple sincronizado con Neovim
-nnoremap <leader><leader> :action GotoFile<CR>
-" Quick Find Files - como Neovim <leader><leader> (RESTAURADO)
 nnoremap <leader>. :action GotoFile<CR>
 " Quick Find Files - como Neovim <leader>. (RESTAURADO)
 nnoremap ,, :action GotoFile<CR>
@@ -136,12 +132,9 @@ nnoremap <leader>mm :action ShowBookmarks<CR>
 " Harpoon Toggle UI - como Neovim <leader>mm (muestra bookmarks reales)
 nnoremap <leader>ma :action ToggleBookmark<CR>
 " Harpoon Add File - como Neovim <leader>ma (agregar bookmark)
-nnoremap <leader>mb :action ShowBookmarks<CR>
-" Show Bookmarks - como Neovim (ver bookmarks creados)
-nnoremap <leader>mp :action PreviousTab<CR>
-" Harpoon Previous - como Neovim <leader>mp (RESTAURADO - aproximación con tabs)
-nnoremap <leader>mn :action NextTab<CR>
-" Harpoon Next - como Neovim <leader>mn (RESTAURADO - aproximación con tabs)
+" ELIMINADO: <leader>mb duplicado - usar <leader>mm
+" ELIMINADO: <leader>mp duplicado - usar <leader>bp para PreviousTab
+" ELIMINADO: <leader>mn duplicado - usar <leader>bn para NextTab
 nnoremap <leader>1 '1
 nnoremap <leader>2 '2
 nnoremap <leader>3 '3
@@ -162,7 +155,7 @@ nnoremap <S-l> :action NextTab<CR>
 nnoremap <S-h> :action PreviousTab<CR>
 " Tab/buffer anterior (Shift+H)
 
-" Navegación entre splits/pantallas divididas
+" Navegación entre splits/pantallas divididas - RESTAURADO
 nnoremap <space>l :action NextSplitter<CR>
 " Siguiente split (Space+L)
 nnoremap <space>h :action PrevSplitter<CR>
@@ -190,8 +183,10 @@ nnoremap <leader>to :action CloseAllEditorsButActive<CR>
 " -----------------------------------------------------------------------------
 nnoremap <leader>tt :action ActivateTerminalToolWindow<CR>
 " Terminal principal
-tnoremap <Esc><Esc> <C-w><C-p>
-" Escape doble para salir de terminal al editor
+tnoremap <C-[><C-[> <C-w><C-p>
+" Terminal: Ctrl+[ doble para salir (Esc equivalente)
+tnoremap jj <C-w><C-p>
+" Terminal: jj para salir como en insert mode
 
 " -----------------------------------------------------------------------------
 " Git / VCS (Control de Versiones) - ACCIONES VERIFICADAS SIN CONFLICTOS
@@ -236,8 +231,7 @@ nnoremap <leader>ga :action ChangesView.Shelve<CR>
 nnoremap <leader>hr :action Vcs.RollbackChangedLines<CR>
 " Reset hunk (como GitSigns) - RESTAURADO: funciona parcialmente en Android Studio
 " REMOVED: <leader>hS duplicado - mantener solo <leader>ga
-nnoremap <leader>hu :action Vcs.RollbackChangedLines<CR>
-" Undo stage hunk (como GitSigns)
+" ELIMINADO: <leader>hu duplicado - usar <leader>hr
 nnoremap <leader>hR :action ChangesView.Revert<CR>
 " Reset buffer (CORREGIDO)
 " nnoremap <leader>hp :action Vcs.ShowDiff<CR>
@@ -279,8 +273,7 @@ nnoremap <leader>c0 :action ChooseNone<CR>
 " Additional Git Operations - MEJORADO CON ACCIONES FUNCIONALES
 " REMOVED: <leader>ga duplicado - version Vcs.Add, mantener Git.Add
 " REMOVED: <leader>gu duplicado - ya existe <leader>hu con misma acción
-" nnoremap <leader>gb :action Vcs.Branches<CR>
-" Popup de Ramas (Branches) - NO FUNCIONA EN ANDROID STUDIO
+" ELIMINADO: <leader>gb duplicado - Vcs.Branches NO FUNCIONA
 " REMOVED: <leader>gB duplicado - mantener solo <leader>gv para blame
 nnoremap <leader>gf :action Git.Fetch<CR>
 " Git Fetch - como Neovim (trabajado y funcional)
@@ -418,8 +411,7 @@ nnoremap <leader>sv :action SplitVertically<CR>
 " Crear split vertical
 nnoremap <leader>sh :action SplitHorizontally<CR>
 " Crear split horizontal
-nnoremap <leader>sr :action SplitVertically<CR>
-" Crear split right (duplicado de sv pero más intuitivo)
+" ELIMINADO: <leader>sr duplicado - usar <leader>sv
 nnoremap <leader>sc :action Unsplit<CR>             
 " Cerrar split actual
 nnoremap <leader>so :action UnsplitAll<CR>          
@@ -443,8 +435,8 @@ nnoremap <leader>I :action QuickImplementations<CR>
 " Testing Commands - CORREGIDOS para Android Studio
 nnoremap <leader>T :action RunClass<CR>
 " Test/Run Class - como Neovim <leader>T (ejecuta clase actual)
-nnoremap <leader>Tf :action Run<CR>
-" Test/Run File - como Neovim <leader>Tf (ejecuta configuración actual)
+nnoremap <leader>Tf :action RunClass<CR>
+" Test/Run File - como Neovim <leader>Tf (ejecuta clase del archivo actual)
 nnoremap <leader>Ta :action RunAll<CR>
 " Test All Suite - como Neovim <leader>Ta (ejecuta todos los tests)
 nnoremap <leader>Tl :action Rerun<CR>
@@ -471,13 +463,9 @@ nnoremap <leader>Fc :action AndroidLogcatToolWindowFactory.CloseLogcatConsole<CR
 " Flutter Clear Log - limpiar logcat
 
 " Terminal Commands - DIFERENCIADOS para Android Studio
-nnoremap <leader>th :action ActivateTerminalToolWindow<CR>
-" Terminal Horizontal - como Neovim <leader>th (ventana terminal abajo)
-nnoremap <leader>tv :action Terminal.OpenInTerminal<CR>
-" Terminal Vertical - como Neovim <leader>tv (terminal en directorio actual)
-nnoremap <leader>tf :action Terminal.OpenInTerminal<CR>
-" Terminal Float/New - como Neovim <leader>tf (nueva sesión terminal)
-" NOTA: <leader>tt ya está configurado arriba como comando principal
+" ELIMINADO: <leader>th duplicado - usar <leader>tt como principal
+" ELIMINADOS: <leader>tv y <leader>tf - usar solo <leader>tt como solicitado
+" Solo usar <leader>tt para terminal
 
 " ELIMINADO: Sección duplicada de Buffer Management - ya configurada arriba en líneas 173-180
 
@@ -502,15 +490,13 @@ nnoremap <leader>oo :action ActivateRunToolWindow<CR>
 nnoremap <leader>oi :action EditConfigurations<CR>
 " Overseer Info - como Neovim <leader>oi
 " REMOVED: <leader>ob duplicado - mantener solo <leader>rb
-nnoremap <leader>oq :action RunClass<CR>
-" Overseer Quick Action - como Neovim <leader>oq
+" ELIMINADO: <leader>oq duplicado - usar <leader>T o <leader>rr
 " REMOVED: <leader>ot duplicado - mantener solo <leader>oo
 
 " Window Management - SINCRONIZADO CON winshift.nvim
 nnoremap <leader>wm :action MoveEditorToOppositeTabGroup<CR>
 " WinShift Move - como Neovim <leader>wm
-nnoremap <leader>ws :action MoveEditorToOppositeTabGroup<CR>
-" WinShift Swap - como Neovim <leader>ws (mover editor a grupo opuesto)
+" ELIMINADO: <leader>ws duplicado - usar <leader>wm
 
 " Oil.nvim equivalent - File Explorer Direct Access
 " REMOVED: - duplicado - mantener solo <leader>pv

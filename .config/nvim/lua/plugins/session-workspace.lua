@@ -123,13 +123,22 @@ return {
                 }
             })
 
-            -- Keymaps para bufferline usando leader
+            -- Keymaps para bufferline - sincronizado con .ideavimrc
+            -- Agregado <leader>b para Back (como IntelliJ)
+            vim.keymap.set("n", "<leader>b", "<C-o>", { desc = "Back (Go to previous location)" })
+
+            -- Buffer navigation (coincide con .ideavimrc)
             vim.keymap.set("n", "<leader>bn", ":BufferLineCycleNext<CR>", { desc = "Buffer: Next" })
-            vim.keymap.set("n", "<leader>bP", ":BufferLineCyclePrev<CR>", { desc = "Buffer: Previous" })
-            vim.keymap.set("n", "<leader>bd", ":BufferLinePickClose<CR>", { desc = "Buffer: Pick to Close" })
+            vim.keymap.set("n", "<leader>bp", ":BufferLineCyclePrev<CR>", { desc = "Buffer: Previous" }) -- CORREGIDO: era Pick, ahora Previous
+
+            -- Buffer closing (alineado con .ideavimrc)
+            vim.keymap.set("n", "<leader>bd", ":bd<CR>", { desc = "Buffer: Delete/Close" }) -- CORREGIDO: usar bd directo como CloseContent
             vim.keymap.set("n", "<leader>bl", ":BufferLineCloseRight<CR>", { desc = "Buffer: Close Right" })
             vim.keymap.set("n", "<leader>bh", ":BufferLineCloseLeft<CR>", { desc = "Buffer: Close Left" })
-            vim.keymap.set("n", "<leader>bp", ":BufferLinePick<CR>", { desc = "Buffer: Pick" })
+            vim.keymap.set("n", "<leader>to", ":BufferLineCloseLeft<CR>:BufferLineCloseRight<CR>", { desc = "Close All Others (Tabs Only)" })
+
+            -- Comandos adicionales de bufferline (no conflictan con .ideavimrc)
+            vim.keymap.set("n", "<leader>bP", ":BufferLinePick<CR>", { desc = "Buffer: Pick" }) -- Movido a mayúscula P
             vim.keymap.set("n", "<leader>bt", ":BufferLineTogglePin<CR>", { desc = "Toggle Pin Buffer" })
 
             -- Shift mappings que funcionaban bien

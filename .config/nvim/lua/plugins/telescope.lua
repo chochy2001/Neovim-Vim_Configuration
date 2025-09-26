@@ -33,9 +33,11 @@ return {
             vim.keymap.set("n", "<leader>fc", builtin.commands, { desc = "Find Commands" })
             vim.keymap.set("n", "<leader>fk", builtin.keymaps, { desc = "Find Keymaps" })
 
-            -- Alternativas de acceso rápido con leader
-            vim.keymap.set("n", "<leader><leader>", builtin.find_files, { desc = "Quick Find Files" })
-            vim.keymap.set("n", "<leader>fd", builtin.find_files, { desc = "Find Files (duplicate)" })
+            -- Project/Symbol search - sincronizado con .ideavimrc
+            vim.keymap.set("n", "<leader>ps", builtin.lsp_dynamic_workspace_symbols, { desc = "Find Project Symbols" })
+
+            -- ELIMINADO: <leader><leader> conflicta con clear search highlight del .ideavimrc
+            -- ELIMINADO: <leader>fd duplicado innecesario
 
             -- Mappings adicionales que funcionan bien
             vim.keymap.set("n", "<leader>.", builtin.find_files, { desc = "Quick Find Files" })
