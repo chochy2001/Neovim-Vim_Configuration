@@ -1,4 +1,12 @@
 return {
+    -- FZF nativo para búsqueda ultra rápida (requiere compilación)
+    {
+        "nvim-telescope/telescope-fzf-native.nvim",
+        build = "make",
+        cond = function()
+            return vim.fn.executable("make") == 1
+        end,
+    },
     {
         "nvim-telescope/telescope-ui-select.nvim",
     },
@@ -17,6 +25,20 @@ return {
         dependencies = { "nvim-lua/plenary.nvim" },
         config = function()
             require("telescope").setup({
+                defaults = {
+                    -- Optimización: Usar fzf para búsqueda más rápida
+                    file_ignore_patterns = { "node_modules", ".git/" },
+                    vimgrep_arguments = {
+                        "rg",
+                        "--color=never",
+                        "--no-heading",
+                        "--with-filename",
+                        "--line-number",
+                        "--column",
+                        "--smart-case",
+                        "--hidden",  -- Buscar en archivos ocultos
+                    },
+                },
                 extensions = {
                     ["ui-select"] = {
                         require("telescope.themes").get_dropdown({}),
@@ -43,7 +65,12 @@ return {
             vim.keymap.set("n", "<leader>.", builtin.find_files, { desc = "Quick Find Files" })
             vim.keymap.set("n", ",,", builtin.find_files, { desc = "Quick Find Files" })
 
+            -- Cargar extensiones
             require("telescope").load_extension("ui-select")
+            -- Cargar fzf si está disponible
+            pcall(function()
+                require("telescope").load_extension("fzf")
+            end)
         end,
     },
 }

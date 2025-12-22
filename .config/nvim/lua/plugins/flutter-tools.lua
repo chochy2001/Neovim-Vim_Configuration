@@ -112,6 +112,8 @@ return {
             vim.keymap.set("n", "<leader>Fq", "<cmd>FlutterQuit<cr>", { desc = "Flutter: Quit/Stop" })
             vim.keymap.set("n", "<leader>Fo", "<cmd>FlutterOutlineToggle<cr>", { desc = "Flutter: Toggle Outline" })
             vim.keymap.set("n", "<leader>Fc", "<cmd>FlutterLogClear<cr>", { desc = "Flutter: Clear Log" })
+            vim.keymap.set("n", "<leader>Ft", "<cmd>FlutterCopyProfilerUrl<cr>", { desc = "Flutter: Copy Profiler URL" })
+            vim.keymap.set("n", "<leader>Fl", "<cmd>FlutterLspRestart<cr>", { desc = "Flutter: Restart LSP" })
         end,
     },
 
