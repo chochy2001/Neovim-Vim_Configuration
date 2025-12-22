@@ -1,40 +1,33 @@
 return {
-    -- Fugitive: Git commands core
+    -- Fugitive con keymaps mejorados
     {
         "tpope/vim-fugitive",
         cmd = { "Git", "G", "Gdiffsplit", "Gread", "Gwrite", "Ggrep", "GMove", "GDelete", "GBrowse", "GRemove", "GRename", "Glgrep", "Gedit" },
         ft = {"fugitive"},
         keys = {
-            -- Git Core (2 teclas)
             { "<leader>gs", "<cmd>Git<cr>", desc = "Git Status" },
+            { "<leader>gw", "<cmd>Gwrite<cr>", desc = "Git Write" },
             { "<leader>gc", "<cmd>Git commit<cr>", desc = "Git Commit" },
-            { "<leader>gp", "<cmd>Neogit push<cr>", desc = "Git Push" },  -- Movido de gps
-            { "<leader>gl", "<cmd>Neogit pull<cr>", desc = "Git Pull/Load" },  -- Movido de gpl
+            { "<leader>gds", "<cmd>Gdiffsplit<cr>", desc = "Git Diff Split" },
+            { "<leader>gv", "<cmd>Git blame<cr>", desc = "Git Blame Toggle" },
+            { "<leader>gB", "<cmd>Git blame<cr>", desc = "Git Blame" },
+            { "<leader>gb", "<cmd>GBrowse<cr>", desc = "Git Browse" },
+            -- AGREGADOS: comandos faltantes para sincronización completa
+            { "<leader>gl", "<cmd>Git log --oneline<cr>", desc = "Git File History" },
+            { "<leader>gC", "<cmd>Git log --graph --oneline --all<cr>", desc = "Git Log Details" },
             { "<leader>gf", "<cmd>Git fetch<cr>", desc = "Git Fetch" },
-            
-            -- Git Blame & Branches (gb*)
-            { "<leader>gb", "<cmd>Git blame<cr>", desc = "Git Blame Toggle" },  -- Movido de gv
-            { "<leader>gbl", "<cmd>Git blame<cr>", desc = "Git Blame Line" },  -- Específico para línea
-            { "<leader>gbr", "<cmd>GBrowse<cr>", desc = "Git Branches/Browse" },  -- Movido de gb
-            { "<leader>gbc", "<cmd>Git diff HEAD~1<cr>", desc = "Git Branch Compare" },  -- Movido de gcb
-            
-            -- Git History (gh*)
-            { "<leader>gh", "<cmd>Git log --oneline<cr>", desc = "Git History/Log" },  -- Movido de gl
-            { "<leader>ghd", "<cmd>Git log --graph --oneline --all<cr>", desc = "Git History Details" },  -- Movido de gC
-            
-            -- Git Diff (gd*) - mantenemos separado de LSP gd sin leader
-            { "<leader>gd", "<cmd>Gdiffsplit<cr>", desc = "Git Diff" },  -- Movido de gds
+            { "<leader>gcb", "<cmd>Git diff HEAD~1<cr>", desc = "Git Compare with Branch" },
         }
     },
 
-    -- vim-rhubarb: GitHub integration
+    -- vim-rhubarb para soporte de GitHub con fugitive
     {
         "tpope/vim-rhubarb",
         dependencies = { "tpope/vim-fugitive" },
         event = "VeryLazy",
     },
 
-    -- GitSigns: Hunk operations y stage/reset
+    -- GitSigns mejorado con configuración completa
     {
         "lewis6991/gitsigns.nvim",
         event = { "BufReadPre", "BufNewFile" },
@@ -77,45 +70,43 @@ return {
                 },
             })
 
+            -- Keymaps mejorados para GitSigns
             local gs = require("gitsigns")
             local opts = { silent = true }
 
-            -- ============================================
-            -- NUEVO SISTEMA: Git Stage (gs*) - SIN MAYÚSCULAS
-            -- ============================================
-            
-            -- Stage operations (gsa, gsr, gsu, gsp, gsb)
-            vim.keymap.set("n", "<leader>gsa", gs.stage_hunk, vim.tbl_extend("force", opts, { desc = "Git: Stage Add (hunk)" }))
-            vim.keymap.set("n", "<leader>gsr", gs.reset_hunk, vim.tbl_extend("force", opts, { desc = "Git: Stage Reset (hunk)" }))
-            vim.keymap.set("n", "<leader>gsu", gs.undo_stage_hunk, vim.tbl_extend("force", opts, { desc = "Git: Stage Undo" }))
-            vim.keymap.set("n", "<leader>gsp", gs.preview_hunk, vim.tbl_extend("force", opts, { desc = "Git: Stage Preview" }))
-            vim.keymap.set("n", "<leader>gsb", gs.reset_buffer, vim.tbl_extend("force", opts, { desc = "Git: Stage Buffer reset" }))
-            
-            -- Hunk navigation (gn, gnp)
-            vim.keymap.set("n", "<leader>gn", function()
+            -- Navigation con leader
+            vim.keymap.set("n", "<leader>hn", function()
                 if vim.wo.diff then return "]c" end
                 vim.schedule(function() gs.next_hunk() end)
                 return "<Ignore>"
-            end, vim.tbl_extend("force", opts, { expr = true, desc = "Git: Next hunk" }))
+            end, vim.tbl_extend("force", opts, { expr = true, desc = "Git: Next Hunk" }))
 
-            vim.keymap.set("n", "<leader>gnp", function()
+            vim.keymap.set("n", "<leader>hP", function()
                 if vim.wo.diff then return "[c" end
                 vim.schedule(function() gs.prev_hunk() end)
                 return "<Ignore>"
-            end, vim.tbl_extend("force", opts, { expr = true, desc = "Git: Next/Prev hunk" }))
+            end, vim.tbl_extend("force", opts, { expr = true, desc = "Git: Previous Hunk" }))
 
-            -- Git Diff Local (gdl)
-            vim.keymap.set("n", "<leader>gdl", gs.diffthis, vim.tbl_extend("force", opts, { desc = "Git: Diff Local changes" }))
-            
-            -- Toggle blame line
-            vim.keymap.set("n", "<leader>gbt", gs.toggle_current_line_blame, vim.tbl_extend("force", opts, { desc = "Git: Blame Toggle inline" }))
+            -- Actions principales
+            vim.keymap.set("n", "<leader>hs", gs.stage_hunk, vim.tbl_extend("force", opts, { desc = "Git: Stage Hunk" }))
+            vim.keymap.set("n", "<leader>ga", gs.stage_hunk, vim.tbl_extend("force", opts, { desc = "Git: Add/Stage Hunk (alias)" })) -- AGREGADO: duplicado para sincronización
+            vim.keymap.set("n", "<leader>hr", gs.reset_hunk, vim.tbl_extend("force", opts, { desc = "Git: Reset Hunk" }))
+            vim.keymap.set("n", "<leader>hS", gs.stage_buffer, vim.tbl_extend("force", opts, { desc = "Git: Stage Buffer" }))
+            vim.keymap.set("n", "<leader>hu", gs.undo_stage_hunk, vim.tbl_extend("force", opts, { desc = "Git: Undo Stage Hunk" }))
+            vim.keymap.set("n", "<leader>hR", gs.reset_buffer, vim.tbl_extend("force", opts, { desc = "Git: Reset Buffer" }))
+            vim.keymap.set("n", "<leader>hp", gs.preview_hunk, vim.tbl_extend("force", opts, { desc = "Git: Preview Hunk" }))
+            vim.keymap.set("n", "<leader>hb", function() gs.blame_line{full=true} end, vim.tbl_extend("force", opts, { desc = "Git: Blame Line" }))
+            vim.keymap.set("n", "<leader>tb", gs.toggle_current_line_blame, vim.tbl_extend("force", opts, { desc = "Git: Toggle Line Blame" }))
+            vim.keymap.set("n", "<leader>hd", gs.diffthis, vim.tbl_extend("force", opts, { desc = "Git: Diff This" }))
+            vim.keymap.set("n", "<leader>gdd", gs.diffthis, vim.tbl_extend("force", opts, { desc = "Git: Show Local Changes (alias)" })) -- AGREGADO
+            vim.keymap.set("n", "<leader>td", gs.toggle_deleted, vim.tbl_extend("force", opts, { desc = "Git: Toggle Deleted" }))
 
-            -- Text object para visual mode
+            -- Text object con leader (para visual mode)
             vim.keymap.set({'o', 'x'}, '<leader>ih', ':<C-U>Gitsigns select_hunk<CR>', { desc = "Git: Select Hunk" })
         end,
     },
 
-    -- Diffview: Visual diff tool
+    -- Diffview mejorado
     {
         "sindrets/diffview.nvim",
         dependencies = { "nvim-lua/plenary.nvim" },
@@ -160,15 +151,15 @@ return {
                 },
             })
 
-            -- Diffview commands (gd*)
-            vim.keymap.set("n", "<leader>gdo", "<cmd>DiffviewOpen<cr>", { desc = "Git: Diff Open" })
-            vim.keymap.set("n", "<leader>gdq", "<cmd>DiffviewClose<cr>", { desc = "Git: Diff Quit" })
-            vim.keymap.set("n", "<leader>gdh", "<cmd>DiffviewFileHistory<cr>", { desc = "Git: Diff History" })
-            vim.keymap.set("n", "<leader>gdf", "<cmd>DiffviewToggleFiles<cr>", { desc = "Git: Diff Files toggle" })
+            -- Keymaps para Diffview
+            vim.keymap.set("n", "<leader>gdo", "<cmd>DiffviewOpen<cr>", { desc = "Git: Open Diffview" })
+            vim.keymap.set("n", "<leader>gdc", "<cmd>DiffviewClose<cr>", { desc = "Git: Close Diffview" })
+            vim.keymap.set("n", "<leader>gdh", "<cmd>DiffviewFileHistory<cr>", { desc = "Git: File History" })
+            vim.keymap.set("n", "<leader>gdf", "<cmd>DiffviewToggleFiles<cr>", { desc = "Git: Toggle Files Panel" })
         end,
     },
 
-    -- Neogit: Magit-like interface
+    -- Neogit mejorado
     {
         "NeogitOrg/neogit",
         dependencies = {
@@ -203,12 +194,14 @@ return {
                     hunk = { "", "" },
                 },
             })
-            
-            -- Neogit no necesita keymaps adicionales (usamos gp/gl definidos arriba)
+            vim.keymap.set("n", "<leader>gg", "<cmd>Neogit<CR>", { desc = "Open Neogit" })
+            vim.keymap.set("n", "<leader>gcn", "<cmd>Neogit commit<CR>", { desc = "Neogit Commit" })
+            vim.keymap.set("n", "<leader>gp", "<cmd>Neogit pull<CR>", { desc = "Neogit Pull" })
+            vim.keymap.set("n", "<leader>gP", "<cmd>Neogit push<CR>", { desc = "Neogit Push" })
         end,
     },
 
-    -- Git Conflict: Merge conflict resolution
+    -- Git conflict resolution
     {
         "akinsho/git-conflict.nvim",
         version = "*",
@@ -225,13 +218,17 @@ return {
                 }
             })
 
-            -- Git Conflict commands (gc*)
-            vim.keymap.set('n', '<leader>gco', '<Plug>(git-conflict-ours)', { desc = "Git: Conflict choose Ours" })
-            vim.keymap.set('n', '<leader>gct', '<Plug>(git-conflict-theirs)', { desc = "Git: Conflict choose Theirs" })
-            vim.keymap.set('n', '<leader>gcb', '<Plug>(git-conflict-both)', { desc = "Git: Conflict choose Both" })
-            vim.keymap.set('n', '<leader>gcn', '<Plug>(git-conflict-none)', { desc = "Git: Conflict choose None" })
-            vim.keymap.set('n', '<leader>gcp', '<Plug>(git-conflict-prev-conflict)', { desc = "Git: Conflict Previous" })
-            vim.keymap.set('n', '<leader>gcnn', '<Plug>(git-conflict-next-conflict)', { desc = "Git: Conflict Next" })
+            -- Keymaps para resolución de conflictos
+            vim.keymap.set('n', '<leader>co', '<Plug>(git-conflict-ours)', { desc = "Git Conflict: Choose Ours" })
+            vim.keymap.set('n', '<leader>ct', '<Plug>(git-conflict-theirs)', { desc = "Git Conflict: Choose Theirs" })
+            vim.keymap.set('n', '<leader>cb', '<Plug>(git-conflict-both)', { desc = "Git Conflict: Choose Both" })
+            vim.keymap.set('n', '<leader>c0', '<Plug>(git-conflict-none)', { desc = "Git Conflict: Choose None" })
+            vim.keymap.set('n', '<leader>cp', '<Plug>(git-conflict-prev-conflict)', { desc = "Git Conflict: Previous" })
+            vim.keymap.set('n', '<leader>cn', '<Plug>(git-conflict-next-conflict)', { desc = "Git Conflict: Next" })
+
+            -- AGREGADOS: Window navigation commands para sincronización completa
+            vim.keymap.set('n', '<leader>we', '<C-w>l', { desc = "Window: Focus Editor (right split)" })
+            vim.keymap.set('n', '<leader>wt', '<C-w>h', { desc = "Window: Focus Tree (left split)" })
         end
     },
 }
