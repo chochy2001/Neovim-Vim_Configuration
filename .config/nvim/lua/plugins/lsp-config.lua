@@ -208,6 +208,9 @@ return {
                 local hl = "DiagnosticSign" .. type
                 vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
             end
+
+            -- Optimización: Reducir logging LSP para mejor performance
+            vim.lsp.set_log_level("WARN")
         end,
     },
 

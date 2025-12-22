@@ -11,11 +11,13 @@ return {
         config = function()
             local ts_configs = require("nvim-treesitter.configs")
             ts_configs.setup({
+                -- Parsers optimizados: solo lenguajes que usas activamente
                 ensure_installed = {
                     "lua", "vim", "vimdoc", "query", -- Nvim essentials
-                    "javascript", "typescript", "tsx", "html", "css", "json",
-                    "python", "go", "rust", "kotlin", "java", "swift",
-                    "markdown", "yaml", "toml", "dockerfile", "bash",
+                    "dart", "swift", "kotlin", "c", "cpp", "go", -- Lenguajes principales
+                    "json", "yaml", "markdown", "bash", -- Configs y scripts
+                    -- Removidos: javascript, typescript, tsx, html, css, python, rust, java
+                    -- Para agregar más lenguajes usar: :TSInstall <language>
                 },
                 sync_install = false,
                 auto_install = true,

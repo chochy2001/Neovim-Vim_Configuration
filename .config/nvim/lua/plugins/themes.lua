@@ -1,4 +1,6 @@
 -- lua/plugins/themes.lua
+-- ✅ OPTIMIZADO: Lazy loading automático - solo el tema activo se carga al inicio
+-- Los demás temas se cargan bajo demanda con :colorscheme <nombre>
 
 -- Configuración del tema por defecto (cambia aquí para usar otro tema)
 local DEFAULT_THEME = "dracula"  -- Opciones: "dracula", "gruvbox", "catppuccin", "onedark", etc.
