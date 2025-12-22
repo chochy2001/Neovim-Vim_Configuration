@@ -243,5 +243,12 @@ git checkout HEAD~1 -- <archivo>  # Revertir archivo específico
 - ✅ No se modificaron keybindings existentes
 - ✅ Sincronización con IntelliJ IDEA se mantiene intacta (148 comandos)
 - ✅ Configuración probada y funcional
+- ✅ **lua-language-server instalado** (v3.15.0) - LSP de Lua funcionando
+
+### 🔧 Requisito: lua-language-server
+Si ves el error `Spawning language server with cmd: { "lua-language-server" } failed`, instala:
+```bash
+brew install lua-language-server
+```
 
 **¡Tu setup ahora está optimizada para máxima productividad! 🚀**
