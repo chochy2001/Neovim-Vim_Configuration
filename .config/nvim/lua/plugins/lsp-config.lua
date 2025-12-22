@@ -151,38 +151,32 @@ return {
                 })
             end
 
-            -- Keymaps optimizados para LSP
+            -- ============================================
+            -- NUEVO SISTEMA LSP: Sin duplicados, sin mayúsculas
+            -- ============================================
+            -- NOTA: Comandos principales SIN leader (más rápidos):
+            --   gd = goto definition
+            --   gi = goto implementation  
+            --   gr = goto references
+            --   K  = hover documentation
+            -- Estos se configuran automáticamente por nvim-lspconfig
+            
             vim.api.nvim_create_autocmd("LspAttach", {
                 group = vim.api.nvim_create_augroup("UserLspConfig", {}),
                 callback = function(ev)
                     local opts = { buffer = ev.buf, silent = true }
 
-                    -- Navegación LSP con leader
-                    vim.keymap.set("n", "<leader>gD", vim.lsp.buf.declaration, vim.tbl_extend("force", opts, { desc = "Go to Declaration" }))
-                    vim.keymap.set("n", "<leader>gd", vim.lsp.buf.definition, vim.tbl_extend("force", opts, { desc = "Go to Definition" }))
-                    vim.keymap.set("n", "<leader>gi", vim.lsp.buf.implementation, vim.tbl_extend("force", opts, { desc = "Go to Implementation" }))
-                    vim.keymap.set("n", "<leader>gr", vim.lsp.buf.references, vim.tbl_extend("force", opts, { desc = "References" }))
-                    vim.keymap.set("n", "<leader>gT", vim.lsp.buf.type_definition, vim.tbl_extend("force", opts, { desc = "Type Definition" }))
-
-                    -- Información LSP con leader
-                    vim.keymap.set("n", "<leader>lh", vim.lsp.buf.hover, vim.tbl_extend("force", opts, { desc = "LSP: Hover Documentation" }))
-                    vim.keymap.set("n", "<leader>ls", vim.lsp.buf.signature_help, vim.tbl_extend("force", opts, { desc = "LSP: Signature Help" }))
-
-                    -- Acciones
+                    -- Code Actions & Refactoring
                     vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "Rename Symbol" }))
                     vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, vim.tbl_extend("force", opts, { desc = "Code Action" }))
-                    vim.keymap.set("n", "<leader>lf", function()
+                    
+                    -- Format (cambiado de lf a fm)
+                    vim.keymap.set("n", "<leader>fm", function()
                         vim.lsp.buf.format { async = true }
-                    end, vim.tbl_extend("force", opts, { desc = "LSP: Format Document" }))
+                    end, vim.tbl_extend("force", opts, { desc = "Format document" }))
 
-                    -- Workspace (comandos simplificados para uso ocasional)
-                    vim.keymap.set("n", "<leader>lw", function()
-                        print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-                    end, vim.tbl_extend("force", opts, { desc = "LSP: List Workspace Folders" }))
-
-                    -- AGREGADOS: comandos LSP faltantes para sincronización completa
-                    vim.keymap.set("i", "<C-space>", "<C-x><C-o>", vim.tbl_extend("force", opts, { desc = "Force LSP Completion" }))
-                    vim.keymap.set("n", "<leader>I", vim.lsp.buf.implementation, vim.tbl_extend("force", opts, { desc = "Quick Implementations" }))
+                    -- Completion (insert mode)
+                    vim.keymap.set("i", "<C-space>", "<C-x><C-o>", vim.tbl_extend("force", opts, { desc = "LSP Completion" }))
                 end,
             })
 
