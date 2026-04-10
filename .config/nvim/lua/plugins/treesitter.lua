@@ -5,8 +5,6 @@ return {
         build = ":TSUpdate",
         event = { "BufReadPre", "BufNewFile" },
         dependencies = {
-            "nvim-treesitter/playground",
-            "hiphish/rainbow-delimiters.nvim",
             "nvim-treesitter/nvim-treesitter-textobjects",
         },
         config = function()
@@ -75,23 +73,6 @@ return {
                     },
                 },
             })
-
-            -- rainbow-delimiters: only attach to buffers with a valid parser
-            local ok, rd = pcall(require, "rainbow-delimiters")
-            if ok then
-                vim.g.rainbow_delimiters = {
-                    strategy = {
-                        [""] = function()
-                            local bufnr = vim.api.nvim_get_current_buf()
-                            local lang = vim.treesitter.language.get_lang(vim.bo[bufnr].filetype)
-                            if not lang then return nil end
-                            local ok_parser = pcall(vim.treesitter.get_parser, bufnr, lang)
-                            if not ok_parser then return nil end
-                            return rd.strategy["global"]
-                        end,
-                    },
-                }
-            end
         end,
     },
 }
