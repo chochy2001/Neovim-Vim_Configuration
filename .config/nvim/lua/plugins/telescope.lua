@@ -28,7 +28,6 @@ return {
         config = function()
             require("telescope").setup({
                 defaults = {
-                    -- Optimization: Use fzf for faster searching
                     file_ignore_patterns = { "node_modules", ".git/" },
                     vimgrep_arguments = {
                         "rg",
@@ -38,7 +37,19 @@ return {
                         "--line-number",
                         "--column",
                         "--smart-case",
-                        "--hidden",  -- Search in hidden files
+                        "--hidden",
+                    },
+                    -- Enable treesitter syntax highlighting in preview
+                    preview = {
+                        treesitter = true,
+                    },
+                },
+                pickers = {
+                    find_files = {
+                        previewer = true,
+                    },
+                    live_grep = {
+                        previewer = true,
                     },
                 },
                 extensions = {

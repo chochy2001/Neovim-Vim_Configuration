@@ -38,7 +38,7 @@ return {
 		end,
 	},
 
-	-- Interactive AI chat for code assistance
+	-- Interactive AI chat (run :Copilot auth first to authenticate)
 	{
 		"CopilotC-Nvim/CopilotChat.nvim",
 		dependencies = {
@@ -56,11 +56,19 @@ return {
 			{ "<leader>ct", "<cmd>CopilotChatTests<cr>", mode = { "n", "v" }, desc = "Copilot: Generate Tests" },
 		},
 		opts = {
+			show_help = false,
 			window = {
 				layout = "float",
 				width = 0.8,
 				height = 0.8,
 			},
+			-- Suppress auth errors on startup (user can run :Copilot auth when ready)
+			on_error = function(err)
+				if type(err) == "string" and err:match("Bad credentials") then
+					return -- silently ignore auth errors
+				end
+				vim.notify("CopilotChat: " .. tostring(err), vim.log.levels.WARN)
+			end,
 		},
 	},
 }

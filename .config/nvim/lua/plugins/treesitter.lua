@@ -13,9 +13,9 @@ return {
                 ensure_installed = {
                     "lua", "vim", "vimdoc", "query",
                     "dart", "kotlin", "c", "cpp", "go",
+                    "python", "javascript", "typescript", "html", "css",
                     "json", "yaml", "markdown", "bash",
                     -- swift requires tree-sitter CLI: npm install -g tree-sitter-cli
-                    -- then run :TSInstall swift
                 },
                 sync_install = false,
                 auto_install = false,
