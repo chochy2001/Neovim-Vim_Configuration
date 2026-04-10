@@ -87,6 +87,12 @@ return {
             routes = {
                 -- Hide "written" messages
                 { filter = { event = "msg_show", kind = "", find = "written" }, opts = { skip = true } },
+                -- Hide deprecation warnings from plugins
+                { filter = { event = "msg_show", find = "deprecated" }, opts = { skip = true } },
+                { filter = { warning = true, find = "deprecated" }, opts = { skip = true } },
+                { filter = { event = "msg_show", find = "buf_get_clients" }, opts = { skip = true } },
+                { filter = { warning = true, find = "buf_get_clients" }, opts = { skip = true } },
+                { filter = { warning = true, find = "lspconfig" }, opts = { skip = true } },
             },
         },
     },
