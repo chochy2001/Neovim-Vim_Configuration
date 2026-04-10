@@ -45,11 +45,21 @@ return {
     -- Visual indentation lines
     {
         "lukas-reineke/indent-blankline.nvim",
-        main = "ibl", -- Main module name
-        event = "VeryLazy", -- Or "BufReadPre" if you want them to appear immediately
-        opts = {},    -- Use opts for simple config or config = function() for complex
-        -- config = function()
-        --   require("ibl").setup() -- You can put more detailed config here
-        -- end
+        main = "ibl",
+        event = "VeryLazy",
+        opts = {},
+    },
+    -- Auto-highlight word under cursor (like IDE variable highlighting)
+    {
+        "RRethy/vim-illuminate",
+        event = { "BufReadPost", "BufNewFile" },
+        opts = {
+            delay = 200,
+            large_file_cutoff = 2000,
+            large_file_overrides = { providers = { "lsp" } },
+        },
+        config = function(_, opts)
+            require("illuminate").configure(opts)
+        end,
     },
 }
