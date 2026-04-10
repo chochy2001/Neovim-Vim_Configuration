@@ -180,7 +180,5 @@ return {
 				end)
 			end,
 		})
-
-		print("Neo-tree configured with IntelliJ-like navigation (macOS optimized)")
 	end,
 }

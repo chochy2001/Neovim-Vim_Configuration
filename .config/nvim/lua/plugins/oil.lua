@@ -94,7 +94,5 @@ return {
                 vim.notify("Error opening Oil.nvim", vim.log.levels.ERROR)
             end
         end, { desc = "Oil: Open File Explorer" })
-
-        print("Oil.nvim configured correctly")
     end,
 }

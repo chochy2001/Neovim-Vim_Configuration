@@ -12,8 +12,6 @@ return {
                 strict = false,
                 -- NO overrides - use ONLY what comes by default
             })
-
-            print("MINIMAL icon configuration - NO overrides that cause E5248")
         end,
     },
 }

@@ -20,6 +20,12 @@ vim.opt.colorcolumn = "80"
 
 vim.opt.swapfile = false
 
+-- Folding with ufo.nvim (treesitter-based smart folding)
+vim.opt.foldcolumn = "1"
+vim.opt.foldlevel = 99
+vim.opt.foldlevelstart = 99
+vim.opt.foldenable = true
+
 -- Navigate vim panes better
 -- NOTE: Commented out to avoid conflict with nvim-tmux-navigation
 -- which handles window navigation more intelligently

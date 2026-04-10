@@ -270,6 +270,23 @@ All keybindings are synchronized between Neovim and JetBrains IDEs (.ideavimrc).
 
 ---
 
+## Debugging (DAP)
+
+| Key | Mode | Action |
+|-----|------|--------|
+| `<leader>db` | Normal | Toggle breakpoint |
+| `<leader>dB` | Normal | Conditional breakpoint |
+| `<leader>dc` | Normal | Continue / start debugging |
+| `<leader>do` | Normal | Step over |
+| `<leader>di` | Normal | Step into |
+| `<leader>dO` | Normal | Step out |
+| `<leader>dr` | Normal | Toggle REPL |
+| `<leader>dl` | Normal | Run last debug config |
+| `<leader>dx` | Normal | Terminate debug session |
+| `<leader>du` | Normal | Toggle debug UI |
+
+---
+
 ## Buffer & Tab Management
 
 | Key | Mode | Action |
@@ -308,7 +325,7 @@ All keybindings are synchronized between Neovim and JetBrains IDEs (.ideavimrc).
 
 ---
 
-## Folding
+## Folding (ufo.nvim - treesitter smart folding)
 
 | Key | Mode | Action |
 |-----|------|--------|
@@ -317,6 +334,9 @@ All keybindings are synchronized between Neovim and JetBrains IDEs (.ideavimrc).
 | `<leader>zM` | Normal | Collapse all folds |
 | `<leader>zr` | Normal | Expand one level |
 | `<leader>zm` | Normal | Collapse one level |
+| `zR` | Normal | Open all folds (ufo) |
+| `zM` | Normal | Close all folds (ufo) |
+| `zK` | Normal | Peek folded lines or hover |
 | `<leader>zz` | Normal | Zen mode (focus) |
 
 ---
@@ -370,6 +390,7 @@ These only work on the dashboard startup screen:
 | `<leader>t*` | Terminal/testing |
 | `<leader>r*` | Run/debug |
 | `<leader>c*` | Copilot AI |
+| `<leader>d*` | Debugging (DAP) |
 | `<leader>z*` | Folding/zen |
 | `<leader>q*` | Sessions |
 | `<leader>o*` | Overseer/oil |

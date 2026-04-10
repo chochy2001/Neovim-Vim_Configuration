@@ -147,22 +147,6 @@ return {
         end
     },
 
-    -- Working directory management (temporarily commented out)
-    -- {
-    --     "airblade/vim-rooter",
-    --     event = "VeryLazy",
-    --     config = function()
-    --         vim.g.rooter_patterns = {
-    --             '.git', '.hg', '.svn', '.bzr', '_darcs',
-    --             'package.json', 'pubspec.yaml', 'Cargo.toml', 'go.mod',
-    --             'CMakeLists.txt', 'Makefile', 'build.gradle', 'build.gradle.kts',
-    --             'pom.xml', 'Package.swift', '*.xcodeproj', '*.xcworkspace'
-    --         }
-    --         vim.g.rooter_silent_chdir = 1
-    --         vim.g.rooter_resolve_links = 1
-    --     end
-    -- },
-
     -- Better window management
     {
         "sindrets/winshift.nvim",

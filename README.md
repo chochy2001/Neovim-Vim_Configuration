@@ -101,6 +101,18 @@ Leader key: `Space`
 | `<leader>mp` | Previous mark |
 | `<leader>mn` | Next mark |
 
+### Debugging (DAP)
+
+| Key | Action |
+|-----|--------|
+| `<leader>db` | Toggle breakpoint |
+| `<leader>dc` | Continue / start |
+| `<leader>do` | Step over |
+| `<leader>di` | Step into |
+| `<leader>dO` | Step out |
+| `<leader>du` | Toggle debug UI |
+| `<leader>dx` | Terminate |
+
 ### Diagnostics (Trouble)
 
 | Key | Action |
@@ -198,6 +210,8 @@ Leader key: `Space`
 | **UI** | lualine, bufferline, dashboard, dressing, nvim-notify, which-key, indent-blankline |
 | **Editing** | Comment.nvim, vim-surround, nvim-autopairs, todo-comments |
 | **AI** | copilot.vim, CopilotChat.nvim |
+| **Debugging** | nvim-dap, nvim-dap-ui, nvim-dap-virtual-text |
+| **Folding** | nvim-ufo (treesitter-based smart folding) |
 | **Flutter** | flutter-tools, dart-vim-plugin, awesome-flutter-snippets |
 | **Terminal** | toggleterm, overseer, code_runner |
 | **Themes** | dracula, gruvbox, catppuccin, onedark, rose-pine, solarized |

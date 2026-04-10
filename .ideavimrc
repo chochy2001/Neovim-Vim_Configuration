@@ -228,13 +228,26 @@ nnoremap <leader>zr :action ExpandRegion<CR>
 nnoremap <leader>zm :action CollapseRegion<CR>
 
 " -----------------------------------------------------------------------------
-" Build/Run/Debug - synced with terminal.lua
+" Build/Run - synced with terminal.lua
 " -----------------------------------------------------------------------------
 nnoremap <leader>rr :action RunClass<CR>
-nnoremap <leader>rd :action Debug<CR>
 nnoremap <leader>rs :action Stop<CR>
 nnoremap <leader>rb :action Android.SyncProject<CR>
 nnoremap <leader>rp :action RunProject<CR>
+
+" -----------------------------------------------------------------------------
+" Debug - synced with debugging.lua (d* prefix)
+" -----------------------------------------------------------------------------
+nnoremap <leader>db :action ToggleLineBreakpoint<CR>
+nnoremap <leader>dB :action EditBreakpoint<CR>
+nnoremap <leader>dc :action Resume<CR>
+nnoremap <leader>do :action StepOver<CR>
+nnoremap <leader>di :action StepInto<CR>
+nnoremap <leader>dO :action StepOut<CR>
+nnoremap <leader>dr :action EvaluateExpression<CR>
+nnoremap <leader>dl :action Debug<CR>
+nnoremap <leader>dx :action Stop<CR>
+nnoremap <leader>du :action ActivateDebugToolWindow<CR>
 
 " Overseer/Task Commands - synced with overseer.nvim
 nnoremap <leader>oo :action ActivateRunToolWindow<CR>
