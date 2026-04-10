@@ -7,7 +7,12 @@ vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
 vim.opt.smartindent = true
 vim.opt.termguicolors = true
-vim.opt.clipboard = "unnamedplus"
+-- Clipboard cross-platform: unnamed para macOS/Windows, unnamedplus para Linux (X11/Wayland)
+if vim.fn.has("mac") == 1 or vim.fn.has("win32") == 1 then
+    vim.opt.clipboard = "unnamed"
+else
+    vim.opt.clipboard = "unnamedplus"
+end
 vim.opt.scrolloff = 8
 vim.opt.synmaxcol = 2000
 vim.opt.cursorline = true

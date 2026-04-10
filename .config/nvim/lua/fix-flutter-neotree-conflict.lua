@@ -3,7 +3,7 @@
 
 -- Función para verificar y limpiar clientes LSP duplicados
 local function cleanup_duplicate_lsp_clients()
-    local clients = vim.lsp.get_active_clients()
+    local clients = vim.lsp.get_clients()
     local dartls_clients = {}
 
     for _, client in ipairs(clients) do
@@ -15,7 +15,7 @@ local function cleanup_duplicate_lsp_clients()
     -- Si hay más de un cliente dartls, mantener solo el primero
     if #dartls_clients > 1 then
         for i = 2, #dartls_clients do
-            vim.lsp.stop_client(dartls_clients[i].id, true)
+            dartls_clients[i]:stop(true)
         end
     end
 end
@@ -60,4 +60,4 @@ vim.schedule(function()
     })
 end)
 
-print("🔧 Fix LSP conflicts aplicado - transport errors suprimidos")
+-- Fix LSP conflicts aplicado - transport errors suprimidos

@@ -2,9 +2,11 @@ return {
     -- FZF nativo para búsqueda ultra rápida (requiere compilación)
     {
         "nvim-telescope/telescope-fzf-native.nvim",
-        build = "make",
+        build = (vim.fn.has("win32") == 1 and vim.fn.executable("cmake") == 1)
+            and "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release"
+            or "make",
         cond = function()
-            return vim.fn.executable("make") == 1
+            return vim.fn.executable("make") == 1 or vim.fn.executable("cmake") == 1
         end,
     },
     {

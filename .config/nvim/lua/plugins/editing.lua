@@ -31,10 +31,18 @@ return {
     -- Barra de tags (necesita ctags instalado externamente)
     {
         "preservim/tagbar",
-        cmd = "TagbarToggle", -- Cargar al usar el comando
-        -- Puedes añadir un keymap aquí si quieres
-        -- config = function()
-        --   vim.keymap.set("n", "<F8>", ":TagbarToggle<CR>", { desc = "Toggle Tagbar" })
-        -- end
+        cmd = "TagbarToggle",
+    },
+    -- Highlight TODO/FIXME/HACK/NOTE en el codigo
+    {
+        "folke/todo-comments.nvim",
+        event = "VeryLazy",
+        dependencies = { "nvim-lua/plenary.nvim" },
+        opts = {},
+        keys = {
+            { "]t", function() require("todo-comments").jump_next() end, desc = "Next TODO comment" },
+            { "[t", function() require("todo-comments").jump_prev() end, desc = "Previous TODO comment" },
+            { "<leader>xt", "<cmd>Trouble todo<cr>", desc = "TODOs in Trouble" },
+        },
     },
 }

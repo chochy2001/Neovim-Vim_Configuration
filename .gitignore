@@ -20,3 +20,27 @@
 
 # Archivos basura del sistema
 *.DS_Store
+Thumbs.db
+.directory
+
+# Archivos con datos sensibles - NUNCA commitear
+.zshrc
+.bashrc
+.bash_profile
+.zprofile
+.env
+.env.*
+.envrc
+*.key
+*.pem
+*_rsa
+*_dsa
+secrets*
+credentials*
+
+# Vim state files con historial de paths
+.vim/.netrwhist
+.viminfo
+
+# Plugin lock files (regenerables)
+.config/nvim/lazy-lock.json

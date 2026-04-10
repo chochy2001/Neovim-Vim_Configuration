@@ -109,9 +109,10 @@ return {
                 node:toggle()
             end
 
-            -- Terminal para htop
+            -- Terminal para monitor de procesos (htop en Unix, tasklist en Windows)
+            local sysmon_cmd = vim.fn.has("win32") == 1 and "tasklist" or "htop"
             local htop = Terminal:new({
-                cmd = "htop",
+                cmd = sysmon_cmd,
                 hidden = true,
                 direction = "float",
             })
@@ -120,9 +121,10 @@ return {
                 htop:toggle()
             end
 
-            -- Terminal para Python
+            -- Terminal para Python (python3 en Unix, python en Windows)
+            local python_cmd = vim.fn.executable("python3") == 1 and "python3" or "python"
             local python = Terminal:new({
-                cmd = "python3",
+                cmd = python_cmd,
                 hidden = true,
                 direction = "float",
             })
@@ -138,9 +140,7 @@ return {
             vim.keymap.set("n", "<leader>tp", "<cmd>lua _python_toggle()<CR>", { desc = "Python Terminal" })
             vim.keymap.set("n", "<leader>tF", "<cmd>lua _flutter_toggle()<CR>", { desc = "Flutter Terminal" })
 
-            -- AGREGADOS: Build/Run/Debug commands para sincronización completa
-            vim.keymap.set("n", "<leader>rr", ":RunCode<CR>", { desc = "Run Class/File" })
-            vim.keymap.set("n", "<leader>rd", ":lua print('Debug not implemented in terminal context')<CR>", { desc = "Debug (placeholder)" })
+            -- Build/Run/Debug (runner keymaps definidos en code_runner abajo)
             vim.keymap.set("n", "<leader>rs", ":lua vim.fn.jobstop(-1)<CR>", { desc = "Stop Running Process" })
             vim.keymap.set("n", "<leader>rb", ":!make<CR>", { desc = "Build/Sync Project" })
         end,
@@ -187,32 +187,39 @@ return {
         "CRAG666/code_runner.nvim",
         event = "VeryLazy",
         config = function()
+            local is_win = vim.fn.has("win32") == 1
+            local tmpdir = vim.fn.fnamemodify(vim.fn.tempname(), ":h")
+            local chain = is_win and " & " or " && "
+            local rm_cmd = is_win and "del" or "rm"
+            local py_cmd = vim.fn.executable("python3") == 1 and "python3" or "python"
+            local exe_ext = is_win and ".exe" or ""
+
             require('code_runner').setup({
                 mode = "toggle",
                 focus = true,
                 startinsert = true,
                 filetype = {
                     java = {
-                        "cd $dir &&",
-                        "javac $fileName &&",
+                        "cd $dir" .. chain,
+                        "javac $fileName" .. chain,
                         "java $fileNameWithoutExt"
                     },
-                    python = "python3 -u",
+                    python = py_cmd .. " -u",
                     typescript = "deno run",
                     rust = {
-                        "cd $dir &&",
-                        "rustc $fileName &&",
-                        "$dir/$fileNameWithoutExt"
+                        "cd $dir" .. chain,
+                        "rustc $fileName" .. chain,
+                        "$dir/$fileNameWithoutExt" .. exe_ext
                     },
                     c = function(...)
                         local c_base = {
-                            "cd $dir &&",
+                            "cd $dir" .. chain,
                             "gcc $fileName -o",
-                            "/tmp/$fileNameWithoutExt",
+                            tmpdir .. "/$fileNameWithoutExt" .. exe_ext,
                         }
                         local c_exec = {
-                            "&& /tmp/$fileNameWithoutExt &&",
-                            "rm /tmp/$fileNameWithoutExt",
+                            chain .. tmpdir .. "/$fileNameWithoutExt" .. exe_ext .. chain,
+                            rm_cmd .. " " .. tmpdir .. "/$fileNameWithoutExt" .. exe_ext,
                         }
                         vim.ui.input({ prompt = "Add more args:" }, function(input)
                             c_base[4] = input
@@ -221,28 +228,23 @@ return {
                         end)
                     end,
                     cpp = {
-                        "cd $dir &&",
-                        "g++ $fileName -o /tmp/$fileNameWithoutExt &&",
-                        "/tmp/$fileNameWithoutExt"
+                        "cd $dir" .. chain,
+                        "g++ $fileName -o " .. tmpdir .. "/$fileNameWithoutExt" .. exe_ext .. chain,
+                        tmpdir .. "/$fileNameWithoutExt" .. exe_ext,
                     },
                     kotlin = {
-                        "cd $dir &&",
-                        "kotlinc $fileName -include-runtime -d $fileNameWithoutExt.jar &&",
+                        "cd $dir" .. chain,
+                        "kotlinc $fileName -include-runtime -d $fileNameWithoutExt.jar" .. chain,
                         "java -jar $fileNameWithoutExt.jar"
                     },
                     swift = "swift $fileName",
                     dart = "dart $fileName",
                 },
                 project = {
-                    ["~/dev/flutter/.*"] = {
+                    [vim.fn.expand("~") .. "/dev/flutter/.*"] = {
                         name = "Flutter Project",
                         description = "Run Flutter app",
                         command = "flutter run"
-                    },
-                    ["~/.*%.xcodeproj"] = {
-                        name = "Xcode Project",
-                        description = "Build with xcodebuild",
-                        command = "xcodebuild -project $dir -scheme $scheme"
                     },
                 },
             })

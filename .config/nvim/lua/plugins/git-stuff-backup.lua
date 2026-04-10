@@ -1,3 +1,7 @@
+-- DESHABILITADO: Este archivo es un backup. La config activa esta en git-stuff.lua
+-- Mantener como referencia pero no cargar para evitar conflictos de keymaps
+if true then return {} end
+
 return {
     -- Fugitive con keymaps mejorados
     {

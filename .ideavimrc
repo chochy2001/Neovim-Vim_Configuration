@@ -1,17 +1,9 @@
-" ~/.ideavimrc - Revisado y Ampliado
-" 🍎 OPTIMIZADO PARA macOS (MacBook Pro) - Funciona también en Linux/Windows
-"
-" OPTIMIZACIONES ESPECÍFICAS PARA macOS:
-" - Cmd+1, Cmd+Shift+O (mappings nativos de IntelliJ macOS)
-" - Timeoutlen optimizado para teclados macOS
-" - Navegación touch bar compatible
-" - Muscle memory sync con Neovim shortcuts
-"
-" Configuración sincronizada con Neovim para flujo de trabajo consistente
-" Desarrollada y probada principalmente en macOS, compatible con otros SO
+" ~/.ideavimrc - Sincronizado con Neovim
+" Compatible con macOS, Linux, Windows
+" Configuracion sincronizada con Neovim para flujo de trabajo consistente
 
 " -----------------------------------------------------------------------------
-" Líder y Configuración Básica
+" Leader y Configuracion Basica
 " -----------------------------------------------------------------------------
 let mapleader = " "
 set number
@@ -20,54 +12,52 @@ set tabstop=4
 set shiftwidth=4
 set expandtab
 set smartindent
-set scrolloff=8         " Mantener 8 líneas visibles arriba/abajo del cursor
-set cursorline        " Resaltar línea actual
-set colorcolumn=80      " Marcador visual en la columna 80
-set clipboard=unnamedplus " Usar portapapeles del sistema
-set laststatus=2      " Siempre mostrar barra de estado
-set showcmd           " Mostrar comando parcial
-set noshowmode        " No mostrar -- INSERT -- (IDE ya lo indica)
-set timeoutlen=300    " Reducir tiempo de espera para mapeos <leader>
-set splitright        " Nuevos splits verticales a la derecha
-set splitbelow        " Nuevos splits horizontales abajo
-set nowrap            " Deshabilitar salto de línea automático (opcional)
+set scrolloff=8
+set cursorline
+set colorcolumn=80
+set clipboard=unnamedplus
+set laststatus=2
+set showcmd
+set noshowmode
+set timeoutlen=300
+set splitright
+set splitbelow
+set nowrap
 
 " Emulaciones de Plugins
-set surround          " Habilitar emulación vim-surround (ys, cs, ds)
+set surround
 
 " -----------------------------------------------------------------------------
-" Búsqueda
+" Busqueda
 " -----------------------------------------------------------------------------
-set incsearch         " Búsqueda incremental
-set hlsearch          " Resaltar resultados
-set ignorecase        " Ignorar mayúsculas/minúsculas en búsqueda
-set smartcase         " Usar mayúsculas/minúsculas si la búsqueda contiene mayúsculas
+set incsearch
+set hlsearch
+set ignorecase
+set smartcase
 nnoremap <leader><leader> :nohl<CR>
-" Limpiar resaltado de búsqueda - CORREGIDO con Esc antes
 
 " -----------------------------------------------------------------------------
-" Mapeos Core y Navegación Básica
+" Mapeos Core y Navegacion Basica
 " -----------------------------------------------------------------------------
 inoremap jj <Esc>
-" Salir de modo inserción (sin recursión)
 
-" Historial de Navegación IDE
+" Historial de Navegacion IDE - sincronizado con Neovim
 nnoremap <leader>b :action Back<CR>
 nnoremap <leader>f :action Forward<CR>
 
-" Navegación entre Splits del IDE (usando w prefix para evitar conflictos)
+" Navegacion entre Splits (w prefix)
 nnoremap <leader>wh <C-w>h
 nnoremap <leader>wj <C-w>j
 nnoremap <leader>wk <C-w>k
 nnoremap <leader>wl <C-w>l
 
-" Mover Líneas
+" Mover Lineas - sincronizado con Neovim
 nnoremap <A-j> :m .+1<CR>==
 nnoremap <A-k> :m .-2<CR>==
 vnoremap <A-j> :m '>+1<CR>gv=gv
 vnoremap <A-k> :m '<-2<CR>gv=gv
 
-" Indentación en Modo Visual
+" Indentacion en Modo Visual
 vnoremap > >gv
 vnoremap < <gv
 
@@ -79,62 +69,39 @@ nnoremap # #zz
 nnoremap g* g*zz
 nnoremap g# g#zz
 
-" Conversión Mayúsculas/Minúsculas (Visual)
+" Conversion Mayusculas/Minusculas (Visual)
 vnoremap <leader>u gu
 vnoremap <leader>U gU
 
 " -----------------------------------------------------------------------------
-" Emulación Telescope (Búsqueda/Navegación Archivos) - SINCRONIZACIÓN COMPLETA
+" Emulacion Telescope (Busqueda/Navegacion Archivos)
 " -----------------------------------------------------------------------------
 nnoremap <leader>ff :action GotoFile<CR>
-" Find Files - como Neovim <leader>ff (COMANDO PRINCIPAL - RESTAURADO)
 nnoremap <leader>fg :action FindInPath<CR>
-" Find Grep - como Neovim <leader>fg
 nnoremap <leader>fo :action RecentFiles<CR>
-" Find Old Files - como Neovim <leader>fo
 nnoremap <leader>fb :action Switcher<CR>
-" Find Buffers - como Neovim <leader>fb
 nnoremap <leader>fh :action HelpTopics<CR>
-" Find Help - como Neovim <leader>fh
 nnoremap <leader>fc :action GotoAction<CR>
-" Find Commands - como Neovim <leader>fc
-" ELIMINADO: <leader>fk duplicado - usar <leader>fc
-" REMOVED: <leader>pe duplicado - mantener solo <leader>pv
+nnoremap <leader>fk :action GotoAction<CR>
 nnoremap <leader>ps :action GotoSymbol<CR>
-" Buscar símbolo (clase, método, var)
-" Archivos recientes
-
 nnoremap <leader>. :action GotoFile<CR>
-" Quick Find Files - como Neovim <leader>. (RESTAURADO)
 nnoremap ,, :action GotoFile<CR>
-" Quick Find Files - doble coma (ALTERNATIVA RÁPIDA)
 
 " -----------------------------------------------------------------------------
-" Emulación Neo-tree (Vista Proyecto)
+" Emulacion Neo-tree (Vista Proyecto)
 " -----------------------------------------------------------------------------
 nnoremap <leader>pv :action ActivateProjectToolWindow<CR>
-" Abrir/Enfocar vista Proyecto
-" REMOVED: <leader>e duplicado - mantener solo <leader>pv
-" REMOVED: <leader>fe duplicado - mantener solo <leader>fr
 nnoremap <leader>fr :action SelectInProjectView<CR>
-" Revelar archivo actual en árbol (como Neovim)
-
-" Navegación rápida proyecto (macOS optimized)
-" Cmd+1 - Enfocar proyecto, Cmd+Shift+1 - Toggle proyecto (nativo IntelliJ macOS)
-" NOTA: En macOS, IntelliJ usa Cmd en lugar de Ctrl por defecto
-" En Neovim están mapeados como <D-1> (Cmd+1) y <D-S-1> (Cmd+Shift+1)
-" También disponible: <C-1> como alternativa
+nnoremap <leader>pe :action ActivateProjectToolWindow<CR>
+nnoremap <leader>bf :action Switcher<CR>
 
 " -----------------------------------------------------------------------------
-" Emulación Harpoon (Marcas Rápidas)
+" Emulacion Harpoon (Marcas Rapidas) - sincronizado con harpoon.lua
 " -----------------------------------------------------------------------------
-nnoremap <leader>mm :action ShowBookmarks<CR>
-" Harpoon Toggle UI - como Neovim <leader>mm (muestra bookmarks reales)
+nnoremap <leader>mh :action ShowBookmarks<CR>
 nnoremap <leader>ma :action ToggleBookmark<CR>
-" Harpoon Add File - como Neovim <leader>ma (agregar bookmark)
-" ELIMINADO: <leader>mb duplicado - usar <leader>mm
-" ELIMINADO: <leader>mp duplicado - usar <leader>bp para PreviousTab
-" ELIMINADO: <leader>mn duplicado - usar <leader>bn para NextTab
+nnoremap <leader>mp :action GotoPreviousBookmark<CR>
+nnoremap <leader>mn :action GotoNextBookmark<CR>
 nnoremap <leader>1 '1
 nnoremap <leader>2 '2
 nnoremap <leader>3 '3
@@ -144,241 +111,116 @@ nnoremap <leader>6 '6
 nnoremap <leader>7 '7
 nnoremap <leader>8 '8
 nnoremap <leader>9 '9
-" Para marcar: m1, m2, etc. (comportamiento estándar de Vim)
 
 " -----------------------------------------------------------------------------
-" Gestión de Buffers / Tabs del IDE
+" Gestion de Buffers / Tabs del IDE
 " -----------------------------------------------------------------------------
-" Navegación rápida (sincronizado con Neovim)
 nnoremap <S-l> :action NextTab<CR>
-" Siguiente tab/buffer (Shift+L)
 nnoremap <S-h> :action PreviousTab<CR>
-" Tab/buffer anterior (Shift+H)
-
-" Navegación entre splits/pantallas divididas - RESTAURADO
 nnoremap <space>l :action NextSplitter<CR>
-" Siguiente split (Space+L)
 nnoremap <space>h :action PrevSplitter<CR>
-" Split anterior (Space+H)
-
-" Navegación alternativa con leader - RESTAURADA PARA SINCRONIZACIÓN
 nnoremap <leader>bn :action NextTab<CR>
-" Buffer Next - como Neovim <leader>bn (RESTAURADO para consistencia)
 nnoremap <leader>bp :action PreviousTab<CR>
-" Buffer Previous - como Neovim <leader>bp (RESTAURADO para consistencia)
 nnoremap <leader>bd :action CloseContent<CR>
-" Buffer Delete/Close - como Neovim <leader>bd
 nnoremap <leader>bl :action CloseAllToTheRight<CR>
-" Close Buffers to Right - como Neovim <leader>bl
 nnoremap <leader>bh :action CloseAllToTheLeft<CR>
-" Close Buffers to Left - como Neovim <leader>bh
-" REMOVED: <leader>bt - NO FUNCIONA
-" REMOVED: <leader>tc duplicado - mantener solo <leader>bd
 nnoremap <leader>to :action CloseAllEditorsButActive<CR>
-" Cerrar otras tabs (mejor que :tabonly)
-" REMOVED: <leader>tN - NO FUNCIONA
 
 " -----------------------------------------------------------------------------
 " Terminal Integrada
 " -----------------------------------------------------------------------------
 nnoremap <leader>tt :action ActivateTerminalToolWindow<CR>
-" Terminal principal
 tnoremap <C-[><C-[> <C-w><C-p>
-" Terminal: Ctrl+[ doble para salir (Esc equivalente)
 tnoremap jj <C-w><C-p>
-" Terminal: jj para salir como en insert mode
 
 " -----------------------------------------------------------------------------
-" Git / VCS (Control de Versiones) - ACCIONES VERIFICADAS SIN CONFLICTOS
+" Git / VCS (Control de Versiones) - sincronizado con git-stuff.lua
 " -----------------------------------------------------------------------------
-" NOTA: Todas las acciones Git verificadas y conflictos resueltos
-" CAMBIOS IMPORTANTES:
-" - <leader>gd → <leader>gb pero CAMBIADO A GIT BLAME TOGGLE (más útil que diff)
-" - <leader>gp cambiado a <leader>gnp (previous hunk) para evitar conflicto con git pull
-" - gd (sin leader) reservado para LSP Go to Definition
-" - <leader>gb ahora es Git Blame Toggle (Annotate) - presionar para mostrar/ocultar
+
 " Acciones Comunes
-nnoremap <leader>gs :action ActivateVersionControlToolWindow<CR> 
-" Abrir ventana Git/VCS (Status/Changes)
-nnoremap <leader>gc :action CheckinProject<CR>             
-" Commit
-nnoremap <leader>gp :action Vcs.Push<CR>                   
-" Push
-nnoremap <leader>gl :action Vcs.UpdateProject<CR>          
-" Pull
+nnoremap <leader>gs :action ActivateVersionControlToolWindow<CR>
+nnoremap <leader>gc :action CheckinProject<CR>
+nnoremap <leader>gp :action Vcs.Push<CR>
+nnoremap <leader>gl :action Vcs.UpdateProject<CR>
+nnoremap <leader>gf :action Git.Fetch<CR>
 
 " Historial y Diferencias
-nnoremap <leader>gh :action Vcs.ShowTabbedFileHistory<CR>   
-" Historial del archivo actual
+nnoremap <leader>gh :action Vcs.ShowTabbedFileHistory<CR>
 nnoremap <leader>ghd :action Git.Log.Show.Details<CR>
-" Historial detallado de Git - CORREGIDO para Android Studio
 nnoremap <leader>gb :action Annotate<CR>
-" Git Blame Toggle (Annotate) - Mostrar/ocultar blame en gutter - FUNCIONA COMO TOGGLE
-
-" Navegación por Cambios (Hunks) - COMPLETAMENTE SINCRONIZADO
-" REMOVED: ]c duplicado - mantener solo <leader>gn
-" REMOVED: [c duplicado - mantener solo <leader>gnp
-nnoremap <leader>gn :action VcsShowNextChangeMarker<CR>
-" Alias para siguiente hunk (CORREGIDO)
-nnoremap <leader>gnp :action VcsShowPrevChangeMarker<CR>
-" Previous hunk (CORREGIDO)
-
-" GitSigns Commands - SINCRONIZADO CON MEJORES ALTERNATIVAS
-nnoremap <leader>gsa :action ChangesView.Shelve<CR>
-" Shelve changes - como GitSigns stage (CORREGIDO para Android Studio)
-nnoremap <leader>ga :action ChangesView.Shelve<CR>
-" Git Add/Shelve (ALTERNATIVA) - mismo que hs
-nnoremap <leader>gsr :action Vcs.RollbackChangedLines<CR>
-" Reset hunk (como GitSigns) - RESTAURADO: funciona parcialmente en Android Studio
-" REMOVED: <leader>gsab duplicado - mantener solo <leader>ga
-" ELIMINADO: <leader>gsu duplicado - usar <leader>gsr
-nnoremap <leader>gsb :action ChangesView.Revert<CR>
-" Reset buffer (CORREGIDO)
-" nnoremap <leader>gsp :action Vcs.ShowDiff<CR>
-" Preview hunk (como GitSigns) - NO FUNCIONA EN ANDROID STUDIO
-nnoremap <leader>gdd :action Vcs.Show.Local.Changes<CR>
-" Show Local Changes (CORREGIDO) - muestra cambios locales
-" REMOVED: <leader>hb duplicado - mantener solo <leader>gb
-" REMOVED: <leader>tb duplicado - mantener solo <leader>gb
-" REMOVED: <leader>hd duplicado - mantener solo <leader>gdo
-" REMOVED: <leader>td duplicado - mantener solo <leader>gdo
-
-" Neogit Commands - SINCRONIZADO
-" REMOVED: <leader>gg duplicado - mantener solo <leader>gs
-" ELIMINADO: <leader>gc duplicado - ya configurado arriba en línea 202
-" REMOVED: <leader>gcn duplicado - mantener solo <leader>gc
-" REMOVED: <leader>gp duplicado - mantener solo <leader>gl
-" REMOVED: <leader>gP duplicado - mantener solo <leader>gp
-
-" Diffview Commands - SINCRONIZADO
-nnoremap <leader>gdo :action Compare.LastVersion<CR>
-" Open diffview (CORREGIDO)
-nnoremap <leader>gdq :action CloseContent<CR>
-" Close diffview (como Neovim)
-" REMOVED: <leader>gdh duplicado - mantener solo <leader>gl
-" REMOVED: <leader>gdf duplicado - mantener solo <leader>gs
-
-" Git Conflict Commands - SINCRONIZADO
-nnoremap <leader>co :action ChooseOurs<CR>
-" Choose ours (conflict resolution)
-nnoremap <leader>ct :action ChooseTheirs<CR>
-" Choose theirs (conflict resolution)
-nnoremap <leader>cb :action ChooseBoth<CR>
-" Choose both (conflict resolution)
-nnoremap <leader>gcn :action ChooseNone<CR>
-" Choose none (conflict resolution)
-" REMOVED: ]x duplicado - mantener solo <leader>gn
-" REMOVED: [x duplicado - mantener solo <leader>gnp
-
-" Additional Git Operations - MEJORADO CON ACCIONES FUNCIONALES
-" REMOVED: <leader>ga duplicado - version Vcs.Add, mantener Git.Add
-" REMOVED: <leader>gu duplicado - ya existe <leader>gsu con misma acción
-" ELIMINADO: <leader>gb duplicado - Vcs.Branches NO FUNCIONA
-" REMOVED: <leader>gbl duplicado - mantener solo <leader>gb para blame
-nnoremap <leader>gf :action Git.Fetch<CR>
-" Git Fetch - como Neovim (trabajado y funcional)
+nnoremap <leader>gbl :action Annotate<CR>
 nnoremap <leader>gbr :action Git.Branches<CR>
-" Git Branches - como Neovim (funciona en Android Studio)
-nnoremap <leader>gcb :action Git.CompareWithBranch<CR>
-" Compare with Branch - acción verificada funcional
-" REMOVED: <leader>gw duplicado - mantener solo <leader>ga
-" REMOVED: <leader>gbl duplicado - mantener solo <leader>gb
+nnoremap <leader>gbc :action Git.CompareWithBranch<CR>
+nnoremap <leader>gd :action Compare.SameVersion<CR>
 
-" Alias adicionales para ventanas Git
-" REMOVED: <leader>gS duplicado - mantener solo <leader>gs
-" REMOVED: <leader>ng duplicado - mantener solo <leader>gs
+" Navegacion por Hunks - sincronizado con gitsigns en Neovim
+nnoremap <leader>gn :action VcsShowNextChangeMarker<CR>
+nnoremap <leader>gnp :action VcsShowPrevChangeMarker<CR>
+
+" GitSigns Commands - sincronizado con git-stuff.lua
+nnoremap <leader>gsa :action ChangesView.Shelve<CR>
+nnoremap <leader>gsr :action Vcs.RollbackChangedLines<CR>
+nnoremap <leader>gsu :action Vcs.RollbackChangedLines<CR>
+nnoremap <leader>gsb :action ChangesView.Revert<CR>
+nnoremap <leader>gbt :action Annotate<CR>
+nnoremap <leader>gdd :action Vcs.Show.Local.Changes<CR>
+
+" Diffview Commands - sincronizado con Neovim
+nnoremap <leader>gdo :action Compare.LastVersion<CR>
+nnoremap <leader>gdq :action CloseContent<CR>
+nnoremap <leader>gdh :action Vcs.ShowTabbedFileHistory<CR>
+nnoremap <leader>gdf :action ActivateVersionControlToolWindow<CR>
+
+" Git Conflict Commands - sincronizado con git-stuff.lua (gc* prefix)
+nnoremap <leader>gco :action ChooseOurs<CR>
+nnoremap <leader>gct :action ChooseTheirs<CR>
+nnoremap <leader>gcb :action ChooseBoth<CR>
+nnoremap <leader>gcn :action ChooseNone<CR>
+nnoremap <leader>gcp :action VcsShowPrevChangeMarker<CR>
+nnoremap <leader>gcnn :action VcsShowNextChangeMarker<CR>
 
 " -----------------------------------------------------------------------------
-" Emulación Undotree (Historial Local del IDE)
+" Emulacion Undotree
 " -----------------------------------------------------------------------------
 nnoremap <leader>u :action LocalHistory.ShowHistory<CR>
-" NOTA: set undodir/undofile no aplican aquí. Se usa el historial del IDE.
 
 " -----------------------------------------------------------------------------
 " Formateo y Comentarios
 " -----------------------------------------------------------------------------
-" Formateo movido a <leader>fm para evitar conflicto con Find Files
-
 nnoremap gcc :action CommentByLineComment<CR>
 vnoremap gc :action CommentByLineComment<CR>
 
 " -----------------------------------------------------------------------------
-" LSP / Acciones de Código Inteligente
+" LSP / Acciones de Codigo Inteligente - sincronizado con lsp-config.lua
 " -----------------------------------------------------------------------------
-" Navegación - COMPLETAMENTE SINCRONIZADO CON NEOVIM
 nnoremap K  :action QuickJavaDoc<CR>
-" Mostrar documentación (Hover) - como Neovim
-" REMOVED: gD duplicado - mantener solo gd
 nnoremap gd :action GotoDeclaration<CR>
-" Ir a Definición (general) - como Neovim gd
 nnoremap gi :action GotoImplementation<CR>
-" Ir a Implementación - como Neovim gi
 nnoremap go :action GotoTypeDeclaration<CR>
-" Ir a Definición de Tipo - CORREGIDO
 nnoremap gr :action FindUsages<CR>
-" Referencias - como Neovim gr
-" REMOVED: <leader>D duplicado - mantener solo go
-
-" LSP Navigation con leader - ELIMINADOS (duplicados innecesarios)
-" Usar gd, gi, gr, go directamente sin leader
-
-" Información y Acciones Rápidas
 nnoremap gs :action ParameterInfo<CR>
-" Información de Parámetros (en llamada función)
+nnoremap gR :action FindUsages<CR>
+
 nnoremap <leader>ca :action ShowIntentionActions<CR>
-" Code Action - como Neovim <leader>ca
 inoremap <C-space> <C-x><C-o>
-" Forzar autocompletado
-" REMOVED: <C-s> duplicado - mantener solo gs
-
-" LSP Información con leader - ELIMINADOS (duplicados de K y gs)
-" Usar K y gs directamente
-
-" Formateo - SINCRONIZADO CON NEOVIM
 nnoremap <leader>fm :action OptimizeImports<CR>
-" Optimize imports y format - respeta ktlint del proyecto
-
-" Workspace Commands - SIMPLIFICADO COMO NEOVIM
+nnoremap <leader>rn :action RenameElement<CR>
 nnoremap <leader>lw :action Bookmarks<CR>
-" LSP: List Workspace bookmarks - muestra panel de bookmarks
-
-" Renombrar y Refactorizar
-nnoremap <leader>rn :action RenameElement<CR>             
-" Lista rápida de Refactors
-" Mapeos opcionales para refactors comunes:
-" nnoremap <leader>rm :action ExtractMethod<CR>
-" nnoremap <leader>rv :action IntroduceVariable<CR>
 
 " -----------------------------------------------------------------------------
-" Emulación Trouble (Lista de Problemas/Errores del IDE)
+" Emulacion Trouble (Lista de Problemas/Errores)
 " -----------------------------------------------------------------------------
 nnoremap <leader>xx :action ActivateProblemsViewToolWindow<CR>
-" Toggle Trouble - como Neovim <leader>xx (COMANDO PRINCIPAL)
 nnoremap <leader>xw :action ActivateProblemsViewToolWindow<CR>
-" Workspace Diagnostics - como Neovim <leader>xw (RESTAURADO - mismo que xx)
 nnoremap <leader>xd :action ActivateProblemsViewToolWindow<CR>
-" Document Diagnostics - como Neovim <leader>xd (RESTAURADO - mismo que xx)
 nnoremap <leader>xl :action ActivateProblemsViewToolWindow<CR>
-" Location List - como Neovim <leader>xl (RESTAURADO - mismo que xx)
 nnoremap <leader>xq :action ActivateProblemsViewToolWindow<CR>
-" Quickfix List - como Neovim <leader>xq (RESTAURADO - mismo que xx)"
 nnoremap <leader>xn :action GotoNextError<CR>
-" Ir al siguiente Error/Warning
 nnoremap <leader>xp :action GotoPreviousError<CR>
-" Ir al Error/Warning anterior
-" Alias opcionales (como en tu config nvim)
-" nnoremap ]d <leader>xn
-" nnoremap [d <leader>xp
 
 " -----------------------------------------------------------------------------
-" Plegado (Folding)
+" Plegado (Folding) - sincronizado con vim-options.lua
 " -----------------------------------------------------------------------------
-" set foldmethod=indent " El IDE suele usar sintaxis, pero indent es opción
-" set foldlevelstart=99 " Empezar con todo desplegado
-" nnoremap za za        " Alternar plegado
-" nnoremap zR zR        " Desplegar todo
-" nnoremap zM zM        " Plegar todo
-" Acciones del IDE pueden ser más potentes:
 nnoremap <leader>za :action ExpandCollapseToggleAction<CR>
 nnoremap <leader>zR :action ExpandAllRegions<CR>
 nnoremap <leader>zM :action CollapseAllRegions<CR>
@@ -386,192 +228,67 @@ nnoremap <leader>zr :action ExpandRegion<CR>
 nnoremap <leader>zm :action CollapseRegion<CR>
 
 " -----------------------------------------------------------------------------
-" Acciones Rápidas del IDE (Build/Run/Debug)
+" Build/Run/Debug - sincronizado con terminal.lua
 " -----------------------------------------------------------------------------
 nnoremap <leader>rr :action RunClass<CR>
-" Ejecutar clase actual (no tests)
-nnoremap <leader>rd :action Debug<CR>         
-" Depurar
-nnoremap <leader>rs :action Stop<CR>          
-" Detener
+nnoremap <leader>rd :action Debug<CR>
+nnoremap <leader>rs :action Stop<CR>
 nnoremap <leader>rb :action Android.SyncProject<CR>
-" Sync/Build Android Project
-
-" Acciones de Depuración adicionales (opcional):
-" nnoremap <leader>dc :action Resume<CR>       " Continuar (F9)
-" nnoremap <leader>do :action StepOver<CR>     " Paso por encima (F8)
-" nnoremap <leader>di :action StepInto<CR>     " Paso adentro (F7)
-" nnoremap <leader>ds :action StepOut<CR>      " Paso afuera (Shift+F8)
-" nnoremap <leader>db :action ToggleLineBreakpoint<CR> " Poner/Quitar Breakpoint
-
-" -----------------------------------------------------------------------------
-" Gestión Adicional de Ventanas (Splits)
-" -----------------------------------------------------------------------------
-nnoremap <leader>sv :action SplitVertically<CR>     
-" Crear split vertical
-nnoremap <leader>sh :action SplitHorizontally<CR>
-" Crear split horizontal
-" ELIMINADO: <leader>sr duplicado - usar <leader>sv
-nnoremap <leader>sc :action Unsplit<CR>             
-" Cerrar split actual
-nnoremap <leader>so :action UnsplitAll<CR>          
-" Cerrar todos los splits excepto el actual
-nnoremap <leader>_ :action MaximizeEditorInSplit<CR> 
-" Maximizar/Restaurar split
-
-" -----------------------------------------------------------------------------
-" Vistas Rápidas (Popups)
-" -----------------------------------------------------------------------------
-" REMOVED: <leader>K duplicado - mantener solo K
-" REMOVED: nnoremap <leader>I :action QuickImplementations<CR>   
-" Popup Implementaciones Rápidas
-
-
-
-" -----------------------------------------------------------------------------
-" 🔄 SINCRONIZACIÓN COMPLETA CON NEOVIM - TODOS LOS COMANDOS FALTANTES
-" -----------------------------------------------------------------------------
-
-" Testing Commands - CORREGIDOS para Android Studio
-nnoremap <leader>T :action RunClass<CR>
-" Test/Run Class - como Neovim <leader>T (ejecuta clase actual)
-nnoremap <leader>Tf :action RunClass<CR>
-" Test/Run File - como Neovim <leader>Tf (ejecuta clase del archivo actual)
-nnoremap <leader>Ta :action RunAll<CR>
-" Test All Suite - como Neovim <leader>Ta (ejecuta todos los tests)
-nnoremap <leader>Tl :action Rerun<CR>
-" Test Last - como Neovim <leader>Tl (re-ejecuta último)
-
-" Flutter Commands - CORREGIDOS para Android Studio
-nnoremap <leader>Fs :action Run<CR>
-" Flutter Start App - como Neovim <leader>Fs (ejecuta aplicación)
-nnoremap <leader>Fr :action Flutter.HotReload<CR>
-" Flutter Hot Reload - como Neovim <leader>Fr (Cmd+\)
-nnoremap <leader>FR :action Flutter.Restart<CR>
-" Flutter Hot Restart - como Neovim <leader>FR (Shift+Cmd+\)
-nnoremap <leader>Fq :action Stop<CR>
-" Flutter Quit - como Neovim <leader>Fq (para ejecución)
-nnoremap <leader>Fd :action Flutter.Open.DevTools<CR>
-" Flutter DevTools - como Neovim <leader>Fd
-nnoremap <leader>FD :action DeviceAndSnapshotComboBox<CR>
-" Flutter Devices selector - como Neovim <leader>FD
-nnoremap <leader>Fe :action AvdManager<CR>
-" Flutter Emulators - abrir AVD Manager
-nnoremap <leader>Fo :action ActivateStructureToolWindow<CR>
-" Flutter Outline - estructura del archivo
-nnoremap <leader>Fc :action AndroidLogcatToolWindowFactory.CloseLogcatConsole<CR>
-" Flutter Clear Log - limpiar logcat
-
-" Terminal Commands - DIFERENCIADOS para Android Studio
-" ELIMINADO: <leader>th duplicado - usar <leader>tt como principal
-" ELIMINADOS: <leader>tv y <leader>tf - usar solo <leader>tt como solicitado
-" Solo usar <leader>tt para terminal
-
-" ELIMINADO: Sección duplicada de Buffer Management - ya configurada arriba en líneas 173-180
-
-" Project Management - SINCRONIZADO
-nnoremap <leader>fp :action ManageRecentProjects<CR>
-" Find Projects - como Neovim <leader>fp
-
-" Code Runner Commands - SINCRONIZADO CON code_runner.nvim
-" REMOVED: <leader>r duplicado - mantener solo <leader>rr
-" REMOVED: <leader>rf duplicado - mantener solo <leader>rr
-" REMOVED: <leader>rft duplicado - mantener solo <leader>rr
 nnoremap <leader>rp :action RunProject<CR>
-" Run Project - como Neovim <leader>rp
-" REMOVED: <leader>rc duplicado - mantener solo <leader>rs
-" REMOVED: <leader>crf duplicado - mantener solo <leader>oi
-" REMOVED: <leader>crp duplicado - mantener solo <leader>oi
 
-" Overseer/Task Commands - SINCRONIZADO CON overseer.nvim
+" Overseer/Task Commands - sincronizado con overseer.nvim
 nnoremap <leader>oo :action ActivateRunToolWindow<CR>
-" Overseer Toggle - como Neovim <leader>oo
-" REMOVED: <leader>or duplicado - mantener solo <leader>rr
+nnoremap <leader>or :action RunAnything<CR>
+nnoremap <leader>ob :action MakeProject<CR>
 nnoremap <leader>oi :action EditConfigurations<CR>
-" Overseer Info - como Neovim <leader>oi
-" REMOVED: <leader>ob duplicado - mantener solo <leader>rb
-" ELIMINADO: <leader>oq duplicado - usar <leader>T o <leader>rr
-" REMOVED: <leader>ot duplicado - mantener solo <leader>oo
 
-" Window Management - SINCRONIZADO CON winshift.nvim
+" Testing Commands - sincronizado con vim-test.lua
+nnoremap <leader>ten :action RunClass<CR>
+nnoremap <leader>tenf :action RunClass<CR>
+nnoremap <leader>tena :action RunAll<CR>
+nnoremap <leader>tenl :action Rerun<CR>
+
+" -----------------------------------------------------------------------------
+" Flutter Commands - sincronizado con flutter-tools.lua (fl* prefix)
+" -----------------------------------------------------------------------------
+nnoremap <leader>flr :action Flutter.HotReload<CR>
+nnoremap <leader>fls :action Flutter.Restart<CR>
+nnoremap <leader>fld :action Flutter.Open.DevTools<CR>
+nnoremap <leader>fla :action Run<CR>
+nnoremap <leader>flsd :action DeviceAndSnapshotComboBox<CR>
+nnoremap <leader>fle :action AvdManager<CR>
+nnoremap <leader>flq :action Stop<CR>
+nnoremap <leader>flo :action ActivateStructureToolWindow<CR>
+nnoremap <leader>flc :action AndroidLogcatToolWindowFactory.CloseLogcatConsole<CR>
+
+" -----------------------------------------------------------------------------
+" Gestion de Ventanas (Splits) - sincronizado con session-workspace.lua
+" -----------------------------------------------------------------------------
+nnoremap <leader>sv :action SplitVertically<CR>
+nnoremap <leader>sh :action SplitHorizontally<CR>
+nnoremap <leader>sc :action Unsplit<CR>
+nnoremap <leader>so :action UnsplitAll<CR>
+nnoremap <leader>_ :action MaximizeEditorInSplit<CR>
 nnoremap <leader>wm :action MoveEditorToOppositeTabGroup<CR>
-" WinShift Move - como Neovim <leader>wm
-" ELIMINADO: <leader>ws duplicado - usar <leader>wm
-
-" Oil.nvim equivalent - File Explorer Direct Access
-" REMOVED: - duplicado - mantener solo <leader>pv
-" REMOVED: <leader>- duplicado - mantener solo <leader>pv
-" REMOVED: <leader>oe duplicado - mantener solo <leader>pv
-
-" Session Management Commands - SINCRONIZADO CON persistence.nvim
-nnoremap <leader>qs :action RestoreSession<CR>
-" Restore Session - como Neovim <leader>qs
-nnoremap <leader>ql :action RestoreLastSession<CR>
-" Restore Last Session - como Neovim <leader>ql
-nnoremap <leader>qd :action StopSession<CR>
-" Don't Save Session - como Neovim <leader>qd
-
-" Zen Mode / Focus Mode - SINCRONIZADO CON zen-mode.nvim
-nnoremap <leader>zz :action ToggleFullScreen<CR>
-" Zen Mode / Focus Mode - como Neovim <leader>zz
-
-" Additional Format Commands - REMOVIDO
-" Nota: <leader>fm está configurado arriba para formateo
-" <leader>ff reservado para Find Files
-
-" Undotree Command - YA CONFIGURADO ARRIBA
-" nnoremap <leader>u :action LocalHistory.ShowHistory<CR>
-
-" -----------------------------------------------------------------------------
-" ✅ CONFIGURACIÓN PERFECTA - SIN CONFLICTOS DE KEYBINDINGS
-" -----------------------------------------------------------------------------
-" 🍎 Optimizado para macOS (MacBook Pro)
-" 🔄 +300 comandos sincronizados entre Neovim ↔ IntelliJ IDEA
-" 🛠️ Git actions verificadas con documentación oficial y comunidad IdeaVim
-" 💪 Muscle memory consistente y flujo de trabajo unificado
-" 🚀 Acciones Git funcionales: Vcs.ShowDiff, Annotate, Git.CompareWithBranch, Git.Fetch
-" ⚡ CONFLICTOS RESUELTOS:
-"   - <leader>gd → <leader>gb (AHORA GIT BLAME TOGGLE) vs gd (LSP goto definition)
-"   - <leader>gp → <leader>gnp (previous hunk) vs <leader>gp (git pull)
-"   - Eliminados 10 duplicados de keybindings
-"   - Sin conflictos entre Git, LSP, Terminal, y Buffer commands
-" 🎯 GIT BLAME TOGGLE: <leader>gb presionar una vez=mostrar, presionar otra=ocultar
-
-" -----------------------------------------------------------------------------
-" 🔄 SYNC MAPPINGS | MAPPINGS DE SINCRONIZACIÓN NVIM ↔ INTELLIJ
-" -----------------------------------------------------------------------------
-" Estos keybindings faltaban para sincronización completa con Neovim
-
-" Telescope Quick Access - RESTAURADOS PARA SINCRONIZACIÓN PERFECTA
-" ✅ <leader><leader> - RESTAURADO (línea 108)
-" ✅ <leader>fd - No necesario (cubierto por <leader>ff)
-" ✅ <leader>. - RESTAURADO (línea 110)"
-
-" Neo-tree Focus & Window Management (3 mappings faltantes)
-" REMOVED: <leader>pf duplicado - mantener solo <leader>pv
 nnoremap <leader>we :action NextSplitter<CR>
-" Window focus editor - como Neovim
 nnoremap <leader>wt :action PrevSplitter<CR>
-" Window focus tree - como Neovim
 
-" Buffer Management - RESTAURADOS PARA SINCRONIZACIÓN
-" ✅ <leader>bn - RESTAURADO (línea 167)
-" ✅ <leader>bp - RESTAURADO (línea 169)
+" Project Management - sincronizado con session-workspace.lua
+nnoremap <leader>fp :action ManageRecentProjects<CR>
 
-" Git Operations (2 mappings faltantes)
-nnoremap <leader>gd :action Compare.SameVersion<CR>
-" Git diff split - como Neovim fugitive (cambió de <leader>gd) - CORREGIDO
-" nnoremap <leader>gd :action GotoDeclaration<CR>
-" Go to definition - NO FUNCIONA EN ANDROID STUDIO (conflicto con gd sin leader)
-" REMOVED: <leader>gD duplicado de LSP - mantener solo gd
+" Session Management - sincronizado con persistence.nvim
+nnoremap <leader>qs :action RestoreSession<CR>
+nnoremap <leader>ql :action RestoreLastSession<CR>
+nnoremap <leader>qd :action StopSession<CR>
 
-" Git Conflict Resolution (2 mappings provisionales)
-" REMOVED: <leader>cp duplicado - mantener solo <leader>gb
-" REMOVED: <leader>cn duplicado - mantener solo <leader>gb
+" Zen Mode - sincronizado con zen-mode.nvim
+nnoremap <leader>zz :action ToggleFullScreen<CR>
 
 " -----------------------------------------------------------------------------
 " Fin de .ideavimrc
 " -----------------------------------------------------------------------------
-" Guarda como ~/.ideavimrc (o %USERPROFILE%/_ideavimrc en Windows)
+" Ubicacion:
+"   macOS/Linux: ~/.ideavimrc
+"   Windows: %USERPROFILE%\_ideavimrc
 " Recarga con ':source ~/.ideavimrc' o reiniciando el IDE.
-" ¡Usa ':actionlist [filtro]' para buscar más acciones!
+" Usa ':actionlist [filtro]' para buscar mas acciones.

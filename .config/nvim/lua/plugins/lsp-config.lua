@@ -9,6 +9,22 @@ return {
             local lspconfig = require("lspconfig")
             local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
+            -- Detección de plataforma
+            local is_win = vim.fn.has("win32") == 1
+            local is_mac = vim.fn.has("mac") == 1
+            local sep = is_win and "\\" or "/"
+
+            -- Helper: buscar ejecutable con variante .bat/.exe en Windows
+            local function find_exe(cmd)
+                if vim.fn.executable(cmd) == 1 then return vim.fn.exepath(cmd) end
+                if is_win then
+                    for _, ext in ipairs({ ".bat", ".exe", ".cmd" }) do
+                        if vim.fn.executable(cmd .. ext) == 1 then return vim.fn.exepath(cmd .. ext) end
+                    end
+                end
+                return nil
+            end
+
             -- Configuración de LSPs para tus lenguajes principales
 
             -- 1. Lua LSP (para configuración de Neovim)
@@ -28,7 +44,10 @@ return {
             })
 
             -- 2. Dart LSP (configuración robusta con manejo de errores)
-            local dart_path = "/Users/jorgesalgadomiranda/development/flutter/bin/dart"
+            local flutter_home = os.getenv("FLUTTER_HOME")
+                or (vim.fn.expand("$HOME") .. sep .. "development" .. sep .. "flutter")
+            local dart_path = find_exe("dart")
+                or (flutter_home .. sep .. "bin" .. sep .. (is_win and "dart.bat" or "dart"))
             if vim.fn.executable(dart_path) == 1 then
                 lspconfig.dartls.setup({
                     capabilities = capabilities,
@@ -89,8 +108,8 @@ return {
                 })
             end
 
-            -- 4. Swift LSP (lenguaje principal)
-            if vim.fn.executable("sourcekit-lsp") == 1 then
+            -- 4. Swift LSP (solo macOS - sourcekit-lsp viene con Xcode)
+            if is_mac and vim.fn.executable("sourcekit-lsp") == 1 then
                 lspconfig.sourcekit.setup({
                     capabilities = capabilities,
                     cmd = { "sourcekit-lsp" },
@@ -169,8 +188,12 @@ return {
                     -- Code Actions & Refactoring
                     vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "Rename Symbol" }))
                     vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, vim.tbl_extend("force", opts, { desc = "Code Action" }))
-                    
-                    -- Format (cambiado de lf a fm)
+
+                    -- Navigation (sincronizado con .ideavimrc)
+                    vim.keymap.set("n", "go", vim.lsp.buf.type_definition, vim.tbl_extend("force", opts, { desc = "Go to Type Definition" }))
+                    vim.keymap.set("n", "gs", vim.lsp.buf.signature_help, vim.tbl_extend("force", opts, { desc = "Signature Help / Parameter Info" }))
+
+                    -- Format
                     vim.keymap.set("n", "<leader>fm", function()
                         vim.lsp.buf.format { async = true }
                     end, vim.tbl_extend("force", opts, { desc = "Format document" }))
@@ -190,18 +213,18 @@ return {
                     source = "always",
                     border = "rounded",
                 },
-                signs = true,
+                signs = {
+                    text = {
+                        [vim.diagnostic.severity.ERROR] = " ",
+                        [vim.diagnostic.severity.WARN] = " ",
+                        [vim.diagnostic.severity.HINT] = " ",
+                        [vim.diagnostic.severity.INFO] = " ",
+                    },
+                },
                 underline = true,
                 update_in_insert = false,
                 severity_sort = true,
             })
-
-            -- Signos de diagnósticos
-            local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
-            for type, icon in pairs(signs) do
-                local hl = "DiagnosticSign" .. type
-                vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
-            end
 
             -- Optimización: Reducir logging LSP para mejor performance
             vim.lsp.set_log_level("WARN")

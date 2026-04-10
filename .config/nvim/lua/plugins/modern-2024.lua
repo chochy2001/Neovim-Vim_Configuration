@@ -70,29 +70,6 @@ return {
         end,
     },
 
-    -- Para mejor manejo de snippets (alternativa moderna)
-    {
-        "garymjr/nvim-snippets",
-        event = "InsertEnter",
-        dependencies = { "rafamadriz/friendly-snippets" },
-        opts = {
-            friendly_snippets = true,
-        },
-    },
-
-    -- Plugin para mejor navegación de código
-    {
-        "cbochs/grapple.nvim",
-        opts = {
-            scope = "git_branch",
-        },
-        event = { "BufReadPost", "BufNewFile" },
-        cmd = "Grapple",
-        keys = {
-            { "<leader>m", "<cmd>Grapple toggle<cr>", desc = "Grapple toggle tag" },
-            { "<leader>M", "<cmd>Grapple toggle_tags<cr>", desc = "Grapple open tags window" },
-            { "<leader>n", "<cmd>Grapple cycle_tags next<cr>", desc = "Grapple cycle next tag" },
-            { "<leader>p", "<cmd>Grapple cycle_tags prev<cr>", desc = "Grapple cycle previous tag" },
-        },
-    },
+    -- Deshabilitado nvim-snippets: LuaSnip + friendly-snippets ya cubren snippets
+    -- Deshabilitado Grapple: Harpoon ya cubre navegacion de bookmarks (harpoon.lua)
 }

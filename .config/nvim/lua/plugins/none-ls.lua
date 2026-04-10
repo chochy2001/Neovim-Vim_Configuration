@@ -16,7 +16,7 @@ return {
 			sources = {
 				-- === FORMATEADORES BÁSICOS ===
 
-				-- C/C++ - clang-format (viene con Xcode)
+				-- C/C++ - clang-format (Xcode en macOS, instalar por separado en Linux/Windows)
 				formatting.clang_format.with({
 					extra_args = {
 						"--style={BasedOnStyle: llvm, IndentWidth: 4, ColumnLimit: 100}",
@@ -100,7 +100,7 @@ return {
 			should_attach = function(bufnr)
 				-- No adjuntar a buffers muy grandes
 				local max_filesize = 50 * 1024 -- 50 KB
-				local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(bufnr))
+				local ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(bufnr))
 				if ok and stats and stats.size > max_filesize then
 					return false
 				end

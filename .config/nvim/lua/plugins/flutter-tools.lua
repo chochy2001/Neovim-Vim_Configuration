@@ -60,8 +60,23 @@ return {
                         }
                     end,
                 },
-                flutter_path = "/Users/jorgesalgadomiranda/development/flutter/bin/flutter", -- Ruta específica
-                flutter_lookup_cmd = nil, -- Usar ruta específica en lugar de which
+                flutter_path = (function()
+                    local is_win = vim.fn.has("win32") == 1
+                    local sep = is_win and "\\" or "/"
+                    local flutter_exe = is_win and "flutter.bat" or "flutter"
+                    -- Intentar encontrar en PATH
+                    if vim.fn.executable(flutter_exe) == 1 then
+                        return vim.fn.exepath(flutter_exe)
+                    end
+                    if vim.fn.executable("flutter") == 1 then
+                        return vim.fn.exepath("flutter")
+                    end
+                    -- Fallback a directorio convencional
+                    local home = os.getenv("FLUTTER_HOME")
+                        or (vim.fn.expand("$HOME") .. sep .. "development" .. sep .. "flutter")
+                    return home .. sep .. "bin" .. sep .. flutter_exe
+                end)(),
+                flutter_lookup_cmd = nil,
                 root_patterns = { ".git", "pubspec.yaml" },
                 fvm = false, -- true si usas Flutter Version Management
                 widget_guides = {

@@ -5,7 +5,11 @@ local function test_flutter_setup()
     print("=" .. string.rep("=", 35))
 
     -- Test 1: Verificar Flutter
-    local flutter_cmd = "/Users/jorgesalgadomiranda/development/flutter/bin/flutter"
+    local flutter_home = os.getenv("FLUTTER_HOME")
+        or (vim.fn.expand("$HOME") .. "/development/flutter")
+    local flutter_cmd = vim.fn.executable("flutter") == 1
+        and vim.fn.exepath("flutter")
+        or (flutter_home .. "/bin/flutter")
     if vim.fn.executable(flutter_cmd) == 1 then
         print("✅ Flutter encontrado: " .. flutter_cmd)
     else
@@ -13,7 +17,9 @@ local function test_flutter_setup()
     end
 
     -- Test 2: Verificar Dart
-    local dart_cmd = "/Users/jorgesalgadomiranda/development/flutter/bin/dart"
+    local dart_cmd = vim.fn.executable("dart") == 1
+        and vim.fn.exepath("dart")
+        or (flutter_home .. "/bin/dart")
     if vim.fn.executable(dart_cmd) == 1 then
         print("✅ Dart encontrado: " .. dart_cmd)
     else
@@ -21,7 +27,7 @@ local function test_flutter_setup()
     end
 
     -- Test 3: Verificar LSP clients
-    local clients = vim.lsp.get_active_clients()
+    local clients = vim.lsp.get_clients()
     print("\n📋 Clientes LSP activos:")
     if #clients == 0 then
         print("  - Ninguno (normal si no hay archivos .dart abiertos)")
@@ -55,7 +61,5 @@ end
 -- Crear comando
 vim.api.nvim_create_user_command("TestFlutter", test_flutter_setup, { desc = "Test Flutter configuration" })
 
--- Ejecutar automáticamente
-test_flutter_setup()
-
+-- Solo ejecutar bajo demanda con :TestFlutter (no al inicio)
 return { test = test_flutter_setup }

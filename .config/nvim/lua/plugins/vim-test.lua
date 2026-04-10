@@ -10,6 +10,11 @@ return {
         vim.keymap.set("n", "<leader>tena", ":TestSuite<CR>", { desc = "Test: All Suite" })
         vim.keymap.set("n", "<leader>tenl", ":TestLast<CR>", { desc = "Test: Last" })
         -- TestVisit eliminado por uso poco frecuente
-        vim.cmd("let test#strategy = 'vimux'")
+        -- vimux requiere tmux (Unix); en Windows usar terminal de neovim
+        if vim.fn.has("win32") == 1 then
+            vim.cmd("let test#strategy = 'neovim'")
+        else
+            vim.cmd("let test#strategy = 'vimux'")
+        end
     end,
 }

@@ -70,7 +70,7 @@ end
 
 -- 4. Limpiar vim.v.errmsg periódicamente SIN romper nada más
 vim.schedule(function()
-    local cleanup_timer = vim.loop.new_timer()
+    local cleanup_timer = vim.uv.new_timer()
     cleanup_timer:start(100, 1000, vim.schedule_wrap(function()
         if vim.v.errmsg and (vim.v.errmsg:find("E5248") or vim.v.errmsg:find("BufWinLeave")) then
             vim.v.errmsg = ""
@@ -81,4 +81,4 @@ end)
 -- NO TOCAR vim.cmd, vim.api.nvim_set_hl, ni otras funciones críticas
 -- Solo silenciar mensajes de error visuales
 
-print("🛡️  Supresor INTELIGENTE activado - solo oculta mensajes de error específicos")
+-- Supresor INTELIGENTE activado - solo oculta mensajes de error específicos

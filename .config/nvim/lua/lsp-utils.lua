@@ -3,9 +3,9 @@ local M = {}
 
 -- Función para reiniciar LSP de Dart cuando hay problemas
 M.restart_dart_lsp = function()
-    local clients = vim.lsp.get_active_clients({ name = "dartls" })
+    local clients = vim.lsp.get_clients({ name = "dartls" })
     for _, client in ipairs(clients) do
-        vim.lsp.stop_client(client.id, true)
+        client:stop(true)
     end
 
     vim.defer_fn(function()
@@ -16,7 +16,7 @@ end
 
 -- Función para verificar estado del LSP
 M.check_lsp_status = function()
-    local clients = vim.lsp.get_active_clients()
+    local clients = vim.lsp.get_clients()
     if #clients == 0 then
         vim.notify("No hay clientes LSP activos", vim.log.levels.WARN)
         return

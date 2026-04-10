@@ -74,13 +74,23 @@ let g:startify_custom_header = [
 
 filetype plugin indent on
 
-let g:python3_host_prog = '/Library/Frameworks/Python.framework/Versions/3.11/bin/python3'
-
-let g:deoplete#enable_at_startup = 1
+" Detección cross-platform de Python3
+if has('mac')
+    let g:python3_host_prog = '/Library/Frameworks/Python.framework/Versions/3.11/bin/python3'
+elseif has('win32')
+    let g:python3_host_prog = 'python'
+elseif executable('python3')
+    let g:python3_host_prog = exepath('python3')
+endif
 
 let g:rainbow_active = 1 "set to 0 if you want to enable it later via :RainbowToggle
 
-set clipboard=unnamedplus
+" Clipboard cross-platform
+if has('mac') || has('win32')
+    set clipboard=unnamed
+else
+    set clipboard=unnamedplus
+endif
 
 
 " highlight Comment ctermfg=Gray guifg=#ffffbf
@@ -95,7 +105,14 @@ let g:floaterm_borderchars = '─│─│╭╮╯╰'
 let g:floaterm_bordercolor = 'blue'
 let g:floaterm_title = 'Terminal'
 let g:floaterm_opacity = 0.8
-let g:floaterm_shell = 'zsh'
+" Shell cross-platform para floaterm
+if has('win32')
+    let g:floaterm_shell = 'powershell'
+elseif executable('zsh')
+    let g:floaterm_shell = 'zsh'
+else
+    let g:floaterm_shell = 'bash'
+endif
 
 " Configuración para Go
 let g:go_def_mode='gopls'
@@ -152,7 +169,7 @@ vnoremap yp "+y
 " Salir del modo inserción usando jj o jk
 inoremap <leader>jk <Esc>
 " I use neovim, btw
-nnoremap <Leader><CR> :so ~/.vimrc<CR>
+nnoremap <Leader><CR> :so $MYVIMRC<CR>
 "Busca archivos en el directorio de git actual y subdirectorios
 nnoremap <C-p> :GFiles<CR>
 " Buscar archivos en el directorio actual y subdirectorios
@@ -196,4 +213,4 @@ nnoremap <silent> <leader>t :FloatermToggle<CR>
 nnoremap <leader>st :Startify<CR>
 
 " Scripts
-command! Fjson :source ~/.vim/scripts/formatear_json.vim
+command! Fjson :execute 'source' expand('~/.vim/scripts/formatear_json.vim')
