@@ -14,12 +14,13 @@ return {
             ts_configs.setup({
                 ensure_installed = {
                     "lua", "vim", "vimdoc", "query",
-                    "dart", "swift", "kotlin", "c", "cpp", "go",
+                    "dart", "kotlin", "c", "cpp", "go",
                     "json", "yaml", "markdown", "bash",
-                    -- Add more: :TSInstall <language>
+                    -- swift requires tree-sitter CLI: npm install -g tree-sitter-cli
+                    -- then run :TSInstall swift
                 },
                 sync_install = false,
-                auto_install = true,
+                auto_install = false,
                 highlight = { enable = true },
                 indent = { enable = true },
 
@@ -75,7 +76,22 @@ return {
                 },
             })
 
-            pcall(require, "rainbow-delimiters.setup")
+            -- rainbow-delimiters: only attach to buffers with a valid parser
+            local ok, rd = pcall(require, "rainbow-delimiters")
+            if ok then
+                vim.g.rainbow_delimiters = {
+                    strategy = {
+                        [""] = function()
+                            local bufnr = vim.api.nvim_get_current_buf()
+                            local lang = vim.treesitter.language.get_lang(vim.bo[bufnr].filetype)
+                            if not lang then return nil end
+                            local ok_parser = pcall(vim.treesitter.get_parser, bufnr, lang)
+                            if not ok_parser then return nil end
+                            return rd.strategy["global"]
+                        end,
+                    },
+                }
+            end
         end,
     },
 }
