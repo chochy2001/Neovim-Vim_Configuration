@@ -208,7 +208,10 @@ Leader key: `Space`
 | **Git** | fugitive, gitsigns, diffview, neogit, git-conflict |
 | **Navigation** | telescope, harpoon, neo-tree, oil |
 | **UI** | lualine, bufferline, dashboard, dressing, nvim-notify, which-key, indent-blankline |
-| **Editing** | Comment.nvim, vim-surround, nvim-autopairs, todo-comments |
+| **Editing** | Comment.nvim, vim-surround, nvim-autopairs, todo-comments, flash.nvim |
+| **Text Objects** | nvim-treesitter-textobjects (function, class, argument, loop, conditional) |
+| **LSP Management** | mason.nvim, mason-lspconfig (auto-install servers) |
+| **LSP UI** | fidget.nvim (progress), noice.nvim (modern command line) |
 | **AI** | copilot.vim, CopilotChat.nvim |
 | **Debugging** | nvim-dap, nvim-dap-ui, nvim-dap-virtual-text |
 | **Folding** | nvim-ufo (treesitter-based smart folding) |

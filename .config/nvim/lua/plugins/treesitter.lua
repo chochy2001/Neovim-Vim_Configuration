@@ -1,4 +1,4 @@
--- lua/plugins/treesitter.lua (ADDING RAINBOW DELIMITERS)
+-- Treesitter: syntax parsing, highlighting, and text objects
 return {
     {
         "nvim-treesitter/nvim-treesitter",
@@ -6,32 +6,76 @@ return {
         event = { "BufReadPre", "BufNewFile" },
         dependencies = {
             "nvim-treesitter/playground",
-            "hiphish/rainbow-delimiters.nvim", -- <-- ADDED
+            "hiphish/rainbow-delimiters.nvim",
+            "nvim-treesitter/nvim-treesitter-textobjects",
         },
         config = function()
             local ts_configs = require("nvim-treesitter.configs")
             ts_configs.setup({
-                -- Optimized parsers: only languages you actively use
                 ensure_installed = {
-                    "lua", "vim", "vimdoc", "query", -- Nvim essentials
-                    "dart", "swift", "kotlin", "c", "cpp", "go", -- Main languages
-                    "json", "yaml", "markdown", "bash", -- Configs and scripts
-                    -- Removed: javascript, typescript, tsx, html, css, python, rust, java
-                    -- To add more languages use: :TSInstall <language>
+                    "lua", "vim", "vimdoc", "query",
+                    "dart", "swift", "kotlin", "c", "cpp", "go",
+                    "json", "yaml", "markdown", "bash",
+                    -- Add more: :TSInstall <language>
                 },
                 sync_install = false,
                 auto_install = true,
                 highlight = { enable = true },
                 indent = { enable = true },
-                -- You do NOT need the 'rainbow' section here for rainbow-delimiters
+
+                -- Text objects: select/move by function, class, parameter, etc.
+                textobjects = {
+                    select = {
+                        enable = true,
+                        lookahead = true,
+                        keymaps = {
+                            ["af"] = { query = "@function.outer", desc = "Around function" },
+                            ["if"] = { query = "@function.inner", desc = "Inside function" },
+                            ["ac"] = { query = "@class.outer", desc = "Around class" },
+                            ["ic"] = { query = "@class.inner", desc = "Inside class" },
+                            ["aa"] = { query = "@parameter.outer", desc = "Around argument" },
+                            ["ia"] = { query = "@parameter.inner", desc = "Inside argument" },
+                            ["ai"] = { query = "@conditional.outer", desc = "Around conditional" },
+                            ["ii"] = { query = "@conditional.inner", desc = "Inside conditional" },
+                            ["al"] = { query = "@loop.outer", desc = "Around loop" },
+                            ["il"] = { query = "@loop.inner", desc = "Inside loop" },
+                        },
+                    },
+                    move = {
+                        enable = true,
+                        set_jumps = true,
+                        goto_next_start = {
+                            ["]f"] = { query = "@function.outer", desc = "Next function start" },
+                            ["]c"] = { query = "@class.outer", desc = "Next class start" },
+                            ["]a"] = { query = "@parameter.inner", desc = "Next argument" },
+                        },
+                        goto_next_end = {
+                            ["]F"] = { query = "@function.outer", desc = "Next function end" },
+                            ["]C"] = { query = "@class.outer", desc = "Next class end" },
+                        },
+                        goto_previous_start = {
+                            ["[f"] = { query = "@function.outer", desc = "Previous function start" },
+                            ["[c"] = { query = "@class.outer", desc = "Previous class start" },
+                            ["[a"] = { query = "@parameter.inner", desc = "Previous argument" },
+                        },
+                        goto_previous_end = {
+                            ["[F"] = { query = "@function.outer", desc = "Previous function end" },
+                            ["[C"] = { query = "@class.outer", desc = "Previous class end" },
+                        },
+                    },
+                    swap = {
+                        enable = true,
+                        swap_next = {
+                            ["<leader>sa"] = { query = "@parameter.inner", desc = "Swap with next argument" },
+                        },
+                        swap_previous = {
+                            ["<leader>sA"] = { query = "@parameter.inner", desc = "Swap with previous argument" },
+                        },
+                    },
+                },
             })
 
-            -- rainbow-delimiters specific configuration (OPTIONAL, uses defaults if not set)
-            -- Must be done AFTER loading Treesitter
-            -- You could put it in a `vim.defer_fn` or trust it loads via dependency
-            pcall(require, "rainbow-delimiters.setup") -- Calls the rainbow plugin setup
+            pcall(require, "rainbow-delimiters.setup")
         end,
     },
-    -- Already listed as dependency above
-    -- { "hiphish/rainbow-delimiters.nvim" }
 }

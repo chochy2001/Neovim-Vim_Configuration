@@ -29,6 +29,26 @@ All keybindings are synchronized between Neovim and JetBrains IDEs (.ideavimrc).
 | `<leader>U` | Visual | Convert to uppercase |
 | `gcc` | Normal | Toggle line comment |
 | `gc` | Visual | Toggle comment on selection |
+| `s` | Normal/Visual/Operator | Flash: jump to any character |
+| `S` | Normal/Visual/Operator | Flash: treesitter select |
+
+---
+
+## Treesitter Text Objects
+
+| Key | Mode | Action |
+|-----|------|--------|
+| `af` / `if` | Visual/Operator | Around/inside function |
+| `ac` / `ic` | Visual/Operator | Around/inside class |
+| `aa` / `ia` | Visual/Operator | Around/inside argument |
+| `ai` / `ii` | Visual/Operator | Around/inside conditional |
+| `al` / `il` | Visual/Operator | Around/inside loop |
+| `]f` / `[f` | Normal | Next/previous function start |
+| `]c` / `[c` | Normal | Next/previous class start |
+| `]a` / `[a` | Normal | Next/previous argument |
+| `]F` / `[F` | Normal | Next/previous function end |
+| `<leader>sa` | Normal | Swap argument with next |
+| `<leader>sA` | Normal | Swap argument with previous |
 
 ---
 
@@ -404,6 +424,7 @@ These only work on the dashboard startup screen:
 | Command | Description |
 |---------|-------------|
 | `:Lazy` | Plugin manager UI |
+| `:Mason` | Install/manage LSP servers, formatters, debuggers |
 | `:LspInfo` | Active LSP servers |
 | `:LspRestartDart` | Restart Dart LSP |
 | `:LspStatus` | Check LSP status |

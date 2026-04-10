@@ -236,4 +236,39 @@ return {
         "b0o/schemastore.nvim",
         lazy = true,
     },
+
+    -- Mason: auto-install LSP servers, formatters, and debuggers
+    {
+        "williamboman/mason.nvim",
+        cmd = "Mason",
+        build = ":MasonUpdate",
+        opts = {
+            ui = { border = "rounded" },
+        },
+    },
+    {
+        "williamboman/mason-lspconfig.nvim",
+        event = { "BufReadPre", "BufNewFile" },
+        dependencies = { "williamboman/mason.nvim", "neovim/nvim-lspconfig" },
+        opts = {
+            ensure_installed = {
+                "lua_ls",
+                "clangd",
+                "jsonls",
+                "yamlls",
+            },
+            automatic_installation = true,
+        },
+    },
+
+    -- LSP progress indicator (shows loading/indexing status)
+    {
+        "j-hui/fidget.nvim",
+        event = "LspAttach",
+        opts = {
+            notification = {
+                window = { winblend = 0 },
+            },
+        },
+    },
 }

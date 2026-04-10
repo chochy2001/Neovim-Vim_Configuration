@@ -29,8 +29,9 @@ return {
 			-- If set to 1, you'll need to manually map acceptance (see note below)
 			-- vim.g.copilot_no_tab_map = 1
 
-			-- Optional: Specify the path to node if not in PATH
-			-- vim.g.copilot_node_command = "/path/to/your/node"
+			-- Copilot requires Node.js 22+
+			-- Set path if needed: vim.g.copilot_node_command = "/path/to/node"
+			-- Install via nvm: nvm install 22 && nvm alias default 22
 		end,
 	},
 

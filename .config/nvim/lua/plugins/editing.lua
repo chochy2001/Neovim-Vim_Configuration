@@ -1,16 +1,25 @@
--- lua/plugins/editing.lua
+-- Editing tools: motion, surround, comments, pairs, search
 return {
-    -- Easy motion
-    { "easymotion/vim-easymotion", event = "VeryLazy" },
-    -- Surround text easily (e.g. ysiw" to surround word with "")
-    { "tpope/vim-surround",        event = "VeryLazy" },
+    -- Flash: modern jump/motion (replaces easymotion, treesitter-aware)
+    {
+        "folke/flash.nvim",
+        event = "VeryLazy",
+        opts = {},
+        keys = {
+            { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash: Jump" },
+            { "S", mode = { "n", "x", "o" }, function() require("flash").treesitter() end, desc = "Flash: Treesitter select" },
+            { "r", mode = "o", function() require("flash").remote() end, desc = "Flash: Remote" },
+            { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Flash: Treesitter search" },
+        },
+    },
+    -- Surround text (ysiw", cs"', ds")
+    { "tpope/vim-surround", event = "VeryLazy" },
     -- Auto-close parentheses, quotes, etc.
     {
         "windwp/nvim-autopairs",
-        event = "InsertEnter", -- Load only when entering insert mode
+        event = "InsertEnter",
         config = function()
             require("nvim-autopairs").setup({})
-            -- Integration with nvim-cmp if present
             local cmp_ok, cmp = pcall(require, "cmp")
             if cmp_ok then
                 local cmp_autopairs_ok, cmp_autopairs = pcall(require, "nvim-autopairs.completion.cmp")
@@ -20,10 +29,10 @@ return {
             end
         end,
     },
-    -- Comment code easily (gc, gcc, etc.)
+    -- Comment code (gc, gcc)
     {
         "numToStr/Comment.nvim",
-        event = "VeryLazy", -- Or use 'keys' if you have specific keymaps to trigger loading
+        event = "VeryLazy",
         config = function()
             require("Comment").setup()
         end,

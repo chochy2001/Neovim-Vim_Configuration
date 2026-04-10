@@ -1,19 +1,41 @@
+-- Which-key: shows available keybindings as you type
 return {
     {
         "folke/which-key.nvim",
-        event = "VeryLazy", -- Loads the plugin early, after VimEnter
+        event = "VeryLazy",
         config = function()
-            -- Vim options related to keymap timeout
             vim.o.timeout = true
-            vim.o.timeoutlen = 300 -- Time in milliseconds to wait for the next key
+            vim.o.timeoutlen = 300
 
-            -- which-key configuration
-            require("which-key").setup({
-                -- You can add your custom which-key configuration here inside {}
-                -- or leave it empty {} to use the default configuration.
-                -- Example:
-                -- plugins = { spelling = true },
-                -- window = { border = "single" },
+            local wk = require("which-key")
+            wk.setup({
+                plugins = { spelling = { enabled = true } },
+            })
+
+            -- Register group labels so which-key shows clear categories
+            wk.add({
+                { "<leader>f", group = "Find/Search" },
+                { "<leader>g", group = "Git" },
+                { "<leader>gs", group = "Git Stage" },
+                { "<leader>gc", group = "Git Conflict" },
+                { "<leader>gd", group = "Git Diff" },
+                { "<leader>gb", group = "Git Blame" },
+                { "<leader>gh", group = "Git History" },
+                { "<leader>fl", group = "Flutter" },
+                { "<leader>x", group = "Diagnostics" },
+                { "<leader>m", group = "Marks/Harpoon" },
+                { "<leader>b", group = "Buffers" },
+                { "<leader>w", group = "Windows" },
+                { "<leader>t", group = "Terminal/Test" },
+                { "<leader>r", group = "Run/Rename" },
+                { "<leader>c", group = "Copilot AI" },
+                { "<leader>d", group = "Debug" },
+                { "<leader>z", group = "Fold/Zen" },
+                { "<leader>q", group = "Session" },
+                { "<leader>o", group = "Overseer/Oil" },
+                { "<leader>s", group = "Split/Swap" },
+                { "<leader>l", group = "LSP" },
+                { "<leader>te", group = "Test" },
             })
         end,
     },
