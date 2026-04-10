@@ -1,5 +1,5 @@
 vim.g.mapleader = " "
-vim.g.background = "light"
+vim.g.background = "dark"
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.tabstop = 4
@@ -19,6 +19,13 @@ vim.opt.cursorline = true
 vim.opt.colorcolumn = "80"
 
 vim.opt.swapfile = false
+vim.opt.encoding = "utf-8"
+vim.opt.fileencoding = "utf-8"
+
+-- GUI font (for Neovide, nvim-qt, or other GUI clients)
+if vim.g.neovide or vim.fn.has("gui_running") == 1 then
+    vim.opt.guifont = "JetBrainsMono Nerd Font:h13"
+end
 
 -- Folding with ufo.nvim (treesitter-based smart folding)
 vim.opt.foldcolumn = "1"

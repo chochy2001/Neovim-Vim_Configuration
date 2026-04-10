@@ -1,65 +1,47 @@
 return {
     {
         "glepnir/dashboard-nvim",
-        event = "VimEnter",                         -- Load dashboard when Neovim starts
-        dependencies = { "nvim-tree/nvim-web-devicons" }, -- Needs devicons for icons
+        event = "VimEnter",
+        dependencies = { "nvim-tree/nvim-web-devicons" },
         config = function()
             local dashboard = require("dashboard")
             dashboard.setup({
-                -- Theme and content configuration
                 theme = "doom",
                 config = {
                     header = {
-                        [[  ______                             __                      __           ]],
-                        [[ /      \                           |  \                    |  \          ]],
-                        [[|  $$$$$$\  ______    ______    ____| $$  ______    _______  \$$  _______ ]],
-                        [[| $$   \$$ |      \  /      \  /      $$ /      \  /       \|  \ /       \]],
-                        [[| $$        \$$$$$$\|  $$$$$$\|  $$$$$$$|  $$$$$$\|  $$$$$$$| $$|  $$$$$$$]],
-                        [[| $$   __  /      $$| $$  | $$| $$  | $$| $$    $$ \$$    \ | $$ \$$    \ ]],
-                        [[| $$__/  \|  $$$$$$$| $$__/ $$| $$__| $$| $$$$$$$$ _\$$$$$$\| $$ _\$$$$$$\ ]],
-                        [[ \$$    $$ \$$    $$| $$    $$ \$$    $$ \$$     \|       $$| $$|       $$]],
-                        [[  \$$$$$$   \$$$$$$$| $$$$$$$   \$$$$$$$  \$$$$$$$ \$$$$$$$  \$$ \$$$$$$$ ]],
-                        [[                    | $$                                                  ]],
-                        [[                    | $$                                                  ]],
-                        [[                     \$$                                                  ]],
+                        "",
+                        "",
+                        "   ██████╗ ██████╗ ██████╗ ███████╗███████╗██╗███╗   ██╗ ",
+                        "  ██╔════╝██╔═══██╗██╔══██╗██╔════╝██╔════╝██║████╗  ██║ ",
+                        "  ██║     ██║   ██║██║  ██║█████╗  ███████╗██║██╔██╗ ██║ ",
+                        "  ██║     ██║   ██║██║  ██║██╔══╝  ╚════██║██║██║╚██╗██║ ",
+                        "  ╚██████╗╚██████╔╝██████╔╝███████╗███████║██║██║ ╚████║ ",
+                        "   ╚═════╝ ╚═════╝ ╚═════╝ ╚══════╝╚══════╝╚═╝╚═╝  ╚═══╝ ",
+                        "",
+                        "                  Neovim " .. vim.version().major .. "." .. vim.version().minor .. "." .. vim.version().patch,
+                        "",
+                        "",
                     },
                     center = {
-                        -- Adjust the action for 'Plugin Sync' if using lazy.nvim
-                        { icon = "1️⃣ ", desc = " Find File             ", action = "Telescope find_files" },
-                        { icon = "2️⃣ ", desc = " Find Word             ", action = "Telescope live_grep" },
-                        { icon = "3️⃣ ", desc = " Recent Files          ", action = "Telescope oldfiles" },
-                        { icon = "4️⃣ ", desc = " File Explorer         ", action = "Neotree toggle" },
-                        { icon = "5️⃣ ", desc = " Toggle Terminal       ", action = "ToggleTerm" },
-                        {
-                            icon = "6️⃣ ",
-                            desc = " Edit Config           ",
-                            action = "edit " .. vim.fn.stdpath("config") .. "/init.lua",
-                        }, -- Opens main configuration file (portable)
-                        { icon = "7️⃣ ", desc = " Plugin Sync (Lazy)    ", action = "Lazy sync" }, -- Changed from PackerSync to Lazy sync
-                        { icon = "8️⃣ ", desc = " LSP Installer (Mason) ", action = "Mason" },
+                        { icon = "  ", icon_hl = "Title", desc = "[1]  Find File            ", desc_hl = "String",  key = "1", key_hl = "Number", action = "Telescope find_files" },
+                        { icon = "  ", icon_hl = "Title", desc = "[2]  Find Word            ", desc_hl = "String",  key = "2", key_hl = "Number", action = "Telescope live_grep" },
+                        { icon = "  ", icon_hl = "Title", desc = "[3]  Recent Files         ", desc_hl = "String",  key = "3", key_hl = "Number", action = "Telescope oldfiles" },
+                        { icon = "  ", icon_hl = "Title", desc = "[4]  File Explorer        ", desc_hl = "String",  key = "4", key_hl = "Number", action = "Neotree toggle" },
+                        { icon = "  ", icon_hl = "Title", desc = "[5]  Terminal             ", desc_hl = "String",  key = "5", key_hl = "Number", action = "ToggleTerm" },
+                        { icon = "  ", icon_hl = "Title", desc = "[6]  Edit Config          ", desc_hl = "String",  key = "6", key_hl = "Number", action = "edit " .. vim.fn.stdpath("config") .. "/init.lua" },
+                        { icon = "  ", icon_hl = "Title", desc = "[7]  Plugin Sync (Lazy)   ", desc_hl = "String",  key = "7", key_hl = "Number", action = "Lazy sync" },
+                        { icon = "  ", icon_hl = "Title", desc = "[8]  LSP Manager (Mason)  ", desc_hl = "String",  key = "8", key_hl = "Number", action = "Mason" },
+                        { icon = "  ", icon_hl = "Title", desc = "[9]  Copilot Chat         ", desc_hl = "String",  key = "9", key_hl = "Number", action = "CopilotChatToggle" },
+                        { icon = "  ", icon_hl = "Error", desc = "[q]  Quit                 ", desc_hl = "Comment", key = "q", key_hl = "Error",  action = "qa" },
                     },
-                    footer = { "May the code be with you, Chochy" },
+                    footer = function()
+                        local stats = require("lazy").stats()
+                        return {
+                            "",
+                            " " .. stats.loaded .. "/" .. stats.count .. " plugins loaded in " .. string.format("%.1f", stats.startuptime) .. " ms",
+                        }
+                    end,
                 },
-            })
-
-            -- The autocmd for keymaps must be defined AFTER calling setup
-            -- or inside the config function, but outside the setup table.
-            vim.api.nvim_create_autocmd("FileType", {
-                pattern = "dashboard",
-                callback = function()
-                    local map = vim.api.nvim_buf_set_keymap
-                    local opts = { noremap = true, silent = true, nowait = true }
-
-                    -- Same mappings as before
-                    map(0, "n", "1", ":Telescope find_files<CR>", opts)
-                    map(0, "n", "2", ":Telescope live_grep<CR>", opts)
-                    map(0, "n", "3", ":Telescope oldfiles<CR>", opts)
-                    map(0, "n", "4", ":Neotree toggle<CR>", opts)
-                    map(0, "n", "5", ":ToggleTerm<CR>", opts)
-                    map(0, "n", "6", ":edit " .. vim.fn.stdpath("config") .. "/init.lua<CR>", opts) -- Open config file (portable)
-                    map(0, "n", "7", ":Lazy sync<CR>", opts)            -- Changed from PackerSync
-                    map(0, "n", "8", ":Mason<CR>", opts)
-                end,
             })
         end,
     },
