@@ -1,5 +1,5 @@
 return {
-    -- Terminal mejorado con configuración específica para desarrollo
+    -- Enhanced terminal with development-specific configuration
     {
         "akinsho/toggleterm.nvim",
         version = "*",
@@ -51,18 +51,18 @@ return {
                 },
             })
 
-            -- Terminal keymaps - sincronizado con .ideavimrc
+            -- Terminal keymaps - synced with .ideavimrc
             local opts = { silent = true }
-            -- Terminal escape - sincronizado con IntelliJ
+            -- Terminal escape - synced with IntelliJ
             vim.keymap.set("t", "jj", "<C-\\><C-n>", opts)
-            vim.keymap.set("t", "<C-[><C-[>", "<C-\\><C-n>", opts) -- Ctrl+[ doble como alternativa
+            vim.keymap.set("t", "<C-[><C-[>", "<C-\\><C-n>", opts) -- Double Ctrl+[ as alternative
 
-            -- Window navigation keymaps ya están en vim-options.lua - evitar duplicados
+            -- Window navigation keymaps are already in vim-options.lua - avoid duplicates
 
-            -- Terminales específicos para lenguajes
+            -- Language-specific terminals
             local Terminal = require('toggleterm.terminal').Terminal
 
-            -- Terminal para Flutter
+            -- Flutter terminal
             local flutter_term = Terminal:new({
                 cmd = "flutter",
                 hidden = true,
@@ -80,7 +80,7 @@ return {
                 flutter_term:toggle()
             end
 
-            -- Terminal para Git
+            -- Git terminal
             local lazygit = Terminal:new({
                 cmd = "lazygit",
                 dir = "git_dir",
@@ -98,7 +98,7 @@ return {
                 lazygit:toggle()
             end
 
-            -- Terminal para node
+            -- Node terminal
             local node = Terminal:new({
                 cmd = "node",
                 hidden = true,
@@ -109,7 +109,7 @@ return {
                 node:toggle()
             end
 
-            -- Terminal para monitor de procesos (htop en Unix, tasklist en Windows)
+            -- Process monitor terminal (htop on Unix, tasklist on Windows)
             local sysmon_cmd = vim.fn.has("win32") == 1 and "tasklist" or "htop"
             local htop = Terminal:new({
                 cmd = sysmon_cmd,
@@ -121,7 +121,7 @@ return {
                 htop:toggle()
             end
 
-            -- Terminal para Python (python3 en Unix, python en Windows)
+            -- Python terminal (python3 on Unix, python on Windows)
             local python_cmd = vim.fn.executable("python3") == 1 and "python3" or "python"
             local python = Terminal:new({
                 cmd = python_cmd,
@@ -133,20 +133,20 @@ return {
                 python:toggle()
             end
 
-            -- Keymaps para terminales específicos
+            -- Keymaps for specific terminals
             vim.keymap.set("n", "<leader>tg", "<cmd>lua _lazygit_toggle()<CR>", { desc = "LazyGit Terminal" })
             vim.keymap.set("n", "<leader>tn", "<cmd>lua _node_toggle()<CR>", { desc = "Node Terminal" })
             vim.keymap.set("n", "<leader>tu", "<cmd>lua _htop_toggle()<CR>", { desc = "Htop Terminal" })
             vim.keymap.set("n", "<leader>tp", "<cmd>lua _python_toggle()<CR>", { desc = "Python Terminal" })
             vim.keymap.set("n", "<leader>tF", "<cmd>lua _flutter_toggle()<CR>", { desc = "Flutter Terminal" })
 
-            -- Build/Run/Debug (runner keymaps definidos en code_runner abajo)
+            -- Build/Run/Debug (runner keymaps defined in code_runner below)
             vim.keymap.set("n", "<leader>rs", ":lua vim.fn.jobstop(-1)<CR>", { desc = "Stop Running Process" })
             vim.keymap.set("n", "<leader>rb", ":!make<CR>", { desc = "Build/Sync Project" })
         end,
     },
 
-    -- Task runner moderno
+    -- Modern task runner
     {
         "stevearc/overseer.nvim",
         cmd = { "OverseerRun", "OverseerToggle", "OverseerInfo", "OverseerBuild" },
@@ -171,18 +171,18 @@ return {
         config = function(_, opts)
             require("overseer").setup(opts)
 
-            -- Keymaps para overseer
-            -- Overseer: comandos esenciales simplificados
+            -- Keymaps for overseer
+            -- Overseer: simplified essential commands
             vim.keymap.set("n", "<leader>oo", "<cmd>OverseerToggle<cr>", { desc = "Overseer: Toggle" })
             vim.keymap.set("n", "<leader>or", "<cmd>OverseerRun<cr>", { desc = "Overseer: Run Task" })
             vim.keymap.set("n", "<leader>ob", "<cmd>OverseerBuild<cr>", { desc = "Overseer: Build" })
-            -- AGREGADO: comando Overseer faltante para sincronización completa
+            -- ADDED: missing Overseer command for full sync
             vim.keymap.set("n", "<leader>oi", "<cmd>OverseerInfo<cr>", { desc = "Overseer: Info/Edit Configurations" })
-            -- Comandos QuickAction y TaskAction eliminados por uso poco frecuente
+            -- QuickAction and TaskAction commands removed due to infrequent use
         end,
     },
 
-    -- Code Runner para ejecución rápida
+    -- Code Runner for quick execution
     {
         "CRAG666/code_runner.nvim",
         event = "VeryLazy",
@@ -249,13 +249,13 @@ return {
                 },
             })
 
-            -- Keymaps para code runner
+            -- Code runner keymaps
             vim.keymap.set('n', '<leader>r', ':RunCode<CR>', { desc = "Run Code" })
             vim.keymap.set('n', '<leader>rf', ':RunFile<CR>', { desc = "Run File" })
             vim.keymap.set('n', '<leader>rft', ':RunFile tab<CR>', { desc = "Run File in Tab" })
             vim.keymap.set('n', '<leader>rp', ':RunProject<CR>', { desc = "Run Project" })
             vim.keymap.set('n', '<leader>rc', ':RunClose<CR>', { desc = "Close Runner" })
-            -- Comandos CRFiletype y CRProjects eliminados por ser redundantes
+            -- CRFiletype and CRProjects commands removed as redundant
         end
     },
 }

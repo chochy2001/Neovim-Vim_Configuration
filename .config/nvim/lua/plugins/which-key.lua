@@ -1,17 +1,17 @@
 return {
     {
         "folke/which-key.nvim",
-        event = "VeryLazy", -- Carga el plugin muy pronto, después de VimEnter
+        event = "VeryLazy", -- Loads the plugin early, after VimEnter
         config = function()
-            -- Opciones de Vim relacionadas con el tiempo de espera para los mapeos
+            -- Vim options related to keymap timeout
             vim.o.timeout = true
-            vim.o.timeoutlen = 300 -- Tiempo en milisegundos para esperar la siguiente tecla
+            vim.o.timeoutlen = 300 -- Time in milliseconds to wait for the next key
 
-            -- Configuración de which-key
+            -- which-key configuration
             require("which-key").setup({
-                -- Puedes añadir tu configuración personalizada de which-key aquí dentro {}
-                -- o dejarlo vacío {} para usar la configuración por defecto.
-                -- Ejemplo:
+                -- You can add your custom which-key configuration here inside {}
+                -- or leave it empty {} to use the default configuration.
+                -- Example:
                 -- plugins = { spelling = true },
                 -- window = { border = "single" },
             })

@@ -1,3 +1,9 @@
+" =============================================================================
+" Legacy Vim Configuration (.vimrc)
+" NOTE: The Neovim configuration lives in .config/nvim/init.lua
+" This file is kept for compatibility with classic Vim.
+" =============================================================================
+
 call plug#begin('~/.vim/plugged')
 Plug 'artur-shaik/vim-javacomplete2'
 Plug 'vim-syntastic/syntastic'
@@ -74,7 +80,7 @@ let g:startify_custom_header = [
 
 filetype plugin indent on
 
-" Detección cross-platform de Python3
+" Cross-platform Python3 detection
 if has('mac')
     let g:python3_host_prog = '/Library/Frameworks/Python.framework/Versions/3.11/bin/python3'
 elseif has('win32')
@@ -85,7 +91,7 @@ endif
 
 let g:rainbow_active = 1 "set to 0 if you want to enable it later via :RainbowToggle
 
-" Clipboard cross-platform
+" Cross-platform clipboard
 if has('mac') || has('win32')
     set clipboard=unnamed
 else
@@ -97,15 +103,15 @@ endif
 " highlight Function ctermfg=Blue guifg=Blue
 " highlight Class ctermfg=Green guifg=Green
 " highlight String ctermfg=Yellow guifg=Yellow
-" Ejemplo para personalizar colores
+" Example for customizing colors
 " autocmd Syntax * highlight Class ctermfg=Blue guifg=#268bd2
 
-"Terminal flotante
+" Floating terminal
 let g:floaterm_borderchars = '─│─│╭╮╯╰'
 let g:floaterm_bordercolor = 'blue'
 let g:floaterm_title = 'Terminal'
 let g:floaterm_opacity = 0.8
-" Shell cross-platform para floaterm
+" Cross-platform shell for floaterm
 if has('win32')
     let g:floaterm_shell = 'powershell'
 elseif executable('zsh')
@@ -114,47 +120,47 @@ else
     let g:floaterm_shell = 'bash'
 endif
 
-" Configuración para Go
+" Go configuration
 let g:go_def_mode='gopls'
 let g:go_info_mode='gopls'
 
-" Configuración para Dart
+" Dart configuration
 let g:lsc_auto_map = v:true
 let g:dart_format_on_save = 1
 
-"Numero de lineas para el resaltado de sintaxis
+" Maximum columns for syntax highlighting
 set synmaxcol=2000
 
-" Mantiene al menos 8 líneas visibles por encima y por debajo del cursor
+" Keep at least 8 lines visible above and below the cursor
 set scrolloff=8
 
-" Muestra el número de línea absoluto
+" Show absolute line numbers
 set number
 
-" Muestra el número de línea relativo al cursor
+" Show relative line numbers
 set relativenumber
 
-" Establece el ancho de tabulación y el ancho de tabulación suave en 4 espacios
+" Set tab width and soft tab width to 4 spaces
 set tabstop=4 softtabstop=4
 
-" Establece el ancho de desplazamiento (indentación) en 4 espacios
+" Set indent width to 4 spaces
 set shiftwidth=4
 
-" Convierte las tabulaciones en espacios
+" Convert tabs to spaces
 set expandtab
 
-" Habilita la indentación inteligente
+" Enable smart indentation
 set smartindent
 set termguicolors
 
-" Habilita el resaltado de sintaxis en Vim
+" Enable syntax highlighting
 syntax enable
 syntax on
 
-" Establece Dracula como el esquema de colores actual
+" Set Dracula as the current colorscheme
 colorscheme dracula
 
-" Habilita estilos de texto opcionales para Dracula
+" Enable airline tabline and theme
 let g:airline#extensions#tabline#enabled = 1
 let g:airline_theme = 'dark'
 
@@ -162,17 +168,17 @@ let mapleader = " "
 nnoremap <leader>pv :Vex<CR>
 nnoremap <leader>ph :Hex<CR>
 
-" Mapea yp para copiar al portapapeles tanto en modo normal como visual
+" Map yp to copy to system clipboard in normal and visual mode
 nnoremap yp "+yy
 vnoremap yp "+y
 
-" Salir del modo inserción usando jj o jk
+" Exit insert mode using jj or jk
 inoremap <leader>jk <Esc>
 " I use neovim, btw
 nnoremap <Leader><CR> :so $MYVIMRC<CR>
-"Busca archivos en el directorio de git actual y subdirectorios
+" Search files in current git directory and subdirectories
 nnoremap <C-p> :GFiles<CR>
-" Buscar archivos en el directorio actual y subdirectorios
+" Search files in current directory and subdirectories
 "nnoremap <C-p> :Files<CR>
 " I don't know if I love these remaps yet.  I am considering doing
 " <leader>c(k|j|o)
@@ -186,30 +192,30 @@ nnoremap <C-n> :NERDTree<CR>
 nnoremap <C-t> :NERDTreeToggle<CR>
 nnoremap <C-f> :NERDTreeFind<CR>
 
-"Moverse entre buffers
+" Navigate between buffers
 nnoremap <leader>bn :bn<CR>
 nnoremap <leader>bp :bp<CR>
 
-" Mapea 'gl' a ':Git log'
+" Map 'gl' to ':Git log'
 nnoremap <leader>gl :Git log<CR>
-" Mapea 'gc' a ':Git commit'
+" Map 'gc' to ':Git commit'
 nnoremap <leader>gc :Git commit<CR>
-" Mapea 'ga' a ':Git add %'
+" Map 'ga' to ':Git add %'
 nnoremap <leader>ga :Git add %<CR>
-" Mapea 'gs' a ':Git status'
+" Map 'gs' to ':Git status'
 nnoremap <leader>gs :Git status<CR>
-" Mapea 'gp' a ':Git push'
+" Map 'gps' to ':Git push'
 nnoremap <leader>gps :Git push<CR>
-" Mapea 'gp' a ':Git pull'
+" Map 'gpl' to ':Git pull'
 nnoremap <leader>gpl :Git pull<CR>
 
-" Instalar los plugins ya escritos
+" Install listed plugins
 nnoremap <leader>pi :PlugInstall<CR>
 
 " Terminal
 nnoremap <silent> <leader>t :FloatermToggle<CR>
 
-" para activar startify
+" Toggle Startify
 nnoremap <leader>st :Startify<CR>
 
 " Scripts

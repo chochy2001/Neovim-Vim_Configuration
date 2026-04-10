@@ -1,4 +1,4 @@
--- lua/plugins/treesitter.lua (AÑADIENDO RAINBOW DELIMITERS)
+-- lua/plugins/treesitter.lua (ADDING RAINBOW DELIMITERS)
 return {
     {
         "nvim-treesitter/nvim-treesitter",
@@ -6,32 +6,32 @@ return {
         event = { "BufReadPre", "BufNewFile" },
         dependencies = {
             "nvim-treesitter/playground",
-            "hiphish/rainbow-delimiters.nvim", -- <-- AÑADIDO
+            "hiphish/rainbow-delimiters.nvim", -- <-- ADDED
         },
         config = function()
             local ts_configs = require("nvim-treesitter.configs")
             ts_configs.setup({
-                -- Parsers optimizados: solo lenguajes que usas activamente
+                -- Optimized parsers: only languages you actively use
                 ensure_installed = {
                     "lua", "vim", "vimdoc", "query", -- Nvim essentials
-                    "dart", "swift", "kotlin", "c", "cpp", "go", -- Lenguajes principales
-                    "json", "yaml", "markdown", "bash", -- Configs y scripts
-                    -- Removidos: javascript, typescript, tsx, html, css, python, rust, java
-                    -- Para agregar más lenguajes usar: :TSInstall <language>
+                    "dart", "swift", "kotlin", "c", "cpp", "go", -- Main languages
+                    "json", "yaml", "markdown", "bash", -- Configs and scripts
+                    -- Removed: javascript, typescript, tsx, html, css, python, rust, java
+                    -- To add more languages use: :TSInstall <language>
                 },
                 sync_install = false,
                 auto_install = true,
                 highlight = { enable = true },
                 indent = { enable = true },
-                -- NO necesitas la sección 'rainbow' aquí para rainbow-delimiters
+                -- You do NOT need the 'rainbow' section here for rainbow-delimiters
             })
 
-            -- Configuración específica de rainbow-delimiters (OPCIONAL, usa defaults si no pones esto)
-            -- Debe hacerse DESPUÉS de cargar Treesitter
-            -- Podrías ponerlo en un `vim.defer_fn` o confiar en que se cargue por dependencia
-            pcall(require, "rainbow-delimiters.setup") -- Llama al setup del plugin de rainbow
+            -- rainbow-delimiters specific configuration (OPTIONAL, uses defaults if not set)
+            -- Must be done AFTER loading Treesitter
+            -- You could put it in a `vim.defer_fn` or trust it loads via dependency
+            pcall(require, "rainbow-delimiters.setup") -- Calls the rainbow plugin setup
         end,
     },
-    -- Ya está listado como dependencia arriba
+    -- Already listed as dependency above
     -- { "hiphish/rainbow-delimiters.nvim" }
 }

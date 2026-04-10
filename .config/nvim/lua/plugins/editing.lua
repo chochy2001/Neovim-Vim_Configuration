@@ -1,16 +1,16 @@
 -- lua/plugins/editing.lua
 return {
-    -- Movimiento fácil
+    -- Easy motion
     { "easymotion/vim-easymotion", event = "VeryLazy" },
-    -- Rodea texto fácilmente (ej. ysiw" para rodear palabra con "")
+    -- Surround text easily (e.g. ysiw" to surround word with "")
     { "tpope/vim-surround",        event = "VeryLazy" },
-    -- Auto-cierre de paréntesis, comillas, etc.
+    -- Auto-close parentheses, quotes, etc.
     {
         "windwp/nvim-autopairs",
-        event = "InsertEnter", -- Cargar solo al entrar en modo inserción
+        event = "InsertEnter", -- Load only when entering insert mode
         config = function()
             require("nvim-autopairs").setup({})
-            -- Integración con nvim-cmp si está presente
+            -- Integration with nvim-cmp if present
             local cmp_ok, cmp = pcall(require, "cmp")
             if cmp_ok then
                 local cmp_autopairs_ok, cmp_autopairs = pcall(require, "nvim-autopairs.completion.cmp")
@@ -20,20 +20,20 @@ return {
             end
         end,
     },
-    -- Comentar código fácilmente (gc, gcc, etc.)
+    -- Comment code easily (gc, gcc, etc.)
     {
         "numToStr/Comment.nvim",
-        event = "VeryLazy", -- O usa 'keys' si tienes mapeos específicos para cargar
+        event = "VeryLazy", -- Or use 'keys' if you have specific keymaps to trigger loading
         config = function()
             require("Comment").setup()
         end,
     },
-    -- Barra de tags (necesita ctags instalado externamente)
+    -- Tag bar (requires ctags installed externally)
     {
         "preservim/tagbar",
         cmd = "TagbarToggle",
     },
-    -- Highlight TODO/FIXME/HACK/NOTE en el codigo
+    -- Highlight TODO/FIXME/HACK/NOTE in code
     {
         "folke/todo-comments.nvim",
         event = "VeryLazy",

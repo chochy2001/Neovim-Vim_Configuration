@@ -15,18 +15,18 @@ return {
 		{ "<leader>pe", "<cmd>Neotree filesystem focus<cr>", desc = "Focus NeoTree (Project Explore)" },
 	},
 	config = function()
-		-- Configuración con manejo de errores
+		-- Configuration with error handling
 		vim.g.neo_tree_remove_legacy_commands = 1
 		local status_ok, neo_tree = pcall(require, "neo-tree")
 		if not status_ok then
-			vim.notify("Neo-tree no se pudo cargar", vim.log.levels.ERROR)
+			vim.notify("Neo-tree failed to load", vim.log.levels.ERROR)
 			return
 		end
 
-		-- Asegurar que nvim-web-devicons esté disponible
+		-- Ensure nvim-web-devicons is available
 		local web_devicons_ok, web_devicons = pcall(require, "nvim-web-devicons")
 		if not web_devicons_ok then
-			vim.notify("nvim-web-devicons no está disponible", vim.log.levels.WARN)
+			vim.notify("nvim-web-devicons is not available", vim.log.levels.WARN)
 		end
 
 		neo_tree.setup({
@@ -36,7 +36,7 @@ return {
 			enable_diagnostics = true,
 			use_popups_for_input = false,
 
-			-- Configuración segura del filesystem
+			-- Safe filesystem configuration
 			filesystem = {
 				filtered_items = {
 					visible = true,
@@ -51,10 +51,10 @@ return {
 				},
 				group_empty_dirs = false,
 				hijack_netrw_behavior = "open_default",
-				use_libuv_file_watcher = false, -- Deshabilitado para evitar errores
+				use_libuv_file_watcher = false, -- Disabled to avoid errors
 			},
 
-			-- Configuración segura de la ventana
+			-- Safe window configuration
 			window = {
 				position = "left",
 				width = 30,
@@ -104,7 +104,7 @@ return {
 				}
 			},
 
-			-- Configuración por defecto ROBUSTA
+			-- ROBUST default component configuration
 			default_component_configs = {
 				container = {
 					enable_character_fade = true
@@ -126,7 +126,7 @@ return {
 					folder_open = "",
 					folder_empty = "󰜌",
 					folder_empty_open = "󰜌",
-					-- ICONO POR DEFECTO OBLIGATORIO - nunca vacío
+					-- MANDATORY DEFAULT ICON - never empty
 					default = "",
 					highlight = "NeoTreeFileIcon"
 				},
@@ -155,24 +155,24 @@ return {
 			},
 		})
 
-		-- Keymaps adicionales para navegación universal (compatible con todas las terminales)
-		-- ELIMINADO: <leader>1 conflicta con harpoon del .ideavimrc
-		-- Alternativas universales sin dependencia de macOS
+		-- Additional keymaps for universal navigation (compatible with all terminals)
+		-- REMOVED: <leader>1 conflicts with harpoon from .ideavimrc
+		-- Universal alternatives without macOS dependency
 		vim.keymap.set("n", "<leader>pf", "<cmd>Neotree filesystem focus<cr>", { desc = "Project Focus" })
 
-		-- Keymap para revelar archivo actual en el árbol (ya existe en keys arriba)
+		-- Keymap to reveal current file in tree (already exists in keys above)
 
-		-- Auto-comandos para mejorar la navegación (versión segura)
+		-- Auto-commands to improve navigation (safe version)
 		vim.api.nvim_create_autocmd("FileType", {
 			group = vim.api.nvim_create_augroup("NeotreeNavigation", { clear = true }),
 			pattern = "neo-tree",
 			callback = function(ev)
-				-- Verificar que el buffer es válido
+				-- Check that the buffer is valid
 				if not vim.api.nvim_buf_is_valid(ev.buf) then
 					return
 				end
 
-				-- Solo mapear en buffers de neo-tree usando leader
+				-- Only map in neo-tree buffers using leader
 				local opts = { buffer = ev.buf, silent = true, noremap = true }
 				pcall(function()
 					vim.keymap.set("n", "<leader>we", "<C-w>l", vim.tbl_extend("force", opts, { desc = "Window: Focus editor" }))
@@ -181,6 +181,6 @@ return {
 			end,
 		})
 
-		print("✅ Neo-tree configurado con navegación tipo IntelliJ (macOS optimized)")
+		print("Neo-tree configured with IntelliJ-like navigation (macOS optimized)")
 	end,
 }

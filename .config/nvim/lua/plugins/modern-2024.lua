@@ -1,6 +1,6 @@
--- Plugins modernos recomendados para 2024-2025
+-- Modern recommended plugins for 2024-2025
 return {
-    -- Context de código (trending)
+    -- Code context (trending)
     {
         "nvim-treesitter/nvim-treesitter-context",
         event = "VeryLazy",
@@ -24,7 +24,7 @@ return {
         end,
     },
 
-    -- Mejor experiencia de find/replace (trending)
+    -- Better find/replace experience (trending)
     {
         "MagicDuck/grug-far.nvim",
         cmd = "GrugFar",
@@ -52,7 +52,7 @@ return {
         }
     },
 
-    -- Mejores ventanas de UI (ya tienes dressing.nvim pero confirmemos la config)
+    -- Better UI windows (you already have dressing.nvim but let's confirm the config)
     {
         "stevearc/dressing.nvim",
         lazy = true,
@@ -70,6 +70,6 @@ return {
         end,
     },
 
-    -- Deshabilitado nvim-snippets: LuaSnip + friendly-snippets ya cubren snippets
-    -- Deshabilitado Grapple: Harpoon ya cubre navegacion de bookmarks (harpoon.lua)
+    -- Disabled nvim-snippets: LuaSnip + friendly-snippets already cover snippets
+    -- Disabled Grapple: Harpoon already covers bookmark navigation (harpoon.lua)
 }

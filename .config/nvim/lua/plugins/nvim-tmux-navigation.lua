@@ -1,8 +1,8 @@
 return {
     "alexghergh/nvim-tmux-navigation",
-    enabled = false, -- Deshabilitado para evitar conflictos de Control
+    enabled = false, -- Disabled to avoid Control key conflicts
     config = function()
-        -- Plugin deshabilitado - usar <leader>w* para navegación de ventanas
-        -- Los keymaps están en terminal.lua con leader
+        -- Plugin disabled - use <leader>w* for window navigation
+        -- Keymaps are in terminal.lua with leader
     end,
 }

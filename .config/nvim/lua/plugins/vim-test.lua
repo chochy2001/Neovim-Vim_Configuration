@@ -4,13 +4,13 @@ return {
         "preservim/vimux",
     },
     config = function()
-        -- Test commands: mantener solo los esenciales
+        -- Test commands: keep only the essentials
         vim.keymap.set("n", "<leader>ten", ":TestNearest<CR>", { desc = "Test: Nearest" })
         vim.keymap.set("n", "<leader>tenf", ":TestFile<CR>", { desc = "Test: File" })
         vim.keymap.set("n", "<leader>tena", ":TestSuite<CR>", { desc = "Test: All Suite" })
         vim.keymap.set("n", "<leader>tenl", ":TestLast<CR>", { desc = "Test: Last" })
-        -- TestVisit eliminado por uso poco frecuente
-        -- vimux requiere tmux (Unix); en Windows usar terminal de neovim
+        -- TestVisit removed due to infrequent use
+        -- vimux requires tmux (Unix); on Windows use neovim terminal
         if vim.fn.has("win32") == 1 then
             vim.cmd("let test#strategy = 'neovim'")
         else

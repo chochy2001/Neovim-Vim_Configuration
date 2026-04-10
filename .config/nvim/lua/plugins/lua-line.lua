@@ -2,17 +2,17 @@
 return {
     {
         "nvim-lualine/lualine.nvim",
-        -- Asegúrate que devicons se cargue, lazy.nvim suele manejarlo bien
+        -- Make sure devicons is loaded, lazy.nvim usually handles this well
         dependencies = { "nvim-tree/nvim-web-devicons" },
-        event = "VeryLazy", -- Cargarla cuando la UI esté lista
+        event = "VeryLazy", -- Load when the UI is ready
         config = function()
             require("lualine").setup({
                 options = {
-                    theme = "auto", -- Usa el tema de colorscheme o elige uno específico
+                    theme = "auto", -- Uses the colorscheme theme or choose a specific one
                     section_separators = { left = "", right = "" },
                     component_separators = { left = "", right = "" },
                     icons_enabled = true,
-                    -- ... otras opciones globales si las necesitas ...
+                    -- ... other global options if needed ...
                 },
                 sections = {
                     lualine_a = { "mode" },
@@ -22,7 +22,7 @@ return {
                     lualine_y = { "progress" },
                     lualine_z = { "location" },
                 },
-                -- ... otras secciones o configuraciones ...
+                -- ... other sections or configurations ...
             })
         end,
     },

@@ -1,41 +1,62 @@
 -- lua/plugins/copilot.lua
 
 return {
-	"github/copilot.vim",
-	-- Puedes cargarlo al inicio o de forma diferida.
-	-- 'InsertEnter' es una opción razonable. 'BufEnter' también podría serlo.
-	event = { "InsertEnter", "BufEnter" },
-	-- O si prefieres que siempre esté disponible al iniciar:
-	-- event = "VeryLazy", -- o simplemente no poner 'event' ni 'cmd'
+	-- GitHub Copilot inline completions
+	{
+		"github/copilot.vim",
+		event = { "InsertEnter", "BufEnter" },
 
-	-- Usamos 'init' para configurar las variables globales ANTES de que el plugin se cargue
-	init = function()
-		-- Deshabilitar Copilot para ciertos tipos de archivo
-		-- Consulta ':help copilot-filetypes' después de instalar para ver la sintaxis exacta
-		vim.g.copilot_filetypes = {
-			["*"] = true, -- Habilitado para todos por defecto
-			-- Ejemplos para deshabilitar:
-			-- yaml = false,
-			-- markdown = false,
-			-- help = false,
-			-- gitcommit = false,
-			-- gitrebase = false,
-			-- hgcommit = false,
-			-- svn = false,
-			-- cvs = false,
-			-- dbout = false,
-			["--"] = false, -- Archivos sin extensión
-		}
+		-- Use 'init' to configure global variables BEFORE the plugin loads
+		init = function()
+			-- Disable Copilot for certain file types
+			-- See ':help copilot-filetypes' after installing for exact syntax
+			vim.g.copilot_filetypes = {
+				["*"] = true, -- Enabled for all by default
+				-- Examples to disable:
+				-- yaml = false,
+				-- markdown = false,
+				-- help = false,
+				-- gitcommit = false,
+				-- gitrebase = false,
+				-- hgcommit = false,
+				-- svn = false,
+				-- cvs = false,
+				-- dbout = false,
+				["--"] = false, -- Files without extension
+			}
 
-		-- Deshabilitar el mapeo por defecto de <Tab> si interfiere con tus otros plugins
-		-- Si pones 1, tendrás que mapear manualmente la aceptación (ver nota abajo)
-		-- vim.g.copilot_no_tab_map = 1
+			-- Disable the default <Tab> mapping if it interferes with other plugins
+			-- If set to 1, you'll need to manually map acceptance (see note below)
+			-- vim.g.copilot_no_tab_map = 1
 
-		-- Opcional: Especificar la ruta a node si no está en el PATH
-		-- vim.g.copilot_node_command = "/ruta/a/tu/node"
+			-- Optional: Specify the path to node if not in PATH
+			-- vim.g.copilot_node_command = "/path/to/your/node"
+		end,
+	},
 
-		-- Otras opciones de configuración (menos comunes)
-		-- vim.g.copilot_proxy = "http://usuario:contraseña@proxy.ejemplo.com:3000"
-		-- vim.g.copilot_disable_tls = 1 -- No recomendado
-	end,
+	-- Interactive AI chat for code assistance
+	{
+		"CopilotC-Nvim/CopilotChat.nvim",
+		dependencies = {
+			"github/copilot.vim",
+			"nvim-lua/plenary.nvim",
+		},
+		build = "make tiktoken",
+		cmd = { "CopilotChat", "CopilotChatOpen", "CopilotChatToggle" },
+		keys = {
+			{ "<leader>cc", "<cmd>CopilotChatToggle<cr>", desc = "Copilot: Toggle Chat" },
+			{ "<leader>ce", "<cmd>CopilotChatExplain<cr>", mode = { "n", "v" }, desc = "Copilot: Explain" },
+			{ "<leader>cr", "<cmd>CopilotChatReview<cr>", mode = { "n", "v" }, desc = "Copilot: Review" },
+			{ "<leader>cf", "<cmd>CopilotChatFix<cr>", mode = { "n", "v" }, desc = "Copilot: Fix" },
+			{ "<leader>co", "<cmd>CopilotChatOptimize<cr>", mode = { "n", "v" }, desc = "Copilot: Optimize" },
+			{ "<leader>ct", "<cmd>CopilotChatTests<cr>", mode = { "n", "v" }, desc = "Copilot: Generate Tests" },
+		},
+		opts = {
+			window = {
+				layout = "float",
+				width = 0.8,
+				height = 0.8,
+			},
+		},
+	},
 }

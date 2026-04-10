@@ -1,19 +1,19 @@
--- Configuración ULTRA MÍNIMA - SIN errores E5248 garantizado
+-- ULTRA MINIMAL configuration - guaranteed NO E5248 errors
 return {
     {
         "nvim-tree/nvim-web-devicons",
         lazy = false,
         priority = 1000,
         config = function()
-            -- Configuración MÍNIMA - solo usa iconos por defecto del plugin
+            -- MINIMAL configuration - only uses plugin default icons
             require("nvim-web-devicons").setup({
                 default = true,
                 color_icons = true,
                 strict = false,
-                -- NO overrides - usar SOLO lo que viene por defecto
+                -- NO overrides - use ONLY what comes by default
             })
 
-            print("✅ Configuración MÍNIMA de iconos - SIN overrides que causen E5248")
+            print("MINIMAL icon configuration - NO overrides that cause E5248")
         end,
     },
 }

@@ -2,9 +2,9 @@
 return {
     {
         "folke/trouble.nvim",
-        -- Asegúrate que devicons esté disponible
+        -- Make sure devicons is available
         dependencies = { "nvim-tree/nvim-web-devicons" },
-        -- Carga bajo demanda con comandos o teclas
+        -- Load on demand with commands or keys
         cmd = { "TroubleToggle", "Trouble" },
         keys = {
             { "<leader>xx", "<cmd>TroubleToggle<cr>",                       desc = "Toggle Trouble" },
@@ -13,14 +13,14 @@ return {
             { "<leader>xl", "<cmd>TroubleToggle loclist<cr>",               desc = "Location List" },
             { "<leader>xq", "<cmd>TroubleToggle quickfix<cr>",              desc = "Quickfix List" },
             { "gR",         "<cmd>TroubleToggle lsp_references<cr>",        desc = "LSP References" },
-            -- AGREGADOS: comandos de navegación de errores para sincronización completa
+            -- ADDED: error navigation commands for full sync
             { "<leader>xn", function() vim.diagnostic.goto_next() end,       desc = "Next Error/Diagnostic" },
             { "<leader>xp", function() vim.diagnostic.goto_prev() end,       desc = "Previous Error/Diagnostic" },
         },
         config = function()
             require("trouble").setup({
-                -- Tu configuración de Trouble aquí (ej. iconos, etc.)
-                -- icons = false, -- ejemplo
+                -- Your Trouble configuration here (e.g. icons, etc.)
+                -- icons = false, -- example
             })
         end,
     },

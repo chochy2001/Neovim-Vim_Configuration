@@ -1,207 +1,263 @@
-# 🧠 Mi Configuración de Neovim en Lua (Analizada)
+# Neovim + Vim + IntelliJ Configuration
 
-Esta es una configuración personalizada de Neovim basada en Lua, organizada modularmente y gestionada con `packer.nvim`.
+Cross-platform (macOS / Linux / Windows) development environment with synchronized keybindings across Neovim, Vim, and JetBrains IDEs.
 
-**Fecha de Análisis:** 15 de abril de 2025
+## Features
 
-## ✨ Características Principales
+- **Neovim** config with [lazy.nvim](https://github.com/folke/lazy.nvim), native LSP, and 60+ plugins
+- **IdeaVim** config (`.ideavimrc`) fully synchronized with Neovim keybindings
+- **Legacy Vim** config (`.vimrc`) with vim-plug
+- **Cross-platform** - all paths dynamically detected, works on macOS, Linux, and Windows
+- **Zero conflicts** - all keybindings audited, no overlaps between plugins
 
-- **Gestor de Plugins:** `packer.nvim` con auto-instalación y recarga automática.
-- **Interfaz de Usuario:**
-  - Pantalla de inicio con `dashboard-nvim`.
-  - Barra de estado potente con `lualine.nvim`.
-  - Ayuda contextual de atajos con `which-key.nvim`.
-  - Explorador de archivos moderno con `neo-tree.nvim`.
-  - Búsqueda fuzzy avanzada con `telescope.nvim`.
-  - Notificaciones mejoradas con `nvim-notify`.
-  - Líneas de indentación visuales con `indent-blankline.nvim`.
-  - Terminal integrada con `toggleterm.nvim`.
-  - Navegación de diagnósticos con `trouble.nvim`.
-- **Edición y Movimiento:**
-  - Marcadores rápidos de archivos con `harpoon`.
-  - Gestión del historial de deshacer con `undotree`.
-  - Manipulación de "alrededores" (comillas, paréntesis) con `vim-surround`.
-  - Cierre automático de pares con `nvim-autopairs`.
-  - Comentarios rápidos con `Comment.nvim`.
-  - Movimiento rápido con `vim-easymotion`.
-- **Formateo y Linting:**
-  - Formateo unificado al guardar con `conform.nvim`.
-- **Desarrollo:**
-  - Soporte LSP robusto con `nvim-lspconfig`, `mason.nvim` y `mason-lspconfig.nvim`.
-  - Autocompletado avanzado con `nvim-cmp` y `LuaSnip`.
-  - Integración Git con `vim-fugitive`, `gitsigns.nvim`, `NeogitOrg/neogit` y `diffview.nvim`.
-  - Soporte para `Treesitter` para resaltado de sintaxis mejorado.
-  - Herramientas específicas para Flutter con `flutter-tools.nvim`.
-  - Navegación de código basada en etiquetas con `preservim/tagbar`.
-- **Otros:**
-  - Vista previa de Markdown con `markdown-preview.nvim`.
-  - Integración con `fzf`.
+## Quick Install
 
-## 🚀 Instalación
+```bash
+# Clone the repository
+git clone git@github.com:chochy2001/Neovim-Vim_Configuration.git ~/Neovim-Vim_Configuration
 
-1.  **Clona el repositorio:**
-    ```bash
-    git clone <URL_DE_TU_REPOSITORIO> ~/.config/nvim
-    ```
-2.  **Inicia Neovim:**
-    ```bash
-    nvim
-    ```
-    Packer se instalará automáticamente (si es necesario) y luego instalará todos los plugins definidos en `lua/plugins.lua`. Puede que necesites reiniciar Neovim después de la instalación inicial (`:q` y `nvim` de nuevo).
+# Symlink Neovim config
+mkdir -p ~/.config
+ln -sfn ~/Neovim-Vim_Configuration/.config/nvim ~/.config/nvim
 
-## ⌨️ Atajos de Teclado Principales
+# Symlink IdeaVim config
+ln -sf ~/Neovim-Vim_Configuration/.ideavimrc ~/.ideavimrc
 
-**Nota:** `<leader>` está mapeado a la tecla `Espacio`.
+# (Optional) Symlink legacy Vim config
+ln -sf ~/Neovim-Vim_Configuration/.vimrc ~/.vimrc
 
-### Generales (Core & Settings - `lua/keymaps/core.lua`)
+# Launch Neovim - plugins install automatically
+nvim
+```
 
-| Atajo          | Modo   | Acción                                 | Plugin/Origen       | Descripción                                |
-| :------------- | :----- | :------------------------------------- | :------------------ | :----------------------------------------- |
-| `jj`           | Insert | `<Esc>`                                | `core.lua`          | Salir del modo Insertar.                   |
-| `<leader><CR>` | Normal | `:luafile ~/.config/nvim/init.lua<CR>` | `core.lua`          | Recargar la configuración completa.        |
-| `<leader>ot`   | Normal | `:TagbarToggle<CR>`                    | `core.lua` / Tagbar | Abrir/Cerrar la barra de etiquetas Tagbar. |
+### Windows
 
-### Navegación y Buffers (`lua/keymaps/buffers.lua`)
+```powershell
+git clone git@github.com:chochy2001/Neovim-Vim_Configuration.git $HOME\Neovim-Vim_Configuration
+New-Item -ItemType SymbolicLink -Path "$env:LOCALAPPDATA\nvim" -Target "$HOME\Neovim-Vim_Configuration\.config\nvim"
+Copy-Item "$HOME\Neovim-Vim_Configuration\.ideavimrc" "$HOME\_ideavimrc"
+```
 
-| Atajo        | Modo   | Acción    | Plugin/Origen | Descripción       |
-| :----------- | :----- | :-------- | :------------ | :---------------- |
-| `<leader>bn` | Normal | `:bn<CR>` | `buffers.lua` | Buffer siguiente. |
-| `<leader>bp` | Normal | `:bp<CR>` | `buffers.lua` | Buffer anterior.  |
+## Keybinding System
 
-### Explorador de Archivos (Neo-tree - `lua/keymaps/neotree.lua`)
+Leader key: `Space`
 
-| Atajo             | Modo   | Acción                              | Plugin/Origen        | Descripción                                    |
-| :---------------- | :----- | :---------------------------------- | :------------------- | :--------------------------------------------- |
-| `<leader>pv`      | Normal | `:Neotree toggle<CR>`               | `neotree.lua`        | Abrir/Cerrar el explorador Neo-tree.           |
-| `<leader>nbr`     | Normal | `:Neotree buffers reveal float<CR>` | `neotree.lua`        | Mostrar buffers abiertos en Neo-tree flotante. |
-| `<leader>ng`      | Normal | `:Neotree git_status<CR>`           | `neotree.lua`        | Mostrar estado de Git en Neo-tree.             |
-| `H` (en Neo-tree) | Normal | `toggle_hidden`                     | `plugins.lua` (conf) | Mostrar/Ocultar archivos ocultos en Neo-tree.  |
+### Find & Search (Telescope)
 
-**⚠️ Conflicto Potencial:** `lua/keymaps/explorer.lua` también define `<leader>pv` para `:Ex`. Se recomienda eliminar esa línea para usar Neo-tree consistentemente.
+| Key | Action | IdeaVim Equivalent |
+|-----|--------|--------------------|
+| `<leader>ff` | Find files | `GotoFile` |
+| `<leader>fg` | Live grep | `FindInPath` |
+| `<leader>fo` | Recent files | `RecentFiles` |
+| `<leader>fb` | Buffers | `Switcher` |
+| `<leader>fh` | Help tags | `HelpTopics` |
+| `<leader>fc` | Commands | `GotoAction` |
+| `<leader>fk` | Keymaps | `GotoAction` |
+| `<leader>ps` | Workspace symbols | `GotoSymbol` |
+| `<leader>fp` | Projects | `ManageRecentProjects` |
 
-### Búsqueda (Telescope - `lua/keymaps/telescope.lua`)
+### Git Operations
 
-| Atajo        | Modo   | Acción                             | Plugin/Origen   | Descripción                                           |
-| :----------- | :----- | :--------------------------------- | :-------------- | :---------------------------------------------------- |
-| `<C-p>`      | Normal | `:Telescope git_files<CR>`         | `telescope.lua` | Buscar archivos en el repositorio Git.                |
-| `<leader>pf` | Normal | `:Telescope find_files<CR>`        | `telescope.lua` | Buscar todos los archivos (fuzzy).                    |
-| `<leader>pg` | Normal | `:Telescope live_grep<CR>`         | `telescope.lua` | Buscar texto en archivos del proyecto (grep).         |
-| `<leader>fb` | Normal | `:Telescope file_browser<CR>`      | `telescope.lua` | Abrir un explorador de archivos con Telescope.        |
-| `<C-e>`      | Normal | `toggle_telescope(harpoon:list())` | `telescope.lua` | Mostrar la lista de archivos de Harpoon en Telescope. |
+| Key | Action |
+|-----|--------|
+| `<leader>gs` | Git status |
+| `<leader>gc` | Git commit |
+| `<leader>gp` | Git push |
+| `<leader>gl` | Git pull |
+| `<leader>gf` | Git fetch |
+| `<leader>gb` | Git blame toggle |
+| `<leader>gd` | Git diff |
+| `<leader>gn` | Next hunk |
+| `<leader>gnp` | Previous hunk |
+| `<leader>gsa` | Stage hunk |
+| `<leader>gsr` | Reset hunk |
+| `<leader>gdo` | Open diffview |
+| `<leader>gdq` | Close diffview |
+| `<leader>gco` | Conflict: choose ours |
+| `<leader>gct` | Conflict: choose theirs |
+| `<leader>gcb` | Conflict: choose both |
 
-### Terminal (Toggleterm - `lua/keymaps/terminal.lua`)
+### LSP & Code Intelligence
 
-| Atajo        | Modo     | Acción                                     | Plugin/Origen  | Descripción                                 |
-| :----------- | :------- | :----------------------------------------- | :------------- | :------------------------------------------ |
-| `<leader>t`  | Normal   | `<cmd>ToggleTerm<CR>`                      | `terminal.lua` | Abrir/Cerrar terminal flotante por defecto. |
-| `<leader>th` | Normal   | `<cmd>ToggleTerm direction=horizontal<CR>` | `terminal.lua` | Abrir/Cerrar terminal horizontal (split).   |
-| `<leader>tv` | Normal   | `<cmd>ToggleTerm direction=vertical<CR>`   | `terminal.lua` | Abrir/Cerrar terminal vertical (split).     |
-| `<leader>tt` | Normal   | `<cmd>ToggleTerm direction=tab<CR>`        | `terminal.lua` | Abrir terminal en una nueva pestaña.        |
-| `<Esc>`      | Terminal | `<C-\><C-n>`                               | `terminal.lua` | Salir del modo terminal (volver a Normal).  |
+| Key | Action |
+|-----|--------|
+| `gd` | Go to definition |
+| `gi` | Go to implementation |
+| `gr` | Find references |
+| `go` | Go to type definition |
+| `gs` | Signature help |
+| `K` | Hover documentation |
+| `<leader>rn` | Rename symbol |
+| `<leader>ca` | Code action |
+| `<leader>fm` | Format document |
 
-### Git (`lua/keymaps/git.lua`)
+### Harpoon (Quick Marks)
 
-| Atajo         | Modo   | Acción                           | Plugin/Origen | Descripción                                   |
-| :------------ | :----- | :------------------------------- | :------------ | :-------------------------------------------- |
-| `<leader>gl`  | Normal | `:Git log<CR>`                   | `git.lua`     | Ver historial de commits (Fugitive).          |
-| `<leader>gc`  | Normal | `:Git commit<CR>`                | `git.lua`     | Crear un commit (Fugitive).                   |
-| `<leader>ga`  | Normal | `:Git add %<CR>`                 | `git.lua`     | Añadir el archivo actual al stage (Fugitive). |
-| `<leader>gs`  | Normal | `:Git status<CR>`                | `git.lua`     | Ver estado de Git (Fugitive).                 |
-| `<leader>gps` | Normal | `:Git push<CR>`                  | `git.lua`     | Ejecutar `git push`.                          |
-| `<leader>gpl` | Normal | `:Git pull<CR>`                  | `git.lua`     | Ejecutar `git pull`.                          |
-| `<leader>gg`  | Normal | `:Neogit<CR>`                    | `git.lua`     | Abrir la interfaz de Neogit.                  |
-| `<leader>gC`  | Normal | `telescope.builtin.git_commits`  | `git.lua`     | Buscar commits con Telescope.                 |
-| `<leader>gb`  | Normal | `telescope.builtin.git_branches` | `git.lua`     | Buscar ramas con Telescope.                   |
-| `<leader>gS`  | Normal | `telescope.builtin.git_status`   | `git.lua`     | Ver estado de Git con Telescope.              |
+| Key | Action |
+|-----|--------|
+| `<leader>ma` | Add file to harpoon |
+| `<leader>mh` | Toggle harpoon UI |
+| `<leader>1-9` | Jump to mark 1-9 |
+| `<leader>mp` | Previous mark |
+| `<leader>mn` | Next mark |
 
-**Nota:** `which-key` está configurado para mostrar ayuda para los atajos que empiezan con `<leader>g` y `<leader>gp`.
+### Diagnostics (Trouble)
 
-### LSP (Language Server Protocol - `lua/mappings.lua` y `lua/keymaps/lspzero.lua`)
+| Key | Action |
+|-----|--------|
+| `<leader>xx` | Toggle trouble |
+| `<leader>xw` | Workspace diagnostics |
+| `<leader>xd` | Document diagnostics |
+| `<leader>xn` | Next error |
+| `<leader>xp` | Previous error |
+| `<leader>xt` | TODOs list |
 
-**⚠️ Advertencia:** Existen definiciones duplicadas/redundantes entre `mappings.lua` y `lspzero.lua`. Se recomienda consolidar estos atajos en la configuración `on_attach` de `lsp.lua`. Los atajos listados aquí reflejan las definiciones encontradas, pero su comportamiento final dependerá del orden de carga y la lógica `LspAttach`.
+### File Explorer
 
-| Atajo        | Modo           | Acción                               | Origen (Potencial)            | Descripción                                 |
-| :----------- | :------------- | :----------------------------------- | :---------------------------- | :------------------------------------------ |
-| `K`          | Normal         | `vim.lsp.buf.hover()`                | `lspzero.lua` (LspAttach)     | Mostrar documentación al pasar el cursor.   |
-| `gd`         | Normal         | `vim.lsp.buf.definition()`           | `lspzero.lua` (LspAttach)     | Ir a la definición.                         |
-| `gD`         | Normal         | `vim.lsp.buf.declaration()`          | `lspzero.lua` (LspAttach)     | Ir a la declaración.                        |
-| `gi`         | Normal         | `vim.lsp.buf.implementation()`       | `lspzero.lua` (LspAttach)     | Ir a la implementación.                     |
-| `go`         | Normal         | `vim.lsp.buf.type_definition()`      | `lspzero.lua` (LspAttach)     | Ir a la definición de tipo.                 |
-| `gr`         | Normal         | `vim.lsp.buf.references()`           | `lspzero.lua` (LspAttach)     | Mostrar referencias del símbolo.            |
-| `gs`         | Normal         | `vim.lsp.buf.signature_help()`       | `lspzero.lua` (LspAttach)     | Mostrar ayuda de firma (parámetros).        |
-| `<C-k>`      | Insert         | `vim.lsp.buf.signature_help()`       | `mappings.lua`, `lspzero.lua` | Mostrar ayuda de firma al escribir.         |
-| `<leader>rn` | Normal         | `vim.lsp.buf.rename()`               | `mappings.lua`, `lspzero.lua` | Renombrar símbolo en todo el proyecto.      |
-| `<F2>`       | Normal         | `vim.lsp.buf.rename()`               | `lspzero.lua` (LspAttach)     | Renombrar símbolo (alternativa).            |
-| `<leader>ca` | Normal         | `vim.lsp.buf.code_action()`          | `mappings.lua`, `lspzero.lua` | Mostrar/aplicar acciones de código (fixes). |
-| `<F4>`       | Normal         | `vim.lsp.buf.code_action()`          | `lspzero.lua` (LspAttach)     | Mostrar/aplicar acciones de código (alt).   |
-| `<F3>`       | Normal, Visual | `vim.lsp.buf.format({async = true})` | `lspzero.lua` (LspAttach)     | Formatear el buffer/selección con LSP.      |
-| `<leader>b`  | Normal         | `<C-o>`                              | `mappings.lua`                | Ir atrás en la lista de saltos.             |
-| `<leader>f`  | Normal         | `<C-i>`                              | `mappings.lua`                | Ir adelante en la lista de saltos.          |
+| Key | Action |
+|-----|--------|
+| `<leader>pv` | Toggle neo-tree |
+| `<leader>fr` | Reveal current file |
+| `<leader>-` | Oil (edit directory) |
 
-### Gestión de Plugins (Packer - `lua/keymaps/plugins.lua`)
+### Terminal & Tasks
 
-| Atajo        | Modo   | Acción               | Plugin/Origen | Descripción                                |
-| :----------- | :----- | :------------------- | :------------ | :----------------------------------------- |
-| `<leader>pi` | Normal | `:PackerInstall<CR>` | `plugins.lua` | Instalar nuevos plugins.                   |
-| `<leader>pc` | Normal | `:PackerClean<CR>`   | `plugins.lua` | Limpiar plugins no utilizados.             |
-| `<leader>ps` | Normal | `:PackerSync<CR>`    | `plugins.lua` | Sincronizar (instalar/actualizar/limpiar). |
+| Key | Action |
+|-----|--------|
+| `<leader>tt` | Float terminal |
+| `<leader>tg` | LazyGit |
+| `<leader>tn` | Node REPL |
+| `<leader>tp` | Python REPL |
+| `<leader>r` | Run code |
+| `<leader>rf` | Run file |
+| `<leader>rp` | Run project |
+| `<leader>rs` | Stop |
+| `<leader>rb` | Build |
 
-### Dashboard (`lua/keymaps/startify.lua` - Plugin: `dashboard-nvim`)
+### Copilot Chat (AI)
 
-Estos atajos solo funcionan cuando el Dashboard está visible al iniciar Neovim:
+| Key | Action |
+|-----|--------|
+| `<leader>cc` | Toggle chat |
+| `<leader>ce` | Explain code |
+| `<leader>cr` | Review code |
+| `<leader>cf` | Fix code |
+| `<leader>co` | Optimize code |
+| `<leader>ct` | Generate tests |
 
-| Atajo | Modo   | Acción                                     | Descripción                              |
-| :---- | :----- | :----------------------------------------- | :--------------------------------------- |
-| `1`   | Normal | `:Telescope find_files<CR>`                | Buscar Archivo (Telescope)               |
-| `2`   | Normal | `:Telescope live_grep<CR>`                 | Buscar Palabra (Telescope)               |
-| `3`   | Normal | `:Telescope oldfiles<CR>`                  | Archivos Recientes (Telescope)           |
-| `4`   | Normal | `:Neotree toggle<CR>`                      | Explorador de Archivos (Neo-tree)        |
-| `5`   | Normal | `:ToggleTerm<CR>`                          | Abrir/Cerrar Terminal (Toggleterm)       |
-| `6`   | Normal | `:edit ~/.config/nvim/lua/plugins.lua<CR>` | Editar Configuración de Plugins          |
-| `7`   | Normal | `:PackerSync<CR>`                          | Sincronizar Plugins (Packer)             |
-| `8`   | Normal | `:Mason<CR>`                               | Abrir Interfaz de Mason (Instalador LSP) |
+### Flutter Development
 
-### Harpoon (`lua/plugin/harpoon.lua`)
+| Key | Action |
+|-----|--------|
+| `<leader>flr` | Hot reload |
+| `<leader>fls` | Hot restart |
+| `<leader>fld` | DevTools |
+| `<leader>fla` | Run app |
+| `<leader>flsd` | Select device |
+| `<leader>fle` | Start emulator |
+| `<leader>flq` | Quit |
+| `<leader>flo` | Toggle outline |
 
-| Atajo                     | Modo   | Acción                           | Plugin/Origen | Descripción                               |
-| :------------------------ | :----- | :------------------------------- | :------------ | :---------------------------------------- |
-| `<leader>a`               | Normal | `harpoon:list():add()`           | `harpoon.lua` | Añadir archivo actual a la lista Harpoon. |
-| `<C-h>`                   | Normal | `harpoon.ui:toggle_quick_menu()` | `harpoon.lua` | Mostrar menú rápido de Harpoon.           |
-| `<leader>1` - `<leader>9` | Normal | `harpoon:list():select(N)`       | `harpoon.lua` | Ir al archivo N en la lista Harpoon.      |
-| `<C-S-P>`                 | Normal | `harpoon:list():prev()`          | `harpoon.lua` | Ir al archivo anterior en Harpoon.        |
-| `<C-S-N>`                 | Normal | `harpoon:list():next()`          | `harpoon.lua` | Ir al archivo siguiente en Harpoon.       |
+### Buffer & Window Management
 
-### Undotree (`lua/plugin/undotree.lua`)
+| Key | Action |
+|-----|--------|
+| `<leader>bn` | Next buffer |
+| `<leader>bp` | Previous buffer |
+| `<leader>bd` | Close buffer |
+| `<S-l>` / `<S-h>` | Next / previous buffer |
+| `<leader>sv` | Split vertical |
+| `<leader>sh` | Split horizontal |
+| `<leader>sc` | Close split |
+| `<leader>wh/j/k/l` | Navigate windows |
+| `<leader>zz` | Zen mode |
 
-| Atajo       | Modo   | Acción                | Plugin/Origen  | Descripción                            |
-| :---------- | :----- | :-------------------- | :------------- | :------------------------------------- |
-| `<leader>u` | Normal | `:UndotreeToggle<CR>` | `undotree.lua` | Abrir/Cerrar el visualizador Undotree. |
+### Core Editing
 
-### Otros Comandos
+| Key | Action |
+|-----|--------|
+| `jj` | Exit insert mode |
+| `<leader><leader>` | Clear search highlight |
+| `<A-j>` / `<A-k>` | Move line down/up |
+| `n` / `N` | Search next/prev (centered) |
+| `<leader>za` | Toggle fold |
+| `<leader>zR` / `<leader>zM` | Expand/collapse all folds |
+| `<leader>u` (visual) | To lowercase |
+| `<leader>U` (visual) | To uppercase |
 
-- **`:Fjson`** (Comando de Usuario definido en `lua/keymaps/json.lua`): Ejecuta el script `~/.vim/scripts/formatear_json.vim`. Asegúrate de que este script existe.
-- **`:FormatInfo`** (Comando de Usuario definido en `lua/plugins.lua` dentro de la config de `conform.nvim`): Muestra información sobre los formateadores disponibles para el tipo de archivo actual.
+## Plugin Ecosystem
 
-## ⚙️ Configuración General (`lua/settings.lua`)
+| Category | Plugins |
+|----------|---------|
+| **Package Manager** | lazy.nvim |
+| **LSP** | nvim-lspconfig, none-ls, schemastore |
+| **Completion** | nvim-cmp, LuaSnip, friendly-snippets |
+| **Syntax** | nvim-treesitter, treesitter-context, rainbow-delimiters |
+| **Git** | fugitive, gitsigns, diffview, neogit, git-conflict |
+| **Navigation** | telescope, harpoon, neo-tree, oil |
+| **UI** | lualine, bufferline, dashboard, dressing, nvim-notify, which-key, indent-blankline |
+| **Editing** | Comment.nvim, vim-surround, nvim-autopairs, todo-comments |
+| **AI** | copilot.vim, CopilotChat.nvim |
+| **Flutter** | flutter-tools, dart-vim-plugin, awesome-flutter-snippets |
+| **Terminal** | toggleterm, overseer, code_runner |
+| **Themes** | dracula, gruvbox, catppuccin, onedark, rose-pine, solarized |
+| **Focus** | zen-mode, twilight |
+| **Other** | undotree, trouble, grug-far, winshift, persistence, project.nvim |
 
-- Números de línea relativos habilitados (`number`, `relativenumber`).
-- Tabulación configurada a 4 espacios, usando espacios en lugar de tabs (`tabstop`, `shiftwidth`, `expandtab`).
-- Indentación inteligente (`smartindent`).
-- Colores de terminal verdaderos (`termguicolors`).
-- Portapapeles del sistema integrado (`clipboard=unnamedplus`).
-- Scroll offset de 8 líneas (`scrolloff`).
-- Límite de columna para coloreado de sintaxis alto (`synmaxcol=2000`).
-- Resaltado de línea actual (`cursorline`).
-- Columna de color en la posición 80 (`colorcolumn='80'`).
-- Tema de color inicial: `dracula` (se puede cambiar aquí o con la función en `lua/plugin/colors.lua`).
-- Host de Python 3 especificado explícitamente.
+## Languages Supported
 
-## 🔌 LSP y Formateo
+| Language | LSP | Formatter | Extras |
+|----------|-----|-----------|--------|
+| Lua | lua_ls | stylua | Neovim runtime integration |
+| Dart/Flutter | dartls | dart_format | flutter-tools, snippets, DAP |
+| C/C++ | clangd | clang-format | Header insertion, clang-tidy |
+| Swift | sourcekit-lsp (macOS) | - | - |
+| Kotlin | kotlin_language_server | - | Gradle project detection |
+| JSON | jsonls | prettier | SchemaStore integration |
+| YAML | yamlls | prettier | pubspec.yaml schemas |
+| Web (JS/TS/HTML/CSS) | - | prettier | - |
 
-- **LSP:** Gestionado por `mason.nvim` para instalar servidores y `nvim-lspconfig` para configurarlos. Servidores asegurados incluyen: `pyright`, `html`, `cssls`, `bashls`, `jsonls`, `yamlls`, `lua_ls`, `marksman`, `clangd`, `rust_analyzer`, `texlab`. Se configuran automáticamente.
-- **Completado:** `nvim-cmp` con fuentes de LSP, LuaSnip, buffer y path. Usa `<C-Space>` para completar y `<CR>` para confirmar.
-- **Formateo:** `conform.nvim` está configurado para formatear al guardar (`format_on_save`) usando diferentes herramientas según el tipo de archivo (Stylua, Gofmt, Google Java Format, Ktlint, Dart Format, Swift Format, SQLFluff, shfmt, xmllint, Black, iSort, ClangFormat, Prettier).
+## IdeaVim Synchronization
 
----
+The `.ideavimrc` is fully synchronized with the Neovim config. All keybindings use the same prefixes:
 
-¡Espero que este README te sea muy útil para recordar y entender tu configuración!
+- `<leader>f*` - Find/search
+- `<leader>g*` - Git operations
+- `<leader>fl*` - Flutter
+- `<leader>x*` - Diagnostics
+- `<leader>m*` - Marks/harpoon
+- `<leader>b*` - Buffers
+- `<leader>w*` - Windows
+- `<leader>r*` - Run/debug
+- `<leader>z*` - Folding/zen
+- `<leader>c*` - Copilot chat
+- `<leader>q*` - Sessions
+
+## File Structure
+
+```
+.
+├── .config/nvim/
+│   ├── init.lua              # Entry point (lazy.nvim bootstrap)
+│   ├── lua/
+│   │   ├── vim-options.lua   # Core vim settings & keymaps
+│   │   ├── lsp-utils.lua     # LSP helper functions
+│   │   └── plugins/          # Plugin configs (one per file)
+│   │       ├── lsp-config.lua
+│   │       ├── completions.lua
+│   │       ├── telescope.lua
+│   │       ├── neo-tree.lua
+│   │       ├── git-stuff.lua
+│   │       ├── github-copilot.lua  # Copilot + CopilotChat
+│   │       ├── flutter-tools.lua
+│   │       ├── terminal.lua
+│   │       └── ...
+│   └── README.md
+├── .ideavimrc                # JetBrains IDE config (synced)
+├── .vimrc                    # Legacy Vim config
+└── .gitignore
+```
+
+## License
+
+MIT

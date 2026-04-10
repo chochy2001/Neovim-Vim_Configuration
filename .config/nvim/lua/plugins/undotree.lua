@@ -1,24 +1,24 @@
--- Contenido para: lua/plugins/undotree.lua
+-- Content for: lua/plugins/undotree.lua
 return {
     {
         "mbbill/undotree",
-        -- Carga perezosa: El plugin se cargará la primera vez que
-        -- se ejecute el comando :UndotreeToggle (ya sea manualmente
-        -- o a través del atajo de teclado).
+        -- Lazy loading: The plugin will load the first time
+        -- the :UndotreeToggle command is executed (either manually
+        -- or through the keyboard shortcut).
         cmd = "UndotreeToggle",
         config = function()
-            -- Tu atajo de teclado para mostrar/ocultar undotree
+            -- Keyboard shortcut to show/hide undotree
             vim.keymap.set("n", "<leader>u", ":UndotreeToggle<CR>", {
-                desc = "Toggle Undotree", -- Descripción opcional para which-key u otros
+                desc = "Toggle Undotree", -- Optional description for which-key and others
                 noremap = true,
                 silent = true,
             })
 
-            -- (Opcional) Puedes configurar variables globales de undotree aquí si lo necesitas
-            -- Ejemplo: vim.g.undotree_WindowLayout = 2 -- Cambia la disposición de la ventana
-            -- Ejemplo: vim.g.undotree_SetFocusWhenToggle = 1 -- Pone el foco en la ventana de undotree al abrirla
+            -- (Optional) You can configure undotree global variables here if needed
+            -- Example: vim.g.undotree_WindowLayout = 2 -- Changes the window layout
+            -- Example: vim.g.undotree_SetFocusWhenToggle = 1 -- Focuses the undotree window when opened
         end,
-        -- No necesitamos la tabla 'keys' explícitamente aquí porque 'cmd' ya maneja
-        -- la carga perezosa cuando se invoca el comando desde el keymap.
+        -- We don't need the 'keys' table explicitly here because 'cmd' already handles
+        -- lazy loading when the command is invoked from the keymap.
     },
 }

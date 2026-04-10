@@ -1,49 +1,49 @@
--- Test script para verificar la configuración de Flutter
+-- Test script to verify the Flutter configuration
 
 local function test_flutter_setup()
-    print("🧪 PROBANDO CONFIGURACIÓN FLUTTER")
+    print("TESTING FLUTTER CONFIGURATION")
     print("=" .. string.rep("=", 35))
 
-    -- Test 1: Verificar Flutter
+    -- Test 1: Check Flutter
     local flutter_home = os.getenv("FLUTTER_HOME")
         or (vim.fn.expand("$HOME") .. "/development/flutter")
     local flutter_cmd = vim.fn.executable("flutter") == 1
         and vim.fn.exepath("flutter")
         or (flutter_home .. "/bin/flutter")
     if vim.fn.executable(flutter_cmd) == 1 then
-        print("✅ Flutter encontrado: " .. flutter_cmd)
+        print("Flutter found: " .. flutter_cmd)
     else
-        print("❌ Flutter NO encontrado")
+        print("Flutter NOT found")
     end
 
-    -- Test 2: Verificar Dart
+    -- Test 2: Check Dart
     local dart_cmd = vim.fn.executable("dart") == 1
         and vim.fn.exepath("dart")
         or (flutter_home .. "/bin/dart")
     if vim.fn.executable(dart_cmd) == 1 then
-        print("✅ Dart encontrado: " .. dart_cmd)
+        print("Dart found: " .. dart_cmd)
     else
-        print("❌ Dart NO encontrado")
+        print("Dart NOT found")
     end
 
-    -- Test 3: Verificar LSP clients
+    -- Test 3: Check LSP clients
     local clients = vim.lsp.get_clients()
-    print("\n📋 Clientes LSP activos:")
+    print("\nActive LSP clients:")
     if #clients == 0 then
-        print("  - Ninguno (normal si no hay archivos .dart abiertos)")
+        print("  - None (normal if no .dart files are open)")
     else
         for _, client in ipairs(clients) do
             print("  - " .. client.name .. " (id: " .. client.id .. ")")
         end
     end
 
-    -- Test 4: Verificar plugins Flutter
+    -- Test 4: Check Flutter plugins
     local flutter_tools_loaded = pcall(require, "flutter-tools")
-    print("\n🔌 Estado de plugins:")
-    print("  - flutter-tools.nvim: " .. (flutter_tools_loaded and "✅ Cargado" or "❌ Error"))
+    print("\nPlugin status:")
+    print("  - flutter-tools.nvim: " .. (flutter_tools_loaded and "Loaded" or "Error"))
 
-    -- Test 5: Mostrar keymaps disponibles
-    print("\n⌨️  Keymaps Flutter disponibles:")
+    -- Test 5: Show available keymaps
+    print("\nAvailable Flutter keymaps:")
     print("  - <leader>Fs: Flutter run")
     print("  - <leader>Fr: Hot reload")
     print("  - <leader>FR: Hot restart")
@@ -51,15 +51,15 @@ local function test_flutter_setup()
     print("  - <leader>Fe: Start emulator")
     print("  - <leader>FD: Select device")
 
-    print("\n💡 Para probar:")
-    print("  1. Abre un archivo .dart")
-    print("  2. Ejecuta :LspInfo para ver el estado del LSP")
-    print("  3. Usa <leader>Fs para ejecutar Flutter")
-    print("\n🎉 Test completado!")
+    print("\nTo test:")
+    print("  1. Open a .dart file")
+    print("  2. Run :LspInfo to see LSP status")
+    print("  3. Use <leader>Fs to run Flutter")
+    print("\nTest completed!")
 end
 
--- Crear comando
+-- Create command
 vim.api.nvim_create_user_command("TestFlutter", test_flutter_setup, { desc = "Test Flutter configuration" })
 
--- Solo ejecutar bajo demanda con :TestFlutter (no al inicio)
+-- Only run on demand with :TestFlutter (not at startup)
 return { test = test_flutter_setup }

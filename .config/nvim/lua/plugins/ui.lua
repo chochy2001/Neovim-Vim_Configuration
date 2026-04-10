@@ -1,6 +1,6 @@
 -- lua/plugins/ui.lua
 return {
-    -- Notificaciones mejoradas
+    -- Enhanced notifications
     {
         "rcarriga/nvim-notify",
         event = "VeryLazy",
@@ -30,11 +30,11 @@ return {
             end
         end,
     },
-    -- Reemplaza vim.ui.input y vim.ui.select
+    -- Replaces vim.ui.input and vim.ui.select
     { "stevearc/dressing.nvim", event = "VeryLazy" },
-    -- Iconos (usados por lualine, trouble, etc.)
+    -- Icons (used by lualine, trouble, etc.)
     { "echasnovski/mini.icons", event = "VeryLazy" },
-    -- Cursor suave (efecto visual)
+    -- Smooth cursor (visual effect)
     {
         "gen740/SmoothCursor.nvim",
         event = "VeryLazy",
@@ -42,14 +42,14 @@ return {
             require("smoothcursor").setup()
         end,
     },
-    -- Líneas de indentación visuales
+    -- Visual indentation lines
     {
         "lukas-reineke/indent-blankline.nvim",
-        main = "ibl", -- Nombre principal del módulo
-        event = "VeryLazy", -- O "BufReadPre" si quieres que aparezcan inmediatamente
-        opts = {},    -- Usa opts para configuración simple o config = function() para compleja
+        main = "ibl", -- Main module name
+        event = "VeryLazy", -- Or "BufReadPre" if you want them to appear immediately
+        opts = {},    -- Use opts for simple config or config = function() for complex
         -- config = function()
-        --   require("ibl").setup() -- Puedes poner config más detallada aquí
+        --   require("ibl").setup() -- You can put more detailed config here
         -- end
     },
 }

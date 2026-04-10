@@ -1,7 +1,7 @@
--- Fix para conflictos de LSP y plugins
--- Este archivo resuelve errores de transporte LSP y buffer conflicts
+-- Fix for LSP and plugin conflicts
+-- This file resolves LSP transport errors and buffer conflicts
 
--- Función para verificar y limpiar clientes LSP duplicados
+-- Function to check and clean up duplicate LSP clients
 local function cleanup_duplicate_lsp_clients()
     local clients = vim.lsp.get_clients()
     local dartls_clients = {}
@@ -12,7 +12,7 @@ local function cleanup_duplicate_lsp_clients()
         end
     end
 
-    -- Si hay más de un cliente dartls, mantener solo el primero
+    -- If there is more than one dartls client, keep only the first
     if #dartls_clients > 1 then
         for i = 2, #dartls_clients do
             dartls_clients[i]:stop(true)
@@ -20,16 +20,16 @@ local function cleanup_duplicate_lsp_clients()
     end
 end
 
--- Configurar timeouts y mejoras de LSP
+-- Configure timeouts and LSP improvements
 vim.schedule(function()
-    -- Aumentar timeouts para evitar errores de transport
+    -- Increase timeouts to avoid transport errors
     if vim.lsp then
-        -- Configuración global de LSP más robusta
+        -- More robust global LSP configuration
         local original_rpc_request = vim.lsp.rpc.request
         vim.lsp.rpc.request = function(method, params, callback, notify_reply_callback)
             return original_rpc_request(method, params, function(err, result)
                 if err and err.message and err.message:find("transport") then
-                    -- Ignorar errores de transport menores
+                    -- Ignore minor transport errors
                     return
                 end
                 if callback then
@@ -39,7 +39,7 @@ vim.schedule(function()
         end
     end
 
-    -- Limpiar clientes duplicados cada vez que se abre un archivo Dart
+    -- Clean up duplicate clients every time a Dart file is opened
     vim.api.nvim_create_autocmd("FileType", {
         pattern = "dart",
         callback = function()
@@ -47,11 +47,11 @@ vim.schedule(function()
         end
     })
 
-    -- Prevenir conflictos de buffer con neo-tree
+    -- Prevent buffer conflicts with neo-tree
     vim.api.nvim_create_autocmd("BufEnter", {
         pattern = "*",
         callback = function(ev)
-            -- No ejecutar autocommands adicionales en buffers especiales
+            -- Do not run additional autocommands on special buffers
             local ft = vim.bo[ev.buf].filetype
             if ft == "neo-tree" or ft == "lazy" or ft == "mason" then
                 return
@@ -60,4 +60,4 @@ vim.schedule(function()
     })
 end)
 
--- Fix LSP conflicts aplicado - transport errors suprimidos
+-- LSP conflict fix applied - transport errors suppressed

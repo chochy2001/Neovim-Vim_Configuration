@@ -18,6 +18,10 @@
 .config/nvim/pack/
 .config/nvim/plugin/packer_compiled.lua
 
+# Working documentation files (not part of config)
+.config/nvim/*.md
+!.config/nvim/README.md
+
 # Archivos basura del sistema
 *.DS_Store
 Thumbs.db

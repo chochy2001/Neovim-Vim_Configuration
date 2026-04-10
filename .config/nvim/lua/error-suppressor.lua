@@ -1,11 +1,11 @@
--- Supresor INTELIGENTE - Solo silencia mensajes, NO rompe funcionalidad
--- Permite que las funciones trabajen normalmente, solo oculta errores visuales
+-- SMART suppressor - Only silences messages, does NOT break functionality
+-- Allows functions to work normally, only hides visual errors
 
--- 1. SOLO interceptar vim.notify para mensajes de error específicos
+-- 1. ONLY intercept vim.notify for specific error messages
 local original_notify = vim.notify
 vim.notify = function(msg, level, opts)
     if type(msg) == "string" then
-        -- Patrones de errores que queremos silenciar VISUALMENTE
+        -- Error patterns we want to silence VISUALLY
         local error_patterns = {
             "E5248.*Invalid character in group name",
             "BufWinLeave Autocommands",
@@ -17,29 +17,29 @@ vim.notify = function(msg, level, opts)
 
         for _, pattern in ipairs(error_patterns) do
             if msg:find(pattern) then
-                -- Log errores suprimidos para debugging (opcional)
+                -- Log suppressed errors for debugging (optional)
                 local log_file = vim.fn.stdpath("cache") .. "/suppressed_errors.log"
                 local f = io.open(log_file, "a")
                 if f then
                     f:write(os.date("[%Y-%m-%d %H:%M:%S] ") .. "SUPPRESSED: " .. msg .. "\n")
                     f:close()
                 end
-                return -- Silenciar SOLO el mensaje visual
+                return -- Silence ONLY the visual message
             end
         end
     end
 
-    -- Para todos los demás mensajes, mostrar normalmente
+    -- For all other messages, show normally
     return original_notify(msg, level, opts)
 end
 
--- 2. Interceptar vim.api.nvim_echo SOLO para errores específicos
+-- 2. Intercept vim.api.nvim_echo ONLY for specific errors
 local original_echo = vim.api.nvim_echo
 vim.api.nvim_echo = function(chunks, history, opts)
     if type(chunks) == "table" then
         local should_suppress = false
 
-        -- Revisar si algún chunk contiene errores que queremos silenciar
+        -- Check if any chunk contains errors we want to silence
         for _, chunk in ipairs(chunks) do
             if type(chunk) == "table" and type(chunk[1]) == "string" then
                 if chunk[1]:find("E5248") or
@@ -52,23 +52,23 @@ vim.api.nvim_echo = function(chunks, history, opts)
         end
 
         if should_suppress then
-            return -- No mostrar este echo específico
+            return -- Do not show this specific echo
         end
     end
 
     return original_echo(chunks, history, opts)
 end
 
--- 3. Interceptar vim.api.nvim_err_write SOLO para errores E5248
+-- 3. Intercept vim.api.nvim_err_write ONLY for E5248 errors
 local original_err_write = vim.api.nvim_err_write
 vim.api.nvim_err_write = function(str)
     if type(str) == "string" and str:find("E5248") then
-        return -- No escribir errores E5248 específicamente
+        return -- Do not write E5248 errors specifically
     end
     return original_err_write(str)
 end
 
--- 4. Limpiar vim.v.errmsg periódicamente SIN romper nada más
+-- 4. Clean vim.v.errmsg periodically WITHOUT breaking anything else
 vim.schedule(function()
     local cleanup_timer = vim.uv.new_timer()
     cleanup_timer:start(100, 1000, vim.schedule_wrap(function()
@@ -78,7 +78,7 @@ vim.schedule(function()
     end))
 end)
 
--- NO TOCAR vim.cmd, vim.api.nvim_set_hl, ni otras funciones críticas
--- Solo silenciar mensajes de error visuales
+-- DO NOT TOUCH vim.cmd, vim.api.nvim_set_hl, or other critical functions
+-- Only silence visual error messages
 
--- Supresor INTELIGENTE activado - solo oculta mensajes de error específicos
+-- SMART suppressor activated - only hides specific error messages

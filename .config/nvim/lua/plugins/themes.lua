@@ -1,12 +1,12 @@
 -- lua/plugins/themes.lua
--- ✅ OPTIMIZADO: Lazy loading automático - solo el tema activo se carga al inicio
--- Los demás temas se cargan bajo demanda con :colorscheme <nombre>
+-- OPTIMIZED: Automatic lazy loading - only the active theme loads at startup
+-- Other themes load on demand with :colorscheme <name>
 
--- Configuración del tema por defecto (cambia aquí para usar otro tema)
-local DEFAULT_THEME = "dracula"  -- Opciones: "dracula", "gruvbox", "catppuccin", "onedark", etc.
+-- Default theme configuration (change here to use another theme)
+local DEFAULT_THEME = "dracula"  -- Options: "dracula", "gruvbox", "catppuccin", "onedark", etc.
 
 return {
-    -- Tema por defecto (se carga inmediatamente)
+    -- Default theme (loads immediately)
     {
         "dracula/vim",
         name = "dracula",
@@ -21,7 +21,7 @@ return {
         end,
     },
 
-    -- Otros temas disponibles (carga perezosa)
+    -- Other available themes (lazy loading)
     {
         "tomasr/molokai",
         name = "molokai",

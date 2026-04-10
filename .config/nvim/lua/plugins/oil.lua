@@ -3,13 +3,13 @@ return {
     config = function()
         local oil_ok, oil = pcall(require, "oil")
         if not oil_ok then
-            vim.notify("Oil.nvim no se pudo cargar", vim.log.levels.WARN)
+            vim.notify("Oil.nvim failed to load", vim.log.levels.WARN)
             return
         end
 
-        -- Configuración robusta de oil
+        -- Robust oil configuration
         local setup_ok = pcall(oil.setup, {
-            -- Configuración mínima para evitar errores
+            -- Minimal configuration to avoid errors
             default_file_explorer = false,
             columns = {
                 "icon",
@@ -75,26 +75,26 @@ return {
         })
 
         if not setup_ok then
-            vim.notify("Error configurando Oil.nvim", vim.log.levels.ERROR)
+            vim.notify("Error configuring Oil.nvim", vim.log.levels.ERROR)
             return
         end
 
-        -- Keymap con manejo de errores usando leader
+        -- Keymap with error handling using leader
         vim.keymap.set("n", "<leader>-", function()
             local toggle_ok = pcall(oil.toggle_float)
             if not toggle_ok then
-                vim.notify("Error abriendo Oil.nvim", vim.log.levels.ERROR)
+                vim.notify("Error opening Oil.nvim", vim.log.levels.ERROR)
             end
         end, { desc = "Oil: Open parent directory" })
 
-        -- Alternativa más clara sin conflictos
+        -- Clearer alternative without conflicts
         vim.keymap.set("n", "<leader>oe", function()
             local toggle_ok = pcall(oil.toggle_float)
             if not toggle_ok then
-                vim.notify("Error abriendo Oil.nvim", vim.log.levels.ERROR)
+                vim.notify("Error opening Oil.nvim", vim.log.levels.ERROR)
             end
         end, { desc = "Oil: Open File Explorer" })
 
-        print("✅ Oil.nvim configurado correctamente")
+        print("Oil.nvim configured correctly")
     end,
 }

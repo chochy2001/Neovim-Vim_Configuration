@@ -1,13 +1,13 @@
--- Contenido FINAL y LIMPIO para: lua/plugins/harpoon.lua
+-- Final and clean content for: lua/plugins/harpoon.lua
 return {
     {
         "ThePrimeagen/harpoon",
-        branch = "harpoon2", -- Usamos branch 'harpoon2' porque contiene la API moderna
-                            -- requerida por nuestra configuración. La versión v1 tiene
-                            -- API diferente e incompatible. Actualizar a tag específico
-                            -- cuando harpoon2 tenga release estable para evitar cambios.
+        branch = "harpoon2", -- Using branch 'harpoon2' because it contains the modern API
+                            -- required by our configuration. Version v1 has a different
+                            -- and incompatible API. Update to a specific tag when
+                            -- harpoon2 has a stable release to avoid breaking changes.
         dependencies = { "nvim-lua/plenary.nvim" },
-        -- Restaurar carga perezosa por teclas originales del usuario
+        -- Restore lazy loading by user's original keys
         keys = {
             { "<leader>ma", desc = "Harpoon: Add File" },
             { "<leader>mh", desc = "Harpoon: Toggle UI" },
@@ -24,30 +24,30 @@ return {
             { "<leader>mn", desc = "Harpoon: Next" },
         },
         config = function()
-            -- Requerir harpoon aquí
+            -- Require harpoon here
             local harpoon = require("harpoon")
 
-            -- Llamada de configuración requerida
-            harpoon:setup() -- Usando ':' como se confirmó que funciona
+            -- Required setup call
+            harpoon:setup() -- Using ':' as confirmed working
 
-            -- Mapeos de teclado del usuario con la API corregida
+            -- User keymaps with the corrected API
             local map = vim.keymap.set
-            -- Opciones comunes para los mapeos (noremap=true es default en lua)
+            -- Common options for keymaps (noremap=true is default in lua)
             local opts = { silent = true }
 
-            -- Añadir archivo (cambiado a <leader>ma para categoría Marks)
+            -- Add file (changed to <leader>ma for Marks category)
             map("n", "<leader>ma", function()
-                -- Obtener objeto lista y llamar a su método :add
+                -- Get list object and call its :add method
                 harpoon:list():add()
-            end, { desc = "Harpoon: Add File", silent = true }) -- Añadido silent=true
+            end, { desc = "Harpoon: Add File", silent = true })
 
-            -- Mostrar/ocultar menú (cambiado a <leader>mh para evitar conflicto con bookmarks)
+            -- Show/hide menu (changed to <leader>mh to avoid conflict with bookmarks)
             map("n", "<leader>mh", function()
-                -- Obtener objeto lista y pasarlo a toggle_quick_menu
+                -- Get list object and pass it to toggle_quick_menu
                 harpoon.ui:toggle_quick_menu(harpoon:list())
             end, { desc = "Harpoon: Toggle UI", silent = true })
 
-            -- Seleccionar archivos 1-9
+            -- Select files 1-9
             map("n", "<leader>1", function()
                 harpoon:list():select(1)
             end, { desc = "Harpoon: Go To 1", silent = true })
@@ -84,7 +84,7 @@ return {
                 harpoon:list():select(9)
             end, { desc = "Harpoon: Go To 9", silent = true })
 
-            -- Navegar anterior/siguiente
+            -- Navigate previous/next
             map("n", "<leader>mp", function()
                 harpoon:list():prev()
             end, { desc = "Harpoon: Previous", silent = true })

@@ -11,11 +11,11 @@ return {
     },
     {
         "hrsh7th/nvim-cmp",
-        -- Asegúrate que las dependencias se listan antes o aquí
+        -- Make sure dependencies are listed before or here
         dependencies = { "hrsh7th/cmp-nvim-lsp", "L3MON4D3/LuaSnip", "saadparwaiz1/cmp_luasnip" },
         config = function()
             local cmp = require("cmp")
-            -- Carga snippets amigables de forma segura
+            -- Safely load friendly snippets
             pcall(function()
                 require("luasnip.loaders.from_vscode").lazy_load()
             end)
@@ -23,7 +23,7 @@ return {
             cmp.setup({
                 snippet = {
                     expand = function(args)
-                        require("luasnip").lsp_expand(args.body) -- Usa LuaSnip para expandir snippets
+                        require("luasnip").lsp_expand(args.body) -- Use LuaSnip to expand snippets
                     end,
                 },
                 window = {
@@ -35,14 +35,14 @@ return {
                     ["<C-f>"] = cmp.mapping.scroll_docs(4),
                     ["<C-Space>"] = cmp.mapping.complete(),
                     ["<C-e>"] = cmp.mapping.abort(),
-                    ["<CR>"] = cmp.mapping.confirm({ select = true }), -- Confirma selección al presionar Enter
+                    ["<CR>"] = cmp.mapping.confirm({ select = true }), -- Confirm selection on Enter
                 }),
-                -- Fuentes para autocompletado
+                -- Autocompletion sources
                 sources = cmp.config.sources({
-                    { name = "nvim_lsp" }, -- Sugerencias del LSP
-                    { name = "luasnip" }, -- Sugerencias de Snippets
+                    { name = "nvim_lsp" }, -- LSP suggestions
+                    { name = "luasnip" }, -- Snippet suggestions
                 }, {
-                    { name = "buffer" }, -- Sugerencias del buffer actual
+                    { name = "buffer" }, -- Current buffer suggestions
                 }),
             })
         end,

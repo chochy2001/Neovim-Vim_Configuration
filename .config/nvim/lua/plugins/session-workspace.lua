@@ -1,6 +1,6 @@
--- Gestión de sesiones y workspaces para múltiples proyectos
+-- Session and workspace management for multiple projects
 return {
-    -- Session management moderno
+    -- Modern session management
     {
         "folke/persistence.nvim",
         event = "BufReadPre",
@@ -15,7 +15,7 @@ return {
         }
     },
 
-    -- Project management avanzado
+    -- Advanced project management
     {
         "ahmedkhalf/project.nvim",
         event = "VeryLazy",
@@ -46,7 +46,7 @@ return {
         end
     },
 
-    -- Workspace tabs mejoradas
+    -- Enhanced workspace tabs
     {
         "akinsho/bufferline.nvim",
         version = "*",
@@ -123,31 +123,31 @@ return {
                 }
             })
 
-            -- Keymaps para bufferline - sincronizado con .ideavimrc
-            -- Agregado <leader>b para Back (como IntelliJ)
+            -- Bufferline keymaps - synced with .ideavimrc
+            -- Added <leader>b for Back (like IntelliJ)
             vim.keymap.set("n", "<leader>b", "<C-o>", { desc = "Back (Go to previous location)" })
 
-            -- Buffer navigation (coincide con .ideavimrc)
+            -- Buffer navigation (matches .ideavimrc)
             vim.keymap.set("n", "<leader>bn", ":BufferLineCycleNext<CR>", { desc = "Buffer: Next" })
-            vim.keymap.set("n", "<leader>bp", ":BufferLineCyclePrev<CR>", { desc = "Buffer: Previous" }) -- CORREGIDO: era Pick, ahora Previous
+            vim.keymap.set("n", "<leader>bp", ":BufferLineCyclePrev<CR>", { desc = "Buffer: Previous" }) -- FIXED: was Pick, now Previous
 
-            -- Buffer closing (alineado con .ideavimrc)
-            vim.keymap.set("n", "<leader>bd", ":bd<CR>", { desc = "Buffer: Delete/Close" }) -- CORREGIDO: usar bd directo como CloseContent
+            -- Buffer closing (aligned with .ideavimrc)
+            vim.keymap.set("n", "<leader>bd", ":bd<CR>", { desc = "Buffer: Delete/Close" }) -- FIXED: use bd directly like CloseContent
             vim.keymap.set("n", "<leader>bl", ":BufferLineCloseRight<CR>", { desc = "Buffer: Close Right" })
             vim.keymap.set("n", "<leader>bh", ":BufferLineCloseLeft<CR>", { desc = "Buffer: Close Left" })
             vim.keymap.set("n", "<leader>to", ":BufferLineCloseLeft<CR>:BufferLineCloseRight<CR>", { desc = "Close All Others (Tabs Only)" })
 
-            -- Comandos adicionales de bufferline (no conflictan con .ideavimrc)
-            vim.keymap.set("n", "<leader>bP", ":BufferLinePick<CR>", { desc = "Buffer: Pick" }) -- Movido a mayúscula P
+            -- Additional bufferline commands (no conflict with .ideavimrc)
+            vim.keymap.set("n", "<leader>bP", ":BufferLinePick<CR>", { desc = "Buffer: Pick" }) -- Moved to uppercase P
             vim.keymap.set("n", "<leader>bt", ":BufferLineTogglePin<CR>", { desc = "Toggle Pin Buffer" })
 
-            -- Shift mappings que funcionaban bien
+            -- Shift mappings that worked well
             vim.keymap.set("n", "<S-l>", ":BufferLineCycleNext<CR>", { desc = "Buffer: Next" })
             vim.keymap.set("n", "<S-h>", ":BufferLineCyclePrev<CR>", { desc = "Buffer: Previous" })
         end
     },
 
-    -- Working directory management (comentado temporalmente)
+    -- Working directory management (temporarily commented out)
     -- {
     --     "airblade/vim-rooter",
     --     event = "VeryLazy",
@@ -205,7 +205,7 @@ return {
         end
     },
 
-    -- Focus mode para concentración
+    -- Focus mode for concentration
     {
         "folke/zen-mode.nvim",
         cmd = "ZenMode",
@@ -253,7 +253,7 @@ return {
         },
     },
 
-    -- Twilight para highlighting de código actual
+    -- Twilight for current code highlighting
     {
         "folke/twilight.nvim",
         opts = {

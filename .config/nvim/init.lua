@@ -1,4 +1,4 @@
--- Optimización: Cache de módulos Lua compilados (Neovim 0.9+)
+-- Optimization: Compiled Lua module cache (Neovim 0.9+)
 vim.loader.enable()
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -14,9 +14,9 @@ if not vim.uv.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- Core fixes - solo los necesarios tras limpieza
-pcall(require, "fix-flutter-neotree-conflict") -- Fix para conflicto flutter-tools + neo-tree
-pcall(require, "lsp-utils") -- Utilidades LSP y manejo de errores
+-- Core fixes - only the necessary ones after cleanup
+pcall(require, "fix-flutter-neotree-conflict") -- Fix for flutter-tools + neo-tree conflict
+pcall(require, "lsp-utils") -- LSP utilities and error handling
 
 require("vim-options")
 require("lazy").setup("plugins")

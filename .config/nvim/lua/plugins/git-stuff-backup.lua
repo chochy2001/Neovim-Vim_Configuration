@@ -1,5 +1,5 @@
--- DESHABILITADO: Este archivo es un backup. La config activa esta en git-stuff.lua
--- Mantener como referencia pero no cargar para evitar conflictos de keymaps
+-- DISABLED: This file is a backup. The active config is in git-stuff.lua
+-- Keep as reference but do not load to avoid keymap conflicts
 if true then return {} end
 
 return {

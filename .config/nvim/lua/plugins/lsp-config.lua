@@ -1,6 +1,6 @@
--- Configuración LSP optimizada para tus lenguajes principales
+-- Optimized LSP configuration for your main languages
 return {
-    -- nvim-lspconfig (configuración directa del sistema)
+    -- nvim-lspconfig (direct system configuration)
     {
         "neovim/nvim-lspconfig",
         event = { "BufReadPre", "BufNewFile" },
@@ -9,12 +9,12 @@ return {
             local lspconfig = require("lspconfig")
             local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-            -- Detección de plataforma
+            -- Platform detection
             local is_win = vim.fn.has("win32") == 1
             local is_mac = vim.fn.has("mac") == 1
             local sep = is_win and "\\" or "/"
 
-            -- Helper: buscar ejecutable con variante .bat/.exe en Windows
+            -- Helper: find executable with .bat/.exe variant on Windows
             local function find_exe(cmd)
                 if vim.fn.executable(cmd) == 1 then return vim.fn.exepath(cmd) end
                 if is_win then
@@ -25,9 +25,9 @@ return {
                 return nil
             end
 
-            -- Configuración de LSPs para tus lenguajes principales
+            -- LSP configuration for your main languages
 
-            -- 1. Lua LSP (para configuración de Neovim)
+            -- 1. Lua LSP (for Neovim configuration)
             lspconfig.lua_ls.setup({
                 capabilities = capabilities,
                 settings = {
@@ -43,7 +43,7 @@ return {
                 },
             })
 
-            -- 2. Dart LSP (configuración robusta con manejo de errores)
+            -- 2. Dart LSP (robust configuration with error handling)
             local flutter_home = os.getenv("FLUTTER_HOME")
                 or (vim.fn.expand("$HOME") .. sep .. "development" .. sep .. "flutter")
             local dart_path = find_exe("dart")
@@ -60,7 +60,7 @@ return {
                     end,
                     single_file_support = true,
                     init_options = {
-                        onlyAnalyzeProjectsWithOpenFiles = true, -- Más conservador
+                        onlyAnalyzeProjectsWithOpenFiles = true, -- More conservative
                         suggestFromUnimportedLibraries = true,
                         closingLabels = true,
                         outline = true,
@@ -69,14 +69,14 @@ return {
                     settings = {
                         dart = {
                             completeFunctionCalls = true,
-                            showTodos = false, -- Deshabilitar para reducir carga
+                            showTodos = false, -- Disabled to reduce load
                             enableSnippets = true,
                             updateImportsOnRename = true,
                             lineLength = 80,
                         }
                     },
                     on_attach = function(client, bufnr)
-                        -- Configuración específica para dart
+                        -- Dart-specific configuration
                         if client.server_capabilities.documentFormattingProvider then
                             vim.api.nvim_create_autocmd("BufWritePre", {
                                 buffer = bufnr,
@@ -91,7 +91,7 @@ return {
                 vim.notify("Dart executable not found at: " .. dart_path, vim.log.levels.WARN)
             end
 
-            -- 3. C/C++ LSP (lenguaje principal)
+            -- 3. C/C++ LSP (main language)
             if vim.fn.executable("clangd") == 1 then
                 lspconfig.clangd.setup({
                     capabilities = capabilities,
@@ -108,7 +108,7 @@ return {
                 })
             end
 
-            -- 4. Swift LSP (solo macOS - sourcekit-lsp viene con Xcode)
+            -- 4. Swift LSP (macOS only - sourcekit-lsp comes with Xcode)
             if is_mac and vim.fn.executable("sourcekit-lsp") == 1 then
                 lspconfig.sourcekit.setup({
                     capabilities = capabilities,
@@ -117,7 +117,7 @@ return {
                 })
             end
 
-            -- 5. Kotlin LSP (lenguaje principal)
+            -- 5. Kotlin LSP (main language)
             if vim.fn.executable("kotlin-language-server") == 1 then
                 lspconfig.kotlin_language_server.setup({
                     capabilities = capabilities,
@@ -127,7 +127,7 @@ return {
                 })
             end
 
-            -- 6. JSON LSP (configuraciones)
+            -- 6. JSON LSP (configurations)
             if vim.fn.executable("vscode-json-language-server") == 1 then
                 lspconfig.jsonls.setup({
                     capabilities = capabilities,
@@ -148,7 +148,7 @@ return {
                 })
             end
 
-            -- 7. YAML LSP (configuraciones Flutter/Android)
+            -- 7. YAML LSP (Flutter/Android configurations)
             if vim.fn.executable("yaml-language-server") == 1 then
                 lspconfig.yamlls.setup({
                     capabilities = capabilities,
@@ -171,14 +171,14 @@ return {
             end
 
             -- ============================================
-            -- NUEVO SISTEMA LSP: Sin duplicados, sin mayúsculas
+            -- NEW LSP SYSTEM: No duplicates, no uppercase
             -- ============================================
-            -- NOTA: Comandos principales SIN leader (más rápidos):
+            -- NOTE: Main commands WITHOUT leader (faster):
             --   gd = goto definition
             --   gi = goto implementation  
             --   gr = goto references
             --   K  = hover documentation
-            -- Estos se configuran automáticamente por nvim-lspconfig
+            -- These are automatically configured by nvim-lspconfig
             
             vim.api.nvim_create_autocmd("LspAttach", {
                 group = vim.api.nvim_create_augroup("UserLspConfig", {}),
@@ -189,7 +189,7 @@ return {
                     vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "Rename Symbol" }))
                     vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, vim.tbl_extend("force", opts, { desc = "Code Action" }))
 
-                    -- Navigation (sincronizado con .ideavimrc)
+                    -- Navigation (synced with .ideavimrc)
                     vim.keymap.set("n", "go", vim.lsp.buf.type_definition, vim.tbl_extend("force", opts, { desc = "Go to Type Definition" }))
                     vim.keymap.set("n", "gs", vim.lsp.buf.signature_help, vim.tbl_extend("force", opts, { desc = "Signature Help / Parameter Info" }))
 
@@ -203,7 +203,7 @@ return {
                 end,
             })
 
-            -- Configurar diagnósticos
+            -- Configure diagnostics
             vim.diagnostic.config({
                 virtual_text = {
                     prefix = "●",
@@ -226,12 +226,12 @@ return {
                 severity_sort = true,
             })
 
-            -- Optimización: Reducir logging LSP para mejor performance
+            -- Optimization: Reduce LSP logging for better performance
             vim.lsp.set_log_level("WARN")
         end,
     },
 
-    -- SchemaStore para mejor soporte JSON
+    -- SchemaStore for better JSON support
     {
         "b0o/schemastore.nvim",
         lazy = true,
