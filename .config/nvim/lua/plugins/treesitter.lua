@@ -1,23 +1,48 @@
--- Treesitter: syntax parsing, highlighting, and text objects
+-- Treesitter: parser management, syntax highlighting, and text objects
 return {
     {
         "nvim-treesitter/nvim-treesitter",
-        build = ":TSUpdate",
+        build = function()
+            pcall(function() require("nvim-treesitter").update() end)
+        end,
         event = { "BufReadPre", "BufNewFile" },
         dependencies = {
             "nvim-treesitter/nvim-treesitter-textobjects",
         },
-        -- New nvim-treesitter API (configs module was removed)
-        main = "nvim-treesitter",
-        opts = {
-            ensure_installed = {
+        config = function()
+            local langs = {
                 "lua", "vim", "vimdoc", "query",
                 "dart", "kotlin", "c", "cpp", "go",
                 "python", "javascript", "typescript", "html", "css",
-                "json", "yaml", "markdown", "bash",
-            },
-            auto_install = false,
-        },
+                "json", "yaml", "markdown", "markdown_inline", "bash",
+            }
+
+            -- Install missing parsers
+            local ts = require("nvim-treesitter")
+            local installed = ts.get_installed()
+            local installed_set = {}
+            for _, l in ipairs(installed) do installed_set[l] = true end
+            local to_install = {}
+            for _, l in ipairs(langs) do
+                if not installed_set[l] then
+                    table.insert(to_install, l)
+                end
+            end
+            if #to_install > 0 then
+                ts.install(to_install)
+            end
+
+            -- Enable treesitter highlighting via FileType autocmd (required in new nvim-treesitter)
+            vim.api.nvim_create_autocmd("FileType", {
+                group = vim.api.nvim_create_augroup("TreesitterHighlight", { clear = true }),
+                callback = function()
+                    local lang = vim.treesitter.language.get_lang(vim.bo.filetype)
+                    if lang and pcall(vim.treesitter.query.get, lang, "highlights") then
+                        pcall(vim.treesitter.start)
+                    end
+                end,
+            })
+        end,
     },
     -- Text objects for functions, classes, arguments, etc.
     {
@@ -25,20 +50,14 @@ return {
         event = { "BufReadPre", "BufNewFile" },
         dependencies = { "nvim-treesitter/nvim-treesitter" },
         config = function()
-            -- Use vim.treesitter built-in for textobjects (new API)
-            local ok, ts_repeat = pcall(require, "nvim-treesitter-textobjects.repeatable_move")
-
             -- Textobject selection keymaps
             local select_ok, ts_select = pcall(require, "nvim-treesitter-textobjects.select")
             if select_ok then
                 local map = vim.keymap.set
-                -- Around/inside function
                 map({ "x", "o" }, "af", function() ts_select.select_textobject("@function.outer", "textobjects") end, { desc = "Around function" })
                 map({ "x", "o" }, "if", function() ts_select.select_textobject("@function.inner", "textobjects") end, { desc = "Inside function" })
-                -- Around/inside class
                 map({ "x", "o" }, "ac", function() ts_select.select_textobject("@class.outer", "textobjects") end, { desc = "Around class" })
                 map({ "x", "o" }, "ic", function() ts_select.select_textobject("@class.inner", "textobjects") end, { desc = "Inside class" })
-                -- Around/inside argument
                 map({ "x", "o" }, "aa", function() ts_select.select_textobject("@parameter.outer", "textobjects") end, { desc = "Around argument" })
                 map({ "x", "o" }, "ia", function() ts_select.select_textobject("@parameter.inner", "textobjects") end, { desc = "Inside argument" })
             end

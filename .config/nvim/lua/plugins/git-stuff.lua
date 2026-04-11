@@ -87,22 +87,22 @@ return {
             -- Stage operations (gsa, gsr, gsu, gsp, gsb)
             vim.keymap.set("n", "<leader>gsa", gs.stage_hunk, vim.tbl_extend("force", opts, { desc = "Git: Stage Add (hunk)" }))
             vim.keymap.set("n", "<leader>gsr", gs.reset_hunk, vim.tbl_extend("force", opts, { desc = "Git: Stage Reset (hunk)" }))
-            vim.keymap.set("n", "<leader>gsu", gs.undo_stage_hunk, vim.tbl_extend("force", opts, { desc = "Git: Stage Undo" }))
+            vim.keymap.set("n", "<leader>gsu", function() gs.stage_hunk() end, vim.tbl_extend("force", opts, { desc = "Git: Stage Undo (toggle)" }))
             vim.keymap.set("n", "<leader>gsp", gs.preview_hunk, vim.tbl_extend("force", opts, { desc = "Git: Stage Preview" }))
             vim.keymap.set("n", "<leader>gsb", gs.reset_buffer, vim.tbl_extend("force", opts, { desc = "Git: Stage Buffer reset" }))
             
             -- Hunk navigation (gn, gnp)
             vim.keymap.set("n", "<leader>gn", function()
                 if vim.wo.diff then return "]c" end
-                vim.schedule(function() gs.next_hunk() end)
+                vim.schedule(function() gs.nav_hunk("next") end)
                 return "<Ignore>"
             end, vim.tbl_extend("force", opts, { expr = true, desc = "Git: Next hunk" }))
 
             vim.keymap.set("n", "<leader>gnp", function()
                 if vim.wo.diff then return "[c" end
-                vim.schedule(function() gs.prev_hunk() end)
+                vim.schedule(function() gs.nav_hunk("prev") end)
                 return "<Ignore>"
-            end, vim.tbl_extend("force", opts, { expr = true, desc = "Git: Next/Prev hunk" }))
+            end, vim.tbl_extend("force", opts, { expr = true, desc = "Git: Prev hunk" }))
 
             -- Git Diff Local (gdl)
             vim.keymap.set("n", "<leader>gdl", gs.diffthis, vim.tbl_extend("force", opts, { desc = "Git: Diff Local changes" }))
@@ -111,7 +111,7 @@ return {
             vim.keymap.set("n", "<leader>gbt", gs.toggle_current_line_blame, vim.tbl_extend("force", opts, { desc = "Git: Blame Toggle inline" }))
 
             -- Text object for visual mode
-            vim.keymap.set({'o', 'x'}, '<leader>ih', ':<C-U>Gitsigns select_hunk<CR>', { desc = "Git: Select Hunk" })
+            vim.keymap.set({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", { desc = "Git: Select Hunk" })
         end,
     },
 

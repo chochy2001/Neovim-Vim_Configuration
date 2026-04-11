@@ -2,9 +2,12 @@
 
 Cross-platform (macOS / Linux / Windows) development environment with synchronized keybindings across Neovim, Vim, and JetBrains IDEs.
 
+**Requires Neovim 0.12+** | Updated April 2026
+
 ## Features
 
-- **Neovim** config with [lazy.nvim](https://github.com/folke/lazy.nvim), native LSP, and 60+ plugins
+- **Neovim 0.12 native APIs** - Uses `vim.lsp.config()` / `vim.lsp.enable()`, `vim.treesitter.start()`, modern diagnostics
+- **lazy.nvim** with 70+ plugins, zero deprecation warnings
 - **IdeaVim** config (`.ideavimrc`) fully synchronized with Neovim keybindings
 - **Legacy Vim** config (`.vimrc`) with vim-plug
 - **Cross-platform** - all paths dynamically detected, works on macOS, Linux, and Windows
@@ -25,6 +28,9 @@ ln -sf ~/Neovim-Vim_Configuration/.ideavimrc ~/.ideavimrc
 
 # (Optional) Symlink legacy Vim config
 ln -sf ~/Neovim-Vim_Configuration/.vimrc ~/.vimrc
+
+# Install tree-sitter CLI (required for treesitter parser compilation)
+npm install -g tree-sitter-cli
 
 # Launch Neovim - plugins install automatically
 nvim
@@ -113,16 +119,18 @@ Leader key: `Space`
 | `<leader>du` | Toggle debug UI |
 | `<leader>dx` | Terminate |
 
-### Diagnostics (Trouble)
+### Diagnostics (Trouble v3)
 
 | Key | Action |
 |-----|--------|
-| `<leader>xx` | Toggle trouble |
-| `<leader>xw` | Workspace diagnostics |
-| `<leader>xd` | Document diagnostics |
+| `<leader>xx` | Toggle diagnostics |
+| `<leader>xX` | Buffer diagnostics |
+| `<leader>xl` | Location list |
+| `<leader>xq` | Quickfix list |
 | `<leader>xn` | Next error |
 | `<leader>xp` | Previous error |
 | `<leader>xt` | TODOs list |
+| `gR` | LSP references |
 
 ### File Explorer
 
@@ -202,9 +210,9 @@ Leader key: `Space`
 | Category | Plugins |
 |----------|---------|
 | **Package Manager** | lazy.nvim |
-| **LSP** | nvim-lspconfig, none-ls, schemastore |
+| **LSP** | nvim-lspconfig (lsp/ defs), vim.lsp.config(), none-ls, schemastore |
 | **Completion** | nvim-cmp, LuaSnip, friendly-snippets |
-| **Syntax** | nvim-treesitter, treesitter-context, rainbow-delimiters |
+| **Syntax** | nvim-treesitter (parser manager), vim.treesitter.start(), treesitter-context |
 | **Git** | fugitive, gitsigns, diffview, neogit, git-conflict |
 | **Navigation** | telescope, harpoon, neo-tree, oil |
 | **UI** | lualine, bufferline, dashboard, dressing, nvim-notify, which-key, indent-blankline |
@@ -255,23 +263,25 @@ The `.ideavimrc` is fully synchronized with the Neovim config. All keybindings u
 ```
 .
 ├── .config/nvim/
-│   ├── init.lua              # Entry point (lazy.nvim bootstrap)
+│   ├── init.lua                          # Entry point (lazy.nvim bootstrap)
+│   ├── lazy-lock.json                    # Plugin version lock file
 │   ├── lua/
-│   │   ├── vim-options.lua   # Core vim settings & keymaps
-│   │   ├── lsp-utils.lua     # LSP helper functions
-│   │   └── plugins/          # Plugin configs (one per file)
-│   │       ├── lsp-config.lua
-│   │       ├── completions.lua
-│   │       ├── telescope.lua
-│   │       ├── neo-tree.lua
-│   │       ├── git-stuff.lua
-│   │       ├── github-copilot.lua  # Copilot + CopilotChat
-│   │       ├── flutter-tools.lua
-│   │       ├── terminal.lua
-│   │       └── ...
-│   └── README.md
-├── .ideavimrc                # JetBrains IDE config (synced)
-├── .vimrc                    # Legacy Vim config
+│   │   ├── vim-options.lua               # Core vim settings & keymaps
+│   │   ├── lsp-utils.lua                 # LSP helper commands
+│   │   ├── fix-flutter-neotree-conflict.lua  # Dart LSP dedup
+│   │   ├── plugins.lua                   # Lazy.nvim plugin loader
+│   │   └── plugins/                      # 27 plugin config files
+│   │       ├── lsp-config.lua            # vim.lsp.config() + vim.lsp.enable()
+│   │       ├── treesitter.lua            # Parser management + TS highlighting
+│   │       ├── telescope.lua             # Fuzzy finder (v0.2.2)
+│   │       ├── completions.lua           # nvim-cmp + LuaSnip
+│   │       ├── git-stuff.lua             # Fugitive, gitsigns, diffview, neogit
+│   │       ├── trouble.lua               # Diagnostics list (Trouble v3)
+│   │       └── ...                       # 21 more plugin configs
+│   ├── README.md                         # Detailed nvim-specific docs
+│   └── SHORTCUT_GUIDELINES.md            # Keymap conventions reference
+├── .ideavimrc                            # JetBrains IDE config (synced)
+├── .vimrc                                # Legacy Vim config
 └── .gitignore
 ```
 

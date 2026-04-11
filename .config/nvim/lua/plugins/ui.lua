@@ -4,30 +4,15 @@ return {
     {
         "rcarriga/nvim-notify",
         event = "VeryLazy",
-        config = function()
-            -- Preserve existing vim.notify wrapper (from error-suppressor.lua)
-            local original_notify = vim.notify
-            local notify_plugin = require("notify")
-
-            -- Simplified approach: preserve the filtering chain
-            vim.notify = function(msg, level, opts)
-                -- Save the current vim.notify (which will be this function)
-                local current_notify = vim.notify
-
-                -- Temporarily replace vim.notify with our fancy notify plugin
-                -- This is what will get called if the message passes all filters
-                vim.notify = notify_plugin
-
-                -- Call the original wrapper chain
-                -- If it returns early (suppressed), notify_plugin won't be called
-                -- If it passes through, notify_plugin will be called instead of the original
-                local result = original_notify(msg, level, opts)
-
-                -- Restore our wrapper function
-                vim.notify = current_notify
-
-                return result
-            end
+        opts = {
+            timeout = 3000,
+            max_height = function() return math.floor(vim.o.lines * 0.75) end,
+            max_width = function() return math.floor(vim.o.columns * 0.75) end,
+        },
+        config = function(_, opts)
+            local notify = require("notify")
+            notify.setup(opts)
+            vim.notify = notify
         end,
     },
     -- Replaces vim.ui.input and vim.ui.select
@@ -87,12 +72,6 @@ return {
             routes = {
                 -- Hide "written" messages
                 { filter = { event = "msg_show", kind = "", find = "written" }, opts = { skip = true } },
-                -- Hide deprecation warnings from plugins
-                { filter = { event = "msg_show", find = "deprecated" }, opts = { skip = true } },
-                { filter = { warning = true, find = "deprecated" }, opts = { skip = true } },
-                { filter = { event = "msg_show", find = "buf_get_clients" }, opts = { skip = true } },
-                { filter = { warning = true, find = "buf_get_clients" }, opts = { skip = true } },
-                { filter = { warning = true, find = "lspconfig" }, opts = { skip = true } },
             },
         },
     },

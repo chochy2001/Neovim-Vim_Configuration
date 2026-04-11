@@ -33,13 +33,12 @@ vim.opt.foldlevel = 99
 vim.opt.foldlevelstart = 99
 vim.opt.foldenable = true
 
--- Navigate vim panes better
--- NOTE: Commented out to avoid conflict with nvim-tmux-navigation
--- which handles window navigation more intelligently
--- vim.keymap.set("n", "<c-k>", ":wincmd k<CR>")
--- vim.keymap.set("n", "<c-j>", ":wincmd j<CR>")
--- vim.keymap.set("n", "<c-h>", ":wincmd h<CR>")
--- vim.keymap.set("n", "<c-l>", ":wincmd l<CR>")
+-- Navigate vim panes with Ctrl+hjkl
+vim.keymap.set("n", "<C-k>", ":wincmd k<CR>", { silent = true })
+vim.keymap.set("n", "<C-j>", ":wincmd j<CR>", { silent = true })
+vim.keymap.set("n", "<C-h>", ":wincmd h<CR>", { silent = true })
+vim.keymap.set("n", "<C-l>", ":wincmd l<CR>", { silent = true })
+
 -- Core keymaps - synced with .ideavimrc
 vim.keymap.set("i", "jj", "<Esc>")
 

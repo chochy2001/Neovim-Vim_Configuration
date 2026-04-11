@@ -53,7 +53,7 @@ return {
 
 			-- Conservative format-on-save configuration
 			on_attach = function(client, bufnr)
-				if client.supports_method("textDocument/formatting") then
+				if client:supports_method("textDocument/formatting") then
 					-- Only auto-format safe files
 					local safe_auto_format = {
 						"lua", "dart", "json"
@@ -66,16 +66,11 @@ return {
 							group = format_augroup,
 							buffer = bufnr,
 							callback = function()
-								-- Short timeout to avoid blocking
-								pcall(function()
-									vim.lsp.buf.format({
-										bufnr = bufnr,
-										timeout_ms = 1000,
-										filter = function(client)
-											return client.name == "null-ls"
-										end
-									})
-								end)
+								pcall(vim.lsp.buf.format, {
+									bufnr = bufnr,
+									timeout_ms = 1000,
+									name = "null-ls",
+								})
 							end,
 						})
 					end
@@ -117,12 +112,7 @@ return {
 			update_in_insert = false,
 		})
 
-		-- Safe global keymaps (synced with LSP <leader>lf)
-		vim.keymap.set("n", "<leader>lf", function()
-			pcall(function()
-				vim.lsp.buf.format({ timeout_ms = 1500 })
-			end)
-		end, { desc = "LSP: Format Buffer (Safe)" })
+		-- Format keybinding is <leader>fm in lsp-config.lua
 
 		-- Command to check available tools
 		vim.api.nvim_create_user_command("CheckFormatters", function()

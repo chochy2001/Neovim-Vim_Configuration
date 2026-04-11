@@ -1,27 +1,18 @@
--- lua/plugins/trouble.lua
+-- Diagnostics list with Trouble v3
 return {
     {
         "folke/trouble.nvim",
-        -- Make sure devicons is available
         dependencies = { "nvim-tree/nvim-web-devicons" },
-        -- Load on demand with commands or keys
-        cmd = { "TroubleToggle", "Trouble" },
+        cmd = "Trouble",
         keys = {
-            { "<leader>xx", "<cmd>TroubleToggle<cr>",                       desc = "Toggle Trouble" },
-            { "<leader>xw", "<cmd>TroubleToggle workspace_diagnostics<cr>", desc = "Workspace Diagnostics" },
-            { "<leader>xd", "<cmd>TroubleToggle document_diagnostics<cr>",  desc = "Document Diagnostics" },
-            { "<leader>xl", "<cmd>TroubleToggle loclist<cr>",               desc = "Location List" },
-            { "<leader>xq", "<cmd>TroubleToggle quickfix<cr>",              desc = "Quickfix List" },
-            { "gR",         "<cmd>TroubleToggle lsp_references<cr>",        desc = "LSP References" },
-            -- ADDED: error navigation commands for full sync
-            { "<leader>xn", function() vim.diagnostic.goto_next() end,       desc = "Next Error/Diagnostic" },
-            { "<leader>xp", function() vim.diagnostic.goto_prev() end,       desc = "Previous Error/Diagnostic" },
+            { "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", desc = "Diagnostics (Trouble)" },
+            { "<leader>xX", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", desc = "Buffer Diagnostics (Trouble)" },
+            { "<leader>xl", "<cmd>Trouble loclist toggle<cr>", desc = "Location List" },
+            { "<leader>xq", "<cmd>Trouble qflist toggle<cr>", desc = "Quickfix List" },
+            { "gR", "<cmd>Trouble lsp_references toggle<cr>", desc = "LSP References (Trouble)" },
+            { "<leader>xn", function() vim.diagnostic.goto_next() end, desc = "Next Error/Diagnostic" },
+            { "<leader>xp", function() vim.diagnostic.goto_prev() end, desc = "Previous Error/Diagnostic" },
         },
-        config = function()
-            require("trouble").setup({
-                -- Your Trouble configuration here (e.g. icons, etc.)
-                -- icons = false, -- example
-            })
-        end,
+        opts = {},
     },
 }

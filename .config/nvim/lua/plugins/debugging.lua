@@ -66,10 +66,15 @@ return {
                 dap.configurations.c = dap.configurations.cpp
             end
 
-            -- Diagnostic signs for breakpoints
-            vim.fn.sign_define("DapBreakpoint", { text = "", texthl = "DiagnosticError" })
-            vim.fn.sign_define("DapBreakpointCondition", { text = "", texthl = "DiagnosticWarn" })
-            vim.fn.sign_define("DapStopped", { text = "", texthl = "DiagnosticInfo", linehl = "Visual" })
+            -- DAP breakpoint signs (use extmarks via highlight groups)
+            local dap_signs = {
+                DapBreakpoint = { text = "", texthl = "DiagnosticError" },
+                DapBreakpointCondition = { text = "", texthl = "DiagnosticWarn" },
+                DapStopped = { text = "", texthl = "DiagnosticInfo", linehl = "Visual" },
+            }
+            for name, opts in pairs(dap_signs) do
+                vim.fn.sign_define(name, opts)
+            end
         end,
     },
 }

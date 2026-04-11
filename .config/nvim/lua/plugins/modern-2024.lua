@@ -4,24 +4,12 @@ return {
     {
         "nvim-treesitter/nvim-treesitter-context",
         event = "VeryLazy",
-        config = function()
-            require("treesitter-context").setup({
-                enable = true,
-                max_lines = 4,
-                patterns = {
-                    default = {
-                        'class',
-                        'function',
-                        'method',
-                        'for',
-                        'while',
-                        'if',
-                        'switch',
-                        'case',
-                    },
-                },
-            })
-        end,
+        opts = {
+            enable = true,
+            max_lines = 4,
+            multiline_threshold = 20,
+            mode = "cursor",
+        },
     },
 
     -- Better find/replace experience (trending)
@@ -52,24 +40,5 @@ return {
         }
     },
 
-    -- Better UI windows (you already have dressing.nvim but let's confirm the config)
-    {
-        "stevearc/dressing.nvim",
-        lazy = true,
-        init = function()
-            ---@diagnostic disable-next-line: duplicate-set-field
-            vim.ui.select = function(...)
-                require("lazy").load({ plugins = { "dressing.nvim" } })
-                return vim.ui.select(...)
-            end
-            ---@diagnostic disable-next-line: duplicate-set-field
-            vim.ui.input = function(...)
-                require("lazy").load({ plugins = { "dressing.nvim" } })
-                return vim.ui.input(...)
-            end
-        end,
-    },
-
-    -- Disabled nvim-snippets: LuaSnip + friendly-snippets already cover snippets
-    -- Disabled Grapple: Harpoon already covers bookmark navigation (harpoon.lua)
+    -- dressing.nvim is configured in ui.lua
 }
