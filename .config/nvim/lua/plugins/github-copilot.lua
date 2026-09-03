@@ -35,10 +35,11 @@ return {
 			local nvm_roots = { vim.fn.expand("$HOME/.nvm/versions/node") }
 			if vim.fn.has("win32") == 1 then
 				table.insert(nvm_roots, vim.fn.expand("$APPDATA/nvm"))
-				local fnm_home = vim.fn.expand("$HOME/.local/share/fnm")
-				if vim.fn.isdirectory(fnm_home) == 1 then
-					table.insert(nvm_roots, fnm_home)
-				end
+			end
+			-- fnm lives in ~/.local/share/fnm on every OS
+			local fnm_home = vim.fn.expand("$HOME/.local/share/fnm")
+			if vim.fn.isdirectory(fnm_home) == 1 then
+				table.insert(nvm_roots, fnm_home)
 			end
 			for _, root in ipairs(nvm_roots) do
 				local dirs = vim.fn.glob(root .. "/v22*", false, true)

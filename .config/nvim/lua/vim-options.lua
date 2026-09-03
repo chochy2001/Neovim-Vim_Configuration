@@ -31,13 +31,17 @@ end
 -- Better shell on Windows: prefer pwsh/powershell over cmd when available;
 -- Unix keeps the user's $SHELL. Improves toggleterm and :! commands.
 if vim.fn.has("win32") == 1 then
+    -- pwsh preferred; plain Windows PowerShell 5.1 needs the same quoting
+    -- flags or `:!` and terminal escaping misbehave.
     if vim.fn.executable("pwsh") == 1 then
         vim.opt.shell = "pwsh"
+    elseif vim.fn.executable("powershell") == 1 then
+        vim.opt.shell = "powershell"
+    end
+    if vim.o.shell:lower():match("pwsh") or vim.o.shell:lower():match("powershell") then
         vim.opt.shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command"
         vim.opt.shellquote = ""
         vim.opt.shellxquote = ""
-    elseif vim.fn.executable("powershell") == 1 then
-        vim.opt.shell = "powershell"
     end
 end
 

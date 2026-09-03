@@ -2,9 +2,17 @@ return {
     -- Native FZF for ultra-fast search (requires compilation)
     {
         "nvim-telescope/telescope-fzf-native.nvim",
-        build = (vim.fn.has("win32") == 1 and vim.fn.executable("cmake") == 1)
-            and "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release"
-            or "make",
+        build = (function()
+            -- Prefer make everywhere; fall back to an explicit cmake build
+            -- (covers Unix boxes with cmake but no make, and stock Windows)
+            if vim.fn.executable("make") == 1 then
+                return "make"
+            end
+            if vim.fn.executable("cmake") == 1 then
+                return "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release"
+            end
+            return nil
+        end)(),
         cond = function()
             return vim.fn.executable("make") == 1 or vim.fn.executable("cmake") == 1
         end,
@@ -18,29 +26,58 @@ return {
         "nvim-telescope/telescope.nvim",
         tag = "v0.2.2",
         dependencies = { "nvim-lua/plenary.nvim" },
+        -- Load on demand (command or any finder key) instead of at startup
+        cmd = "Telescope",
+        keys = {
+            { "<leader>ff", desc = "Find Files" },
+            { "<leader>fg", desc = "Find Grep" },
+            { "<leader>fo", desc = "Find Old Files" },
+            { "<leader>fb", desc = "Find Buffers" },
+            { "<leader>fh", desc = "Find Help" },
+            { "<leader>fc", desc = "Find Commands" },
+            { "<leader>fk", desc = "Find Keymaps" },
+            { "<leader>ps", desc = "Find Project Symbols" },
+            { "<leader>.", desc = "Quick Find Files" },
+        },
         config = function()
             require("telescope").setup({
                 defaults = {
                     file_ignore_patterns = { "node_modules", ".git/" },
-                    -- Use rg when present; fall back to plain grep on systems
-                    -- without ripgrep (e.g. stock Windows) so live_grep works.
-                    vimgrep_arguments = (vim.fn.executable("rg") == 1) and {
-                        "rg",
-                        "--color=never",
-                        "--no-heading",
-                        "--with-filename",
-                        "--line-number",
-                        "--column",
-                        "--smart-case",
-                        "--hidden",
-                    } or {
-                        "grep",
-                        "--color=never",
-                        "--with-filename",
-                        "--line-number",
-                        "--column",
-                        "--extended-regexp",
-                    },
+                    -- Use rg when present (install it: `winget install
+                    -- BurntSushi.ripgrep.MSVC`, `brew install ripgrep`).
+                    -- Fallback is plain grep WITHOUT `--column` (GNU/BSD grep
+                    -- has no such flag); on systems with neither, live_grep
+                    -- shows a one-time hint instead of erroring.
+                    vimgrep_arguments = (function()
+                        if vim.fn.executable("rg") == 1 then
+                            return {
+                                "rg",
+                                "--color=never",
+                                "--no-heading",
+                                "--with-filename",
+                                "--line-number",
+                                "--column",
+                                "--smart-case",
+                                "--hidden",
+                            }
+                        end
+                        if vim.fn.executable("grep") == 1 then
+                            vim.schedule(function()
+                                vim.notify(
+                                    "telescope: `rg` not found, live_grep uses plain grep (install ripgrep for best results)",
+                                    vim.log.levels.WARN
+                                )
+                            end)
+                            return {
+                                "grep",
+                                "--color=never",
+                                "--with-filename",
+                                "--line-number",
+                                "--extended-regexp",
+                            }
+                        end
+                        return nil
+                    end)(),
                     -- Enable treesitter syntax highlighting in preview
                     preview = {
                         treesitter = true,

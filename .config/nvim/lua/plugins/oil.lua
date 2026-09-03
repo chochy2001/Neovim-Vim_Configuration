@@ -1,5 +1,12 @@
 return {
     "stevearc/oil.nvim",
+    -- Load on demand (command or keys) instead of at startup; first press
+    -- loads the plugin and re-feeds the key to the real mapping in config()
+    cmd = "Oil",
+    keys = {
+        { "<leader>-", desc = "Oil: Open parent directory" },
+        { "<leader>oe", desc = "Oil: Open File Explorer" },
+    },
     config = function()
         local oil_ok, oil = pcall(require, "oil")
         if not oil_ok then

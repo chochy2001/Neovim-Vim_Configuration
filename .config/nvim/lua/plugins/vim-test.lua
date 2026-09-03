@@ -5,6 +5,13 @@ return {
         -- so startup doesn't warn about a missing tmux executable.
         { "preservim/vimux", cond = vim.fn.has("win32") == 0 },
     },
+    -- keys here so the first press loads the plugin (not only in config)
+    keys = {
+        { "<leader>ten", desc = "Test: Nearest" },
+        { "<leader>tenf", desc = "Test: File" },
+        { "<leader>tena", desc = "Test: All Suite" },
+        { "<leader>tenl", desc = "Test: Last" },
+    },
     config = function()
         -- Test commands: keep only the essentials
         vim.keymap.set("n", "<leader>ten", ":TestNearest<CR>", { desc = "Test: Nearest" })

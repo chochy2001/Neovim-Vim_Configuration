@@ -37,10 +37,14 @@ return {
             require("Comment").setup()
         end,
     },
-    -- Tag bar (requires ctags installed externally)
+    -- Tag bar (requires ctags installed externally: `winget install UniversalCtags`,
+    -- `brew install ctags`, or `apt install universal-ctags`)
     {
         "preservim/tagbar",
         cmd = "TagbarToggle",
+        keys = {
+            { "<leader>tb", "<cmd>TagbarToggle<CR>", desc = "Toggle Tagbar" },
+        },
     },
     -- Highlight TODO/FIXME/HACK/NOTE in code
     {

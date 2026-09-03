@@ -4,7 +4,12 @@
 " This file is kept for compatibility with classic Vim.
 " =============================================================================
 
-call plug#begin('~/.vim/plugged')
+" Cross-platform vim-plug path: Windows uses ~/vimfiles, Unix uses ~/.vim
+if has('win32')
+    call plug#begin(expand('~/vimfiles/plugged'))
+else
+    call plug#begin(expand('~/.vim/plugged'))
+endif
 Plug 'artur-shaik/vim-javacomplete2'
 Plug 'vim-syntastic/syntastic'
 Plug 'udalov/kotlin-vim'
@@ -217,4 +222,4 @@ nnoremap <silent> <leader>t :FloatermToggle<CR>
 nnoremap <leader>st :Startify<CR>
 
 " Scripts
-command! Fjson :execute 'source' expand('~/.vim/scripts/formatear_json.vim')
+command! Fjson :execute 'source' expand((has('win32') ? '~/vimfiles' : '~/.vim') . '/scripts/formatear_json.vim')

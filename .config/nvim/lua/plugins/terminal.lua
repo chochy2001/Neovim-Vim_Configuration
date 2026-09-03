@@ -6,6 +6,26 @@ return {
         cmd = "ToggleTerm",
         keys = {
             { "<leader>tt", "<cmd>ToggleTerm direction=float<CR>", desc = "Terminal (Main)" },
+            -- extras here so the first press loads the plugin (not only in config)
+            { "<leader>tg", "<cmd>lua _lazygit_toggle()<CR>", desc = "LazyGit Terminal" },
+            { "<leader>tn", "<cmd>lua _node_toggle()<CR>", desc = "Node Terminal" },
+            { "<leader>tu", "<cmd>lua _htop_toggle()<CR>", desc = "Htop Terminal" },
+            { "<leader>tp", "<cmd>lua _python_toggle()<CR>", desc = "Python Terminal" },
+            { "<leader>tF", "<cmd>lua _flutter_toggle()<CR>", desc = "Flutter Terminal" },
+            { "<leader>rs", ":lua vim.fn.jobstop(-1)<CR>", desc = "Stop Running Process" },
+            -- `make` is absent on stock Windows: fall back to a hint instead
+            -- of a shell error
+            {
+                "<leader>rb",
+                function()
+                    if vim.fn.executable("make") == 1 then
+                        vim.cmd("!make")
+                    else
+                        vim.notify("`make` not found: use <leader>ob (Overseer Build) instead", vim.log.levels.WARN)
+                    end
+                end,
+                desc = "Build/Sync Project",
+            },
         },
         config = function()
             require("toggleterm").setup({
@@ -141,16 +161,8 @@ return {
                 python:toggle()
             end
 
-            -- Keymaps for specific terminals
-            vim.keymap.set("n", "<leader>tg", "<cmd>lua _lazygit_toggle()<CR>", { desc = "LazyGit Terminal" })
-            vim.keymap.set("n", "<leader>tn", "<cmd>lua _node_toggle()<CR>", { desc = "Node Terminal" })
-            vim.keymap.set("n", "<leader>tu", "<cmd>lua _htop_toggle()<CR>", { desc = "Htop Terminal" })
-            vim.keymap.set("n", "<leader>tp", "<cmd>lua _python_toggle()<CR>", { desc = "Python Terminal" })
-            vim.keymap.set("n", "<leader>tF", "<cmd>lua _flutter_toggle()<CR>", { desc = "Flutter Terminal" })
-
-            -- Build/Run/Debug (runner keymaps defined in code_runner below)
-            vim.keymap.set("n", "<leader>rs", ":lua vim.fn.jobstop(-1)<CR>", { desc = "Stop Running Process" })
-            vim.keymap.set("n", "<leader>rb", ":!make<CR>", { desc = "Build/Sync Project" })
+            -- NOTE: `tg/tn/tu/tp/tF/rs/rb` live in the spec `keys` above so
+            -- the first press loads the plugin (not duplicated here).
         end,
     },
 
@@ -158,6 +170,13 @@ return {
     {
         "stevearc/overseer.nvim",
         cmd = { "OverseerRun", "OverseerToggle", "OverseerInfo", "OverseerBuild" },
+        -- keys here so the first press loads the plugin (not only in config)
+        keys = {
+            { "<leader>oo", "<cmd>OverseerToggle<cr>", desc = "Overseer: Toggle" },
+            { "<leader>or", "<cmd>OverseerRun<cr>", desc = "Overseer: Run Task" },
+            { "<leader>ob", "<cmd>OverseerBuild<cr>", desc = "Overseer: Build" },
+            { "<leader>oi", "<cmd>OverseerInfo<cr>", desc = "Overseer: Info/Edit Configurations" },
+        },
         opts = {
             templates = { "builtin", "user.cpp_build", "user.run_script" },
             strategy = {
@@ -178,14 +197,8 @@ return {
         },
         config = function(_, opts)
             require("overseer").setup(opts)
-
-            -- Keymaps for overseer
-            -- Overseer: simplified essential commands
-            vim.keymap.set("n", "<leader>oo", "<cmd>OverseerToggle<cr>", { desc = "Overseer: Toggle" })
-            vim.keymap.set("n", "<leader>or", "<cmd>OverseerRun<cr>", { desc = "Overseer: Run Task" })
-            vim.keymap.set("n", "<leader>ob", "<cmd>OverseerBuild<cr>", { desc = "Overseer: Build" })
-            -- ADDED: missing Overseer command for full sync
-            vim.keymap.set("n", "<leader>oi", "<cmd>OverseerInfo<cr>", { desc = "Overseer: Info/Edit Configurations" })
+            -- NOTE: `oo/or/ob/oi` live in the spec `keys` above so the
+            -- first press loads the plugin (not duplicated here).
             -- QuickAction and TaskAction commands removed due to infrequent use
         end,
     },
@@ -196,60 +209,79 @@ return {
         event = "VeryLazy",
         config = function()
             local is_win = vim.fn.has("win32") == 1
-            local tmpdir = vim.fn.fnamemodify(vim.fn.tempname(), ":h")
-            local chain = is_win and " & " or " && "
+            local shell = vim.o.shell:lower()
+            local is_pwsh = shell:match("pwsh") ~= nil or shell:match("powershell") ~= nil
+            -- Statement chaining per shell: `;` works in pwsh AND Windows
+            -- PowerShell 5.1 (where `&` is the call operator, not a chain);
+            -- cmd needs ` & `; Unix shells use ` && `.
+            local chain = (not is_win and " && ") or (is_pwsh and "; " or " & ")
+            -- Native separators + double quotes (valid in cmd, pwsh and sh)
+            local sep = is_win and "\\" or "/"
+            local tmpdir = (vim.fn.fnamemodify(vim.fn.tempname(), ":h"):gsub("/", sep))
+            local function tmpbin(name)
+                return '"' .. tmpdir .. sep .. name .. '"'
+            end
             local rm_cmd = is_win and "del" or "rm"
             local py_cmd = vim.fn.executable("python3") == 1 and "python3" or "python"
             local exe_ext = is_win and ".exe" or ""
+            -- TypeScript: deno when present, plain node otherwise
+            local ts_cmd = vim.fn.executable("deno") == 1 and "deno run" or "node"
+            local home = vim.uv.os_homedir() or vim.fn.expand("$HOME")
+
+            local filetypes = {
+                java = {
+                    "cd $dir" .. chain,
+                    "javac $fileName" .. chain,
+                    "java $fileNameWithoutExt"
+                },
+                python = py_cmd .. " -u",
+                typescript = ts_cmd,
+                rust = {
+                    "cd $dir" .. chain,
+                    "rustc $fileName" .. chain,
+                    '"$dir' .. sep .. '$fileNameWithoutExt"' .. exe_ext
+                },
+                c = function(...)
+                    local c_base = {
+                        "cd $dir" .. chain,
+                        "gcc $fileName -o",
+                        tmpbin("$fileNameWithoutExt" .. exe_ext),
+                    }
+                    local c_exec = {
+                        chain .. tmpbin("$fileNameWithoutExt" .. exe_ext) .. chain,
+                        rm_cmd .. " " .. tmpbin("$fileNameWithoutExt" .. exe_ext),
+                    }
+                    vim.ui.input({ prompt = "Add more args:" }, function(input)
+                        c_base[4] = input
+                        vim.print(vim.tbl_extend("force", c_base, c_exec))
+                        require("code_runner.commands").run_from_fn(vim.list_extend(c_base, c_exec))
+                    end)
+                end,
+                cpp = {
+                    "cd $dir" .. chain,
+                    "g++ $fileName -o " .. tmpbin("$fileNameWithoutExt" .. exe_ext) .. chain,
+                    tmpbin("$fileNameWithoutExt" .. exe_ext),
+                },
+                kotlin = {
+                    "cd $dir" .. chain,
+                    "kotlinc $fileName -include-runtime -d $fileNameWithoutExt.jar" .. chain,
+                    "java -jar $fileNameWithoutExt.jar"
+                },
+                dart = "dart $fileName",
+            }
+            -- Swift only where its toolchain can exist (macOS, or anywhere
+            -- `swift` is installed); otherwise the runner would just error.
+            if vim.fn.has("mac") == 1 or vim.fn.executable("swift") == 1 then
+                filetypes.swift = "swift $fileName"
+            end
 
             require('code_runner').setup({
                 mode = "toggle",
                 focus = true,
                 startinsert = true,
-                filetype = {
-                    java = {
-                        "cd $dir" .. chain,
-                        "javac $fileName" .. chain,
-                        "java $fileNameWithoutExt"
-                    },
-                    python = py_cmd .. " -u",
-                    typescript = "deno run",
-                    rust = {
-                        "cd $dir" .. chain,
-                        "rustc $fileName" .. chain,
-                        "$dir/$fileNameWithoutExt" .. exe_ext
-                    },
-                    c = function(...)
-                        local c_base = {
-                            "cd $dir" .. chain,
-                            "gcc $fileName -o",
-                            tmpdir .. "/$fileNameWithoutExt" .. exe_ext,
-                        }
-                        local c_exec = {
-                            chain .. tmpdir .. "/$fileNameWithoutExt" .. exe_ext .. chain,
-                            rm_cmd .. " " .. tmpdir .. "/$fileNameWithoutExt" .. exe_ext,
-                        }
-                        vim.ui.input({ prompt = "Add more args:" }, function(input)
-                            c_base[4] = input
-                            vim.print(vim.tbl_extend("force", c_base, c_exec))
-                            require("code_runner.commands").run_from_fn(vim.list_extend(c_base, c_exec))
-                        end)
-                    end,
-                    cpp = {
-                        "cd $dir" .. chain,
-                        "g++ $fileName -o " .. tmpdir .. "/$fileNameWithoutExt" .. exe_ext .. chain,
-                        tmpdir .. "/$fileNameWithoutExt" .. exe_ext,
-                    },
-                    kotlin = {
-                        "cd $dir" .. chain,
-                        "kotlinc $fileName -include-runtime -d $fileNameWithoutExt.jar" .. chain,
-                        "java -jar $fileNameWithoutExt.jar"
-                    },
-                    swift = "swift $fileName",
-                    dart = "dart $fileName",
-                },
+                filetype = filetypes,
                 project = {
-                    [vim.fn.expand("~") .. "/dev/flutter/.*"] = {
+                    [home .. sep .. "dev" .. sep .. "flutter" .. sep .. ".*"] = {
                         name = "Flutter Project",
                         description = "Run Flutter app",
                         command = "flutter run"

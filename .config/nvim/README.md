@@ -67,37 +67,45 @@ npm install -g tree-sitter-cli
 
 ### English
 ```bash
-# Prerequisites: Neovim 0.12+, Node.js 22+, C compiler (gcc/clang)
-npm install -g tree-sitter-cli  # Required for treesitter parser compilation
+# Prerequisites: Neovim 0.12+, Node.js 22+, Git, C compiler
+npm install -g tree-sitter-cli
 
-# Clone configuration (single source of truth: repo-root `.ideavimrc`)
-git clone https://github.com/chochy2001/Neovim-Vim_Configuration.git ~/.config/nvim
+# Clone to a dedicated folder, then symlink ONLY .config/nvim
+git clone git@github.com:chochy2001/Neovim-Vim_Configuration.git ~/Neovim-Vim_Configuration
+mkdir -p ~/.config
+ln -sfn ~/Neovim-Vim_Configuration/.config/nvim ~/.config/nvim
+ln -sf ~/Neovim-Vim_Configuration/.ideavimrc ~/.ideavimrc
 
-# Auto-setup with lazy.nvim (plugins install automatically on first launch)
-nvim
+nvim   # plugins install on first launch; Mason installs LSPs/formatters
+```
 
-# For IntelliJ IDEA sync (required for cross-editor workflow)
-cp ~/.config/nvim/.ideavimrc ~/
+Windows (PowerShell, as Administrator if the junction needs elevation):
 
-# Install language servers (optional but recommended)
-npm install -g vscode-langservers-extracted  # For JSON, HTML, CSS, ESLint
-# LSPs are auto-configured for: Lua, Dart, C/C++, Swift, Kotlin, JSON, YAML
+```powershell
+git clone git@github.com:chochy2001/Neovim-Vim_Configuration.git $HOME\Neovim-Vim_Configuration
+New-Item -ItemType Junction -Path "$env:LOCALAPPDATA\nvim" -Target "$HOME\Neovim-Vim_Configuration\.config\nvim"
+Copy-Item "$HOME\Neovim-Vim_Configuration\.ideavimrc" "$HOME\_ideavimrc"
 ```
 
 ### Español
 ```bash
-# Clonar configuración (fuente única: `.ideavimrc` en la raíz del repo)
-git clone https://github.com/chochy2001/Neovim-Vim_Configuration.git ~/.config/nvim
+# Requisitos: Neovim 0.12+, Node.js 22+, Git, compilador C
+npm install -g tree-sitter-cli
 
-# Configuración automática con Lazy.nvim
+git clone git@github.com:chochy2001/Neovim-Vim_Configuration.git ~/Neovim-Vim_Configuration
+mkdir -p ~/.config
+ln -sfn ~/Neovim-Vim_Configuration/.config/nvim ~/.config/nvim
+ln -sf ~/Neovim-Vim_Configuration/.ideavimrc ~/.ideavimrc
+
 nvim
+```
 
-# Para sincronización con IntelliJ IDEA (requerido para flujo cross-editor)
-cp ~/.config/nvim/.ideavimrc ~/
+Windows (PowerShell):
 
-# Instalar servidores de lenguaje (opcional pero recomendado)
-npm install -g vscode-langservers-extracted  # Para JSON, HTML, CSS, ESLint
-# LSPs están auto-configurados para: Lua, Dart, C/C++, Swift, Kotlin, JSON, YAML
+```powershell
+git clone git@github.com:chochy2001/Neovim-Vim_Configuration.git $HOME\Neovim-Vim_Configuration
+New-Item -ItemType Junction -Path "$env:LOCALAPPDATA\nvim" -Target "$HOME\Neovim-Vim_Configuration\.config\nvim"
+Copy-Item "$HOME\Neovim-Vim_Configuration\.ideavimrc" "$HOME\_ideavimrc"
 ```
 
 ---
@@ -505,19 +513,19 @@ npm install -g vscode-langservers-extracted  # Para JSON, HTML, CSS, ESLint
 
 ### 📋 Complete .ideavimrc Integration
 
-The included `.ideavimrc` mirrors the Neovim leader keymaps (measured ~110 shared `<leader>` mappings, September 2026 audit) so muscle memory transfers between Neovim and Android Studio/IntelliJ IDEA.
+The included `.ideavimrc` (repo **root**, not inside `.config/nvim/`) mirrors the Neovim leader prefixes so muscle memory transfers between Neovim and Android Studio/IntelliJ IDEA. AI terminals (`<leader>a*`) and CopilotChat (`<leader>c*`) are Neovim-only.
 
 ### English Setup
-1. **Copy the configuration**: `cp ~/.config/nvim/.ideavimrc ~/`
+1. **Copy the configuration**: `ln -sf ~/Neovim-Vim_Configuration/.ideavimrc ~/.ideavimrc` (Windows: `Copy-Item ... $HOME\_ideavimrc`)
 2. **Restart IntelliJ IDEA**
 3. **Enable IdeaVim plugin** in Settings → Plugins
-4. **All keymaps work identically** between both editors
+4. **Shared prefixes work the same**; Neovim-only maps (AI CLIs, CopilotChat, Oil, Tagbar) stay in Neovim
 
 ### Español Configuración
-1. **Copiar la configuración**: `cp ~/.config/nvim/.ideavimrc ~/`
+1. **Copiar la configuración**: `ln -sf ~/Neovim-Vim_Configuration/.ideavimrc ~/.ideavimrc` (Windows: `Copy-Item ... $HOME\_ideavimrc`)
 2. **Reiniciar IntelliJ IDEA**
 3. **Habilitar plugin IdeaVim** en Settings → Plugins
-4. **Todos los keymaps funcionan idénticamente** entre ambos editores
+4. **Los prefijos compartidos coinciden**; los mapas solo-Neovim (CLIs de IA, CopilotChat, Oil, Tagbar) quedan en Neovim
 
 ### 🎯 **Synchronized Features | Características Sincronizadas**
 
@@ -540,181 +548,137 @@ The included `.ideavimrc` mirrors the Neovim leader keymaps (measured ~110 share
 
 ## 🔍 **Master Command Reference | Referencia Maestra de Comandos**
 
-### 📊 **Complete Command Synchronization | Sincronización Completa de Comandos**
+> **EN**: Tables below match the Lua config as of September 2026 (runtime keymap dump, zero hard conflicts). IdeaVim equivalents live in the **repo-root** `.ideavimrc` (not inside `.config/nvim/`). Live list: `:Telescope keymaps`.
+>
+> **ES**: Las tablas coinciden con el Lua de septiembre de 2026 (volcado de keymaps, cero conflictos duros). Los equivalentes de IdeaVim están en `.ideavimrc` **en la raíz del repo**. Lista en vivo: `:Telescope keymaps`.
+>
+> `<leader><leader>` clears search highlight (`:nohl`). It is **not** a file finder.
 
-The following tables show **EXACT command mapping** between Neovim plugins and IntelliJ IDEA actions, ensuring **100% muscle memory consistency**.
+### 🔭 **1. Telescope & Search | Búsqueda**
 
-### 🔭 **1. Telescope & Search Commands | Comandos de Búsqueda**
+| Keymap | Neovim | IntelliJ (`.ideavimrc`) |
+|--------|--------|-------------------------|
+| `<leader>ff` | `builtin.find_files` | `GotoFile` |
+| `<leader>fg` | `builtin.live_grep` | `FindInPath` |
+| `<leader>fo` | `builtin.oldfiles` | `RecentFiles` |
+| `<leader>fb` | `builtin.buffers` | `Switcher` |
+| `<leader>fh` | `builtin.help_tags` | `HelpTopics` |
+| `<leader>fc` | `builtin.commands` | `GotoAction` |
+| `<leader>fk` | `builtin.keymaps` | `GotoAction` |
+| `<leader>.` | `builtin.find_files` | `GotoFile` |
+| `,,` | `builtin.find_files` | `GotoFile` |
+| `<leader>ps` | `builtin.lsp_dynamic_workspace_symbols` | `GotoSymbol` |
+| `<leader>fp` | `:Telescope projects` | `ManageRecentProjects` |
+| `<leader>sr` | grug-far search/replace | — (Neovim only) |
 
-| Keymap | Neovim Plugin | Neovim Action | IntelliJ Action | Status | Description |
-|--------|---------------|---------------|-----------------|---------|-------------|
-| `<leader>ff` | **telescope.lua** | `builtin.find_files` | `:action GotoFile` | ✅ **PERFECT** | **Main command** - Find files by name |
-| `<leader>fg` | **telescope.lua** | `builtin.live_grep` | `:action FindInPath` | ✅ **PERFECT** | Search text across project |
-| `<leader>fo` | **telescope.lua** | `builtin.oldfiles` | `:action RecentFiles` | ✅ **PERFECT** | Access recently opened files |
-| `<leader>fb` | **telescope.lua** | `builtin.buffers` | `:action Switcher` | ✅ **PERFECT** | Navigate open buffers/tabs |
-| `<leader>fh` | **telescope.lua** | `builtin.help_tags` | `:action HelpTopics` | ✅ **PERFECT** | Search help documentation |
-| `<leader>fc` | **telescope.lua** | `builtin.commands` | `:action GotoAction` | ✅ **PERFECT** | Find available commands |
-| `<leader>fk` | **telescope.lua** | `builtin.keymaps` | `:action Keymap` | ✅ **PERFECT** | Browse keyboard shortcuts |
-| `<leader><leader>` | **telescope.lua** | `builtin.find_files` | `:action GotoFile` | ✅ **PERFECT** | Quick file access |
-| `<leader>.` | **telescope.lua** | `builtin.find_files` | `:action GotoFile` | ✅ **PERFECT** | Alternative quick files |
-| `<leader>ps` | **telescope.lua** | `builtin.lsp_workspace_symbols` | `:action GotoSymbol` | ✅ **PERFECT** | Search project symbols |
+### 🔄 **2. Git**
 
-**📈 Telescope Sync Rate: 10/10 commands (100%)**
+| Keymap | Neovim | IntelliJ |
+|--------|--------|----------|
+| `<leader>gs` | `:Git` | `ActivateVersionControlToolWindow` |
+| `<leader>gc` | `:Git commit` | `CheckinProject` |
+| `<leader>gp` | `:Neogit push` | `Vcs.Push` |
+| `<leader>gl` | `:Neogit pull` | `Vcs.UpdateProject` |
+| `<leader>gf` | `:Git fetch` | `Git.Fetch` |
+| `<leader>gb` / `gbl` / `gbt` | blame | `Annotate` |
+| `<leader>gbr` | `:GBrowse` | `Git.Branches` |
+| `<leader>gbc` | `:Git diff HEAD~1` | `Git.CompareWithBranch` |
+| `<leader>gh` / `ghd` | git log | `Vcs.ShowTabbedFileHistory` |
+| `<leader>gd` | `:Gdiffsplit` | `Compare.SameVersion` |
+| `<leader>gdo` / `gdq` / `gdh` / `gdf` / `gdl` | Diffview / gitsigns | `Compare.LastVersion` / close / history |
+| `<leader>gsa` / `gsr` / `gsu` / `gsp` / `gsb` | stage / reset / undo-stage / preview / reset-buffer | VCS hunk actions |
+| `<leader>gn` / `gnp` | next / prev hunk | `VcsShowNextChangeMarker` / Prev |
+| `<leader>gco` / `gct` / `gcb` / `gcn` / `gcp` / `gcnn` | git-conflict | ChooseOurs / Theirs / Both / None |
 
-### 🔄 **2. Git Operations | Operaciones Git**
+### 🔧 **3. LSP**
 
-| Keymap | Neovim Plugin | Neovim Action | IntelliJ Action | Status | Description |
-|--------|---------------|---------------|-----------------|---------|-------------|
-| `<leader>gs` | **fugitive** | `<cmd>Git` | `:action Git.Menu` | ✅ **PERFECT** | Git status interface |
-| `<leader>gw` | **fugitive** | `<cmd>Gwrite` | `:action Git.Add` | ✅ **PERFECT** | Stage current file |
-| `<leader>gc` | **fugitive** | `<cmd>Git commit` | `:action Git.Commit.And.Push.Executor` | ✅ **PERFECT** | Create git commit |
-| `<leader>gv` | **fugitive** | `<cmd>Git blame` | `:action Annotate` | ✅ **PERFECT** | **V4.0** Git blame toggle |
-| `<leader>gB` | **fugitive** | `<cmd>Git blame` | `:action Annotate` | ✅ **PERFECT** | Alternative git blame |
-| `<leader>gg` | **neogit** | `<cmd>Neogit` | `:action Git.Menu` | ✅ **PERFECT** | Git interface |
-| `<leader>gp` | **neogit** | `<cmd>Neogit pull` | `:action Git.Pull` | ✅ **PERFECT** | Pull from remote |
-| `<leader>gP` | **neogit** | `<cmd>Neogit push` | `:action Git.Push` | ✅ **PERFECT** | Push to remote |
-| `<leader>gdo` | **diffview** | `<cmd>DiffviewOpen` | `:action Git.CompareWithBranch` | ✅ **PERFECT** | Open diff view |
-| `<leader>gdc` | **diffview** | `<cmd>DiffviewClose` | `:action ChangesView.Diff` | ✅ **PERFECT** | Close diff view |
-| `<leader>gdh` | **diffview** | `<cmd>DiffviewFileHistory` | `:action Git.Log` | ✅ **PERFECT** | File history view |
-| `<leader>hs` | **gitsigns** | `gs.stage_hunk` | `:action VcsShowPrevChangeMarker` | ✅ **PERFECT** | Stage current hunk |
-| `<leader>hr` | **gitsigns** | `gs.reset_hunk` | `:action VcsShowNextChangeMarker` | ✅ **PERFECT** | Reset current hunk |
-| `<leader>hp` | **gitsigns** | `gs.preview_hunk` | `:action VcsShowCurrentChangeMarker` | ✅ **PERFECT** | Preview hunk changes |
-| `<leader>hb` | **gitsigns** | `gs.blame_line` | `:action Annotate` | ✅ **PERFECT** | Blame current line |
-| `<leader>hn` | **gitsigns** | `gs.next_hunk` | `:action VcsShowNextChangeMarker` | ✅ **PERFECT** | **V4.0** Next git hunk |
-| `<leader>hP` | **gitsigns** | `gs.prev_hunk` | `:action VcsShowPrevChangeMarker` | ✅ **PERFECT** | **V4.0** Previous git hunk |
-| `<leader>co` | **git-conflict** | `<Plug>(git-conflict-ours)` | `:action Git.ResolveConflicts` | ✅ **PERFECT** | Choose our changes |
-| `<leader>ct` | **git-conflict** | `<Plug>(git-conflict-theirs)` | `:action Git.ResolveConflicts` | ✅ **PERFECT** | Choose their changes |
-| `<leader>cb` | **git-conflict** | `<Plug>(git-conflict-both)` | `:action Git.ResolveConflicts` | ✅ **PERFECT** | Accept both changes |
+| Keymap | Neovim | IntelliJ |
+|--------|--------|----------|
+| `gd` / `gi` / `K` | native 0.11+ defaults | `GotoDeclaration` / `GotoImplementation` / `QuickJavaDoc` |
+| `go` | `vim.lsp.buf.type_definition` | `GotoTypeDeclaration` |
+| `gs` | `vim.lsp.buf.signature_help` | `ParameterInfo` |
+| `gR` | Trouble `lsp_references` | `FindUsages` |
+| `<leader>rn` | rename | `RenameElement` |
+| `<leader>ca` | code action | `ShowIntentionActions` |
+| `<leader>fm` | format | `OptimizeImports` |
+| `<C-space>` (insert) | completion | same |
 
-**📈 Git Operations Sync Rate: 20/20 commands (100%)**
+### 📌 **4. Harpoon**
 
-### 🔧 **3. LSP & Development | Desarrollo y LSP**
+| Keymap | Neovim | IntelliJ |
+|--------|--------|----------|
+| `<leader>ma` | add file | `ToggleBookmark` |
+| `<leader>mh` | toggle menu | `ShowBookmarks` |
+| `<leader>1`–`<leader>9` | jump to mark | vim marks `'1`–`'9` |
+| `<leader>mp` / `mn` | prev / next | `GotoPreviousBookmark` / `GotoNextBookmark` |
 
-| Keymap | Neovim Plugin | Neovim Action | IntelliJ Action | Status | Description |
-|--------|---------------|---------------|-----------------|---------|-------------|
-| `<leader>gD` | **lsp-config** | `vim.lsp.buf.declaration` | `:action GotoDeclaration` | ✅ **PERFECT** | Go to declaration |
-| `<leader>gd` | **lsp-config** | `vim.lsp.buf.definition` | `:action GotoImplementation` | ✅ **PERFECT** | Go to definition |
-| `<leader>gi` | **lsp-config** | `vim.lsp.buf.implementation` | `:action GotoImplementation` | ✅ **PERFECT** | Go to implementation |
-| `<leader>gr` | **lsp-config** | `vim.lsp.buf.references` | `:action FindUsages` | ✅ **PERFECT** | Find references |
-| `<leader>gT` | **lsp-config** | `vim.lsp.buf.type_definition` | `:action GotoTypeDeclaration` | ✅ **PERFECT** | Go to type definition |
-| `<leader>lh` | **lsp-config** | `vim.lsp.buf.hover` | `:action QuickJavaDoc` | ✅ **PERFECT** | **V4.0** Hover documentation |
-| `<leader>ls` | **lsp-config** | `vim.lsp.buf.signature_help` | `:action ParameterInfo` | ✅ **PERFECT** | **V4.0** Signature help |
-| `<leader>rn` | **lsp-config** | `vim.lsp.buf.rename` | `:action RenameElement` | ✅ **PERFECT** | Rename symbol |
-| `<leader>ca` | **lsp-config** | `vim.lsp.buf.code_action` | `:action ShowIntentionActions` | ✅ **PERFECT** | Code actions menu |
-| `<leader>lf` | **lsp-config** | `vim.lsp.buf.format` | `:action ReformatCode` | ✅ **PERFECT** | Format document |
-| `K` | **lsp-config** | `vim.lsp.buf.hover` | `:action QuickJavaDoc` | ✅ **PERFECT** | Quick documentation |
+### 💻 **5. Terminal, runner, tests, AI**
 
-**📈 LSP Development Sync Rate: 11/11 commands (100%)**
+| Keymap | Neovim | IntelliJ |
+|--------|--------|----------|
+| `<leader>tt` | float terminal | `ActivateTerminalToolWindow` |
+| `<leader>tg` | LazyGit | same tool window |
+| `<leader>tn` / `tp` / `tu` / `tF` | node / python / sysmon / flutter | — (Neovim only) |
+| `<leader>r` / `rf` / `rp` / `rc` | code_runner | `Run` / `RunClass` / `RunProject` / `Stop` |
+| `<leader>rs` | stop jobs | `Stop` |
+| `<leader>rb` | `make` if present, else hint | `Android.SyncProject` |
+| `<leader>oo` / `or` / `ob` / `oi` | Overseer | Run tool window / RunAnything / Make / EditConfigurations |
+| `<leader>ten` / `tenf` / `tena` / `tenl` | vim-test | `RunClass` / `RunAll` / `Rerun` |
+| `<leader>aa` / `ax` / `ac` / `ag` / `ak` / `ap` | AI CLIs (opencode/codex/claude/gemini/grok/copilot) | — (Neovim only) |
+| `<leader>as` (visual) | send selection to any agent | — |
+| `<leader>cc` / `ce` / `cr` / `cf` / `co` / `ct` | CopilotChat | — (Neovim only) |
 
-### 📌 **4. Marks & Harpoon | Marcadores**
+### 📱 **6. Flutter (`fl*` lowercase)**
 
-| Keymap | Neovim Plugin | Neovim Action | IntelliJ Action | Status | Description |
-|--------|---------------|---------------|-----------------|---------|-------------|
-| `<leader>ma` | **harpoon** | `harpoon:list():add()` | `:action ToggleBookmark` | ✅ **PERFECT** | Mark/add current file |
-| `<leader>mm` | **harpoon** | `harpoon.ui:toggle_quick_menu()` | `:action RecentFiles` | ✅ **PERFECT** | Toggle harpoon menu |
-| `<leader>mb` | **harpoon** | N/A (menu-based) | `:action ShowBookmarks` | ✅ **PERFECT** | Show bookmarks list |
-| `<leader>1` | **harpoon** | `harpoon:list():select(1)` | `'1` | ✅ **PERFECT** | Go to file 1 |
-| `<leader>2` | **harpoon** | `harpoon:list():select(2)` | `'2` | ✅ **PERFECT** | Go to file 2 |
-| `<leader>3` | **harpoon** | `harpoon:list():select(3)` | `'3` | ✅ **PERFECT** | Go to file 3 |
-| `<leader>4` | **harpoon** | `harpoon:list():select(4)` | `'4` | ✅ **PERFECT** | Go to file 4 |
-| `<leader>5` | **harpoon** | `harpoon:list():select(5)` | `'5` | ✅ **PERFECT** | Go to file 5 |
-| `<leader>6` | **harpoon** | `harpoon:list():select(6)` | `'6` | ✅ **PERFECT** | Go to file 6 |
-| `<leader>7` | **harpoon** | `harpoon:list():select(7)` | `'7` | ✅ **PERFECT** | Go to file 7 |
-| `<leader>8` | **harpoon** | `harpoon:list():select(8)` | `'8` | ✅ **PERFECT** | Go to file 8 |
-| `<leader>9` | **harpoon** | `harpoon:list():select(9)` | `'9` | ✅ **PERFECT** | Go to file 9 |
-| `<leader>mp` | **harpoon** | `harpoon:list():prev()` | `:action PreviousTab` | ✅ **PERFECT** | **V4.0** Previous harpoon |
-| `<leader>mn` | **harpoon** | `harpoon:list():next()` | `:action NextTab` | ✅ **PERFECT** | **V4.0** Next harpoon |
+| Keymap | Neovim | IntelliJ |
+|--------|--------|----------|
+| `<leader>flr` | Hot Reload | `Flutter.HotReload` |
+| `<leader>fls` | Hot Restart | `Flutter.Restart` |
+| `<leader>fld` | DevTools | `Flutter.Open.DevTools` |
+| `<leader>fla` | Run | `Run` |
+| `<leader>flsd` | Devices | `DeviceAndSnapshotComboBox` |
+| `<leader>fle` | Emulators | `AvdManager` |
+| `<leader>flq` | Quit | `Stop` |
+| `<leader>flo` | Outline | `ActivateStructureToolWindow` |
+| `<leader>flc` | Clear log | logcat close |
+| `<leader>flp` | Profiler URL | — (Neovim only) |
+| `<leader>fll` | Restart Dart LSP | — (Neovim only) |
 
-**📈 Marks & Harpoon Sync Rate: 14/14 commands (100%)**
+### 📂 **7. Files**
 
-### 💻 **5. Terminal & Task Execution | Terminal y Tareas**
+| Keymap | Neovim | IntelliJ |
+|--------|--------|----------|
+| `<leader>pv` | Neo-tree toggle | `ActivateProjectToolWindow` |
+| `<leader>fr` | Reveal file | `SelectInProjectView` |
+| `<leader>pe` / `pf` | Focus tree | same |
+| `<leader>bf` | Buffer tree | `Switcher` |
+| `<leader>-` / `<leader>oe` | Oil float | project tool window |
 
-| Keymap | Neovim Plugin | Neovim Action | IntelliJ Action | Status | Description |
-|--------|---------------|---------------|-----------------|---------|-------------|
-| `<leader>th` | **toggleterm** | `ToggleTerm direction=horizontal` | `:action ActivateTerminalToolWindow` | ✅ **PERFECT** | **V4.0** Horizontal terminal |
-| `<leader>tv` | **toggleterm** | `ToggleTerm direction=vertical` | `:action ActivateTerminalToolWindow` | ✅ **PERFECT** | **V4.0** Vertical terminal |
-| `<leader>tf` | **toggleterm** | `ToggleTerm direction=float` | `:action ActivateTerminalToolWindow` | ✅ **PERFECT** | **V4.0** Floating terminal |
-| `<leader>tt` | **toggleterm** | `ToggleTerm direction=tab` | `:action ActivateTerminalToolWindow` | ✅ **PERFECT** | Terminal in tab |
-| `<leader>tg` | **toggleterm** | `_lazygit_toggle()` | `:action Git.Menu` | ✅ **PERFECT** | LazyGit interface |
-| `<leader>r` | **code_runner** | `:RunCode` | `:action Run` | ✅ **PERFECT** | Run current file |
-| `<leader>rf` | **code_runner** | `:RunFile` | `:action RunClass` | ✅ **PERFECT** | Run file explicitly |
-| `<leader>rp` | **code_runner** | `:RunProject` | `:action RunAnything` | ✅ **PERFECT** | Run project command |
+### 🔧 **8. Diagnostics (Trouble v3)**
 
-**📈 Terminal & Tasks Sync Rate: 8/8 commands (100%)**
+| Keymap | Neovim | IntelliJ |
+|--------|--------|----------|
+| `<leader>xx` / `xw` | workspace diagnostics | `ActivateProblemsViewToolWindow` |
+| `<leader>xX` / `xd` | buffer diagnostics | same |
+| `<leader>xl` / `xq` | loclist / quickfix | same |
+| `<leader>xn` / `xp` | next / prev diagnostic | `GotoNextError` / `GotoPreviousError` |
+| `<leader>xt` | TODOs | — (Neovim only) |
 
-### 📱 **6. Flutter Development | Desarrollo Flutter**
+### ⚡ **9. Buffers & windows**
 
-| Keymap | Neovim Plugin | Neovim Action | IntelliJ Action | Status | Description |
-|--------|---------------|---------------|-----------------|---------|-------------|
-| `<leader>Fs` | **flutter-tools** | `<cmd>FlutterRun` | `:action Flutter.Run` | ✅ **PERFECT** | Start Flutter app |
-| `<leader>FD` | **flutter-tools** | `<cmd>FlutterDevices` | `:action Flutter.DeviceSelector` | ✅ **PERFECT** | Select Flutter device |
-| `<leader>Fe` | **flutter-tools** | `<cmd>FlutterEmulators` | `:action Flutter.Emulator` | ✅ **PERFECT** | Start emulator |
-| `<leader>Fr` | **flutter-tools** | `<cmd>FlutterReload` | `:action Flutter.HotReload` | ✅ **PERFECT** | **V4.0** Flutter hot reload |
-| `<leader>FR` | **flutter-tools** | `<cmd>FlutterRestart` | `:action Flutter.HotRestart` | ✅ **PERFECT** | **V4.0** Flutter hot restart |
-| `<leader>Fq` | **flutter-tools** | `<cmd>FlutterQuit` | `:action Flutter.Stop` | ✅ **PERFECT** | **V4.0** Stop Flutter app |
-| `<leader>Fd` | **flutter-tools** | `<cmd>FlutterDetach` | `:action Flutter.Detach` | ✅ **PERFECT** | **V4.0** Detach Flutter |
+| Keymap | Neovim | IntelliJ |
+|--------|--------|----------|
+| `<leader>b` | Back (`<C-o>`) | `Back` |
+| `<leader>bn` / `bp` | next / prev buffer | `NextTab` / `PreviousTab` |
+| `<leader>bd` | close buffer | `CloseContent` |
+| `<leader>bl` / `bh` | close right / left | `CloseAllToTheRight` / Left |
+| `<leader>bP` / `bt` | pick / pin | — / `PinActiveTab` |
+| `<S-l>` / `<S-h>` | next / prev | `NextTab` / `PreviousTab` |
+| `<leader>wh/j/k/l` | window nav | same |
+| `<leader>sv` / `sh` / `sc` / `so` | splits | SplitVertically / Horizontally / Unsplit |
+| `<leader>wm` / `ws` | WinShift move / swap | MoveEditorToOppositeTabGroup |
 
-**📈 Flutter Development Sync Rate: 7/7 commands (100%)**
-
-### 📂 **7. File Navigation & Project Management | Navegación de Archivos**
-
-| Keymap | Neovim Plugin | Neovim Action | IntelliJ Action | Status | Description |
-|--------|---------------|---------------|-----------------|---------|-------------|
-| `<leader>pv` | **neo-tree** | `<cmd>Neotree filesystem toggle` | `:action ActivateProjectToolWindow` | ✅ **PERFECT** | Toggle project tree |
-| `<leader>fr` | **neo-tree** | `<cmd>Neotree filesystem reveal` | `:action SelectInProjectView` | ✅ **PERFECT** | Reveal current file |
-| `<leader>pe` | **neo-tree** | `<cmd>Neotree filesystem focus` | `:action ActivateProjectToolWindow` | ✅ **PERFECT** | Focus project explorer |
-| `<leader>bf` | **neo-tree** | `<cmd>Neotree buffers reveal float` | `:action Switcher` | ✅ **PERFECT** | Buffer explorer |
-| `<leader>-` | **oil** | `oil.toggle_float()` | `:action ActivateProjectToolWindow` | ✅ **PERFECT** | Oil file manager |
-| `<leader>oe` | **oil** | `oil.toggle_float()` | `:action ActivateProjectToolWindow` | ✅ **PERFECT** | Oil file explorer |
-
-**📈 File Navigation Sync Rate: 6/6 commands (100%)**
-
-### 🔧 **8. Debugging & Problem Solving | Depuración**
-
-| Keymap | Neovim Plugin | Neovim Action | IntelliJ Action | Status | Description |
-|--------|---------------|---------------|-----------------|---------|-------------|
-| `<leader>xw` | **trouble** | `<cmd>Trouble diagnostics` | `:action ActivateProblemsViewToolWindow` | ✅ **PERFECT** | **V4.0** Workspace diagnostics |
-| `<leader>xd` | **trouble** | `<cmd>Trouble diagnostics filter.buf=0` | `:action ActivateProblemsViewToolWindow` | ✅ **PERFECT** | **V4.0** Document diagnostics |
-| `<leader>xl` | **trouble** | `<cmd>Trouble loclist` | `:action ActivateProblemsViewToolWindow` | ✅ **PERFECT** | **V4.0** Location list |
-| `<leader>xq` | **trouble** | `<cmd>Trouble quickfix` | `:action ActivateProblemsViewToolWindow` | ✅ **PERFECT** | **V4.0** Quickfix list |
-
-**📈 Debugging & Problem Solving Sync Rate: 4/4 commands (100%)**
-
-### ⚡ **9. Buffer & Window Management | Gestión de Buffers y Ventanas**
-
-| Keymap | Neovim Plugin | Neovim Action | IntelliJ Action | Status | Description |
-|--------|---------------|---------------|-----------------|---------|-------------|
-| `<leader>wh` | **core** | `<C-w>h` | `<C-w>h` | ✅ **PERFECT** | Move to left window |
-| `<leader>wj` | **core** | `<C-w>j` | `<C-w>j` | ✅ **PERFECT** | Move to window below |
-| `<leader>wk` | **core** | `<C-w>k` | `<C-w>k` | ✅ **PERFECT** | Move to window above |
-| `<leader>wl` | **core** | `<C-w>l` | `<C-w>l` | ✅ **PERFECT** | Move to right window |
-| `<leader>bn` | **bufferline** | `:BufferLineCycleNext` | `:action NextTab` | ✅ **PERFECT** | Next buffer/tab |
-| `<leader>bP` | **bufferline** | `:BufferLineCyclePrev` | `:action PreviousTab` | ✅ **PERFECT** | Previous buffer/tab |
-| `<leader>bd` | **bufferline** | `:BufferLinePickClose` | `:action CloseContent` | ✅ **PERFECT** | Close buffer |
-| `<S-h>` | **bufferline** | `:BufferLineCyclePrev` | `:action PreviousTab` | ✅ **PERFECT** | Quick previous buffer |
-| `<S-l>` | **bufferline** | `:BufferLineCycleNext` | `:action NextTab` | ✅ **PERFECT** | Quick next buffer |
-
-**📈 Buffer & Window Management Sync Rate: 9/9 commands (100%)**
-
----
-
-### 🎯 **Final Statistics | Estadísticas Finales**
-
-| Category | Commands | Sync Status |
-|----------|----------|-------------|
-| **Telescope & Search** | 10 | ✅ **SYNCED** |
-| **Git Operations** | 20 | ✅ **SYNCED** |
-| **LSP & Development** | 11 | ✅ **SYNCED** |
-| **Marks & Harpoon** | 14 | ✅ **SYNCED** |
-| **Terminal & Tasks** | 8 | ✅ **SYNCED** |
-| **Flutter Development** | 7 | ✅ **SYNCED** |
-| **File Navigation** | 6 | ✅ **SYNCED** |
-| **Debugging & Problems** | 4 | ✅ **SYNCED** |
-| **Buffer & Window Mgmt** | 9 | ✅ **SYNCED** |
-| | | | |
-| **🏆 TOTAL (tables above)** | **89 keymaps** | **synced** | **✅** |
-
-> **Measured sync (September 2026 audit)**: ~110 `<leader>` mappings shared between Neovim (runtime keymap dump) and `.ideavimrc`. The tables above document the core set; both files evolve — run `:Telescope keymaps` in Neovim to see the live list.
+> **Live list**: `:Telescope keymaps`. Prefix delays (`<leader>f` vs `<leader>ff`) wait `timeoutlen=300` — by design, not a conflict.
 
 ### 🚀 **Current Configuration Achievements (validated September 2026)**
 

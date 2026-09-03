@@ -1,17 +1,14 @@
 return {
-    {
-        "L3MON4D3/LuaSnip",
-        dependencies = {
-            "saadparwaiz1/cmp_luasnip",
-            "rafamadriz/friendly-snippets",
-        },
-    },
+    -- NOTE: LuaSnip loads as a dependency of nvim-cmp below (InsertEnter),
+    -- not as a standalone eager spec: faster startup, same functionality.
     {
         "hrsh7th/nvim-cmp",
         event = "InsertEnter",
         dependencies = {
             "hrsh7th/cmp-nvim-lsp",
-            "L3MON4D3/LuaSnip",
+            -- friendly-snippets rides along so `lazy_load()` above keeps
+            -- working exactly as before (1000+ snippets, now lazily loaded)
+            { "L3MON4D3/LuaSnip", dependencies = { "rafamadriz/friendly-snippets" } },
             "saadparwaiz1/cmp_luasnip",
         },
         config = function()

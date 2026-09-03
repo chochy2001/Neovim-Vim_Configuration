@@ -93,7 +93,11 @@ nnoremap ,, :action GotoFile<CR>
 nnoremap <leader>pv :action ActivateProjectToolWindow<CR>
 nnoremap <leader>fr :action SelectInProjectView<CR>
 nnoremap <leader>pe :action ActivateProjectToolWindow<CR>
+nnoremap <leader>pf :action ActivateProjectToolWindow<CR>
 nnoremap <leader>bf :action Switcher<CR>
+nnoremap <leader>- :action ActivateProjectToolWindow<CR>
+nnoremap <leader>oe :action ActivateProjectToolWindow<CR>
+nnoremap <leader>tb :action ActivateStructureToolWindow<CR>
 
 " -----------------------------------------------------------------------------
 " Harpoon Emulation (Quick Marks) - synced with harpoon.lua

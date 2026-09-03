@@ -87,7 +87,7 @@ return {
             -- Stage operations (gsa, gsr, gsu, gsp, gsb)
             vim.keymap.set("n", "<leader>gsa", gs.stage_hunk, vim.tbl_extend("force", opts, { desc = "Git: Stage Add (hunk)" }))
             vim.keymap.set("n", "<leader>gsr", gs.reset_hunk, vim.tbl_extend("force", opts, { desc = "Git: Stage Reset (hunk)" }))
-            vim.keymap.set("n", "<leader>gsu", function() gs.stage_hunk() end, vim.tbl_extend("force", opts, { desc = "Git: Stage Undo (toggle)" }))
+            vim.keymap.set("n", "<leader>gsu", gs.undo_stage_hunk, vim.tbl_extend("force", opts, { desc = "Git: Undo Stage (hunk)" }))
             vim.keymap.set("n", "<leader>gsp", gs.preview_hunk, vim.tbl_extend("force", opts, { desc = "Git: Stage Preview" }))
             vim.keymap.set("n", "<leader>gsb", gs.reset_buffer, vim.tbl_extend("force", opts, { desc = "Git: Stage Buffer reset" }))
             
@@ -127,6 +127,13 @@ return {
             "DiffviewRefresh",
             "DiffviewFileHistory",
         },
+        -- keys here so the first press loads the plugin (not only in config)
+        keys = {
+            { "<leader>gdo", "<cmd>DiffviewOpen<cr>", desc = "Git: Diff Open" },
+            { "<leader>gdq", "<cmd>DiffviewClose<cr>", desc = "Git: Diff Quit" },
+            { "<leader>gdh", "<cmd>DiffviewFileHistory<cr>", desc = "Git: Diff History" },
+            { "<leader>gdf", "<cmd>DiffviewToggleFiles<cr>", desc = "Git: Diff Files toggle" },
+        },
         config = function()
             require("diffview").setup({
                 diff_binaries = false,
@@ -159,12 +166,8 @@ return {
                     },
                 },
             })
-
-            -- Diffview commands (gd*)
-            vim.keymap.set("n", "<leader>gdo", "<cmd>DiffviewOpen<cr>", { desc = "Git: Diff Open" })
-            vim.keymap.set("n", "<leader>gdq", "<cmd>DiffviewClose<cr>", { desc = "Git: Diff Quit" })
-            vim.keymap.set("n", "<leader>gdh", "<cmd>DiffviewFileHistory<cr>", { desc = "Git: Diff History" })
-            vim.keymap.set("n", "<leader>gdf", "<cmd>DiffviewToggleFiles<cr>", { desc = "Git: Diff Files toggle" })
+            -- NOTE: `gdo/gdq/gdh/gdf` live in the spec `keys` above so the
+            -- first press loads the plugin (not duplicated here).
         end,
     },
 

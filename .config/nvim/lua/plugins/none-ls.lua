@@ -82,19 +82,6 @@ return {
 					end
 				end
 
-				-- Safe buffer keymaps
-				local opts = { buffer = bufnr, silent = true }
-				-- CONFLICT RESOLVED: Removed <leader>f to avoid conflict with LSP
-				-- LSP keeps <leader>f, none-ls uses <leader>ff only
-				-- vim.keymap.set("n", "<leader>f", function()
-				-- 	pcall(function()
-				-- 		vim.lsp.buf.format({
-				-- 			bufnr = bufnr,
-				-- 			timeout_ms = 1500,
-				-- 			async = false
-				-- 		})
-				-- 	end)
-				-- end, vim.tbl_extend("force", opts, { desc = "Format Buffer (Safe)" }))
 			end,
 
 			-- Safety configuration

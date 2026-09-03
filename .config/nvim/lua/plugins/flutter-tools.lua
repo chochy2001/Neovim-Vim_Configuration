@@ -6,7 +6,6 @@ return {
         ft = "dart",
         dependencies = {
             "nvim-lua/plenary.nvim",
-            "stevearc/dressing.nvim", -- Optional enhanced UI
             "mfussenegger/nvim-dap", -- Required for debugging
         },
         config = function()
@@ -72,9 +71,10 @@ return {
                         return vim.fn.exepath("flutter")
                     end
                     -- Fallback to conventional directory
-                    local home = os.getenv("FLUTTER_HOME")
-                        or (vim.fn.expand("$HOME") .. sep .. "development" .. sep .. "flutter")
-                    return home .. sep .. "bin" .. sep .. flutter_exe
+                    local home = vim.uv.os_homedir() or vim.fn.expand("$HOME")
+                    local fhome = os.getenv("FLUTTER_HOME")
+                        or (home .. sep .. "development" .. sep .. "flutter")
+                    return fhome .. sep .. "bin" .. sep .. flutter_exe
                 end)(),
                 flutter_lookup_cmd = nil,
                 root_patterns = { ".git", "pubspec.yaml" },

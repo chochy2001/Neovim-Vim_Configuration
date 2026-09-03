@@ -57,7 +57,8 @@ return {
                         type = "codelldb",
                         request = "launch",
                         program = function()
-                            return vim.fn.input("Executable: ", vim.fn.getcwd() .. "/", "file")
+                            local sep = vim.fn.has("win32") == 1 and "\\" or "/"
+                            return vim.fn.input("Executable: ", vim.fn.getcwd() .. sep, "file")
                         end,
                         cwd = "${workspaceFolder}",
                         stopOnEntry = false,

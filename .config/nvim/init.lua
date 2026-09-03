@@ -3,14 +3,21 @@ vim.loader.enable()
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.uv.fs_stat(lazypath) then
-    vim.fn.system({
-        "git",
-        "clone",
-        "--filter=blob:none",
-        "https://github.com/folke/lazy.nvim.git",
-        "--branch=stable", -- latest stable release
-        lazypath,
-    })
+    if vim.fn.executable("git") ~= 1 then
+        vim.notify(
+            "lazy.nvim bootstrap needs `git` on PATH (Windows: `winget install Git.Git`)",
+            vim.log.levels.ERROR
+        )
+    else
+        vim.fn.system({
+            "git",
+            "clone",
+            "--filter=blob:none",
+            "https://github.com/folke/lazy.nvim.git",
+            "--branch=stable", -- latest stable release
+            lazypath,
+        })
+    end
 end
 vim.opt.rtp:prepend(lazypath)
 

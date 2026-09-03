@@ -151,6 +151,11 @@ return {
     {
         "sindrets/winshift.nvim",
         cmd = "WinShift",
+        -- keys here so the first press loads the plugin (not only in config)
+        keys = {
+            { "<leader>wm", "<cmd>WinShift<cr>", desc = "WinShift: Move Window" },
+            { "<leader>ws", "<cmd>WinShift swap<cr>", desc = "WinShift: Swap Window" },
+        },
         config = function()
             require("winshift").setup({
                 highlight_moving_win = true,
@@ -183,9 +188,8 @@ return {
                     },
                 },
             })
-
-            vim.keymap.set("n", "<leader>wm", "<cmd>WinShift<cr>", { desc = "WinShift: Move Window" })
-            vim.keymap.set("n", "<leader>ws", "<cmd>WinShift swap<cr>", { desc = "WinShift: Swap Window" })
+            -- NOTE: `<leader>wm`/`<leader>ws` live in the spec `keys` above so
+            -- the first press loads the plugin.
         end
     },
 
@@ -237,9 +241,11 @@ return {
         },
     },
 
-    -- Twilight for current code highlighting
+    -- Twilight for current code highlighting (loads after startup idle,
+    -- still available to the zen-mode integration below)
     {
         "folke/twilight.nvim",
+        event = "VeryLazy",
         opts = {
             dimming = {
                 alpha = 0.25,
