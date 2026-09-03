@@ -17,8 +17,8 @@ return {
     },
     -- Replaces vim.ui.input and vim.ui.select
     { "stevearc/dressing.nvim", event = "VeryLazy" },
-    -- Icons (used by lualine, trouble, etc.)
-    { "echasnovski/mini.icons", event = "VeryLazy" },
+    -- Icons: nvim-web-devicons is the single provider (see icons-fix.lua).
+    -- mini.icons was removed: nothing required it, avoids duplicate providers.
     -- Smooth cursor (visual effect)
     {
         "gen740/SmoothCursor.nvim",

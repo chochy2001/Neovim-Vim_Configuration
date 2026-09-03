@@ -105,10 +105,9 @@ return {
                     -- This avoids transport conflicts and multiple LSP clients
                     enable = false,
                     auto_start = false,
-                    color = {
-                        enabled = false,
-                    },
                     -- No on_attach configuration since LSP is disabled
+                    -- NOTE: no `color` table on purpose: flutter-tools warns
+                    -- on Neovim 0.12+ that plugin-managed colors are deprecated
                 }
             })
 

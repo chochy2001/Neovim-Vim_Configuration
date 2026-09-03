@@ -12,15 +12,8 @@ return {
     {
         "nvim-telescope/telescope-ui-select.nvim",
     },
-    {
-        "nvim-telescope/telescope-file-browser.nvim",
-        -- Load when telescope loads
-        dependencies = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" },
-        config = function()
-            -- file_browser specific configuration if needed
-            -- require("telescope").load_extension("file_browser")
-        end,
-    },
+    -- NOTE: telescope-file-browser.nvim was removed: the extension was
+    -- never loaded (neo-tree + oil already cover file browsing).
     {
         "nvim-telescope/telescope.nvim",
         tag = "v0.2.2",
