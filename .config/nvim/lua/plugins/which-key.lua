@@ -15,6 +15,7 @@ return {
             -- Register group labels so which-key shows clear categories
             wk.add({
                 { "<leader>f", group = "Find/Search" },
+                { "<leader>a", group = "AI Assistants" },
                 { "<leader>g", group = "Git" },
                 { "<leader>gs", group = "Git Stage" },
                 { "<leader>gc", group = "Git Conflict" },

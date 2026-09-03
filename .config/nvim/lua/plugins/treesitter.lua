@@ -60,6 +60,10 @@ return {
                 map({ "x", "o" }, "ic", function() ts_select.select_textobject("@class.inner", "textobjects") end, { desc = "Inside class" })
                 map({ "x", "o" }, "aa", function() ts_select.select_textobject("@parameter.outer", "textobjects") end, { desc = "Around argument" })
                 map({ "x", "o" }, "ia", function() ts_select.select_textobject("@parameter.inner", "textobjects") end, { desc = "Inside argument" })
+                map({ "x", "o" }, "ai", function() ts_select.select_textobject("@conditional.outer", "textobjects") end, { desc = "Around conditional" })
+                map({ "x", "o" }, "ii", function() ts_select.select_textobject("@conditional.inner", "textobjects") end, { desc = "Inside conditional" })
+                map({ "x", "o" }, "al", function() ts_select.select_textobject("@loop.outer", "textobjects") end, { desc = "Around loop" })
+                map({ "x", "o" }, "il", function() ts_select.select_textobject("@loop.inner", "textobjects") end, { desc = "Inside loop" })
             end
 
             -- Move keymaps
@@ -70,6 +74,10 @@ return {
                 map({ "n", "x", "o" }, "[f", function() ts_move.goto_previous_start("@function.outer", "textobjects") end, { desc = "Previous function" })
                 map({ "n", "x", "o" }, "]c", function() ts_move.goto_next_start("@class.outer", "textobjects") end, { desc = "Next class" })
                 map({ "n", "x", "o" }, "[c", function() ts_move.goto_previous_start("@class.outer", "textobjects") end, { desc = "Previous class" })
+                map({ "n", "x", "o" }, "]a", function() ts_move.goto_next_start("@parameter.inner", "textobjects") end, { desc = "Next argument" })
+                map({ "n", "x", "o" }, "[a", function() ts_move.goto_previous_start("@parameter.inner", "textobjects") end, { desc = "Previous argument" })
+                map({ "n", "x", "o" }, "]F", function() ts_move.goto_next_end("@function.outer", "textobjects") end, { desc = "Next function end" })
+                map({ "n", "x", "o" }, "[F", function() ts_move.goto_previous_end("@function.outer", "textobjects") end, { desc = "Previous function end" })
             end
 
             -- Swap keymaps

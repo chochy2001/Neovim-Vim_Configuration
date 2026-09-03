@@ -161,9 +161,8 @@ All keybindings are synchronized between Neovim and JetBrains IDEs (.ideavimrc).
 
 | Key | Mode | Action |
 |-----|------|--------|
-| `gd` | Normal | Go to definition |
-| `gi` | Normal | Go to implementation |
-| `gr` | Normal | Find references |
+| `gd` | Normal | Go to definition (native 0.11+) |
+| `gi` | Normal | Go to implementation (native 0.11+) |
 | `go` | Normal | Go to type definition |
 | `gs` | Normal | Signature help / parameter info |
 | `gR` | Normal | References in Trouble |
@@ -176,7 +175,6 @@ All keybindings are synchronized between Neovim and JetBrains IDEs (.ideavimrc).
 | `<leader>rn` | Normal | Rename symbol |
 | `<leader>ca` | Normal/Visual | Code action |
 | `<leader>fm` | Normal | Format document |
-| `<leader>lf` | Normal | Format buffer (safe, with timeout) |
 | `<C-space>` | Insert | Trigger completion |
 
 ---
@@ -258,6 +256,22 @@ All keybindings are synchronized between Neovim and JetBrains IDEs (.ideavimrc).
 | `<leader>cf` | Normal/Visual | Fix code |
 | `<leader>co` | Normal/Visual | Optimize code |
 | `<leader>ct` | Normal/Visual | Generate tests |
+
+---
+
+## AI Assistants (terminal CLIs — your subscriptions, no API keys)
+
+| Key | Mode | Action |
+|-----|------|--------|
+| `<leader>aa` | Normal | opencode terminal |
+| `<leader>ax` | Normal | codex terminal |
+| `<leader>ac` | Normal | claude terminal |
+| `<leader>ag` | Normal | gemini terminal |
+| `<leader>ak` | Normal | grok terminal |
+| `<leader>ap` | Normal | copilot CLI terminal |
+| `<leader>as` | Visual | Send selection to any agent (picker + instruction) |
+
+Workflow: select code → `<leader>as` → pick agent → type what to change → the prompt is sent to its floating terminal (a backup copy stays in the clipboard). Missing CLIs show their install command instead of failing.
 
 ---
 
@@ -401,6 +415,7 @@ These only work on the dashboard startup screen:
 | Prefix | Category |
 |--------|----------|
 | `<leader>f*` | Find/search |
+| `<leader>a*` | AI assistants |
 | `<leader>g*` | Git operations |
 | `<leader>fl*` | Flutter |
 | `<leader>x*` | Diagnostics/trouble |
@@ -410,6 +425,7 @@ These only work on the dashboard startup screen:
 | `<leader>t*` | Terminal/testing |
 | `<leader>r*` | Run/debug |
 | `<leader>c*` | Copilot AI |
+| `<leader>d*` | Debugging (DAP) |
 | `<leader>d*` | Debugging (DAP) |
 | `<leader>z*` | Folding/zen |
 | `<leader>q*` | Sessions |
@@ -425,11 +441,10 @@ These only work on the dashboard startup screen:
 |---------|-------------|
 | `:Lazy` | Plugin manager UI |
 | `:Mason` | Install/manage LSP servers, formatters, debuggers |
-| `:LspInfo` | Active LSP servers |
+| `:checkhealth vim.lsp` | Active LSP servers |
 | `:LspRestartDart` | Restart Dart LSP |
 | `:LspStatus` | Check LSP status |
 | `:CheckFormatters` | List available formatters |
-| `:TestFlutter` | Run Flutter setup test |
 | `:CopilotChat` | Open AI chat |
 | `:GrugFar` | Advanced find/replace |
 | `:DiffviewOpen` | Open git diff viewer |
@@ -456,7 +471,7 @@ These only work on the dashboard startup screen:
 6. `<leader>tg` for full LazyGit TUI
 
 ### Code editing
-1. `gd` to jump to definition, `gr` to find all references
+1. `gd` to jump to definition, `gR` to find all references
 2. `<leader>rn` to rename across the project
 3. `<leader>ca` for quick fixes and refactoring
 4. `<leader>fm` to format the file

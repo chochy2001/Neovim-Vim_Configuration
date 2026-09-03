@@ -24,8 +24,14 @@ return {
 					filetypes = { "c", "cpp", "objc", "objcpp" },
 				}),
 
-				-- Dart/Flutter - dart format (comes with Flutter SDK)
-				formatting.dart_format,
+                -- Dart/Flutter - dart format (comes with Flutter SDK)
+                formatting.dart_format,
+
+                -- Go - gofmt (comes with the Go toolchain)
+                formatting.gofmt,
+
+                -- Python - black (install with Mason)
+                formatting.black,
 
 				-- Lua - stylua (install with Mason)
 				formatting.stylua.with({

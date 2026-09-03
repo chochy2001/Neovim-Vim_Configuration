@@ -17,21 +17,24 @@ return {
             local enabled = {}
 
             -- 1. Lua LSP (for Neovim configuration)
-            vim.lsp.config("lua_ls", {
-                capabilities = capabilities,
-                settings = {
-                    Lua = {
-                        runtime = { version = "LuaJIT" },
-                        diagnostics = { globals = { "vim" } },
-                        workspace = {
-                            library = { vim.env.VIMRUNTIME },
-                            checkThirdParty = false,
+            -- Install with `:MasonInstall lua-language-server`
+            if vim.fn.executable("lua-language-server") == 1 then
+                vim.lsp.config("lua_ls", {
+                    capabilities = capabilities,
+                    settings = {
+                        Lua = {
+                            runtime = { version = "LuaJIT" },
+                            diagnostics = { globals = { "vim" } },
+                            workspace = {
+                                library = { vim.env.VIMRUNTIME },
+                                checkThirdParty = false,
+                            },
+                            telemetry = { enable = false },
                         },
-                        telemetry = { enable = false },
                     },
-                },
-            })
-            table.insert(enabled, "lua_ls")
+                })
+                table.insert(enabled, "lua_ls")
+            end
 
             -- 2. Dart LSP
             local home = vim.uv.os_homedir() or vim.fn.expand("$HOME")
@@ -89,7 +92,7 @@ return {
                         "--clang-tidy",
                         "--header-insertion=iwyu",
                         "--completion-style=detailed",
-                        "--function-arg-placeholders",
+                        "--function-arg-placeholders=1",
                     },
                     filetypes = { "c", "cpp", "objc", "objcpp" },
                 })
@@ -157,6 +160,86 @@ return {
                 table.insert(enabled, "yamlls")
             end
 
+            -- 8. Go LSP (10 backend repos; install: `:MasonInstall gopls`)
+            if vim.fn.executable("gopls") == 1 then
+                vim.lsp.config("gopls", {
+                    capabilities = capabilities,
+                    cmd = { "gopls" },
+                    filetypes = { "go", "gomod", "gowork", "gotmpl" },
+                    root_markers = { "go.mod", "go.work", ".git" },
+                    settings = {
+                        gopls = {
+                            analyses = { unusedparams = true, shadow = true },
+                            staticcheck = true,
+                            gofumpt = true,
+                        },
+                    },
+                })
+                table.insert(enabled, "gopls")
+            end
+
+            -- 9. Python LSP (install: `:MasonInstall pyright`)
+            if vim.fn.executable("pyright-langserver") == 1 or vim.fn.executable("pyright") == 1 then
+                vim.lsp.config("pyright", {
+                    capabilities = capabilities,
+                    filetypes = { "python" },
+                    root_markers = {
+                        "pyproject.toml",
+                        "setup.py",
+                        "setup.cfg",
+                        "requirements.txt",
+                        "Pipfile",
+                        ".git",
+                    },
+                    settings = {
+                        python = {
+                            analysis = {
+                                autoSearchPaths = true,
+                                useLibraryCodeForTypes = true,
+                                diagnosticMode = "openFilesOnly",
+                            },
+                        },
+                    },
+                })
+                table.insert(enabled, "pyright")
+            end
+
+            -- 10. TypeScript/JavaScript LSP (install: `:MasonInstall vtsls`)
+            if vim.fn.executable("vtsls") == 1 then
+                vim.lsp.config("vtsls", {
+                    capabilities = capabilities,
+                    filetypes = {
+                        "javascript",
+                        "javascriptreact",
+                        "typescript",
+                        "typescriptreact",
+                    },
+                    root_markers = { "package.json", "tsconfig.json", "jsconfig.json", ".git" },
+                })
+                table.insert(enabled, "vtsls")
+            end
+
+            -- 11. Astro LSP for the Astro landings
+            -- (install: `:MasonInstall astro-language-server`)
+            -- NOTE: cmd is pinned to Mason's copy on purpose. lspconfig's
+            -- default prefers `<root>/node_modules/.bin/astro-ls`, which
+            -- crashes when a project's tree is incomplete (seen live:
+            -- missing `ajv/dist/core`); Mason's copy always works.
+            local astro_mason = vim.fn.stdpath("data")
+                .. "/mason/bin/astro-ls"
+                .. (is_win and ".cmd" or "")
+            if vim.fn.executable(astro_mason) == 1 or vim.fn.executable("astro-ls") == 1 then
+                vim.lsp.config("astro", {
+                    capabilities = capabilities,
+                    cmd = vim.fn.executable(astro_mason) == 1
+                            and { astro_mason, "--stdio" }
+                        or { "astro-ls", "--stdio" },
+                    filetypes = { "astro" },
+                    root_markers = { "package.json", "astro.config.mjs", "astro.config.mts", ".git" },
+                })
+                table.insert(enabled, "astro")
+            end
+
             -- Enable only the servers configured above
             vim.lsp.enable(enabled)
 
@@ -216,26 +299,55 @@ return {
     },
 
     -- Mason: auto-install LSP servers, formatters, and debuggers
+    -- NOTE (2026): upstream moved williamboman/* -> mason-org/* (v2.x, active)
     {
-        "williamboman/mason.nvim",
-        cmd = "Mason",
+        "mason-org/mason.nvim",
+        -- All commands registered so lazy loads mason on any of them
+        -- (including headless `:MasonInstall <pkg>` usage)
+        cmd = { "Mason", "MasonInstall", "MasonUninstall", "MasonUninstallAll", "MasonUpdate", "MasonLog" },
         build = ":MasonUpdate",
         opts = {
             ui = { border = "rounded" },
         },
     },
     {
-        "williamboman/mason-lspconfig.nvim",
+        "mason-org/mason-lspconfig.nvim",
         event = { "BufReadPre", "BufNewFile" },
-        dependencies = { "williamboman/mason.nvim", "neovim/nvim-lspconfig" },
+        dependencies = { "mason-org/mason.nvim", "neovim/nvim-lspconfig" },
         opts = {
             ensure_installed = {
                 "lua_ls",
                 "clangd",
                 "jsonls",
                 "yamlls",
+                "gopls",
+                "pyright",
+                "vtsls",
+                "astro",
             },
-            automatic_enable = true,
+            -- stylua ships an LSP mode but formatting is already covered
+            -- by none-ls: avoid duplicate formatting clients
+            automatic_enable = { exclude = { "stylua" } },
+        },
+    },
+
+    -- Auto-install formatters/linters on startup (community standard
+    -- companion to mason-lspconfig, which only covers LSP servers)
+    {
+        "WhoIsSethDaniel/mason-tool-installer.nvim",
+        dependencies = { "mason-org/mason.nvim" },
+        opts = {
+            ensure_installed = {
+                "lua-language-server",
+                "stylua",
+                "prettier",
+                -- NOTE: no "black"/"clang-format": Mason needs `python3` on
+                -- PATH (absent on stock Windows with Store Python).
+                -- Provision them with `uv tool install black clang-format`
+                -- instead; none-ls picks them up from PATH.
+            },
+            auto_update = false,
+            run_on_start = true,
         },
     },
 

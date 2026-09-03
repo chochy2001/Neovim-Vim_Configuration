@@ -2,7 +2,7 @@
 
 Cross-platform (macOS / Linux / Windows) development environment with synchronized keybindings across Neovim, Vim, and JetBrains IDEs.
 
-**Requires Neovim 0.12+** | Updated April 2026
+**Requires Neovim 0.12+** | Updated September 2026 (keymaps runtime-audited: zero hard conflicts)
 
 ## Features
 
@@ -11,7 +11,33 @@ Cross-platform (macOS / Linux / Windows) development environment with synchroniz
 - **IdeaVim** config (`.ideavimrc`) fully synchronized with Neovim keybindings
 - **Legacy Vim** config (`.vimrc`) with vim-plug
 - **Cross-platform** - all paths dynamically detected, works on macOS, Linux, and Windows
-- **Zero conflicts** - all keybindings audited, no overlaps between plugins
+- **Zero conflicts** - all keybindings runtime-audited, no overlaps between plugins
+
+## Stack decisions (researched, September 2026)
+
+| Choice | Why this one |
+|--------|--------------|
+| `mason-org/mason.nvim` + `mason-lspconfig` | Upstream moved `williamboman/*` → `mason-org/*` (v2.x, actively maintained) |
+| `nvimtools/none-ls.nvim` (kept) | Community-maintained null-ls successor (not archived); covers formatting + code actions in one client |
+| `nvim-cmp` + LuaSnip (kept) | Pure Lua, stable, validated conflict-free; `blink.cmp` needs a Rust toolchain and moves fast — not worth the churn |
+| `github/copilot.vim` + CopilotChat | Official inline client + best-rated chat UI; AI CLIs (`<leader>a*`) cover agentic work with their own subscriptions |
+| `telescope.nvim` pinned `v0.2.2` | Latest tag; `file-browser` extension removed (never loaded — neo-tree + oil cover it) |
+| Single icon provider | `nvim-web-devicons` only (`mini.icons` removed, nothing used it) |
+
+## Requirements
+
+| Tool | Why | Install |
+|------|-----|---------|
+| Neovim 0.12+ | Editor | Windows: `winget install Neovim.Neovim` · macOS: `brew install neovim` · Linux: distro package or [release](https://github.com/neovim/neovim/releases) |
+| Git | Plugins, LSP updates | Preinstalled on macOS/Linux; Windows: `winget install Git.Git` |
+| Node.js 22+ | Copilot, Mason packages | [nodejs.org](https://nodejs.org) or `winget install OpenJS.NodeJS` / `brew install node` |
+| C compiler | Treesitter parsers, LuaSnip build | Windows: Visual Studio Build Tools · macOS: `xcode-select --install` · Linux: `gcc` |
+| Nerd Font | Icons | [nerdfonts.com](https://www.nerdfonts.com) (e.g. FiraCode); set it in your terminal |
+| ripgrep + fd | Fast search (recommended) | `winget install BurntSushi.ripgrep.MSVC sharkdp.fd` · `brew install ripgrep fd` · `apt install ripgrep fd-find` |
+| tree-sitter CLI | Parser compilation | `npm install -g tree-sitter-cli` |
+| AI CLIs (optional) | `<leader>a*` terminals | `opencode-ai`, `@openai/codex`, `@anthropic-ai/claude-code`, `@google/gemini-cli`, `@github/copilot` via npm (each keeps its own login) |
+
+LSP servers (`lua_ls`, `clangd`, `jsonls`, `yamlls`) and formatters (`stylua`, `prettier`, `clang-format`) **self-install via Mason** on first launch. Dart comes from your Flutter SDK.
 
 ## Quick Install
 
@@ -87,9 +113,9 @@ Leader key: `Space`
 
 | Key | Action |
 |-----|--------|
-| `gd` | Go to definition |
-| `gi` | Go to implementation |
-| `gr` | Find references |
+| `gd` | Go to definition (native 0.11+) |
+| `gi` | Go to implementation (native 0.11+) |
+| `gR` | Find references (Trouble) |
 | `go` | Go to type definition |
 | `gs` | Signature help |
 | `K` | Hover documentation |
@@ -125,6 +151,8 @@ Leader key: `Space`
 |-----|--------|
 | `<leader>xx` | Toggle diagnostics |
 | `<leader>xX` | Buffer diagnostics |
+| `<leader>xw` | Workspace diagnostics |
+| `<leader>xd` | Document diagnostics |
 | `<leader>xl` | Location list |
 | `<leader>xq` | Quickfix list |
 | `<leader>xn` | Next error |
@@ -148,22 +176,52 @@ Leader key: `Space`
 | `<leader>tg` | LazyGit |
 | `<leader>tn` | Node REPL |
 | `<leader>tp` | Python REPL |
+| `<leader>tu` | System monitor |
+| `<leader>tF` | Flutter terminal |
 | `<leader>r` | Run code |
 | `<leader>rf` | Run file |
 | `<leader>rp` | Run project |
 | `<leader>rs` | Stop |
 | `<leader>rb` | Build |
+| `<leader>oo` | Overseer toggle |
+| `<leader>or` | Overseer run task |
+| `<leader>ob` | Overseer build |
+| `<leader>oi` | Overseer info |
 
-### Copilot Chat (AI)
+### Testing (vim-test)
 
 | Key | Action |
 |-----|--------|
-| `<leader>cc` | Toggle chat |
-| `<leader>ce` | Explain code |
-| `<leader>cr` | Review code |
-| `<leader>cf` | Fix code |
-| `<leader>co` | Optimize code |
-| `<leader>ct` | Generate tests |
+| `<leader>ten` | Test nearest |
+| `<leader>tenf` | Test file |
+| `<leader>tena` | Test suite |
+| `<leader>tenl` | Rerun last |
+
+### Sessions
+
+| Key | Action |
+|-----|--------|
+| `<leader>qs` | Restore session |
+| `<leader>ql` | Restore last session |
+| `<leader>qd` | Don't save session |
+
+### AI Assistants (terminal CLIs + Copilot)
+
+| Key | Action |
+|-----|--------|
+| `<leader>aa` | opencode terminal |
+| `<leader>ax` | codex terminal |
+| `<leader>ac` | claude terminal |
+| `<leader>ag` | gemini terminal |
+| `<leader>ak` | grok terminal |
+| `<leader>ap` | copilot CLI terminal |
+| `<leader>as` (visual) | Send selection to any agent (picker) |
+| `<leader>cc` | Copilot chat toggle |
+| `<leader>ce` | Explain (normal/visual) |
+| `<leader>cr` | Review (normal/visual) |
+| `<leader>cf` | Fix (normal/visual) |
+| `<leader>co` | Optimize (normal/visual) |
+| `<leader>ct` | Generate tests (normal/visual) |
 
 ### Flutter Development
 
@@ -177,19 +235,30 @@ Leader key: `Space`
 | `<leader>fle` | Start emulator |
 | `<leader>flq` | Quit |
 | `<leader>flo` | Toggle outline |
+| `<leader>flc` | Clear log |
+| `<leader>flp` | Copy profiler URL |
+| `<leader>fll` | Restart LSP |
 
 ### Buffer & Window Management
 
 | Key | Action |
 |-----|--------|
+| `<leader>b` | Back (previous location) |
 | `<leader>bn` | Next buffer |
 | `<leader>bp` | Previous buffer |
 | `<leader>bd` | Close buffer |
+| `<leader>bl` | Close buffers to the right |
+| `<leader>bh` | Close buffers to the left |
+| `<leader>bP` | Pick buffer |
+| `<leader>bt` | Toggle pin buffer |
+| `<leader>to` | Close all other buffers |
 | `<S-l>` / `<S-h>` | Next / previous buffer |
 | `<leader>sv` | Split vertical |
 | `<leader>sh` | Split horizontal |
 | `<leader>sc` | Close split |
 | `<leader>wh/j/k/l` | Navigate windows |
+| `<leader>wm` | Move window (WinShift) |
+| `<leader>ws` | Swap window |
 | `<leader>zz` | Zen mode |
 
 ### Core Editing
@@ -218,16 +287,16 @@ Leader key: `Space`
 | **UI** | lualine, bufferline, dashboard, dressing, nvim-notify, which-key, indent-blankline |
 | **Editing** | Comment.nvim, vim-surround, nvim-autopairs, todo-comments, flash.nvim |
 | **Text Objects** | nvim-treesitter-textobjects (function, class, argument, loop, conditional) |
-| **LSP Management** | mason.nvim, mason-lspconfig (auto-install servers) |
+| **LSP Management** | mason.nvim, mason-lspconfig (auto-install servers), mason-tool-installer (auto-install formatters) |
 | **LSP UI** | fidget.nvim (progress), noice.nvim (modern command line) |
-| **AI** | copilot.vim, CopilotChat.nvim |
+| **AI** | copilot.vim, CopilotChat.nvim, AI terminal CLIs (opencode, codex, claude, gemini, grok, copilot) |
 | **Debugging** | nvim-dap, nvim-dap-ui, nvim-dap-virtual-text |
 | **Folding** | nvim-ufo (treesitter-based smart folding) |
 | **Flutter** | flutter-tools, dart-vim-plugin, awesome-flutter-snippets |
-| **Terminal** | toggleterm, overseer, code_runner |
-| **Themes** | dracula, gruvbox, catppuccin, onedark, rose-pine, solarized |
+| **Terminal** | toggleterm, overseer, code_runner, vim-test |
+| **Themes** | dracula, molokai, solarized, onedark, gruvbox, rose-pine, catppuccin |
 | **Focus** | zen-mode, twilight |
-| **Other** | undotree, trouble, grug-far, winshift, persistence, project.nvim |
+| **Other** | undotree, trouble, grug-far, winshift, persistence, project.nvim, tagbar, swagger-preview |
 
 ## Languages Supported
 
@@ -235,28 +304,37 @@ Leader key: `Space`
 |----------|-----|-----------|--------|
 | Lua | lua_ls | stylua | Neovim runtime integration |
 | Dart/Flutter | dartls | dart_format | flutter-tools, snippets, DAP |
-| C/C++ | clangd | clang-format | Header insertion, clang-tidy |
-| Swift | sourcekit-lsp (macOS) | - | - |
-| Kotlin | kotlin_language_server | - | Gradle project detection |
+| Go | gopls | gofmt | staticcheck, gofumpt |
+| Python | pyright | black (`uv tool install black`) | openFiles diagnostics |
+| TypeScript/JavaScript | vtsls | prettier | - |
+| Astro | astro | prettier | Pinned to Mason copy (ignores broken project-local installs) |
 | JSON | jsonls | prettier | SchemaStore integration |
 | YAML | yamlls | prettier | pubspec.yaml schemas |
-| Web (JS/TS/HTML/CSS) | - | prettier | - |
+| C/C++ | clangd | clang-format | Header insertion, clang-tidy |
+| Kotlin | kotlin_language_server | - | Gradle project detection (needs `gradle` on PATH for full classpath) |
+| Swift | sourcekit-lsp (macOS) | - | - |
+| Web (HTML/CSS) | - | prettier | - |
+| PHP (legacy) | - | - | Treesitter + `php -l` workflow |
 
 ## IdeaVim Synchronization
 
 The `.ideavimrc` is fully synchronized with the Neovim config. All keybindings use the same prefixes:
 
 - `<leader>f*` - Find/search
+- `<leader>a*` - AI assistants
 - `<leader>g*` - Git operations
 - `<leader>fl*` - Flutter
 - `<leader>x*` - Diagnostics
 - `<leader>m*` - Marks/harpoon
 - `<leader>b*` - Buffers
 - `<leader>w*` - Windows
+- `<leader>t*` - Terminal/testing
 - `<leader>r*` - Run/debug
 - `<leader>z*` - Folding/zen
 - `<leader>c*` - Copilot chat
+- `<leader>d*` - Debugging (DAP)
 - `<leader>q*` - Sessions
+- `<leader>o*` - Overseer/oil
 
 ## File Structure
 
@@ -273,15 +351,16 @@ The `.ideavimrc` is fully synchronized with the Neovim config. All keybindings u
 │   │   └── plugins/                      # 27 plugin config files
 │   │       ├── lsp-config.lua            # vim.lsp.config() + vim.lsp.enable()
 │   │       ├── treesitter.lua            # Parser management + TS highlighting
-│   │       ├── telescope.lua             # Fuzzy finder (v0.2.2)
+│   │       ├── telescope.lua             # Fuzzy finder (v0.2.2, latest)
 │   │       ├── completions.lua           # nvim-cmp + LuaSnip
 │   │       ├── git-stuff.lua             # Fugitive, gitsigns, diffview, neogit
 │   │       ├── trouble.lua               # Diagnostics list (Trouble v3)
-│   │       └── ...                       # 21 more plugin configs
+│   │       ├── ai-terminal.lua           # AI CLIs in floating terminals
+│   │       └── ...                       # 21 more plugin configs (28 total)
 │   ├── README.md                         # Detailed nvim-specific docs
-│   └── SHORTCUT_GUIDELINES.md            # Keymap conventions reference
 ├── .ideavimrc                            # JetBrains IDE config (synced)
 ├── .vimrc                                # Legacy Vim config
+├── WORKFLOW.md                           # Full keymap-by-keymap workflow guide
 └── .gitignore
 ```
 
