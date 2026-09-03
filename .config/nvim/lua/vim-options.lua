@@ -7,12 +7,8 @@ vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
 vim.opt.smartindent = true
 vim.opt.termguicolors = true
--- Clipboard cross-platform: unnamed for macOS/Windows, unnamedplus for Linux (X11/Wayland)
-if vim.fn.has("mac") == 1 or vim.fn.has("win32") == 1 then
-    vim.opt.clipboard = "unnamed"
-else
-    vim.opt.clipboard = "unnamedplus"
-end
+-- System clipboard: unnamedplus works on Linux, macOS and Windows
+vim.opt.clipboard = "unnamedplus"
 vim.opt.scrolloff = 8
 vim.opt.synmaxcol = 2000
 vim.opt.cursorline = true
@@ -21,6 +17,29 @@ vim.opt.colorcolumn = "80"
 vim.opt.swapfile = false
 vim.opt.encoding = "utf-8"
 vim.opt.fileencoding = "utf-8"
+
+-- Persistent undo across sessions (cross-platform: uses stdpath state dir)
+do
+    local undodir = vim.fn.stdpath("state") .. "/undo"
+    if vim.fn.isdirectory(undodir) == 0 then
+        pcall(vim.fn.mkdir, undodir, "p")
+    end
+    vim.opt.undodir = undodir
+    vim.opt.undofile = true
+end
+
+-- Better shell on Windows: prefer pwsh/powershell over cmd when available;
+-- Unix keeps the user's $SHELL. Improves toggleterm and :! commands.
+if vim.fn.has("win32") == 1 then
+    if vim.fn.executable("pwsh") == 1 then
+        vim.opt.shell = "pwsh"
+        vim.opt.shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command"
+        vim.opt.shellquote = ""
+        vim.opt.shellxquote = ""
+    elseif vim.fn.executable("powershell") == 1 then
+        vim.opt.shell = "powershell"
+    end
+end
 
 -- GUI font (for Neovide, nvim-qt, or other GUI clients)
 if vim.g.neovide or vim.fn.has("gui_running") == 1 then
@@ -93,5 +112,3 @@ vim.keymap.set("n", "<leader>sh", ":split<CR>", { desc = "Split Horizontal" })
 vim.keymap.set("n", "<leader>sc", ":close<CR>", { desc = "Close Current Split" })
 vim.keymap.set("n", "<leader>so", ":only<CR>", { desc = "Close All Other Splits" })
 vim.keymap.set("n", "<leader>_", "<C-w>_", { desc = "Maximize Split Height" })
-
-vim.wo.number = true

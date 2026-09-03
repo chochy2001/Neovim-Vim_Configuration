@@ -31,7 +31,9 @@ return {
                 conceallevel = 3,
                 concealcursor = "nvic",
             },
-            delete_to_trash = true,
+            -- trash requires the external `trash` CLI on Linux/macOS; fall back
+            -- to permanent delete on systems without it (e.g. stock Windows)
+            delete_to_trash = vim.fn.executable("trash") == 1,
             skip_confirm_for_simple_edits = false,
             prompt_save_on_select_new_entry = true,
             cleanup_delay_ms = 2000,

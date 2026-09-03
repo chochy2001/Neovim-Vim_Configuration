@@ -29,11 +29,23 @@ return {
 			-- If set to 1, you'll need to manually map acceptance (see note below)
 			-- vim.g.copilot_no_tab_map = 1
 
-			-- Copilot requires Node.js 22+ (auto-detect nvm or system node)
-			local nvm_node = vim.fn.expand("$HOME/.nvm/versions/node")
-			local nvm_dirs = vim.fn.glob(nvm_node .. "/v22*", false, true)
-			if #nvm_dirs > 0 then
-				vim.g.copilot_node_command = nvm_dirs[#nvm_dirs] .. "/bin/node"
+			-- Copilot requires Node.js 22+ (auto-detect nvm/fnm or system node).
+			-- On Windows check %APPDATA%/nvm and fnm dirs too; otherwise leave
+			-- unset so copilot.vim falls back to node in PATH (all OS).
+			local nvm_roots = { vim.fn.expand("$HOME/.nvm/versions/node") }
+			if vim.fn.has("win32") == 1 then
+				table.insert(nvm_roots, vim.fn.expand("$APPDATA/nvm"))
+				local fnm_home = vim.fn.expand("$HOME/.local/share/fnm")
+				if vim.fn.isdirectory(fnm_home) == 1 then
+					table.insert(nvm_roots, fnm_home)
+				end
+			end
+			for _, root in ipairs(nvm_roots) do
+				local dirs = vim.fn.glob(root .. "/v22*", false, true)
+				if #dirs > 0 then
+					vim.g.copilot_node_command = dirs[#dirs] .. "/bin/node"
+					break
+				end
 			end
 		end,
 	},
@@ -45,7 +57,9 @@ return {
 			"github/copilot.vim",
 			"nvim-lua/plenary.nvim",
 		},
-		build = "make tiktoken",
+		-- tiktoken needs a C compiler via make; skip the build step on systems
+		-- without make (e.g. stock Windows) instead of failing the install.
+		build = vim.fn.executable("make") == 1 and "make tiktoken" or nil,
 		cmd = { "CopilotChat", "CopilotChatOpen", "CopilotChatToggle" },
 		keys = {
 			{ "<leader>cc", "<cmd>CopilotChatToggle<cr>", desc = "Copilot: Toggle Chat" },

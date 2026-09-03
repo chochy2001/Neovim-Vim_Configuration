@@ -109,8 +109,16 @@ return {
                 node:toggle()
             end
 
-            -- Process monitor terminal (htop on Unix, tasklist on Windows)
-            local sysmon_cmd = vim.fn.has("win32") == 1 and "tasklist" or "htop"
+            -- Process monitor terminal: tasklist on Windows, htop when
+            -- available, plain top as a universal fallback (macOS/Linux)
+            local sysmon_cmd
+            if vim.fn.has("win32") == 1 then
+                sysmon_cmd = "tasklist"
+            elseif vim.fn.executable("htop") == 1 then
+                sysmon_cmd = "htop"
+            else
+                sysmon_cmd = "top"
+            end
             local htop = Terminal:new({
                 cmd = sysmon_cmd,
                 hidden = true,

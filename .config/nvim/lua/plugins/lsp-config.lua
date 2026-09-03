@@ -12,6 +12,9 @@ return {
             local is_win = vim.fn.has("win32") == 1
             local is_mac = vim.fn.has("mac") == 1
             local sep = is_win and "\\" or "/"
+            -- Only enable servers whose binary was actually configured, so
+            -- vim.lsp.enable() never tries to start a missing server (all OS).
+            local enabled = {}
 
             -- 1. Lua LSP (for Neovim configuration)
             vim.lsp.config("lua_ls", {
@@ -28,10 +31,12 @@ return {
                     },
                 },
             })
+            table.insert(enabled, "lua_ls")
 
             -- 2. Dart LSP
+            local home = vim.uv.os_homedir() or vim.fn.expand("$HOME")
             local flutter_home = os.getenv("FLUTTER_HOME")
-                or (vim.fn.expand("$HOME") .. sep .. "development" .. sep .. "flutter")
+                or (home .. sep .. "development" .. sep .. "flutter")
             local dart_path = vim.fn.exepath("dart")
             if dart_path == "" then
                 dart_path = flutter_home .. sep .. "bin" .. sep .. (is_win and "dart.bat" or "dart")
@@ -70,6 +75,7 @@ return {
                         end
                     end,
                 })
+                table.insert(enabled, "dartls")
             end
 
             -- 3. C/C++ LSP
@@ -87,6 +93,7 @@ return {
                     },
                     filetypes = { "c", "cpp", "objc", "objcpp" },
                 })
+                table.insert(enabled, "clangd")
             end
 
             -- 4. Swift LSP (macOS only)
@@ -96,6 +103,7 @@ return {
                     cmd = { "sourcekit-lsp" },
                     filetypes = { "swift" },
                 })
+                table.insert(enabled, "sourcekit")
             end
 
             -- 5. Kotlin LSP
@@ -106,6 +114,7 @@ return {
                     filetypes = { "kotlin" },
                     root_markers = { "settings.gradle.kts", "settings.gradle", "build.gradle.kts", "build.gradle" },
                 })
+                table.insert(enabled, "kotlin_language_server")
             end
 
             -- 6. JSON LSP
@@ -124,6 +133,7 @@ return {
                         },
                     },
                 })
+                table.insert(enabled, "jsonls")
             end
 
             -- 7. YAML LSP
@@ -144,13 +154,11 @@ return {
                         },
                     },
                 })
+                table.insert(enabled, "yamlls")
             end
 
-            -- Enable all configured servers
-            vim.lsp.enable({
-                "lua_ls", "clangd", "jsonls", "yamlls",
-                "kotlin_language_server", "sourcekit", "dartls",
-            })
+            -- Enable only the servers configured above
+            vim.lsp.enable(enabled)
 
             -- LSP keymaps on attach
             vim.api.nvim_create_autocmd("LspAttach", {

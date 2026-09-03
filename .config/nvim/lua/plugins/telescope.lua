@@ -29,7 +29,9 @@ return {
             require("telescope").setup({
                 defaults = {
                     file_ignore_patterns = { "node_modules", ".git/" },
-                    vimgrep_arguments = {
+                    -- Use rg when present; fall back to plain grep on systems
+                    -- without ripgrep (e.g. stock Windows) so live_grep works.
+                    vimgrep_arguments = (vim.fn.executable("rg") == 1) and {
                         "rg",
                         "--color=never",
                         "--no-heading",
@@ -38,6 +40,13 @@ return {
                         "--column",
                         "--smart-case",
                         "--hidden",
+                    } or {
+                        "grep",
+                        "--color=never",
+                        "--with-filename",
+                        "--line-number",
+                        "--column",
+                        "--extended-regexp",
                     },
                     -- Enable treesitter syntax highlighting in preview
                     preview = {

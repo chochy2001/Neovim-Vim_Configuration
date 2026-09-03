@@ -11,10 +11,20 @@ fi
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
-#export PATH="/usr/local/bin:$PATH"
-export PATH="/Users/jorgesalgadomiranda/development/flutter/bin:$PATH"
-export PATH="/opt/homebrew/bin:$PATH"
 
+# Toolchain paths, added only when they exist so the file is safe on
+# Linux / macOS / Windows (WSL or Git Bash) with different users.
+if [[ -d "/opt/homebrew/bin" ]]; then
+  export PATH="/opt/homebrew/bin:$PATH"
+fi
+if [[ -d "$HOME/development/flutter/bin" ]]; then
+  export PATH="$HOME/development/flutter/bin:$PATH"
+fi
+if [[ -d "$HOME/Documents/flutter/bin" ]]; then
+  export PATH="$HOME/Documents/flutter/bin:$PATH"
+fi
+
+# Upload helper (customize the server user/host before using)
 server='root@89.116.51.156:/root'
 unalias upload 2>/dev/null
 function upload {
@@ -22,16 +32,19 @@ function upload {
     scp "$file_path" root@89.116.51.156:/root
 }
 
-export JAVA_HOME=/opt/homebrew/Cellar/openjdk@17/17.0.14/libexec/openjdk.jdk/Contents/Home
-export PATH=$JAVA_HOME/bin:$PATH
+# Java from Homebrew, when installed
+if [[ -d "/opt/homebrew/opt/openjdk@17" ]]; then
+  export JAVA_HOME="/opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home"
+  export PATH="$JAVA_HOME/bin:$PATH"
+fi
 
-
-alias unamios='cd /Users/jorgesalgadomiranda/Documents/Apps/TiendaUNAM/ios'
-alias unamandroid='cd /Users/jorgesalgadomiranda/Documents/Apps/TiendaUNAM/android-2023'
-alias unamweb='cd /Users/jorgesalgadomiranda/Documents/Apps/tienda_en_linea_unam'
-alias apps='cd "/Users/jorgesalgadomiranda/Documents/Apps"'
-alias menu='cd /Users/jorgesalgadomiranda/Documents/Apps/menuRestaurante'
-alias menuBack='cd /Users/jorgesalgadomiranda/Documents/Apps/CapmenuBack'
+# Project shortcuts (resolve against the current user's home)
+alias apps='cd "$HOME/Documents/Apps"'
+alias unamios='cd "$HOME/Documents/Apps/TiendaUNAM/ios"'
+alias unamandroid='cd "$HOME/Documents/Apps/TiendaUNAM/android-2023"'
+alias unamweb='cd "$HOME/Documents/Apps/tienda_en_linea_unam"'
+alias menu='cd "$HOME/Documents/Apps/menuRestaurante"'
+alias menuBack='cd "$HOME/Documents/Apps/CapmenuBack"'
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,

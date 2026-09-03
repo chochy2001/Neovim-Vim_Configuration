@@ -80,11 +80,9 @@ let g:startify_custom_header = [
 
 filetype plugin indent on
 
-" Cross-platform Python3 detection
-if has('mac')
-    let g:python3_host_prog = '/Library/Frameworks/Python.framework/Versions/3.11/bin/python3'
-elseif has('win32')
-    let g:python3_host_prog = 'python'
+" Cross-platform Python3 detection (no hardcoded versions)
+if has('win32') && executable('python')
+    let g:python3_host_prog = exepath('python')
 elseif executable('python3')
     let g:python3_host_prog = exepath('python3')
 endif
