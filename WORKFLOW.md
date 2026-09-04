@@ -395,18 +395,18 @@ Workflow: select code → `<leader>as` → pick agent → type what to change �
 
 ## Dashboard Quick Actions
 
-These only work on the dashboard startup screen:
+These only work on the CAPDESIS dashboard (`nvim` with no file):
 
 | Key | Action |
 |-----|--------|
-| `1` | Find files |
-| `2` | Live grep |
-| `3` | Recent files |
-| `4` | File explorer |
-| `5` | Terminal |
-| `6` | Edit config |
-| `7` | Sync plugins |
-| `8` | Mason (LSP installer) |
+| `f` | Find files |
+| `g` | Live grep |
+| `r` | Recent files |
+| `e` | File explorer |
+| `a` | AI (opencode) |
+| `m` | Mason |
+| `l` | Lazy |
+| `q` | Quit |
 
 ---
 

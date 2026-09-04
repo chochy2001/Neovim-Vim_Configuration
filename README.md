@@ -7,7 +7,7 @@ Cross-platform (macOS / Linux / Windows) development environment with synchroniz
 ## Features
 
 - **Neovim 0.12 native APIs** - Uses `vim.lsp.config()` / `vim.lsp.enable()`, `vim.treesitter.start()`, modern diagnostics
-- **lazy.nvim** (~77 specs, ~9 load at idle startup)
+- **lazy.nvim** (~79 specs, ~10 load at idle startup)
 - **IdeaVim** config (`.ideavimrc`) shares the same leader **prefixes**; AI CLIs and CopilotChat are Neovim-only
 - **Legacy Vim** config (`.vimrc`) with vim-plug (`~/vimfiles` on Windows, `~/.vim` on Unix)
 - **Cross-platform** — shells, paths, builds and CLIs are guarded (`win32` / `executable` / `os_homedir`)
@@ -32,13 +32,13 @@ Cross-platform (macOS / Linux / Windows) development environment with synchroniz
 | Git | Plugins, LSP updates | Preinstalled on macOS/Linux; Windows: `winget install Git.Git` |
 | Node.js 22+ | Copilot, Mason packages | [nodejs.org](https://nodejs.org) or `winget install OpenJS.NodeJS` / `brew install node` |
 | C compiler | Treesitter parsers, LuaSnip build | Windows: Visual Studio Build Tools · macOS: `xcode-select --install` · Linux: `gcc` |
-| Nerd Font | Icons | [nerdfonts.com](https://www.nerdfonts.com) (e.g. FiraCode); set it in your terminal |
+| Nerd Font | File/UI icons | Windows: `winget install DEVCOM.JetBrainsMonoNerdFont` then set terminal font to **JetBrainsMono NFM**. macOS: `brew install --cask font-jetbrains-mono-nerd-font`. Linux: install from [nerdfonts.com](https://www.nerdfonts.com). Without this, Telescope/neo-tree show empty boxes. |
 | ripgrep + fd | Fast search (recommended) | `winget install BurntSushi.ripgrep.MSVC sharkdp.fd` · `brew install ripgrep fd` · `apt install ripgrep fd-find` |
 | tree-sitter CLI | Parser compilation | `npm install -g tree-sitter-cli` |
 | AI CLIs (optional) | `<leader>a*` terminals | npm: `opencode-ai`, `@openai/codex`, `@anthropic-ai/claude-code`, `@google/gemini-cli`, `@github/copilot`. Grok: xAI CLI on PATH (not npm). Each keeps its own login. |
 | uv (Windows, optional) | `black` / `clang-format` | `winget install astral-sh.uv` then `uv tool install black clang-format` |
 
-LSP servers (`lua_ls`, `clangd`, `jsonls`, `yamlls`, `gopls`, `pyright`, `vtsls`, `astro`) and formatters (`stylua`, `prettier`) **self-install via Mason** on first launch. Dart LSP comes from **flutter-tools** (Flutter SDK). On Windows, `black` and `clang-format` install with `uv tool install black clang-format` (Mason needs `python3` on PATH).
+Mason self-installs: `lua_ls`, `clangd`, `jsonls`, `yamlls`, `gopls`, `pyright`, `vtsls`, `astro`, `intelephense`, `bashls`, `dockerls`, `html`, `cssls`, `taplo`, plus formatters `stylua` and `prettier`. Dart LSP comes from **flutter-tools** (Flutter SDK). On Windows, `black` and `clang-format` need `uv tool install black clang-format`.
 
 ## Quick Install
 
@@ -70,6 +70,55 @@ git clone git@github.com:chochy2001/Neovim-Vim_Configuration.git $HOME\Neovim-Vi
 New-Item -ItemType Junction -Path "$env:LOCALAPPDATA\nvim" -Target "$HOME\Neovim-Vim_Configuration\.config\nvim"
 Copy-Item "$HOME\Neovim-Vim_Configuration\.ideavimrc" "$HOME\_ideavimrc"
 ```
+
+## How to use
+
+Leader is **Space**. After Space, wait ~300 ms or keep typing the rest of the shortcut. Press Space again (`<leader><leader>`) to clear search highlight — that is **not** find-files.
+
+**First launch:** open a terminal, run `nvim` with no file. The CAPDESIS dashboard appears (only when you did not pass a path). Plugins install on their own; Mason installs LSPs/formatters in the background.
+
+| Dashboard key | Action |
+|---------------|--------|
+| `f` | Find file |
+| `g` | Live grep |
+| `r` | Recent files |
+| `e` | File explorer (neo-tree) |
+| `a` | AI terminal (opencode) |
+| `m` | Mason (LSP installer) |
+| `l` | Lazy (plugins) |
+| `q` | Quit |
+
+**Every day**
+
+1. `nvim` in a project (or `nvim path/to/file`).
+2. `<leader>ff` find a file, `<leader>fg` search text, `<leader>pv` tree.
+3. Edit. LSP starts when the language binary exists (statusline shows `dartls`, `gopls`, …).
+4. `<leader>fm` format. `gd` go to definition, `<leader>ca` code action, `<leader>rn` rename.
+5. Git: `<leader>gs` status → `<leader>gsa` stage hunk → `<leader>gc` commit → `<leader>gp` push.
+6. AI: visual-select code → `<leader>as` → pick agent → type what to change. Or `<leader>aa` for opencode.
+
+**Commands (type `:` then the name)**
+
+| Command | What it does |
+|---------|----------------|
+| `:Telescope keymaps` | **Live list of every shortcut** (source of truth) |
+| `:Lazy` | Plugin manager |
+| `:Mason` | Install/update LSP servers and formatters |
+| `:checkhealth` | Diagnose Neovim |
+| `:checkhealth vim.lsp` | Active language servers |
+| `:CopilotChat` | Copilot chat |
+| `:LspRestartDart` | Restart Dart LSP |
+| `:LspStatus` | List LSP clients |
+| `:CheckFormatters` | List none-ls formatters |
+| `:Neotree` / `:Oil` | File tree / directory editor |
+| `:DiffviewOpen` | Git diff UI |
+| `:ZenMode` | Focus mode |
+| `:GrugFar` | Project search-replace |
+| `:SwaggerPreview` | OpenAPI preview (if you have the CLI) |
+
+Full tables: [WORKFLOW.md](WORKFLOW.md). For AI agents extending this repo: [AGENTS.md](AGENTS.md).
+
+**Cómo usarlo (ES):** Leader = **Espacio**. `nvim` sin archivo abre el dashboard CAPDESIS (`f` buscar, `g` grep, `e` explorador, `a` IA, `q` salir). Cada día: `<leader>ff` archivo, `<leader>fg` texto, `<leader>fm` formatear, `gd` ir a definición. Git: `<leader>gs` → `<leader>gsa` → `<leader>gc` → `<leader>gp`. Lista viva de atajos: `:Telescope keymaps`.
 
 ## Keybinding System
 
@@ -104,6 +153,8 @@ Leader key: `Space`
 | `<leader>gnp` | Previous hunk |
 | `<leader>gsa` | Stage hunk |
 | `<leader>gsr` | Reset hunk |
+| `<leader>gsu` | Undo stage hunk |
+| `<leader>gsp` | Preview hunk |
 | `<leader>gdo` | Open diffview |
 | `<leader>gdq` | Close diffview |
 | `<leader>gco` | Conflict: choose ours |
@@ -167,7 +218,8 @@ Leader key: `Space`
 |-----|--------|
 | `<leader>pv` | Toggle neo-tree |
 | `<leader>fr` | Reveal current file |
-| `<leader>-` | Oil (edit directory) |
+| `<leader>-` / `<leader>oe` | Oil (edit directory as a buffer) |
+| `<leader>tb` | Tagbar (needs `ctags` on PATH) |
 
 ### Terminal & Tasks
 
@@ -274,8 +326,9 @@ Leader key: `Space`
 | `n` / `N` | Search next/prev (centered) |
 | `<leader>za` | Toggle fold |
 | `<leader>zR` / `<leader>zM` | Expand/collapse all folds |
-| `<leader>u` (visual) | To lowercase |
+| `<leader>u` | Normal: undo tree · Visual: lowercase |
 | `<leader>U` (visual) | To uppercase |
+| `<leader>sr` | Search and replace (grug-far) |
 
 ## Plugin Ecosystem
 
@@ -287,7 +340,7 @@ Leader key: `Space`
 | **Syntax** | nvim-treesitter (parser manager), vim.treesitter.start(), treesitter-context |
 | **Git** | fugitive, gitsigns, diffview, neogit, git-conflict |
 | **Navigation** | telescope, harpoon, neo-tree, oil |
-| **UI** | lualine, bufferline, dashboard, dressing, nvim-notify, which-key, indent-blankline |
+| **UI** | lualine, bufferline, dashboard (CAPDESIS), dropbar, nvim-highlight-colors, dressing, nvim-notify, which-key, indent-blankline |
 | **Editing** | Comment.nvim, vim-surround, nvim-autopairs, todo-comments, flash.nvim |
 | **Text Objects** | nvim-treesitter-textobjects (function, class, argument, loop, conditional) |
 | **LSP Management** | mason.nvim, mason-lspconfig (auto-install servers), mason-tool-installer (auto-install formatters) |

@@ -20,6 +20,7 @@ Cross-platform Neovim 0.12+ config (`lazy.nvim`) plus a synced `.ideavimrc` for 
 - **Don't** clone this repo *into* `~/.config/nvim`. Clone to a dedicated folder and **symlink** `.config/nvim` (Windows: Junction to `%LOCALAPPDATA%\nvim`).
 - **Don't** put API keys in the config. AI CLIs (`opencode`, `codex`, `claude`, `gemini`, `grok`, `copilot`) keep their own login.
 - **Don't** enable an LSP unless `vim.fn.executable(...)` is 1. Mason auto-installs a subset. **Dart LSP is owned by flutter-tools** — do not also `vim.lsp.enable("dartls")`.
+- Dashboard keys are `f g r e a m l q` (only when `nvim` is started with no file). Do not document numbered `1`–`8` shortcuts.
 
 ### How to add a language tomorrow
 

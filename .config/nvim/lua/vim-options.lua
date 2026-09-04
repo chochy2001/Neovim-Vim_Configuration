@@ -7,6 +7,7 @@ vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
 vim.opt.smartindent = true
 vim.opt.termguicolors = true
+vim.opt.guifont = "JetBrainsMono NFM:h11"
 -- System clipboard: unnamedplus works on Linux, macOS and Windows
 vim.opt.clipboard = "unnamedplus"
 vim.opt.scrolloff = 8

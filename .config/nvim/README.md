@@ -108,6 +108,14 @@ New-Item -ItemType Junction -Path "$env:LOCALAPPDATA\nvim" -Target "$HOME\Neovim
 Copy-Item "$HOME\Neovim-Vim_Configuration\.ideavimrc" "$HOME\_ideavimrc"
 ```
 
+### How to use | Cómo usarlo
+
+**EN**: Leader is **Space**. Run `nvim` with no file for the CAPDESIS dashboard. Live shortcut list: `:Telescope keymaps`. Plugin UI: `:Lazy`. LSP installer: `:Mason`. Format: `<leader>fm`. Git: `<leader>gs` → `<leader>gsa` → `<leader>gc` → `<leader>gp`. AI: `<leader>aa` or visual `<leader>as`.
+
+Dashboard (empty `nvim` only): `f` find · `g` grep · `r` recent · `e` explorer · `a` AI · `m` Mason · `l` Lazy · `q` quit.
+
+**ES**: Leader = **Espacio**. `nvim` sin archivo abre el dashboard. Lista viva: `:Telescope keymaps`. Formatear: `<leader>fm`. Git y AI igual que arriba. Guía completa: [WORKFLOW.md](../../WORKFLOW.md) (repo root).
+
 ---
 
 ## ⌨️ Complete Keymap Guide | Guía Completa de Keymaps
@@ -412,7 +420,9 @@ Copy-Item "$HOME\Neovim-Vim_Configuration\.ideavimrc" "$HOME\_ideavimrc"
 #### **Visual Enhancement**
 - **lualine.nvim**: Statusline with Git/LSP info
 - **bufferline.nvim**: Buffer tabs with indicators
-- **dashboard-nvim**: Custom startup screen
+- **dashboard-nvim**: CAPDESIS startup screen (`f`/`g`/`r`/`e`/`a`/`m`/`l`/`q`)
+- **dropbar.nvim**: Winbar breadcrumbs
+- **nvim-highlight-colors**: Hex / Tailwind color preview
 - **nvim-notify**: Enhanced notifications
 - **which-key.nvim**: Keymap helper
 
