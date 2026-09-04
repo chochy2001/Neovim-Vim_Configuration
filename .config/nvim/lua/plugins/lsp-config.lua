@@ -218,6 +218,10 @@ return {
                     capabilities = capabilities,
                     cmd = { "bash-language-server", "start" },
                     filetypes = { "sh", "bash" },
+                    settings = {
+                        -- Don't warn when shellcheck isn't installed
+                        bashIde = { shellcheckPath = "" },
+                    },
                 })
                 table.insert(enabled, "bashls")
             end
@@ -239,6 +243,11 @@ return {
                     capabilities = capabilities,
                     cmd = { "vscode-html-language-server", "--stdio" },
                     filetypes = { "html" },
+                    -- Embedded CSS lint in vscode-html crashes on some
+                    -- Flutter web index.html files (validProperties null).
+                    settings = {
+                        html = { validate = { scripts = true, styles = false } },
+                    },
                 })
                 table.insert(enabled, "html")
             end

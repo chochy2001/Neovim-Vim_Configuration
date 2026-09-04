@@ -1,6 +1,27 @@
 -- Optimization: Compiled Lua module cache (Neovim 0.9+)
 vim.loader.enable()
 
+-- Neovim 0.11+ renamed vim.highlight -> vim.hl. Some plugins (git-conflict
+-- 2.1) still read vim.highlight.priorities and trip a deprecation warning.
+if vim.hl then
+    rawset(vim, "highlight", vim.hl)
+end
+
+-- git-conflict/colors.lua still uses the table form of vim.validate, which
+-- Neovim 0.11+ deprecates. Translate that form so the warning never fires.
+do
+    local orig = vim.validate
+    vim.validate = function(name, value, validator, optional, message)
+        if type(name) == "table" and value == nil then
+            for k, spec in pairs(name) do
+                orig(k, spec[1], spec[2], spec[3], spec[4])
+            end
+            return
+        end
+        return orig(name, value, validator, optional, message)
+    end
+end
+
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.uv.fs_stat(lazypath) then
     if vim.fn.executable("git") ~= 1 then
