@@ -8,8 +8,8 @@ Copyright © 2026 CAPDESIS / chochy2001. MIT License (see `/LICENSE`). Free to d
 
 ### What it is
 
-- **Typewriter** — type Dart, Go, Python, TypeScript, HTML, SQL, Lua, Bash snippets. WPM and accuracy from keystrokes. No Vim in this tab.
-- **Vim** — katas that check the **buffer** (and cursor when needed). Only commands listed in About, covered by `flutter test`.
+- **Typewriter** — Dart, Go, Python, TypeScript, HTML, SQL, Lua, Bash, PHP. WPM/accuracy. No Vim in this tab.
+- **Vim** — 13 katas. Each has a `solve` sequence asserted in `flutter test`. Commands: hjkl, 0^$, web, gg G, {}, insert, x X D C J, dd dw diw ciw, % (same line), yy p, u, f t F T ;, >>, counts. Not Neovim.
 
 ### What it is not
 

@@ -21,6 +21,7 @@ class Kata {
     this.col = 0,
     required this.expect,
     this.expectCol,
+    required this.solve,
   });
   final String id;
   final String titleEn;
@@ -32,6 +33,7 @@ class Kata {
   final int col;
   final String expect;
   final int? expectCol;
+  final String solve;
 }
 
 /// Short excerpts in the CAPDESIS stack. Not copied from proprietary products.
@@ -108,7 +110,14 @@ end''',
     language: 'Bash',
     body: '''set -euo pipefail
 root="\$(cd "\$(dirname "\$0")" && pwd)"
-echo "\$root"''',
+    echo "\$root"''',
+  ),
+  Snippet(
+    id: 'php',
+    language: 'PHP',
+    body: '''function sku(string \$raw): string {
+    return strtoupper(trim(\$raw));
+}''',
   ),
 ];
 
@@ -122,6 +131,7 @@ const katas = <Kata>[
     start: 'abc',
     expect: 'abc',
     expectCol: 2,
+    solve: 'll',
   ),
   Kata(
     id: 'x',
@@ -131,6 +141,7 @@ const katas = <Kata>[
     hintEs: 'x borra el carácter bajo el cursor.',
     start: 'Xhello',
     expect: 'hello',
+    solve: 'x',
   ),
   Kata(
     id: 'dd',
@@ -140,6 +151,7 @@ const katas = <Kata>[
     hintEs: 'j y luego dd.',
     start: 'keep\ndelete me\nkeep',
     expect: 'keep\nkeep',
+    solve: 'jdd',
   ),
   Kata(
     id: 'dw',
@@ -149,6 +161,7 @@ const katas = <Kata>[
     hintEs: 'dw = borrar + movimiento de palabra.',
     start: 'remove remaining text',
     expect: 'remaining text',
+    solve: 'dw',
   ),
   Kata(
     id: 'ciw',
@@ -159,6 +172,7 @@ const katas = <Kata>[
     start: 'say NOPE now',
     col: 4,
     expect: 'say ok now',
+    solve: 'ciwok<Esc>',
   ),
   Kata(
     id: 'quotes',
@@ -169,6 +183,7 @@ const katas = <Kata>[
     start: 'msg = "no";',
     col: 8,
     expect: 'msg = "yes";',
+    solve: 'ci"yes<Esc>',
   ),
   Kata(
     id: 'insert',
@@ -178,6 +193,7 @@ const katas = <Kata>[
     hintEs: 'I luego // luego Esc.',
     start: 'todo',
     expect: '//todo',
+    solve: 'I//<Esc>',
   ),
   Kata(
     id: 'yy',
@@ -187,5 +203,60 @@ const katas = <Kata>[
     hintEs: 'yy y luego p.',
     start: 'row',
     expect: 'row\nrow',
+    solve: 'yyp',
+  ),
+  Kata(
+    id: 'join',
+    titleEn: 'Join two lines',
+    titleEs: 'Junta dos líneas',
+    hintEn: 'J',
+    hintEs: 'J',
+    start: 'foo\nbar',
+    expect: 'foo bar',
+    solve: 'J',
+  ),
+  Kata(
+    id: 'D',
+    titleEn: 'Delete to the end of the line',
+    titleEs: 'Borra hasta el final de la línea',
+    hintEn: 'D (same as d\$).',
+    hintEs: 'D (igual que d\$).',
+    start: 'keep DROP',
+    col: 5,
+    expect: 'keep ',
+    solve: 'D',
+  ),
+  Kata(
+    id: 'diw',
+    titleEn: 'Delete the word, stay in normal',
+    titleEs: 'Borra la palabra y sigue en normal',
+    hintEn: 'diw',
+    hintEs: 'diw',
+    start: 'say hello now',
+    col: 4,
+    expect: 'say  now',
+    solve: 'diw',
+  ),
+  Kata(
+    id: 'percent',
+    titleEn: 'Jump to the matching parenthesis',
+    titleEs: 'Salta al paréntesis pareja',
+    hintEn: '%  (same line only in this app).',
+    hintEs: '%  (solo en la misma línea aquí).',
+    start: 'foo(bar)',
+    col: 3,
+    expect: 'foo(bar)',
+    expectCol: 7,
+    solve: '%',
+  ),
+  Kata(
+    id: 'indent',
+    titleEn: 'Indent the line',
+    titleEs: 'Indenta la línea',
+    hintEn: '>>  (four spaces).',
+    hintEs: '>>  (cuatro espacios).',
+    start: 'x',
+    expect: '    x',
+    solve: '>>',
   ),
 ];

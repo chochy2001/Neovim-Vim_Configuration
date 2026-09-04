@@ -20,8 +20,8 @@ class T {
       ? 'Esto no es Neovim. Solo el subconjunto de Vim listado abajo, cubierto por tests.'
       : 'This is not Neovim. Only the Vim subset listed below, covered by tests.';
   String get keys => es
-      ? 'h j k l · 0 ^ \$ · w e b · gg G · i a I A o O · Esc · x dd dw · ciw ci" · yy p · u · f · conteos'
-      : 'h j k l · 0 ^ \$ · w e b · gg G · i a I A o O · Esc · x dd dw · ciw ci" · yy p · u · f · counts';
+      ? 'h j k l · 0 ^ \$ · w e b · gg G · { } · i a I A o O · Esc · x X D C J · dd dw diw ciw · % (misma línea) · yy p · u · f t F T ; · >> << · conteos'
+      : 'h j k l · 0 ^ \$ · w e b · gg G · { } · i a I A o O · Esc · x X D C J · dd dw diw ciw · % (same line) · yy p · u · f t F T ; · >> << · counts';
   String get copy =>
       'Copyright © 2026 CAPDESIS / chochy2001. MIT License. Free to download.';
   String get unsigned => es

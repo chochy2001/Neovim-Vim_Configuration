@@ -1,3 +1,4 @@
+import 'package:capdesis_practice/data/content.dart';
 import 'package:capdesis_practice/engine/vim.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -99,5 +100,56 @@ void main() {
     final v = Vim('old new');
     v.feedSeq('cwNEW<Esc>');
     expect(v.text.startsWith('NEW'), true);
+  });
+
+  test('J joins lines', () {
+    final v = Vim('foo\nbar');
+    v.feed('J');
+    expect(v.text, 'foo bar');
+  });
+
+  test('D deletes to end of line', () {
+    final v = Vim('keep drop', col: 5);
+    v.feed('D');
+    expect(v.text, 'keep ');
+  });
+
+  test('diw deletes inner word', () {
+    final v = Vim('say hello now', col: 4);
+    v.feedSeq('diw');
+    expect(v.text, 'say  now');
+  });
+
+  test('% jumps to matching paren on the same line', () {
+    final v = Vim('foo(bar)', col: 3);
+    v.feed('%');
+    expect(v.col, 7);
+    v.feed('%');
+    expect(v.col, 3);
+  });
+
+  test('>> indents four spaces', () {
+    final v = Vim('x');
+    v.feedSeq('>>');
+    expect(v.text, '    x');
+  });
+
+  test('t and ; find till', () {
+    final v = Vim('abXcdX');
+    v.feedSeq('tX');
+    expect(v.col, 1);
+    v.feed(';');
+    expect(v.col, 4);
+  });
+
+  test('every kata solve sequence reaches expect', () {
+    for (final k in katas) {
+      final v = Vim(k.start, row: k.row, col: k.col);
+      v.feedSeq(k.solve);
+      expect(v.text, k.expect, reason: k.id);
+      if (k.expectCol != null) {
+        expect(v.col, k.expectCol, reason: k.id);
+      }
+    }
   });
 }

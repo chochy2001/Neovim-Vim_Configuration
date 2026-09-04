@@ -16,13 +16,16 @@ class Vim {
   String register = '';
   bool linewise = false;
   _Snap? _undo;
+  String? _findChar;
+  int _findDir = 1;
+  bool _findTill = false;
 
   static const supported = [
-    'h j k l  0 ^ \$  w e b  gg G',
+    'h j k l  0 ^ \$  w e b  gg G  { }',
     'i a I A o O  Esc  Enter  Backspace',
-    'x  dd dw d\$  cc cw  ciw ci" ci\' ci( ci{ ci[',
-    'yy  p P  u  r{char}  f{char}',
-    'counts: 3j 2w 3dd',
+    'x X  dd dw D  cc C  ciw diw  ci"  J',
+    'yy Y  p P  u  r{char}  f t F T ;  % (same line)',
+    '>> <<  counts: 3j 2w 3dd',
   ];
 
   String get text => lines.join('\n');
@@ -37,10 +40,12 @@ class Vim {
       }
       return;
     }
-    if (pending == 'f') {
+    if (pending == 'f' || pending == 'F' || pending == 't' || pending == 'T') {
+      _findDir = (pending == 'f' || pending == 't') ? 1 : -1;
+      _findTill = pending == 't' || pending == 'T';
+      _findChar = key;
       pending = null;
-      final i = lines[row].indexOf(key, col + 1);
-      if (i >= 0) col = i;
+      _doFind();
       return;
     }
     if (pending == 'g') {
@@ -85,14 +90,15 @@ class Vim {
       return;
     }
 
-    if (op == 'c' && key == 'i') {
-      pending = 'ci';
+    if ((op == 'c' || op == 'd' || op == 'y') && key == 'i') {
+      pending = '${op}i';
       return;
     }
-    if (pending == 'ci') {
+    if (pending == 'ci' || pending == 'di' || pending == 'yi') {
+      final innerOp = pending![0];
       pending = null;
       op = null;
-      _changeInner(key);
+      _changeInner(key, innerOp);
       return;
     }
     if (RegExp(r'^[1-9]$').hasMatch(key) || (count.isNotEmpty && key == '0')) {
@@ -113,6 +119,42 @@ class Vim {
       final line = lines[row];
       final b = (col + n).clamp(0, line.length);
       _delete(row, col, row, b, false);
+      return;
+    }
+    if (key == 'X') {
+      final n = _n();
+      final a = (col - n).clamp(0, col);
+      _delete(row, a, row, col, false);
+      return;
+    }
+    if (key == 'D') {
+      _delete(row, col, row, lines[row].length, false);
+      return;
+    }
+    if (key == 'C') {
+      _delete(row, col, row, lines[row].length, false);
+      mode = 'i';
+      return;
+    }
+    if (key == 'Y') {
+      register = lines[row];
+      linewise = true;
+      return;
+    }
+    if (key == 'J') {
+      _join();
+      return;
+    }
+    if (key == '%') {
+      _percent();
+      return;
+    }
+    if (key == ';') {
+      _doFind();
+      return;
+    }
+    if (key == '>' || key == '<') {
+      op = key;
       return;
     }
     if (key == 'i') {
@@ -171,8 +213,8 @@ class Vim {
       pending = 'r';
       return;
     }
-    if (key == 'f') {
-      pending = 'f';
+    if (key == 'f' || key == 'F' || key == 't' || key == 'T') {
+      pending = key;
       return;
     }
     if (key == 'g') {
@@ -260,6 +302,10 @@ class Vim {
       final r = count.isEmpty ? lines.length - 1 : int.parse(count) - 1;
       count = '';
       _set(r, 0);
+    } else if (key == '{') {
+      _blank(-1);
+    } else if (key == '}') {
+      _blank(1);
     }
   }
 
@@ -350,6 +396,10 @@ class Vim {
   }
 
   void _doOp(String key) {
+    if (op == '>' || op == '<') {
+      if (key == '>' || key == '<') _indent(op == '>');
+      return;
+    }
     final startRow = row;
     final startCol = col;
     if (key == op) {
@@ -386,35 +436,160 @@ class Vim {
     }
   }
 
-  void _changeInner(String key) {
+  void _changeInner(String key, String innerOp) {
     final line = lines[row];
+    int? a;
+    int? b;
     if (key == 'w') {
       if (line.isEmpty) {
-        mode = 'i';
+        if (innerOp == 'c') mode = 'i';
         return;
       }
       final t = _kind(line[col]);
       if (t == 'ws') return;
-      var a = col;
-      var b = col;
-      while (a > 0 && _kind(line[a - 1]) == t) {
+      a = col;
+      b = col;
+      while (a! > 0 && _kind(line[a - 1]) == t) {
         a--;
       }
-      while (b < line.length && _kind(line[b]) == t) {
+      while (b! < line.length && _kind(line[b]) == t) {
         b++;
       }
-      _delete(row, a, row, b, false);
-      mode = 'i';
+    } else {
+      final pairs = {'"': '"', "'": "'", '(': ')', '{': '}', '[': ']'};
+      final close = pairs[key];
+      if (close == null) return;
+      final i = line.lastIndexOf(key, col);
+      final j = line.indexOf(close, col);
+      if (i >= 0 && j > i) {
+        a = i + 1;
+        b = j;
+      }
+    }
+    if (a == null || b == null) return;
+    if (innerOp == 'y') {
+      register = line.substring(a, b);
+      linewise = false;
       return;
     }
-    final pairs = {'"': '"', "'": "'", '(': ')', '{': '}', '[': ']'};
-    final close = pairs[key];
-    if (close == null) return;
-    final i = line.lastIndexOf(key, col);
-    final j = line.indexOf(close, col);
-    if (i >= 0 && j > i) {
-      _delete(row, i + 1, row, j, false);
-      mode = 'i';
+    _delete(row, a, row, b, false);
+    if (innerOp == 'c') mode = 'i';
+  }
+
+  void _join() {
+    if (row >= lines.length - 1) return;
+    _save();
+    var a = lines[row];
+    final b = lines[row + 1].replaceFirst(RegExp(r'^\s+'), '');
+    if (a.isNotEmpty && !a.endsWith(' ') && b.isNotEmpty) a += ' ';
+    final joinAt = a.length - (a.endsWith(' ') && b.isNotEmpty ? 1 : 0);
+    lines[row] = a + b;
+    lines.removeAt(row + 1);
+    _set(row, joinAt.clamp(0, lines[row].isEmpty ? 0 : lines[row].length - 1));
+  }
+
+  void _indent(bool add) {
+    _save();
+    final n = _n();
+    for (var i = 0; i < n && row + i < lines.length; i++) {
+      if (add) {
+        lines[row + i] = '    ${lines[row + i]}';
+      } else {
+        lines[row + i] = lines[row + i].replaceFirst(RegExp(r'^ {1,4}'), '');
+      }
+    }
+    _set(row, 0);
+  }
+
+  void _blank(int dir) {
+    var r = row + dir;
+    while (r >= 0 && r < lines.length && lines[r].trim().isNotEmpty) {
+      r += dir;
+    }
+    while (r >= 0 && r < lines.length && lines[r].trim().isEmpty) {
+      r += dir;
+    }
+    if (dir < 0) {
+      while (r > 0 && lines[r - 1].trim().isNotEmpty) {
+        r--;
+      }
+    }
+    _set(r.clamp(0, lines.length - 1), 0);
+  }
+
+  void _doFind() {
+    if (_findChar == null) return;
+    final line = lines[row];
+    final ch = _findChar!;
+    if (_findDir > 0) {
+      var from = col + 1;
+      while (from < line.length) {
+        final i = line.indexOf(ch, from);
+        if (i < 0) return;
+        final land = _findTill ? i - 1 : i;
+        if (land > col && land >= 0) {
+          col = land;
+          return;
+        }
+        from = i + 1;
+      }
+    } else {
+      var from = col - 1;
+      while (from >= 0) {
+        final i = line.lastIndexOf(ch, from);
+        if (i < 0) return;
+        final land = _findTill ? i + 1 : i;
+        if (land < col && land < line.length) {
+          col = land;
+          return;
+        }
+        from = i - 1;
+      }
+    }
+  }
+
+  void _percent() {
+    const openTo = {'(': ')', '[': ']', '{': '}'};
+    const closeTo = {')': '(', ']': '[', '}': '{'};
+    final line = lines[row];
+    if (line.isEmpty) return;
+    var c = col < line.length ? line[col] : line[line.length - 1];
+    if (!openTo.containsKey(c) && !closeTo.containsKey(c)) {
+      for (var i = col; i < line.length; i++) {
+        if (openTo.containsKey(line[i]) || closeTo.containsKey(line[i])) {
+          col = i;
+          c = line[i];
+          break;
+        }
+      }
+    }
+    if (openTo.containsKey(c)) {
+      final close = openTo[c]!;
+      var depth = 0;
+      for (var i = col; i < line.length; i++) {
+        if (line[i] == c) depth++;
+        if (line[i] == close) {
+          depth--;
+          if (depth == 0) {
+            col = i;
+            return;
+          }
+        }
+      }
+    }
+    if (closeTo.containsKey(c)) {
+      final open = closeTo[c]!;
+      var depth = 0;
+      for (var i = col; i >= 0; i--) {
+        if (line[i] == c) depth++;
+        if (line[i] == open) {
+          depth--;
+          if (depth == 0) {
+            col = i;
+            return;
+          }
+        }
+      }
     }
   }
 
