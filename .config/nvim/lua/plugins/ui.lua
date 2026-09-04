@@ -5,9 +5,12 @@ return {
         "rcarriga/nvim-notify",
         event = "VeryLazy",
         opts = {
-            timeout = 3000,
-            max_height = function() return math.floor(vim.o.lines * 0.75) end,
-            max_width = function() return math.floor(vim.o.columns * 0.75) end,
+            timeout = 2500,
+            stages = "fade",
+            render = "compact",
+            top_down = false,
+            max_height = function() return math.floor(vim.o.lines * 0.4) end,
+            max_width = function() return math.floor(vim.o.columns * 0.45) end,
         },
         config = function(_, opts)
             local notify = require("notify")
@@ -33,7 +36,11 @@ return {
         "lukas-reineke/indent-blankline.nvim",
         main = "ibl",
         event = "VeryLazy",
-        opts = {},
+        opts = {
+            indent = { char = "│", tab_char = "│" },
+            scope = { enabled = true, show_start = false, show_end = false },
+            exclude = { filetypes = { "dashboard", "lazy", "mason", "neo-tree", "Trouble" } },
+        },
     },
     -- Auto-highlight word under cursor (like IDE variable highlighting)
     {
@@ -47,6 +54,21 @@ return {
         config = function(_, opts)
             require("illuminate").configure(opts)
         end,
+    },
+    -- Hex / Tailwind colors in CSS, HTML, Astro, Flutter
+    {
+        "brenoprata10/nvim-highlight-colors",
+        event = { "BufReadPre", "BufNewFile" },
+        opts = {
+            render = "background",
+            enable_tailwind = true,
+        },
+    },
+    -- Winbar breadcrumbs (file > symbol) — does not replace lualine
+    {
+        "Bekaboo/dropbar.nvim",
+        event = { "BufReadPost", "BufNewFile" },
+        opts = {},
     },
     -- Noice: modern command line, messages, and popups UI
     {

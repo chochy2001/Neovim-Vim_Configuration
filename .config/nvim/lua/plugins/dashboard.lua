@@ -2,41 +2,43 @@ return {
     {
         "glepnir/dashboard-nvim",
         event = "VimEnter",
+        -- Only on a bare `nvim` (don't steal the buffer when opening a file)
+        cond = function()
+            return vim.fn.argc() == 0
+        end,
         dependencies = { "nvim-tree/nvim-web-devicons" },
         config = function()
-            local dashboard = require("dashboard")
-            dashboard.setup({
+            local v = vim.version()
+            require("dashboard").setup({
                 theme = "doom",
                 config = {
                     header = {
                         "",
+                        "   ██████╗ █████╗ ██████╗ ██████╗ ███████╗███████╗██╗███████╗",
+                        "  ██╔════╝██╔══██╗██╔══██╗██╔══██╗██╔════╝██╔════╝██║██╔════╝",
+                        "  ██║     ███████║██████╔╝██║  ██║█████╗  ███████╗██║███████╗",
+                        "  ██║     ██╔══██║██╔═══╝ ██║  ██║██╔══╝  ╚════██║██║╚════██║",
+                        "  ╚██████╗██║  ██║██║     ██████╔╝███████╗███████║██║███████║",
+                        "   ╚═════╝╚═╝  ╚═╝╚═╝     ╚═════╝ ╚══════╝╚══════╝╚═╝╚══════╝",
                         "",
-                        "  ____    _    ____  ____  _____ ____ ___ ____",
-                        " / ___|  / \\  |  _ \\|  _ \\| ____/ ___|_ _/ ___|",
-                        "| |     / _ \\ | |_) | | | |  _| \\___ \\| |\\___ \\",
-                        "| |___ / ___ \\|  __/| |_| | |___ ___) | | ___) |",
-                        " \\____/_/   \\_\\_|   |____/|_____|____/___|____/",
-                        "",
-                        "             Neovim " .. vim.version().major .. "." .. vim.version().minor .. "." .. vim.version().patch,
+                        "              Neovim " .. v.major .. "." .. v.minor .. "." .. v.patch .. "  ·  CAPDESIS",
                         "",
                     },
                     center = {
-                        { icon = "  ", icon_hl = "Title",   desc = "[1] Find File           ", desc_hl = "String",  key = "1", key_hl = "Number", action = "Telescope find_files" },
-                        { icon = "  ", icon_hl = "Title",   desc = "[2] Find Word           ", desc_hl = "String",  key = "2", key_hl = "Number", action = "Telescope live_grep" },
-                        { icon = "  ", icon_hl = "Title",   desc = "[3] Recent Files        ", desc_hl = "String",  key = "3", key_hl = "Number", action = "Telescope oldfiles" },
-                        { icon = "  ", icon_hl = "Title",   desc = "[4] File Explorer       ", desc_hl = "String",  key = "4", key_hl = "Number", action = "Neotree toggle" },
-                        { icon = "  ", icon_hl = "Title",   desc = "[5] Terminal            ", desc_hl = "String",  key = "5", key_hl = "Number", action = "ToggleTerm" },
-                        { icon = "  ", icon_hl = "Title",   desc = "[6] Edit Config         ", desc_hl = "String",  key = "6", key_hl = "Number", action = "edit " .. vim.fn.stdpath("config") .. "/init.lua" },
-                        { icon = "  ", icon_hl = "Title",   desc = "[7] Sync Plugins        ", desc_hl = "String",  key = "7", key_hl = "Number", action = "Lazy sync" },
-                        { icon = "  ", icon_hl = "Title",   desc = "[8] LSP Manager         ", desc_hl = "String",  key = "8", key_hl = "Number", action = "Mason" },
-                        { icon = "  ", icon_hl = "Title",   desc = "[9] Copilot Chat        ", desc_hl = "String",  key = "9", key_hl = "Number", action = "CopilotChatToggle" },
-                        { icon = "  ", icon_hl = "Error",   desc = "[q] Quit                ", desc_hl = "Comment", key = "q", key_hl = "Error",  action = "qa" },
+                        { desc = "Find file", key = "f", key_hl = "Number", action = "Telescope find_files" },
+                        { desc = "Live grep", key = "g", action = "Telescope live_grep" },
+                        { desc = "Recent files", key = "r", action = "Telescope oldfiles" },
+                        { desc = "Explorer", key = "e", action = "Neotree toggle" },
+                        { desc = "AI (opencode)", key = "a", action = "lua require('ai-terminals').toggle('opencode')" },
+                        { desc = "Mason / LSP", key = "m", action = "Mason" },
+                        { desc = "Lazy plugins", key = "l", action = "Lazy" },
+                        { desc = "Quit", key = "q", action = "qa" },
                     },
                     footer = function()
                         local stats = require("lazy").stats()
                         return {
                             "",
-                            stats.loaded .. "/" .. stats.count .. " plugins | " .. string.format("%.0f", stats.startuptime) .. " ms",
+                            string.format("  %d/%d plugins loaded in %.0f ms", stats.loaded, stats.count, stats.startuptime),
                         }
                     end,
                 },

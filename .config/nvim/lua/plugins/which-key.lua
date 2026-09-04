@@ -9,7 +9,9 @@ return {
 
             local wk = require("which-key")
             wk.setup({
+                preset = "modern",
                 plugins = { spelling = { enabled = true } },
+                win = { border = "rounded" },
             })
 
             -- Register group labels so which-key shows clear categories

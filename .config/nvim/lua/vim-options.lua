@@ -13,6 +13,12 @@ vim.opt.scrolloff = 8
 vim.opt.synmaxcol = 2000
 vim.opt.cursorline = true
 vim.opt.colorcolumn = "80"
+vim.opt.laststatus = 3 -- one statusline for all splits (modern)
+vim.opt.signcolumn = "yes"
+vim.opt.showmode = false -- lualine shows mode
+vim.opt.splitright = true
+vim.opt.splitbelow = true
+vim.opt.fillchars:append({ eob = " ", fold = " ", foldopen = "▾", foldclose = "▸" })
 
 vim.opt.swapfile = false
 vim.opt.encoding = "utf-8"

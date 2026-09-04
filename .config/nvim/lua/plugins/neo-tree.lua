@@ -122,12 +122,11 @@ return {
 					expander_highlight = "NeoTreeExpander",
 				},
 				icon = {
-					folder_closed = "",
-					folder_open = "",
-					folder_empty = "󰜌",
-					folder_empty_open = "󰜌",
-					-- MANDATORY DEFAULT ICON - never empty
-					default = "",
+					folder_closed = "▸",
+					folder_open = "▾",
+					folder_empty = "▹",
+					folder_empty_open = "▾",
+					default = "·",
 					highlight = "NeoTreeFileIcon"
 				},
 				modified = {

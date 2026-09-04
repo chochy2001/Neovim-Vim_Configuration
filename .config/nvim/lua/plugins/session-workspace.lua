@@ -66,11 +66,11 @@ return {
                         icon = '▎',
                         style = 'icon',
                     },
-                    buffer_close_icon = '',
+                    buffer_close_icon = '×',
                     modified_icon = '●',
-                    close_icon = '',
-                    left_trunc_marker = '',
-                    right_trunc_marker = '',
+                    close_icon = '×',
+                    left_trunc_marker = '‹',
+                    right_trunc_marker = '›',
                     max_name_length = 18,
                     max_prefix_length = 15,
                     truncate_names = true,
@@ -78,7 +78,7 @@ return {
                     diagnostics = "nvim_lsp",
                     diagnostics_update_in_insert = false,
                     diagnostics_indicator = function(count, level, diagnostics_dict, context)
-                        local icon = level:match("error") and " " or " "
+                        local icon = (level:match("error") and "E") or (level:match("warning") and "W") or "I"
                         return " " .. icon .. count
                     end,
                     show_buffer_icons = true,
