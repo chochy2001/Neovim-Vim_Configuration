@@ -212,6 +212,55 @@ return {
                 table.insert(enabled, "intelephense")
             end
 
+            -- 13. Bash (hundreds of .sh scripts in the fleet)
+            if vim.fn.executable("bash-language-server") == 1 then
+                vim.lsp.config("bashls", {
+                    capabilities = capabilities,
+                    cmd = { "bash-language-server", "start" },
+                    filetypes = { "sh", "bash" },
+                })
+                table.insert(enabled, "bashls")
+            end
+
+            -- 14. Dockerfile
+            if vim.fn.executable("docker-langserver") == 1 then
+                vim.lsp.config("dockerls", {
+                    capabilities = capabilities,
+                    cmd = { "docker-langserver", "--stdio" },
+                    filetypes = { "dockerfile" },
+                    root_markers = { "Dockerfile", ".git" },
+                })
+                table.insert(enabled, "dockerls")
+            end
+
+            -- 15. HTML / CSS (landings + Flutter web)
+            if vim.fn.executable("vscode-html-language-server") == 1 then
+                vim.lsp.config("html", {
+                    capabilities = capabilities,
+                    cmd = { "vscode-html-language-server", "--stdio" },
+                    filetypes = { "html" },
+                })
+                table.insert(enabled, "html")
+            end
+            if vim.fn.executable("vscode-css-language-server") == 1 then
+                vim.lsp.config("cssls", {
+                    capabilities = capabilities,
+                    cmd = { "vscode-css-language-server", "--stdio" },
+                    filetypes = { "css", "scss", "less" },
+                })
+                table.insert(enabled, "cssls")
+            end
+
+            -- 16. TOML (Cargo.toml, pyproject, many lock-adjacent configs)
+            if vim.fn.executable("taplo") == 1 then
+                vim.lsp.config("taplo", {
+                    capabilities = capabilities,
+                    cmd = { "taplo", "lsp", "stdio" },
+                    filetypes = { "toml" },
+                })
+                table.insert(enabled, "taplo")
+            end
+
             -- Enable only the servers configured above
             vim.lsp.enable(enabled)
 
@@ -312,6 +361,11 @@ return {
                 "vtsls",
                 "astro",
                 "intelephense",
+                "bashls",
+                "dockerls",
+                "html",
+                "cssls",
+                "taplo",
             },
             -- stylua ships an LSP mode but formatting is already covered
             -- by none-ls: avoid duplicate formatting clients

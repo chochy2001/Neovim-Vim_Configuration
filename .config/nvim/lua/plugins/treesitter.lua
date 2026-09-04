@@ -13,8 +13,10 @@ return {
             local langs = {
                 "lua", "vim", "vimdoc", "query",
                 "dart", "kotlin", "c", "cpp", "go",
-                "python", "javascript", "typescript", "html", "css",
-                "json", "yaml", "markdown", "markdown_inline", "bash",
+                "python", "javascript", "typescript", "tsx",
+                "html", "css", "php", "astro",
+                "json", "yaml", "toml", "sql", "dockerfile",
+                "markdown", "markdown_inline", "bash", "swift",
             }
 
             -- Install missing parsers

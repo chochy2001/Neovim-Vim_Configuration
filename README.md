@@ -330,8 +330,12 @@ Built around the CAPDESIS / personal GitHub stack (Flutter apps, Go APIs, Astro 
 | C/C++ | clangd | clang-format | Header insertion, clang-tidy |
 | Kotlin | kotlin_language_server | - | Gradle project detection (needs `gradle` on PATH for full classpath) |
 | Swift | sourcekit-lsp (macOS) | - | - |
-| Web (HTML/CSS) | - | prettier | - |
+| HTML / CSS | html, cssls | prettier | landings + Flutter web |
 | PHP | intelephense | — | CapMenu / Opus / Inventario QR backends |
+| Bash | bashls | — | fleet `.sh` scripts |
+| Docker | dockerls | — | Dockerfiles across products |
+| TOML | taplo | prettier | pyproject, Cargo, tool configs |
+| SQL | — | — | Treesitter highlighting |
 
 ## IdeaVim Synchronization
 
