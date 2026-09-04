@@ -14,34 +14,40 @@ return {
 			debug = false,
 			-- Only basic tools that are generally available
 			sources = {
-				-- === BASIC FORMATTERS ===
-
-				-- C/C++ - clang-format (Xcode on macOS, install separately on Linux/Windows)
 				formatting.clang_format.with({
+					condition = function()
+						return vim.fn.executable("clang-format") == 1
+					end,
 					extra_args = {
 						"--style={BasedOnStyle: llvm, IndentWidth: 4, ColumnLimit: 100}",
 					},
 					filetypes = { "c", "cpp", "objc", "objcpp" },
 				}),
-
-                -- Dart/Flutter - dart format (comes with Flutter SDK)
-                formatting.dart_format,
-
-                -- Go - gofmt (comes with the Go toolchain)
-                formatting.gofmt,
-
-                -- Python - black (install with Mason)
-                formatting.black,
-
-				-- Lua - stylua (install with Mason)
+				formatting.dart_format.with({
+					condition = function()
+						return vim.fn.executable("dart") == 1
+					end,
+				}),
+				formatting.gofmt.with({
+					condition = function()
+						return vim.fn.executable("gofmt") == 1
+					end,
+				}),
+				formatting.black.with({
+					condition = function()
+						return vim.fn.executable("black") == 1
+					end,
+				}),
 				formatting.stylua.with({
+					condition = function()
+						return vim.fn.executable("stylua") == 1
+					end,
 					extra_args = { "--indent-type", "Spaces", "--indent-width", "4" },
 				}),
-
-				-- Web technologies - prettier (install with Mason)
-				-- NOTE: Uses global configuration. To use project's .prettierrc,
-				-- comment out extra_args and prettier will respect local config files
 				formatting.prettier.with({
+					condition = function()
+						return vim.fn.executable("prettier") == 1
+					end,
 					extra_filetypes = { "toml" },
 					extra_args = {
 						"--tab-width", "2",
@@ -49,11 +55,7 @@ return {
 						"--single-quote", "false",
 						"--trailing-comma", "es5"
 					},
-					-- Alternative: Without extra_args, .prettierrc controls the formatting
-					-- extra_args = {},
 				}),
-
-				-- Git code actions (always available)
 				code_actions.gitsigns,
 			},
 

@@ -361,15 +361,26 @@ class _HomePageState extends State<HomePage> {
   }
 
   TextSpan _typedSpan(String target, String got) {
+    if (target.isEmpty) return const TextSpan(text: '');
+    var match = 0;
+    final n = got.length < target.length ? got.length : target.length;
+    while (match < n && got[match] == target[match]) {
+      match++;
+    }
+    final rest = _muted.withValues(alpha: 0.45);
     final spans = <InlineSpan>[];
-    for (var i = 0; i < target.length; i++) {
-      Color c = _muted.withValues(alpha: 0.45);
-      if (i < got.length) {
-        c = got[i] == target[i] ? _ok : _bad;
-      } else if (i == got.length) {
-        c = _accent;
+    if (match > 0) {
+      spans.add(TextSpan(text: target.substring(0, match), style: const TextStyle(color: _ok)));
+    }
+    if (got.length > match && match < target.length) {
+      final errTo = got.length < target.length ? got.length : target.length;
+      spans.add(TextSpan(text: target.substring(match, errTo), style: const TextStyle(color: _bad)));
+    }
+    if (got.length < target.length) {
+      spans.add(TextSpan(text: target[got.length], style: const TextStyle(color: _accent)));
+      if (got.length + 1 < target.length) {
+        spans.add(TextSpan(text: target.substring(got.length + 1), style: TextStyle(color: rest)));
       }
-      spans.add(TextSpan(text: target[i], style: TextStyle(color: c)));
     }
     return TextSpan(children: spans);
   }
