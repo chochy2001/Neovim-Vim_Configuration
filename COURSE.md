@@ -1,391 +1,413 @@
-# Curso Neovim — de cero a IDE
+# Neovim desde cero
 
-Material para enseñar esta configuración ([chochy2001/Neovim-Vim_Configuration](https://github.com/chochy2001/Neovim-Vim_Configuration)).
+Este texto es el cuaderno del curso. La idea no es memorizar 200 atajos el primer día. Es hablar el idioma de Vim y, cuando eso ya no duela, usar esta configuración como IDE.
 
-**Leader = Espacio.** En las tablas, `<leader>` significa: pulsa Espacio y luego el resto. Espera ~300 ms o sigue tecleando. `Espacio Espacio` borra el resaltado de búsqueda; **no** abre el buscador de archivos.
+Espacio es el *leader*. Si lees `<leader>ff`, pulsa Espacio y luego `ff`. Si pulsas solo Espacio y esperas, which-key te enseña el menú. Espacio dos veces quita el resaltado de una búsqueda; no abre el buscador de archivos.
 
-Lista viva de atajos (fuente de verdad en una sesión real): `:Telescope keymaps`
+Cuando dudes de un atajo de *esta* config: `:Telescope keymaps`.
 
----
-
-## Qué está validado (sin falsos positivos)
-
-Comprobado en esta máquina (septiembre 2026):
-
-| Qué | Resultado |
-|-----|-----------|
-| Neovim | `0.12.5`, arranque headless `boot-ok` |
-| Keymaps Neovim | 0 duplicados duros `(modo, tecla)` |
-| Dart en un archivo real | clientes `dartls,null-ls` |
-| git-conflict | `setup()` ok (shim de `vim.validate`) |
-| Repo | `main` en GitHub |
-| `~/.ideavimrc` | copia del archivo del repo |
-
-**No comprobado aquí (no lo des por hecho en clase):**
-
-- IntelliJ / Android Studio: hay que instalar **IdeaVim**, **Tools \| Vim**, `:source ~/.ideavimrc`.
-- Vim clásico: el comando `vim` puede no existir. Este curso usa **Neovim**.
-- Cada LSP solo arranca si el binario está (Mason / Flutter SDK / `uv`).
-
-Si un atajo no hace nada: espera 300 ms (prefijo) o ejecuta `:Telescope keymaps`.
+`:help` es el manual de verdad. Este cuaderno no lo sustituye.
 
 ---
 
-# Módulo 0 — Teclear sin mirar el teclado
+## Cómo está armado (y qué suelen quejarse otros cursos)
 
-Antes de Vim: manos en la fila home (`A S D F` / `J K L Ñ`). 15–20 minutos al día.
+El tutor oficial (`vimtutor`), el manual de Bram (`:help usr_02`) y guías como *Learn Vim the Smart Way* y *vim-galore* coinciden en lo mismo:
 
-Sitios (abiertos en el navegador, no forman parte de este repo):
+1. Primero modos, movimiento y la gramática **operador + movimiento**.
+2. Luego objetos de texto (`diw`, `ci"`), no al revés.
+3. Buffers, ventanas y saltos *antes* de Telescope.
+4. Registros, macros y `:s` antes de “el plugin que lo hace por ti”.
+5. Plugins al final. vim-galore lo dice claro: aprende Vim bien *antes* de llenarlo de extensiones.
 
-| Sitio | Para qué |
-|-------|----------|
-| [keybr.com](https://www.keybr.com) | Adaptativo, letras una a una |
-| [monkeytype.com](https://monkeytype.com) | Velocidad, varias lenguas |
-| [typingclub.com](https://www.typingclub.com) | Lecciones guiadas (también en español) |
-| [openvim.com](https://www.openvim.com) | Tutorial interactivo de Vim en el navegador |
-| [vim-adventures.com](https://vim-adventures.com) | Juego (parte de pago) |
+Lo que la gente suele echar en falta cuando un curso “de Neovim” empieza por lazy.nvim: no saber salir, no entender `d` frente a `x`, no haber usado nunca `ciw`, no saber qué es un buffer. Aquí eso va primero. Los plugins de este repo van después, y solo con teclas que existen en el Lua.
 
-Meta mínima: escribir este párrafo sin mirar las teclas. Luego `h j k l` en Neovim será natural.
-
-No hace falta saber programar para este módulo.
+IntelliJ con IdeaVim y Vim clásico no se “validan” desde esta guía: hay que abrir el IDE. Neovim sí: `nvim --headless "+lua print('boot-ok')" +qa`.
 
 ---
 
-# Módulo 1 — Instalar Neovim y esta config
+# 0. Manos en el teclado
 
-## 1.1 Requisitos
+Vim premia no mirar el teclado. `h j k l` están en la fila home a propósito.
 
-| Herramienta | Windows | macOS | Linux |
-|-------------|---------|-------|-------|
-| Neovim **0.12+** | `winget install Neovim.Neovim` | `brew install neovim` | paquete distro o [releases](https://github.com/neovim/neovim/releases) |
-| Git | `winget install Git.Git` | viene / `brew` | paquete |
-| Node.js 22+ | `winget install OpenJS.NodeJS` | `brew install node` | paquete |
-| Compilador C | Build Tools de Visual Studio | `xcode-select --install` | `gcc` |
-| Fuente **JetBrainsMono NFM** | `winget install DEVCOM.JetBrainsMonoNerdFont` | `brew install --cask font-jetbrains-mono-nerd-font` | [nerdfonts.com](https://www.nerdfonts.com) |
-| ripgrep + fd (recomendado) | `winget install BurntSushi.ripgrep.MSVC sharkdp.fd` | `brew install ripgrep fd` | `apt install ripgrep fd-find` |
-| tree-sitter CLI | `npm install -g tree-sitter-cli` | igual | igual |
+Practica 15 minutos al día, sin este editor:
 
-Sin Nerd Font, Telescope y neo-tree muestran **cuadrados vacíos**. En Windows Terminal / VS Code / Cursor pon la fuente **JetBrainsMono NFM** y **reabre** el terminal.
+- [keybr.com](https://www.keybr.com) — te va soltando letras.
+- [monkeytype.com](https://monkeytype.com) — velocidad.
+- [typingclub.com](https://www.typingclub.com) — lecciones (hay español).
 
-## 1.2 Clonar (no clones dentro de `~/.config/nvim`)
+Cuando ya no busques la `J` con los ojos, abre [openvim.com](https://www.openvim.com) (tutorial en el navegador) o, mejor, el tutor que trae Vim:
 
-Unix:
-
-```bash
-git clone git@github.com:chochy2001/Neovim-Vim_Configuration.git ~/Neovim-Vim_Configuration
-mkdir -p ~/.config
-ln -sfn ~/Neovim-Vim_Configuration/.config/nvim ~/.config/nvim
-nvim
+```
+nvim +Tutor
 ```
 
-Windows (PowerShell):
+(En Vim clásico el comando es `vimtutor`. En Neovim: `nvim +Tutor`.)
+
+Haz el tutor entero una vez. Aburre. Funciona.
+
+---
+
+# 1. Instalar esta config
+
+Neovim **0.12 o más**. No clones el repo *dentro* de `~/.config/nvim`.
+
+**Windows**
 
 ```powershell
+winget install Neovim.Neovim Git.Git OpenJS.NodeJS DEVCOM.JetBrainsMonoNerdFont
+npm install -g tree-sitter-cli
 git clone git@github.com:chochy2001/Neovim-Vim_Configuration.git $HOME\Neovim-Vim_Configuration
 New-Item -ItemType Junction -Path "$env:LOCALAPPDATA\nvim" -Target "$HOME\Neovim-Vim_Configuration\.config\nvim"
 Copy-Item "$HOME\Neovim-Vim_Configuration\.ideavimrc" "$HOME\.ideavimrc"
-nvim
 ```
 
-La primera vez lazy.nvim instala plugins. Mason instala LSP/formatters en segundo plano. Espera a que acabe (`:Lazy`).
+En el terminal pon fuente **JetBrainsMono NFM** y ciérralo. Sin esa fuente los iconos salen como recuadros.
 
-## 1.3 Comprobar
+**macOS / Linux**
 
 ```bash
+# neovim, git, node, compilador C, ripgrep, fd — con brew o el paquete de la distro
+npm install -g tree-sitter-cli
+git clone git@github.com:chochy2001/Neovim-Vim_Configuration.git ~/Neovim-Vim_Configuration
+mkdir -p ~/.config
+ln -sfn ~/Neovim-Vim_Configuration/.config/nvim ~/.config/nvim
+ln -sf ~/Neovim-Vim_Configuration/.ideavimrc ~/.ideavimrc
+```
+
+Primera vez: `nvim` y espera a que lazy.nvim instale. `:Lazy` para mirar. Mason instala servidores de lenguaje en segundo plano.
+
+Comprobar arranque:
+
+```
 nvim --headless "+lua print('boot-ok')" +qa
 ```
 
-Debe imprimir `boot-ok` y **no** `Error detected` / `E####`.
-
-En Neovim: `:checkhealth` y `:Lazy`.
+Tiene que salir `boot-ok`, sin `Error detected`.
 
 ---
 
-# Módulo 2 — Vim puro (sin plugins)
+# 2. Modos (el único truco que hay que pillar)
 
-Abre un archivo de texto: `nvim notas.txt`. Modo **Normal** al entrar (no escribes todavía).
+Vim no es un bloc de notas con atajos. Es un editor **modal**: la misma tecla hace cosas distintas según el modo.
 
-## 2.1 Modos
+| Estás en… | Entras con | Sales con | Sirve para |
+|-----------|------------|-----------|------------|
+| Normal | al abrir, o `Esc` | — | moverte y dar órdenes |
+| Insertar | `i` `a` `o` `I` `A` `o` `O` | `Esc` o `jj` | escribir |
+| Visual | `v` `V` `Ctrl-v` | `Esc` | seleccionar |
+| Línea de comandos | `:` `/` `?` | `Enter` o `Esc` | guardar, buscar, ayuda |
 
-| Modo | Cómo entrar | Cómo salir | Qué haces |
-|------|-------------|------------|-----------|
-| Normal | (inicio) / `Esc` / `jj` | — | Moverte y mandar órdenes |
-| Insert | `i` `a` `o` `O` `I` `A` | `Esc` o `jj` | Escribir texto |
-| Visual | `v` (carácter) `V` (línea) | `Esc` | Seleccionar |
-| Línea de comandos | `:` | `Enter` o `Esc` | Guardar, salir, buscar |
+Si te pierdes: `Esc` `Esc`. El pitido (o nada) significa “ya estás en Normal”.
 
-## 2.2 Moverse (Normal)
+En esta config, `jj` también sale de insertar. `Esc` sigue existiendo. Aprende los dos.
 
-| Tecla | Efecto |
-|-------|--------|
-| `h` `j` `k` `l` | Izquierda, abajo, arriba, derecha |
-| `w` `b` `e` | Palabra siguiente / anterior / fin |
-| `0` `$` | Inicio / fin de línea |
-| `gg` `G` | Primera / última línea |
-| `{` `}` | Párrafo anterior / siguiente |
-| `Ctrl-d` `Ctrl-u` | Media página |
-| `f` + letra | Saltar a esa letra en la línea |
-| `%` | Paréntesis/llave pareja |
-
-## 2.3 Cambiar texto
-
-| Tecla | Efecto |
-|-------|--------|
-| `i` | Insertar **antes** del cursor |
-| `a` | Insertar **después** |
-| `o` / `O` | Línea nueva debajo / encima |
-| `x` | Borrar carácter |
-| `dd` | Borrar línea |
-| `dw` | Borrar palabra |
-| `yy` `p` `P` | Copiar línea; pegar después / antes |
-| `u` | Deshacer (Vim nativo) |
-| `Ctrl-r` | Rehacer |
-| `.` | Repetir último cambio |
-
-## 2.4 Guardar y salir (`:` en Normal)
-
-| Comando | Efecto |
-|---------|--------|
-| `:w` | Guardar |
-| `:q` | Salir (falla si hay cambios) |
-| `:wq` o `ZZ` | Guardar y salir |
-| `:q!` | Salir **sin** guardar |
-| `:e nombre` | Abrir otro archivo |
-| `:help tema` | Ayuda |
-
-## 2.5 Buscar
-
-| Tecla | Efecto |
-|-------|--------|
-| `/texto` Enter | Buscar adelante |
-| `?texto` Enter | Buscar atrás |
-| `n` / `N` | Siguiente / anterior (**esta config centra** la pantalla) |
-| `*` / `#` | Palabra bajo el cursor |
-
-En **esta** config: `<leader><leader>` (Espacio dos veces) quita el resaltado.
-
-Práctica: crea `hola.txt`, escribe tres líneas con `i`, `Esc`, `dd`, `p`, `:w`, `:q`.
+**Ejercicio.** `nvim prueba.txt` → `i` → escribe tu nombre → `Esc` → `i` otra vez → `jj`. Mira la esquina: la statusline dice el modo (esta config oculta `-- INSERT --` nativo; lualine lo muestra).
 
 ---
 
-# Módulo 3 — Esta config como IDE
+# 3. Moverse sin flechas
 
-## 3.1 Dashboard (solo `nvim` sin archivo)
+Las flechas funcionan. Te hacen sacar la mano de las letras. El manual de Vim insiste en `h j k l` por eso.
 
-| Tecla | Acción |
-|-------|--------|
-| `f` | Buscar archivo |
-| `g` | Buscar texto |
-| `r` | Archivos recientes |
-| `e` | Explorador |
-| `a` | Terminal AI (opencode) |
-| `m` | Mason |
-| `l` | Lazy |
-| `q` | Salir |
+```
+     k
+   h   l
+     j
+```
 
-Si abres `nvim archivo`, el dashboard **no** aparece.
+`h` está a la izquierda, `l` a la derecha, `j` apunta abajo.
 
-## 3.2 Prefijos (memoriza estos)
+| Tecla | Qué hace |
+|-------|----------|
+| `h j k l` | un carácter / una línea |
+| `w` `b` `e` | palabra siguiente, anterior, fin de palabra |
+| `W` `B` `E` | igual, pero saltando puntuación |
+| `0` `^` `$` | inicio de línea, primer no-espacio, final |
+| `gg` `G` | primera línea, última |
+| `{` `}` | párrafo |
+| `(` `)` | frase |
+| `f`x `t`x | en esta línea: hasta la x / antes de la x |
+| `F`x `T`x | lo mismo hacia atrás |
+| `;` `,` | repetir `f`/`t` |
+| `%` | el paréntesis, corchete o llave de enfrente |
+| `H` `M` `L` | alto, medio, bajo de la **pantalla** |
+| `Ctrl-d` `Ctrl-u` | media página |
+| `Ctrl-f` `Ctrl-b` | página |
+
+Delante de casi todo puedes poner un **número**: `5j` baja cinco líneas, `3w` tres palabras, `10G` va a la línea 10.
+
+**Ejercicio.** Abre cualquier texto largo. Ve al final con `G`, al principio con `gg`, a la línea 20 con `20G`. Recorre un párrafo con `}` y vuelve con `{`. Busca una coma en la línea con `f,`.
+
+---
+
+# 4. La gramática: operador + movimiento
+
+Esto es el núcleo. Bram y *Learn Vim* lo llaman gramática. Un **operador** espera un **movimiento** (o un objeto de texto).
+
+Operadores que vas a usar todos los días:
+
+| Operador | Significado |
+|----------|-------------|
+| `d` | borrar (*delete*) |
+| `c` | borrar y entrar a insertar (*change*) |
+| `y` | copiar (*yank*) |
+| `>` `<` | indentar / desindentar |
+| `=` | reindentar (con LSP/treesitter más adelante) |
+| `gU` `gu` `g~` | mayúsculas, minúsculas, invertir |
+
+Movimiento = *dónde*. Entonces:
+
+- `dw` borrar hasta el inicio de la siguiente palabra
+- `d$` borrar hasta el final de la línea
+- `dG` borrar hasta el final del archivo
+- `c3w` cambiar tres palabras
+- `yip` copiar el párrafo interior (esto ya es objeto de texto; el siguiente capítulo)
+
+Atajos que *parecen* comandos sueltos pero son esta gramática con un movimiento especial `_` (la línea actual): `dd`, `cc`, `yy`. El tutor lo enseña como “borrar línea”; por debajo es `d` sobre la línea.
+
+Otros que conviene tener en los dedos:
+
+| Tecla | Qué hace |
+|-------|----------|
+| `x` | borrar un carácter (`dl`) |
+| `X` | borrar el de atrás (`dh`) |
+| `s` | cambiar un carácter — **ojo:** en *esta* config, `s` es Flash (saltar). Para “change char” usa `cl` |
+| `r` + letra | reemplazar un carácter sin entrar a insertar |
+| `J` | juntar esta línea con la de abajo |
+| `p` `P` | pegar después / antes |
+| `.` | repetir el último cambio |
+| `u` | deshacer |
+| `Ctrl-r` | rehacer |
+
+**Insertar** con intención:
+
+| Tecla | Dónde inserta |
+|-------|----------------|
+| `i` | antes del cursor |
+| `a` | después del cursor |
+| `I` | al primer no-espacio de la línea |
+| `A` | al final de la línea |
+| `o` | línea nueva debajo, ya en insertar |
+| `O` | línea nueva encima |
+
+**Ejercicio.** Escribe tres líneas. `dd` la del medio. `p` la pega debajo. `u` la devuelve. `3j` no hace falta: estás en un archivo corto. Cambia una palabra con `cw` (escribe otra, `Esc`). Pulsa `.` en otra palabra: Vim repite el cambio.
+
+---
+
+# 5. Objetos de texto (antes de cualquier plugin)
+
+Un movimiento va en *una* dirección. Un **objeto** es una cosa alrededor del cursor: una palabra, una frase, lo que hay entre comillas.
+
+Empiezan por `i` (*inner*, por dentro) o `a` (*around*, con el envoltorio).
+
+| Objeto | Ejemplo | Efecto |
+|--------|---------|--------|
+| `iw` `aw` | `diw` | borra la palabra, con o sin espacio pegado |
+| `is` `as` | `cis` | cambia la frase |
+| `ip` `ap` | `yip` | copia el párrafo |
+| `i"` `a"` | `ci"` | cambia lo que hay entre comillas |
+| `i'` `a'` | `da'` | borra comillas simples y contenido |
+| `i(` `a(` | `ci(` | cambia dentro de paréntesis (también `ib`) |
+| `i{` `a{` | `da{` | borra el bloque `{ ... }` |
+| `i[` `a[` | `vi[` | selecciona dentro de corchetes |
+| `it` `at` | `cit` | dentro de un tag HTML/XML |
+| `i<` `a<` | `ci<` | dentro de `<>` |
+
+La receta que más se usa al programar: **`ciw`** (cambiar esta palabra), **`ci"`** (cambiar el string), **`ci{`** (cambiar el bloque).
+
+Visual: `v` carácter, `V` líneas, `Ctrl-v` bloque (columnas). Con la selección hecha, `d` `c` `y` `>` actúan sobre ella. `o` salta al otro extremo de la selección.
+
+En esta config, `>` y `<` en visual **mantienen** la selección (para indentar varias veces).
+
+**Ejercicio.** Escribe `foo("hola mundo")`. Cursor en `hola`. `ci"` → escribe `adiós` → `Esc`. Cursor en `foo`. `ciw` → `bar`. `va(` y mira qué se selecciona.
+
+---
+
+# 6. Buscar y sustituir
+
+`/palabra` Enter busca hacia adelante. `?palabra` hacia atrás. `n` siguiente, `N` anterior. En esta config, `n`/`N` además **centran** la pantalla.
+
+`*` busca la palabra bajo el cursor hacia adelante, `#` hacia atrás.
+
+`:nohl` quita el resaltado. Aquí: `<leader><leader>`.
+
+Sustituir (línea de comandos):
+
+```
+:s/viejo/nuevo/        « solo la primera vez en esta línea
+:s/viejo/nuevo/g       « todas en esta línea
+:%s/viejo/nuevo/g      « todo el archivo
+:%s/viejo/nuevo/gc     « todo el archivo, preguntando
+```
+
+`%` es el rango “archivo entero”. `:'<,'>s/` (sale solo si venías de visual) actúa sobre la selección.
+
+**Ejercicio.** Pon tres veces la palabra `gato`. `:%s/gato/perro/g` y comprueba.
+
+---
+
+# 7. Buffers, ventanas, pestañas
+
+Olvida un momento Telescope. En Vim:
+
+- **Buffer** = un archivo cargado en memoria. Puede no verse.
+- **Ventana** = un hueco que *mira* a un buffer.
+- **Pestaña** = un conjunto de ventanas.
+
+`:e archivo` abre (o crea) un buffer. `:ls` lista. `:b siguiente` o `:b 2` cambia. `:bd` cierra el buffer.
+
+Ventanas nativas:
+
+| Tecla | Qué hace |
+|-------|----------|
+| `Ctrl-w s` | partir horizontal |
+| `Ctrl-w v` | partir vertical |
+| `Ctrl-w h/j/k/l` | ir a esa ventana |
+| `Ctrl-w c` | cerrar ventana |
+| `Ctrl-w o` | dejar solo esta |
+
+Esta config añade (mismo significado, con leader): `<leader>sv` vertical, `sh` horizontal, `sc` cerrar, `so` solo esta, `wh` `wj` `wk` `wl` moverse.
+
+Buffers con pestañas de bufferline: `Shift-l` / `Shift-h` siguiente/anterior, `<leader>bn` `bp` `bd`.
+
+**Saltos.** Cada vez que haces un salto grande (`G`, `/`, `gd` más adelante), Vim guarda el sitio. `Ctrl-o` vuelve atrás, `Ctrl-i` adelante. `:jumps` lista. `<leader>b` en esta config es “atrás” de historial (como el Back del IDE); espera 300 ms porque `bn`/`bp` empiezan igual.
+
+**Marcas.** `ma` guarda la posición en la marca `a`. `'a` vuelve al inicio de esa línea, `` `a `` a la columna exacta. Marcas `A`–`Z` son globales (otro archivo).
+
+**Ejercicio.** Abre dos archivos con `:e`. Parte la ventana `Ctrl-w v`. Salta con `G`, vuelve con `Ctrl-o`.
+
+---
+
+# 8. Registros y macros
+
+Yank (`y`) no es “el portapapeles de Windows” nada más. Hay cajones:
+
+- `"` sin nombre: último yank o borrado
+- `0` último yank
+- `1`–`9` últimos borrados
+- `a`–`z` los tuyos (`"ayy` copia la línea al registro a)
+- `+` portapapeles del sistema (esta config usa `unnamedplus`)
+- `_` agujero negro (`"_dd` borra sin ensuciar el yank)
+
+`:reg` enseña el contenido.
+
+Macros: `q` + letra para grabar, `q` para parar, `@a` para reproducir, `@@` la última. Ejemplo: en una lista, `qa` → `I- ` Esc `j` `q` y luego `10@a`.
+
+**Ejercicio.** Copia una línea con `yy`. Muévete. `p`. Ahora `"ayy` en otra línea y `"ap`.
+
+---
+
+# 9. Ayuda, guardar, salir
+
+| Comando | Qué hace |
+|---------|----------|
+| `:w` | guardar |
+| `:q` | salir si no hay cambios |
+| `:wq` o `ZZ` | guardar y salir |
+| `:q!` | salir tirando los cambios |
+| `:e!` | recargar el archivo del disco |
+| `:help` | manual |
+| `:help x` | la tecla `x` |
+| `:help :w` | el comando `:w` |
+| `:help 'number'` | una opción |
+| `Ctrl-]` | seguir un enlace en el help |
+| `Ctrl-t` o `Ctrl-o` | volver |
+
+En el help, `Ctrl-d` después de un tema incompleto lista coincidencias.
+
+---
+
+# 10. Esta config como IDE
+
+Hasta aquí todo es Vim. Lo siguiente *añade* cosas. Si algo no carga, `:Lazy`. Si no hay autocompletado, el LSP de ese lenguaje no está (`:Mason`, `:checkhealth vim.lsp`).
+
+Dashboard: solo si abres `nvim` sin archivo. `f` archivo, `g` grep, `r` recientes, `e` árbol, `a` opencode, `m` Mason, `l` Lazy, `q` salir.
+
+Prefijos (Espacio y una letra):
 
 | Prefijo | Familia |
 |---------|---------|
-| `<leader>f` | Buscar |
-| `<leader>g` | Git |
-| `<leader>b` | Buffers (Espacio `b` solo = atrás, espera 300 ms) |
-| `<leader>w` | Ventanas |
-| `<leader>x` | Errores |
-| `<leader>m` | Marcas Harpoon |
-| `<leader>t` | Terminal |
-| `<leader>r` | Ejecutar |
-| `<leader>d` | Depurar |
-| `<leader>fl` | Flutter |
-| `<leader>a` | AI CLI (solo Neovim) |
-| `<leader>c` | Copilot Chat (solo Neovim) |
+| `f` | buscar (Telescope) |
+| `g` | git |
+| `b` | buffers (y Back si esperas) |
+| `w` | ventanas |
+| `x` | errores |
+| `m` | harpoon |
+| `t` | terminal |
+| `r` | ejecutar |
+| `d` | depurar |
+| `fl` | Flutter |
+| `a` | terminales de IA (solo Neovim) |
+| `c` | Copilot Chat (solo Neovim) |
 
-which-key enseña el menú al pulsar Espacio.
-
-## 3.3 Día a día
-
-1. `nvim` en la carpeta del proyecto.
-2. `<leader>ff` archivo, `<leader>fg` texto, `<leader>pv` árbol.
-3. Editar. La statusline muestra el LSP (`dartls`, `gopls`, …) si el binario existe.
-4. `<leader>fm` formatear. `gd` definición. `K` documentación. `<leader>ca` acción.
-5. Git: `<leader>gs` → `<leader>gsa` hunk → `<leader>gc` → `<leader>gp`.
+Flujo típico de un archivo: `<leader>ff` lo abres → editas con `ciw` y compañía → `gd` va a la definición si hay LSP → `<leader>fm` formatea → `<leader>gs` git.
 
 ---
 
-# Módulo 4 — Plugin a plugin
+# 11. Plugins de este repo (cuándo, no el catálogo entero)
 
-Cada bloque: **cuándo usarlo** y **teclas que existen en el Lua de este repo**.
+Tablas largas: [WORKFLOW.md](WORKFLOW.md). Aquí el *cuándo*.
 
-### which-key
+**which-key** — Espacio y espera. Es el índice.
 
-**Cuándo:** no recuerdas el atajo. Pulsa Espacio y lee el menú.
+**telescope** — `<leader>ff` archivo, `fg` texto (necesitas ripgrep), `fo` recientes, `fk` atajos. `,,` también busca archivos.
 
-### dashboard-nvim
+**neo-tree / oil** — `pv` árbol. `-` o `oe` editar la carpeta como si fuera un buffer (renombrar archivos escribiendo).
 
-**Cuándo:** arranque vacío. Teclas del módulo 3.1.
+**harpoon** — archivos de cabecera del día: `ma` marca, `1`–`9` saltan.
 
-### telescope.nvim
+**Comment / surround / flash** — `gcc` comenta la línea. Surround: `ysiw"` pone comillas a la palabra, `ds"` las quita, `cs"'` cambia `"` por `'`. Flash: `s` salta a un carácter. **Visual `S` es surround, no Flash.**
 
-**Cuándo:** encontrar archivo o texto sin el ratón.
+**treesitter** — colores de verdad. En visual/operador: `af`/`if` función, `ac`/`ic` clase (cuando el parser está). Eso es *además* de `iw`/`i"`.
 
-| Tecla | Uso |
-|-------|-----|
-| `<leader>ff` / `<leader>.` / `,,` | Archivo por nombre |
-| `<leader>fg` | Texto en el proyecto (hace falta ripgrep) |
-| `<leader>fo` | Recientes |
-| `<leader>fb` | Buffers abiertos |
-| `<leader>fh` | Ayuda |
-| `<leader>fc` | Comandos |
-| `<leader>fk` | Atajos |
-| `<leader>fp` | Proyectos |
-| `<leader>ps` | Símbolos LSP |
+**LSP + cmp + none-ls** — `gd` definición, `K` documentación, `gR` referencias, `<leader>rn` renombrar, `ca` code action, `fm` format. Completar: `Ctrl-Space` en insertar. Dart lo arranca flutter-tools (Flutter SDK), no Mason.
 
-En el picker: `Enter` abre, `Ctrl-q` manda a quickfix (si el mapeo de Telescope lo permite).
+**trouble** — `xx` lista de problemas, `xn`/`xp` siguiente/anterior error.
 
-### neo-tree + oil.nvim
+**git** — `gs` estado, `gn` siguiente hunk, `gsa` stage del hunk, `gc` commit, `gp` push. Diff grande: `gdo`. Conflictos de merge: `gco`/`gct`/`gcb`.
 
-**Cuándo:** árbol de archivos vs editar una carpeta como buffer.
+**terminal / runner / tests** — `tt` terminal, `jj` para salir del modo terminal. `r` ejecuta. `ten` test más cercano (si el runner del lenguaje existe).
 
-| Tecla | Plugin | Uso |
-|-------|--------|-----|
-| `<leader>pv` | neo-tree | Mostrar/ocultar árbol |
-| `<leader>pe` / `<leader>pf` | neo-tree | Enfocar árbol |
-| `<leader>fr` | neo-tree | Revelar archivo actual |
-| `<leader>bf` | neo-tree | Buffers |
-| `<leader>-` / `<leader>oe` | oil | Editar directorio |
+**DAP** — `db` breakpoint, `dc` continuar, `du` UI. Sin adaptador instalado no hace magia.
 
-En oil: editas nombres como texto; guardar aplica el rename. En neo-tree: `a` añadir, `d` borrar, `r` renombrar (teclas del propio plugin).
+**Flutter** — `fla` run, `flr` reload, `fls` restart, `flq` quit.
 
-### harpoon
+**Copilot / AI** — CopilotChat `cc`. Visual `as` manda la selección a un CLI (opencode, claude, …) si está en PATH; si no, te dice cómo instalarlo.
 
-**Cuándo:** 3–9 archivos que abres todo el rato.
-
-`<leader>ma` marca, `<leader>1`…`<leader>9` salta, `<leader>mh` lista, `<leader>mp` / `<leader>mn` anterior/siguiente.
-
-### lualine + bufferline + dropbar + nvim-notify + indent-blankline + nvim-highlight-colors
-
-**Cuándo:** no pulsas nada. Statusline (git, LSP, diagnostics), pestañas, migas de pan, avisos, indent, colores hex.
-
-Buffers: `<S-l>` / `<S-h>` siguiente/anterior, `<leader>bn` / `bp` / `bd` / `bl` / `bh` / `bP` / `bt` / `to`.
-
-### Comment.nvim + vim-surround + nvim-autopairs + flash.nvim
-
-**Cuándo:** comentar, envolver, paréntesis, saltar.
-
-| Tecla | Uso |
-|-------|-----|
-| `gcc` | Comentar línea |
-| `gc` (visual) | Comentar selección |
-| `ysiw"` | Surround: comillas a la palabra (plugin surround) |
-| `ds"` | Quitar comillas |
-| `cs"'` | Cambiar `"` por `'` |
-| `s` | Flash: saltar a un carácter |
-| `S` | Normal: selección treesitter. **Visual `S` = surround**, no Flash |
-
-### treesitter + textobjects + context
-
-**Cuándo:** coloreado real y seleccionar función/clase.
-
-`vif` interior de función, `daf` toda la función, `]f` / `[f` siguiente/anterior función. `<leader>sa` / `<leader>sA` intercambiar argumentos.
-
-### nvim-lspconfig + mason + none-ls + nvim-cmp
-
-**Cuándo:** el archivo es de un lenguaje con servidor instalado.
-
-| Tecla | Uso |
-|-------|-----|
-| `gd` `gi` `go` | Definición / implementación / tipo |
-| `K` | Documentación |
-| `gR` | Referencias (Trouble) |
-| `gs` | Firma |
-| `<leader>rn` | Renombrar |
-| `<leader>ca` | Code action |
-| `<leader>fm` | Formatear (none-ls si el CLI existe) |
-| `Ctrl-Space` | Completar (insert) |
-
-`:Mason` instala servidores. Dart **no** va por Mason: lo arranca flutter-tools (hace falta Flutter SDK).
-
-### trouble.nvim + todo-comments
-
-`<leader>xx` panel, `xw` workspace, `xd` documento, `xn` / `xp` error siguiente/anterior, `xt` TODOs, `]t` / `[t` TODO.
-
-### fugitive + gitsigns + diffview + neogit + git-conflict
-
-**Cuándo:** cambios de git. En un conflicto de merge, las teclas `gc*` eligen lados.
-
-Flujo corto: `<leader>gs` estado → `<leader>gn` hunk → `<leader>gsa` stage → `<leader>gc` commit → `<leader>gp` push. Diff grande: `<leader>gdo`. LazyGit TUI: `<leader>tg` (si `lazygit` está en PATH).
-
-### toggleterm + overseer + code_runner + vim-test
-
-| Tecla | Uso |
-|-------|-----|
-| `<leader>tt` | Terminal flotante |
-| `jj` en terminal | Volver a Normal |
-| `<leader>r` / `rf` / `rp` | Ejecutar código / archivo / proyecto |
-| `<leader>rs` / `rc` | Parar / cerrar runner |
-| `<leader>oo` / `or` | Tareas Overseer |
-| `<leader>ten` / `tenf` / `tena` / `tenl` | Tests (hace falta herramienta del lenguaje) |
-
-### nvim-dap
-
-Punto de ruptura `<leader>db`, continuar `dc`, step `do` `di` `dO`, UI `du`, terminar `dx`. El adaptador debe existir (Mason / Flutter).
-
-### flutter-tools
-
-Proyecto Flutter: `<leader>fla` run, `flr` reload, `fls` restart, `flq` quit, `fld` DevTools, `flsd` dispositivo, `fle` emulador.
-
-### copilot.vim + CopilotChat
-
-Hace falta cuenta GitHub Copilot. Chat: `<leader>cc`. Visual + `ce` / `cr` / `cf` / `co` / `ct`.
-
-### AI terminals (`<leader>a*`)
-
-Cada CLI es un programa aparte (opencode, codex, claude, gemini, grok, copilot). Si no está instalado, el plugin **muestra el comando de instalación**; no falla en silencio. Visual → `<leader>as` → eliges agente.
-
-### undotree, persistence, zen-mode, grug-far, tagbar, ufo
-
-| Tecla | Uso |
-|-------|-----|
-| `<leader>u` Normal | Árbol de undo (**visual** `u` = minúsculas) |
-| `<leader>qs` / `ql` / `qd` | Sesión |
-| `<leader>zz` | Zen |
-| `<leader>sr` | Buscar/reemplazar proyecto |
-| `<leader>tb` | Tagbar (hace falta `ctags` en PATH) |
-| `<leader>za` `zR` `zM` | Folds |
-
-### themes
-
-Colores: dracula, molokai, solarized, onedark, gruvbox, rose-pine, catppuccin. Cambiar: `:colorscheme catppuccin` (o el que esté cargado).
+**undotree** — `<leader>u` en *normal* es el árbol de undo. En *visual*, `u` sigue siendo minúsculas.
 
 ---
 
-# Módulo 5 — IdeaVim (IntelliJ / Android Studio)
+# 12. IdeaVim
 
-1. Plugins → **IdeaVim** → **Tools \| Vim**.
-2. Copia `.ideavimrc` del repo a `~/.ideavimrc`.
-3. `:source ~/.ideavimrc`.
-4. Mismos prefijos que Neovim. **No** hay `<leader>a*` ni CopilotChat.
-5. IDs raros: `:actionlist`. Flutter: plugin Flutter.
+Plugins del IDE → IdeaVim → menú **Tools | Vim**. Copia `.ideavimrc` a `~/.ideavimrc`. Recarga con `:source ~/.ideavimrc`.
 
-No se valida la GUI del IDE desde la línea de comandos de este repo.
+Los prefijos coinciden. No copies el `.vimrc` clásico dentro de IdeaVim (lleva vim-plug). Atajos de IA y CopilotChat no están en el IDE. Si un `<Action>` no existe: `:actionlist`.
 
 ---
 
-# Módulo 6 — Si algo falla
+# 13. Cuando se rompe
 
-| Síntoma | Qué hacer |
+| Qué ves | Qué mirar |
 |---------|-----------|
-| Cuadrados en iconos | Fuente JetBrainsMono NFM + reiniciar terminal |
-| Plugin no carga | `:Lazy` → sync |
-| No hay LSP | `:Mason`, `:checkhealth vim.lsp`, binario en PATH |
-| Dart no conecta | Flutter SDK; no dupliques `dartls` |
-| Atajo “no funciona” | Prefijo 300 ms; `:Telescope keymaps` |
-| `git-conflict` error `rgb` | Config actual ya mapea alias de `vim.validate`; actualiza el repo |
-
-Tablas completas: [WORKFLOW.md](WORKFLOW.md). Instalar: [README.md](README.md).
+| Recuadros en vez de iconos | Fuente Nerd Font y reiniciar el terminal |
+| Plugin en rojo | `:Lazy` |
+| Completar vacío | `:Mason` y `:checkhealth vim.lsp` |
+| Dart mudo | Flutter en PATH; no dupliques dartls |
+| El atajo “no va” | Prefijo de 300 ms; `:Telescope keymaps` |
+| `E37` al salir | hay cambios; `:wq` o `:q!` |
 
 ---
 
-*Curso alineado con el código del repo. Si el Lua cambia, este archivo debe actualizarse; no memorices copias sueltas.*
+# Orden sugerido en clase
+
+1. Mecanografía + `nvim +Tutor` (una sesión).
+2. Modos, `hjkl`, `i`/`Esc`, `:w` `:q` (una sesión).
+3. Gramática `d/c/y` + movimientos y números (una sesión).
+4. Objetos `ciw` `ci"` `ci{` y visual (una sesión).
+5. Buscar, `:s`, buffers y `Ctrl-w` (una sesión).
+6. Registros y una macro tonta (media sesión).
+7. Instalar *esta* config y Telescope / git / LSP sobre un archivo real.
+
+Si alguien pide “el atajo de buscar archivo” el día 1, se puede enseñar `<leader>ff`, pero que sepa que es azúcar. El editor de verdad es el capítulo 4.
