@@ -2,16 +2,16 @@
 
 Cross-platform (macOS / Linux / Windows) development environment with synchronized keybindings across Neovim, Vim, and JetBrains IDEs.
 
-**Requires Neovim 0.12+** | Updated September 2026 (keymaps runtime-audited: zero hard conflicts)
+**Requires Neovim 0.12+** | Updated September 2026 (Windows / macOS / Linux)
 
 ## Features
 
 - **Neovim 0.12 native APIs** - Uses `vim.lsp.config()` / `vim.lsp.enable()`, `vim.treesitter.start()`, modern diagnostics
 - **lazy.nvim** with 70+ plugins, zero deprecation warnings
-- **IdeaVim** config (`.ideavimrc`) fully synchronized with Neovim keybindings
-- **Legacy Vim** config (`.vimrc`) with vim-plug
-- **Cross-platform** - all paths dynamically detected, works on macOS, Linux, and Windows
-- **Zero conflicts** - all keybindings runtime-audited, no overlaps between plugins
+- **IdeaVim** config (`.ideavimrc`) shares the same leader **prefixes**; AI CLIs and CopilotChat are Neovim-only
+- **Legacy Vim** config (`.vimrc`) with vim-plug (`~/vimfiles` on Windows, `~/.vim` on Unix)
+- **Cross-platform** — shells, paths, builds and CLIs are guarded (`win32` / `executable` / `os_homedir`)
+- **Keymaps** — runtime-audited: no two actions share the same mode+key. Prefix delays (`<leader>f` vs `<leader>ff`) wait `timeoutlen=300` by design
 
 ## Stack decisions (researched, September 2026)
 
@@ -37,7 +37,7 @@ Cross-platform (macOS / Linux / Windows) development environment with synchroniz
 | tree-sitter CLI | Parser compilation | `npm install -g tree-sitter-cli` |
 | AI CLIs (optional) | `<leader>a*` terminals | `opencode-ai`, `@openai/codex`, `@anthropic-ai/claude-code`, `@google/gemini-cli`, `@github/copilot` via npm (each keeps its own login) |
 
-LSP servers (`lua_ls`, `clangd`, `jsonls`, `yamlls`) and formatters (`stylua`, `prettier`, `clang-format`) **self-install via Mason** on first launch. Dart comes from your Flutter SDK.
+LSP servers (`lua_ls`, `clangd`, `jsonls`, `yamlls`, `gopls`, `pyright`, `vtsls`, `astro`) and formatters (`stylua`, `prettier`) **self-install via Mason** on first launch. Dart LSP comes from **flutter-tools** (Flutter SDK). On Windows, `black` and `clang-format` install with `uv tool install black clang-format` (Mason needs `python3` on PATH).
 
 ## Quick Install
 
@@ -66,7 +66,7 @@ nvim
 
 ```powershell
 git clone git@github.com:chochy2001/Neovim-Vim_Configuration.git $HOME\Neovim-Vim_Configuration
-New-Item -ItemType SymbolicLink -Path "$env:LOCALAPPDATA\nvim" -Target "$HOME\Neovim-Vim_Configuration\.config\nvim"
+New-Item -ItemType Junction -Path "$env:LOCALAPPDATA\nvim" -Target "$HOME\Neovim-Vim_Configuration\.config\nvim"
 Copy-Item "$HOME\Neovim-Vim_Configuration\.ideavimrc" "$HOME\_ideavimrc"
 ```
 
@@ -265,6 +265,8 @@ Leader key: `Space`
 
 | Key | Action |
 |-----|--------|
+| `s` | Flash jump (n/v/o) |
+| `S` | Flash treesitter (n/o); visual `S` = surround |
 | `jj` | Exit insert mode |
 | `<leader><leader>` | Clear search highlight |
 | `<A-j>` / `<A-k>` | Move line down/up |
@@ -303,7 +305,7 @@ Leader key: `Space`
 | Language | LSP | Formatter | Extras |
 |----------|-----|-----------|--------|
 | Lua | lua_ls | stylua | Neovim runtime integration |
-| Dart/Flutter | dartls | dart_format | flutter-tools, snippets, DAP |
+| Dart/Flutter | dartls (flutter-tools) | `<leader>fm` / none-ls | outline, snippets, DAP |
 | Go | gopls | gofmt | staticcheck, gofumpt |
 | Python | pyright | black (`uv tool install black`) | openFiles diagnostics |
 | TypeScript/JavaScript | vtsls | prettier | - |
@@ -318,7 +320,7 @@ Leader key: `Space`
 
 ## IdeaVim Synchronization
 
-The `.ideavimrc` is fully synchronized with the Neovim config. All keybindings use the same prefixes:
+The `.ideavimrc` shares the same leader prefixes as Neovim. AI terminals (`<leader>a*`) and CopilotChat (`<leader>c*`) stay Neovim-only.
 
 - `<leader>f*` - Find/search
 - `<leader>a*` - AI assistants
@@ -348,7 +350,7 @@ The `.ideavimrc` is fully synchronized with the Neovim config. All keybindings u
 │   │   ├── lsp-utils.lua                 # LSP helper commands
 │   │   ├── fix-flutter-neotree-conflict.lua  # Dart LSP dedup
 │   │   ├── plugins.lua                   # Lazy.nvim plugin loader
-│   │   └── plugins/                      # 27 plugin config files
+│   │   └── plugins/                      # 28 plugin config files
 │   │       ├── lsp-config.lua            # vim.lsp.config() + vim.lsp.enable()
 │   │       ├── treesitter.lua            # Parser management + TS highlighting
 │   │       ├── telescope.lua             # Fuzzy finder (v0.2.2, latest)
@@ -361,6 +363,7 @@ The `.ideavimrc` is fully synchronized with the Neovim config. All keybindings u
 ├── .ideavimrc                            # JetBrains IDE config (synced)
 ├── .vimrc                                # Legacy Vim config
 ├── WORKFLOW.md                           # Full keymap-by-keymap workflow guide
+├── AGENTS.md                             # How to extend this config (EN + ES)
 └── .gitignore
 ```
 

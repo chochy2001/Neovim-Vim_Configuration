@@ -36,50 +36,10 @@ return {
                 table.insert(enabled, "lua_ls")
             end
 
-            -- 2. Dart LSP
-            local home = vim.uv.os_homedir() or vim.fn.expand("$HOME")
-            local flutter_home = os.getenv("FLUTTER_HOME")
-                or (home .. sep .. "development" .. sep .. "flutter")
-            local dart_path = vim.fn.exepath("dart")
-            if dart_path == "" then
-                dart_path = flutter_home .. sep .. "bin" .. sep .. (is_win and "dart.bat" or "dart")
-            end
-            if vim.fn.executable(dart_path) == 1 then
-                vim.lsp.config("dartls", {
-                    capabilities = capabilities,
-                    cmd = { dart_path, "language-server", "--protocol=lsp" },
-                    filetypes = { "dart" },
-                    root_markers = { "pubspec.yaml", ".git" },
-                    single_file_support = true,
-                    init_options = {
-                        onlyAnalyzeProjectsWithOpenFiles = true,
-                        suggestFromUnimportedLibraries = true,
-                        closingLabels = true,
-                        outline = true,
-                        flutterOutline = false,
-                    },
-                    settings = {
-                        dart = {
-                            completeFunctionCalls = true,
-                            showTodos = false,
-                            enableSnippets = true,
-                            updateImportsOnRename = true,
-                            lineLength = 80,
-                        },
-                    },
-                    on_attach = function(client, bufnr)
-                        if client:supports_method("textDocument/formatting") then
-                            vim.api.nvim_create_autocmd("BufWritePre", {
-                                buffer = bufnr,
-                                callback = function()
-                                    vim.lsp.buf.format({ bufnr = bufnr, timeout_ms = 2000 })
-                                end,
-                            })
-                        end
-                    end,
-                })
-                table.insert(enabled, "dartls")
-            end
+            -- 2. Dart LSP is owned by flutter-tools.nvim (outline, widget
+            -- guides, closing labels). Do NOT vim.lsp.enable("dartls") here:
+            -- flutter-tools always vim.lsp.start()s dartls, and a second
+            -- client races with fix-flutter-neotree-conflict.lua.
 
             -- 3. C/C++ LSP
             if vim.fn.executable("clangd") == 1 then
@@ -257,13 +217,28 @@ return {
                     vim.keymap.set("n", "go", vim.lsp.buf.type_definition, vim.tbl_extend("force", opts, { desc = "Go to Type Definition" }))
                     vim.keymap.set("n", "gs", vim.lsp.buf.signature_help, vim.tbl_extend("force", opts, { desc = "Signature Help" }))
 
-                    -- Format
+                    -- Format: prefer none-ls when it is attached so we do not
+                    -- run gopls+gofmt, clangd+clang-format, jsonls+prettier, etc.
                     vim.keymap.set("n", "<leader>fm", function()
-                        vim.lsp.buf.format({ bufnr = ev.buf, async = true })
+                        local bufnr = ev.buf
+                        local has_null = false
+                        for _, c in ipairs(vim.lsp.get_clients({ bufnr = bufnr })) do
+                            if c.name == "null-ls" then
+                                has_null = true
+                                break
+                            end
+                        end
+                        vim.lsp.buf.format({
+                            bufnr = bufnr,
+                            async = true,
+                            filter = function(c)
+                                if has_null then
+                                    return c.name == "null-ls"
+                                end
+                                return true
+                            end,
+                        })
                     end, vim.tbl_extend("force", opts, { desc = "Format document" }))
-
-                    -- Completion (insert mode)
-                    vim.keymap.set("i", "<C-space>", "<C-x><C-o>", vim.tbl_extend("force", opts, { desc = "LSP Completion" }))
                 end,
             })
 

@@ -30,7 +30,7 @@ All keybindings are synchronized between Neovim and JetBrains IDEs (.ideavimrc).
 | `gcc` | Normal | Toggle line comment |
 | `gc` | Visual | Toggle comment on selection |
 | `s` | Normal/Visual/Operator | Flash: jump to any character |
-| `S` | Normal/Visual/Operator | Flash: treesitter select |
+| `S` | Normal/Operator | Flash: treesitter select (visual `S` is surround) |
 
 ---
 

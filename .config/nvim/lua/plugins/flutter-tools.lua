@@ -100,14 +100,11 @@ return {
                     open_cmd = "30vnew", -- command to open outline
                     auto_open = false,
                 },
+                -- dartls is started here (flutter-tools always attaches).
+                -- Do not also enable dartls in lsp-config.lua.
                 lsp = {
-                    -- COMPLETELY DISABLED - we use manual configuration in lsp-config.lua
-                    -- This avoids transport conflicts and multiple LSP clients
-                    enable = false,
-                    auto_start = false,
-                    -- No on_attach configuration since LSP is disabled
-                    -- NOTE: no `color` table on purpose: flutter-tools warns
-                    -- on Neovim 0.12+ that plugin-managed colors are deprecated
+                    -- NOTE: no `color` table: plugin-managed colors are
+                    -- deprecated on Neovim 0.12+
                 }
             })
 
@@ -144,7 +141,9 @@ return {
         ft = "dart",
         config = function()
             vim.g.dart_style_guide = 2 -- use the official style guide
-            vim.g.dart_format_on_save = 1 -- format on save
+            -- Format-on-save is none-ls / <leader>fm only (this flag would
+            -- stack a third dart format on top of dartls + none-ls)
+            vim.g.dart_format_on_save = 0
         end
     },
 }

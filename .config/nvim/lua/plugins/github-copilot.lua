@@ -4,7 +4,7 @@ return {
 	-- GitHub Copilot inline completions
 	{
 		"github/copilot.vim",
-		event = { "InsertEnter", "BufEnter" },
+		event = "InsertEnter",
 
 		-- Use 'init' to configure global variables BEFORE the plugin loads
 		init = function()

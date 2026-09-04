@@ -15,8 +15,9 @@ return {
             vim.notify = notify
         end,
     },
-    -- Replaces vim.ui.input and vim.ui.select
-    { "stevearc/dressing.nvim", event = "VeryLazy" },
+    -- vim.ui.input only. vim.ui.select is owned by telescope-ui-select
+    -- (loading both made the picker flip depending on which loaded last).
+    { "stevearc/dressing.nvim", event = "VeryLazy", opts = { select = { enabled = false } } },
     -- Icons: nvim-web-devicons is the single provider (see icons-fix.lua).
     -- mini.icons was removed: nothing required it, avoids duplicate providers.
     -- Smooth cursor (visual effect)
@@ -57,6 +58,8 @@ return {
         },
         opts = {
             lsp = {
+                -- fidget.nvim already shows LSP progress; skip noice's copy
+                progress = { enabled = false },
                 override = {
                     ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
                     ["vim.lsp.util.stylize_markdown"] = true,

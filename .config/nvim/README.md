@@ -435,7 +435,7 @@ Copy-Item "$HOME\Neovim-Vim_Configuration\.ideavimrc" "$HOME\_ideavimrc"
 
 #### **Flutter/Dart Development**
 - **flutter-tools.nvim**: Complete Flutter IDE features
-- **dart-vim-plugin**: Dart syntax and formatting
+- **dart-vim-plugin**: Dart filetype helpers (`dart_format_on_save` is off; format via `<leader>fm`)
 - **nvim-dap**: Debugging support
 
 #### **Code Intelligence**
@@ -548,7 +548,7 @@ The included `.ideavimrc` (repo **root**, not inside `.config/nvim/`) mirrors th
 
 ## 🔍 **Master Command Reference | Referencia Maestra de Comandos**
 
-> **EN**: Tables below match the Lua config as of September 2026 (runtime keymap dump, zero hard conflicts). IdeaVim equivalents live in the **repo-root** `.ideavimrc` (not inside `.config/nvim/`). Live list: `:Telescope keymaps`.
+> **EN**: Tables below match the Lua config as of September 2026. Visual `S` is vim-surround (Flash treesitter select is normal/operator only). IdeaVim equivalents live in the **repo-root** `.ideavimrc`. Live list: `:Telescope keymaps`.
 >
 > **ES**: Las tablas coinciden con el Lua de septiembre de 2026 (volcado de keymaps, cero conflictos duros). Los equivalentes de IdeaVim están en `.ideavimrc` **en la raíz del repo**. Lista en vivo: `:Telescope keymaps`.
 >
@@ -721,7 +721,7 @@ The included `.ideavimrc` (repo **root**, not inside `.config/nvim/`) mirrors th
 ### 📈 **By the Numbers | Por los Números** (measured September 2026)
 - **76 plugin specs**: curated, lazy-loaded (~60% load at startup idle)
 - **500+ runtime keymaps**: 130+ `<leader>` commands, audited conflict-free
-- **11 LSP servers**: auto-enabled when installed (Lua, Dart, C/C++, Swift/macOS, Kotlin, JSON, YAML, Go, Python, TypeScript, Astro)
+- **11 LSP servers**: Mason auto-enables Lua, C/C++, Kotlin, JSON, YAML, Go, Python, TypeScript, Astro when installed; Dart is started by flutter-tools; Swift is macOS-only (`sourcekit-lsp`)
 - **Formatters**: stylua, prettier, clang-format, dart_format (auto-installed via Mason)
 - **7 themes**: Dracula (default), molokai, solarized, onedark, gruvbox, rose-pine, catppuccin
 - **Cross-platform**: Windows, macOS, Linux (shells, paths and tools auto-detected)

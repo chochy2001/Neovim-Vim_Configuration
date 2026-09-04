@@ -17,9 +17,9 @@ Cross-platform Neovim 0.12+ config (`lazy.nvim`) plus a synced `.ideavimrc` for 
 - **Do** gate every OS-specific path, binary, and `build` step with `vim.fn.has("win32")`, `vim.fn.executable(...)`, or `vim.uv.os_homedir()`.
 - **Do** keep leader prefixes: `f*` find, `a*` AI CLIs, `g*` git, `fl*` flutter, `x*` diagnostics, `m*` harpoon, `b*` buffers, `w*` windows, `t*` terminal/test, `r*` run, `c*` CopilotChat, `d*` DAP, `z*` fold/zen, `q*` session, `o*` overseer/oil.
 - **Don't** invent `<leader><leader>` as a finder — it is `:nohl`.
-- **Don't** clone this repo *into* `~/.config/nvim`. Clone to a dedicated folder and **symlink** `.config/nvim`.
+- **Don't** clone this repo *into* `~/.config/nvim`. Clone to a dedicated folder and **symlink** `.config/nvim` (Windows: Junction to `%LOCALAPPDATA%\nvim`).
 - **Don't** put API keys in the config. AI CLIs (`opencode`, `codex`, `claude`, `gemini`, `grok`, `copilot`) keep their own login.
-- **Don't** enable an LSP unless `vim.fn.executable(...)` is 1. Mason auto-installs a subset; Dart comes from Flutter.
+- **Don't** enable an LSP unless `vim.fn.executable(...)` is 1. Mason auto-installs a subset. **Dart LSP is owned by flutter-tools** — do not also `vim.lsp.enable("dartls")`.
 
 ### How to add a language tomorrow
 
@@ -37,7 +37,7 @@ Cross-platform Neovim 0.12+ config (`lazy.nvim`) plus a synced `.ideavimrc` for 
 nvim --headless "+lua local v=vim.version(); print('boot-ok '..v.major..'.'..v.minor..'.'..v.patch)" +qa
 
 # Open a real file from each stack and inspect clients (wait ~10s):
-# Dart:   repos/.../lib/main.dart          → dartls,null-ls
+# Dart:   repos/.../lib/main.dart          → dartls (flutter-tools), null-ls
 # Go:     .../cmd/main.go                  → gopls,null-ls
 # Python: .../nodo.py                      → pyright (+ null-ls if file < 50 KB)
 # JS/TS:  .../astro.config.mjs             → vtsls,null-ls
@@ -82,7 +82,7 @@ Configuración de Neovim 0.12+ multiplataforma (`lazy.nvim`) más `.ideavimrc` s
 - **No** uses `<leader><leader>` como buscador — es `:nohl`.
 - **No** clones este repo *dentro* de `~/.config/nvim`. Clónalo en una carpeta dedicada y **enlaza** `.config/nvim`.
 - **No** pongas claves API en la config. Los CLIs de IA (`opencode`, `codex`, `claude`, `gemini`, `grok`, `copilot`) guardan su propio inicio de sesión.
-- **No** habilites un LSP si `vim.fn.executable(...)` no es 1. Mason autoinstala un subconjunto; Dart viene de Flutter.
+- **No** habilites un LSP si `vim.fn.executable(...)` no es 1. Mason autoinstala un subconjunto. **El LSP de Dart lo arranca flutter-tools** — no hagas también `vim.lsp.enable("dartls")`.
 
 ### Cómo añadir un lenguaje mañana
 

@@ -62,7 +62,7 @@ return {
 				if client:supports_method("textDocument/formatting") then
 					-- Only auto-format safe files
 					local safe_auto_format = {
-						"lua", "dart", "json"
+						"lua", "json"
 					}
 
 					local filetype = vim.bo[bufnr].filetype

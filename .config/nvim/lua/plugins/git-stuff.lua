@@ -218,7 +218,9 @@ return {
         event = "BufReadPre",
         config = function()
             require('git-conflict').setup({
-                default_mappings = true,
+                -- false: plugin defaults (`ct`/`cb`/`c0`) steal native vim
+                -- operators on conflict buffers. Use <leader>gc* instead.
+                default_mappings = false,
                 default_commands = true,
                 disable_diagnostics = false,
                 list_opener = 'copen',

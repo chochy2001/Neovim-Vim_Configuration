@@ -1,31 +1,29 @@
 return {
-    -- Native FZF for ultra-fast search (requires compilation)
-    {
-        "nvim-telescope/telescope-fzf-native.nvim",
-        build = (function()
-            -- Prefer make everywhere; fall back to an explicit cmake build
-            -- (covers Unix boxes with cmake but no make, and stock Windows)
-            if vim.fn.executable("make") == 1 then
-                return "make"
-            end
-            if vim.fn.executable("cmake") == 1 then
-                return "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release"
-            end
-            return nil
-        end)(),
-        cond = function()
-            return vim.fn.executable("make") == 1 or vim.fn.executable("cmake") == 1
-        end,
-    },
-    {
-        "nvim-telescope/telescope-ui-select.nvim",
-    },
     -- NOTE: telescope-file-browser.nvim was removed: the extension was
     -- never loaded (neo-tree + oil already cover file browsing).
     {
         "nvim-telescope/telescope.nvim",
         tag = "v0.2.2",
-        dependencies = { "nvim-lua/plenary.nvim" },
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+            -- Nested: load with telescope, not at startup
+            {
+                "nvim-telescope/telescope-fzf-native.nvim",
+                build = (function()
+                    if vim.fn.executable("make") == 1 then
+                        return "make"
+                    end
+                    if vim.fn.executable("cmake") == 1 then
+                        return "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release"
+                    end
+                    return nil
+                end)(),
+                cond = function()
+                    return vim.fn.executable("make") == 1 or vim.fn.executable("cmake") == 1
+                end,
+            },
+            "nvim-telescope/telescope-ui-select.nvim",
+        },
         -- Load on demand (command or any finder key) instead of at startup
         cmd = "Telescope",
         keys = {
