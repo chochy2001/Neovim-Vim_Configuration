@@ -11,7 +11,20 @@
 !COURSE.md
 !COURSE.pdf
 !AGENTS.md
+!LICENSE
+!COPYRIGHT
 !.gitignore
+!.github/
+!.github/workflows/
+!.github/workflows/**
+
+# CAPDESIS Practice (Flutter desktop)
+!trainer/
+!trainer/**
+trainer/.dart_tool/
+trainer/build/
+trainer/.idea/
+trainer/**/ephemeral/
 
 # Neovim config
 !.config/

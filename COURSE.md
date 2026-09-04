@@ -46,6 +46,8 @@ nvim +Tutor
 
 Haz el tutor entero una vez. Aburre. Funciona.
 
+Entrenador de escritorio (Windows / Linux / macOS, sin red): carpeta [`trainer/`](trainer/). `flutter test` y `flutter run`. No es Neovim; solo el subconjunto documentado en Acerca de. Builds de GitHub **sin firma**.
+
 ---
 
 # 1. Instalar esta config

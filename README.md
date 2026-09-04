@@ -443,6 +443,14 @@ IDE mappings use `nmap … <Action>(id)` ([required](https://github.com/JetBrain
 └── .gitignore
 ```
 
+## CAPDESIS Practice (desktop)
+
+Offline trainer in [`trainer/`](trainer/): typing on code + a **tested Vim subset**. Windows / Linux / macOS. MIT. Not Neovim. CI builds are **unsigned**.
+
+```bash
+cd trainer && flutter test && flutter run
+```
+
 ## License
 
-MIT
+MIT. Copyright © 2026 CAPDESIS / chochy2001. See [LICENSE](LICENSE).
