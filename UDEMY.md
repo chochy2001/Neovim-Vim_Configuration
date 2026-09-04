@@ -81,7 +81,7 @@ Cada carpeta = una sección en el dashboard de Udemy. Cada ítem = un vídeo.
 | # | Vídeo | Teclas (existen en el Lua) |
 |---|--------|----------------------------|
 | 4.1 | Leader Espacio y which-key | Espacio, espera, menú |
-| 4.2 | Dashboard | `nvim` vacío: f g r e q |
+| 4.2 | Dashboard | `nvim` vacío: `f` `g` `r` `e` `a` `m` `l` `q` |
 | 4.3 | Telescope | `<leader>ff` `fg` `fk` |
 | 4.4 | neo-tree y oil | `pv` `-` |
 | 4.5 | Git | `gs` `gsa` `gc` `gp` |
@@ -89,7 +89,7 @@ Cada carpeta = una sección en el dashboard de Udemy. Cada ítem = un vídeo.
 | 4.7 | Flutter | `fla` `flr` si hay SDK |
 | 4.8 | Diagnósticos | `xx` `xn` |
 | 4.9 | Terminal y tests | `tt` `ten` |
-| 4.10 | Qué es solo Neovim | `aa` CopilotChat — no están en IdeaVim |
+| 4.10 | Qué es solo Neovim | `<leader>aa` opencode · `<leader>cc` CopilotChat (no están en IdeaVim) |
 
 ### Carpeta 5 — IdeaVim y cierre
 
@@ -120,20 +120,18 @@ flutter run -d windows   # o macos / linux
 
 No hay fotos de stock en el repo (se ven falsas y no son tu pantalla). En cada slide de “demo”: captura **tu** terminal. Fuentes: Inter o Segoe para títulos, JetBrains Mono para código. Fondo `#0d1117`, acento `#58a6ff`.
 
-**Sección 1 — 12 slides**
+**Sección 1 — 10 slides** (archivo `course/udemy/slides-intro.html`, teclas `N`/`P`)
 
 1. Neovim desde cero — CAPDESIS  
-2. Al final del curso… (abrir un repo y editarlo)  
-3. Esto no es: bootcamp de Dart, certificado de Linux  
-4. vi 1976 → Vim 1991 → Neovim 2014  
-5. Fuente: neovim.io/charter (abre la URL en la siguiente slide en vivo)  
-6. VS Code / JetBrains / esta config — tres casas, mismo idioma modal  
-7. Por qué la terminal: SSH, servidores, el mismo `hjkl`  
-8. El repo es MIT — github.com/chochy2001/Neovim-Vim_Configuration  
-9. No clones dentro de ~/.config/nvim  
-10. Orden del curso (manos → gramática → plugins)  
-11. CAPDESIS Practice = entrenador, no Neovim  
-12. Siguiente: instalar
+2. Al terminar  
+3. Esto no es  
+4. vi → Vim → Neovim  
+5. Charter (neovim.io/charter)  
+6. ¿Y el IDE?  
+7. El repo MIT  
+8. Orden del curso  
+9. CAPDESIS Practice ≠ Neovim  
+10. Siguiente: instalar
 
 **Sección 2** — una slide por SO (Windows / macOS / Linux) con el bloque de comandos de COURSE.md copiado tal cual.
 

@@ -99,7 +99,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _typeKey(KeyDownEvent event) {
-    final target = snippets[snippet].body;
+    final list = pool;
+    if (list.isEmpty) return;
+    final target = list[snippet.clamp(0, list.length - 1)].body;
     if (event.logicalKey == LogicalKeyboardKey.backspace) {
       final s = typed.toString();
       if (s.isNotEmpty) {

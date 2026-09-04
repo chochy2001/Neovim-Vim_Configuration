@@ -142,6 +142,31 @@ void main() {
     expect(v.col, 4);
   });
 
+  test('X C Y P r F ^ Enter', () {
+    final v = Vim('ab');
+    v.feedSeq('lX');
+    expect(v.text, 'b');
+    final v2 = Vim('keep DROP', col: 5);
+    v2.feed('C');
+    expect(v2.mode, 'i');
+    expect(v2.text, 'keep ');
+    final v3 = Vim('one\ntwo');
+    v3.feedSeq('Yp');
+    expect(v3.text, 'one\none\ntwo');
+    final v4 = Vim('xy');
+    v4.feedSeq('ra');
+    expect(v4.text, 'ay');
+    final v5 = Vim('abXcd', col: 4);
+    v5.feedSeq('FX');
+    expect(v5.col, 2);
+    final v6 = Vim('  hi');
+    v6.feed('^');
+    expect(v6.col, 2);
+    final v7 = Vim('ab');
+    v7.feedSeq('A<CR>c<Esc>');
+    expect(v7.text, 'ab\nc');
+  });
+
   test('every kata solve sequence reaches expect', () {
     for (final k in katas) {
       final v = Vim(k.start, row: k.row, col: k.col);
