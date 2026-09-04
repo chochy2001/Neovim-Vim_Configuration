@@ -68,7 +68,7 @@ nvim
 ```powershell
 git clone git@github.com:chochy2001/Neovim-Vim_Configuration.git $HOME\Neovim-Vim_Configuration
 New-Item -ItemType Junction -Path "$env:LOCALAPPDATA\nvim" -Target "$HOME\Neovim-Vim_Configuration\.config\nvim"
-Copy-Item "$HOME\Neovim-Vim_Configuration\.ideavimrc" "$HOME\_ideavimrc"
+Copy-Item "$HOME\Neovim-Vim_Configuration\.ideavimrc" "$HOME\.ideavimrc"
 ```
 
 ## How to use
@@ -390,25 +390,29 @@ Built around the CAPDESIS / personal GitHub stack (Flutter apps, Go APIs, Astro 
 | TOML | taplo | prettier | pyproject, Cargo, tool configs |
 | SQL | — | — | Treesitter highlighting |
 
-## IdeaVim Synchronization
+## IdeaVim (IntelliJ / Android Studio)
 
-The `.ideavimrc` shares the same leader prefixes as Neovim. AI terminals (`<leader>a*`) and CopilotChat (`<leader>c*`) stay Neovim-only.
+Official plugin: [IdeaVim](https://plugins.jetbrains.com/plugin/164-ideavim). Config file is **`~/.ideavimrc`** on every OS (Windows: `%USERPROFILE%\.ideavimrc`). XDG: `$XDG_CONFIG_HOME/ideavim/ideavimrc`.
+
+1. Settings → Plugins → install **IdeaVim** → **Tools | Vim**.
+2. Copy this repo’s `.ideavimrc` to `~/.ideavimrc` (do **not** `source` the classic `.vimrc` — it uses vim-plug).
+3. Reload: `:source ~/.ideavimrc`.
+4. Unknown action IDs: `:actionlist <pattern>` or Search Everywhere → **IdeaVim: track action IDs**.
+
+IDE mappings use `nmap … <Action>(id)` ([required](https://github.com/JetBrains/ideavim#executing-ide-actions); `nnoremap` + `:action` does not work). Same leader prefixes as Neovim. **Neovim-only:** `<leader>a*` AI CLIs, `<leader>c*` CopilotChat. Flutter keys need the [Flutter plugin](https://plugins.jetbrains.com/plugin/9212-flutter). IdeaVim cannot be GUI-tested from this repo’s CLI — confirm inside the IDE.
 
 - `<leader>f*` - Find/search
-- `<leader>a*` - AI assistants
-- `<leader>g*` - Git operations
-- `<leader>fl*` - Flutter
-- `<leader>x*` - Diagnostics
-- `<leader>m*` - Marks/harpoon
-- `<leader>b*` - Buffers
+- `<leader>g*` - Git (IDE VCS)
+- `<leader>fl*` - Flutter (plugin)
+- `<leader>x*` - Problems tool window
+- `<leader>m*` - Bookmarks
+- `<leader>b*` - Tabs (`<leader>b` alone = Back, same 300 ms prefix as Neovim)
 - `<leader>w*` - Windows
-- `<leader>t*` - Terminal/testing
-- `<leader>r*` - Run/debug
-- `<leader>z*` - Folding/zen
-- `<leader>c*` - Copilot chat
-- `<leader>d*` - Debugging (DAP)
-- `<leader>q*` - Sessions
-- `<leader>o*` - Overseer/oil
+- `<leader>t*` - Terminal
+- `<leader>r*` - Run
+- `<leader>z*` - Fold / distraction-free
+- `<leader>d*` - Debug
+- `<leader>o*` - Run tool window / Run Anything
 
 ## File Structure
 

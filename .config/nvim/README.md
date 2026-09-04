@@ -84,7 +84,7 @@ Windows (PowerShell, as Administrator if the junction needs elevation):
 ```powershell
 git clone git@github.com:chochy2001/Neovim-Vim_Configuration.git $HOME\Neovim-Vim_Configuration
 New-Item -ItemType Junction -Path "$env:LOCALAPPDATA\nvim" -Target "$HOME\Neovim-Vim_Configuration\.config\nvim"
-Copy-Item "$HOME\Neovim-Vim_Configuration\.ideavimrc" "$HOME\_ideavimrc"
+Copy-Item "$HOME\Neovim-Vim_Configuration\.ideavimrc" "$HOME\.ideavimrc"
 ```
 
 ### Español
@@ -105,7 +105,7 @@ Windows (PowerShell):
 ```powershell
 git clone git@github.com:chochy2001/Neovim-Vim_Configuration.git $HOME\Neovim-Vim_Configuration
 New-Item -ItemType Junction -Path "$env:LOCALAPPDATA\nvim" -Target "$HOME\Neovim-Vim_Configuration\.config\nvim"
-Copy-Item "$HOME\Neovim-Vim_Configuration\.ideavimrc" "$HOME\_ideavimrc"
+Copy-Item "$HOME\Neovim-Vim_Configuration\.ideavimrc" "$HOME\.ideavimrc"
 ```
 
 ### How to use | Cómo usarlo
@@ -526,13 +526,13 @@ Dashboard (empty `nvim` only): `f` find · `g` grep · `r` recent · `e` explore
 The included `.ideavimrc` (repo **root**, not inside `.config/nvim/`) mirrors the Neovim leader prefixes so muscle memory transfers between Neovim and Android Studio/IntelliJ IDEA. AI terminals (`<leader>a*`) and CopilotChat (`<leader>c*`) are Neovim-only.
 
 ### English Setup
-1. **Copy the configuration**: `ln -sf ~/Neovim-Vim_Configuration/.ideavimrc ~/.ideavimrc` (Windows: `Copy-Item ... $HOME\_ideavimrc`)
+1. **Copy the configuration**: `ln -sf ~/Neovim-Vim_Configuration/.ideavimrc ~/.ideavimrc` (Windows: `Copy-Item ... $HOME\.ideavimrc`)
 2. **Restart IntelliJ IDEA**
 3. **Enable IdeaVim plugin** in Settings → Plugins
 4. **Shared prefixes work the same**; Neovim-only maps (AI CLIs, CopilotChat, Oil, Tagbar) stay in Neovim
 
 ### Español Configuración
-1. **Copiar la configuración**: `ln -sf ~/Neovim-Vim_Configuration/.ideavimrc ~/.ideavimrc` (Windows: `Copy-Item ... $HOME\_ideavimrc`)
+1. **Copiar la configuración**: `ln -sf ~/Neovim-Vim_Configuration/.ideavimrc ~/.ideavimrc` (Windows: `Copy-Item ... $HOME\.ideavimrc`)
 2. **Reiniciar IntelliJ IDEA**
 3. **Habilitar plugin IdeaVim** en Settings → Plugins
 4. **Los prefijos compartidos coinciden**; los mapas solo-Neovim (CLIs de IA, CopilotChat, Oil, Tagbar) quedan en Neovim

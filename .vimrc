@@ -11,17 +11,14 @@ else
     call plug#begin(expand('~/.vim/plugged'))
 endif
 Plug 'artur-shaik/vim-javacomplete2'
-Plug 'vim-syntastic/syntastic'
 Plug 'udalov/kotlin-vim'
 Plug 'hsanson/vim-android'
 Plug 'keith/swift.vim'
-Plug 'akinsho/flutter-tools.nvim'
 Plug 'mhinz/vim-startify'
 Plug 'dart-lang/dart-vim-plugin'
 Plug 'thosakwe/vim-flutter'
 Plug 'kien/ctrlp.vim'
 Plug 'voldikss/vim-floaterm'
-Plug 'roxma/vim-hug-neovim-rpc'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
@@ -34,9 +31,7 @@ Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-sensible'
 Plug 'sheerun/vim-polyglot'
-Plug 'ycm-core/YouCompleteMe'
 Plug 'github/copilot.vim'
-Plug 'dart-lang/dart-vim-plugin'
 Plug 'natebosch/vim-lsc'
 Plug 'preservim/tagbar'
 Plug 'dense-analysis/ale'
@@ -50,9 +45,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'easymotion/vim-easymotion'
 Plug 'scrooloose/nerdcommenter'
 Plug 'Yggdroot/indentLine'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-" Plug 'ycm-core/YouCompleteMe'
-" Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+" One completion stack: ALE (not YCM + coc together)
 call plug#end()
 
 let g:ale_fix_on_save = 1
@@ -200,23 +193,17 @@ nnoremap <leader>bn :bn<CR>
 nnoremap <leader>bp :bp<CR>
 
 " Map 'gl' to ':Git log'
-nnoremap <leader>gl :Git log<CR>
-" Map 'gc' to ':Git commit'
+nnoremap <leader>gl :Git pull<CR>
 nnoremap <leader>gc :Git commit<CR>
-" Map 'ga' to ':Git add %'
-nnoremap <leader>ga :Git add %<CR>
-" Map 'gs' to ':Git status'
 nnoremap <leader>gs :Git status<CR>
-" Map 'gps' to ':Git push'
-nnoremap <leader>gps :Git push<CR>
-" Map 'gpl' to ':Git pull'
-nnoremap <leader>gpl :Git pull<CR>
+nnoremap <leader>gp :Git push<CR>
+nnoremap <leader>gf :Git fetch<CR>
 
 " Install listed plugins
 nnoremap <leader>pi :PlugInstall<CR>
 
 " Terminal
-nnoremap <silent> <leader>t :FloatermToggle<CR>
+nnoremap <silent> <leader>tt :FloatermToggle<CR>
 
 " Toggle Startify
 nnoremap <leader>st :Startify<CR>
