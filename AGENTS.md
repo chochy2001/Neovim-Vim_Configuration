@@ -45,6 +45,7 @@ nvim --headless "+lua local v=vim.version(); print('boot-ok '..v.major..'.'..v.m
 # JSON:   .../package.json                 → jsonls,null-ls
 # C:      a temp .c file                   → clangd,null-ls
 # Kotlin: .../MainActivity.kt              → kotlin_language_server
+# PHP:    .../index.php                    → intelephense
 ```
 
 Keymap audit: dump `nvim_get_keymap` for modes n/v/x and assert no two maps share `(mode, lhs)` with different rhs.

@@ -7,7 +7,7 @@ Cross-platform (macOS / Linux / Windows) development environment with synchroniz
 ## Features
 
 - **Neovim 0.12 native APIs** - Uses `vim.lsp.config()` / `vim.lsp.enable()`, `vim.treesitter.start()`, modern diagnostics
-- **lazy.nvim** with 70+ plugins, zero deprecation warnings
+- **lazy.nvim** (~77 specs, ~9 load at idle startup)
 - **IdeaVim** config (`.ideavimrc`) shares the same leader **prefixes**; AI CLIs and CopilotChat are Neovim-only
 - **Legacy Vim** config (`.vimrc`) with vim-plug (`~/vimfiles` on Windows, `~/.vim` on Unix)
 - **Cross-platform** — shells, paths, builds and CLIs are guarded (`win32` / `executable` / `os_homedir`)
@@ -35,7 +35,8 @@ Cross-platform (macOS / Linux / Windows) development environment with synchroniz
 | Nerd Font | Icons | [nerdfonts.com](https://www.nerdfonts.com) (e.g. FiraCode); set it in your terminal |
 | ripgrep + fd | Fast search (recommended) | `winget install BurntSushi.ripgrep.MSVC sharkdp.fd` · `brew install ripgrep fd` · `apt install ripgrep fd-find` |
 | tree-sitter CLI | Parser compilation | `npm install -g tree-sitter-cli` |
-| AI CLIs (optional) | `<leader>a*` terminals | `opencode-ai`, `@openai/codex`, `@anthropic-ai/claude-code`, `@google/gemini-cli`, `@github/copilot` via npm (each keeps its own login) |
+| AI CLIs (optional) | `<leader>a*` terminals | npm: `opencode-ai`, `@openai/codex`, `@anthropic-ai/claude-code`, `@google/gemini-cli`, `@github/copilot`. Grok: xAI CLI on PATH (not npm). Each keeps its own login. |
+| uv (Windows, optional) | `black` / `clang-format` | `winget install astral-sh.uv` then `uv tool install black clang-format` |
 
 LSP servers (`lua_ls`, `clangd`, `jsonls`, `yamlls`, `gopls`, `pyright`, `vtsls`, `astro`) and formatters (`stylua`, `prettier`) **self-install via Mason** on first launch. Dart LSP comes from **flutter-tools** (Flutter SDK). On Windows, `black` and `clang-format` install with `uv tool install black clang-format` (Mason needs `python3` on PATH).
 
@@ -300,6 +301,20 @@ Leader key: `Space`
 | **Focus** | zen-mode, twilight |
 | **Other** | undotree, trouble, grug-far, winshift, persistence, project.nvim, tagbar, swagger-preview |
 
+## What this config is for
+
+Built around the CAPDESIS / personal GitHub stack (Flutter apps, Go APIs, Astro landings, PHP backends, Python, Kotlin, C). Open any of those repos and the matching LSP/formatter attaches when the binary exists.
+
+| Product area | Languages |
+|--------------|-----------|
+| Tracker, CapTienda, CapMenu, CapLiving, CapGym, Formulae, photos_class, … | Dart / Flutter |
+| IngeTracker, POS, CapLiving, CapGym, billing, academy, ancare, … | Go |
+| capdesis-web, landings, leon-entertainment, xunkaab, … | Astro / TypeScript |
+| CapMenu, Opus, GestionInventarioQR | PHP |
+| Distributed_System, scripts, tooling | Python |
+| Android embeddings (CapGym, etc.) | Kotlin |
+| 2027-1 / firmware notes | C / C++ |
+
 ## Languages Supported
 
 | Language | LSP | Formatter | Extras |
@@ -316,7 +331,7 @@ Leader key: `Space`
 | Kotlin | kotlin_language_server | - | Gradle project detection (needs `gradle` on PATH for full classpath) |
 | Swift | sourcekit-lsp (macOS) | - | - |
 | Web (HTML/CSS) | - | prettier | - |
-| PHP (legacy) | - | - | Treesitter + `php -l` workflow |
+| PHP | intelephense | — | CapMenu / Opus / Inventario QR backends |
 
 ## IdeaVim Synchronization
 
@@ -358,7 +373,7 @@ The `.ideavimrc` shares the same leader prefixes as Neovim. AI terminals (`<lead
 │   │       ├── git-stuff.lua             # Fugitive, gitsigns, diffview, neogit
 │   │       ├── trouble.lua               # Diagnostics list (Trouble v3)
 │   │       ├── ai-terminal.lua           # AI CLIs in floating terminals
-│   │       └── ...                       # 21 more plugin configs (28 total)
+│   │       └── ...                       # remaining specs (28 files total)
 │   ├── README.md                         # Detailed nvim-specific docs
 ├── .ideavimrc                            # JetBrains IDE config (synced)
 ├── .vimrc                                # Legacy Vim config

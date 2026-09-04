@@ -200,6 +200,18 @@ return {
                 table.insert(enabled, "astro")
             end
 
+            -- 12. PHP LSP for CapMenu / Opus / Inventario QR backends
+            -- (install: `:MasonInstall intelephense`)
+            if vim.fn.executable("intelephense") == 1 then
+                vim.lsp.config("intelephense", {
+                    capabilities = capabilities,
+                    cmd = { "intelephense", "--stdio" },
+                    filetypes = { "php" },
+                    root_markers = { "composer.json", ".git" },
+                })
+                table.insert(enabled, "intelephense")
+            end
+
             -- Enable only the servers configured above
             vim.lsp.enable(enabled)
 
@@ -299,6 +311,7 @@ return {
                 "pyright",
                 "vtsls",
                 "astro",
+                "intelephense",
             },
             -- stylua ships an LSP mode but formatting is already covered
             -- by none-ls: avoid duplicate formatting clients

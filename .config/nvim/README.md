@@ -30,7 +30,7 @@
 
 ## ✨ **Latest Update: Neovim 0.12 Migration | Ultima Actualizacion: Migracion a Neovim 0.12**
 
-### 🎯 **Neovim 0.12 Native API Migration (April 2026)**
+### 🎯 **Neovim 0.12 Native API Migration (kept current through September 2026)**
 
 **EN**: Full migration to Neovim 0.12 native APIs. Configuration updated for zero deprecation warnings and maximum compatibility:
 
@@ -116,7 +116,7 @@ Copy-Item "$HOME\Neovim-Vim_Configuration\.ideavimrc" "$HOME\_ideavimrc"
 
 ### 🔍 Find & Search | Búsqueda
 
-> **✅ 100% Synchronized** | **100% Sincronizado** - All Telescope commands work identically in both editors
+> Shared Telescope prefixes with `.ideavimrc`. Live list: `:Telescope keymaps`.
 
 | Keymap | Neovim Plugin | Neovim Action | IntelliJ Action | Status | Description |
 |--------|---------------|---------------|-----------------|---------|-------------|
@@ -133,7 +133,7 @@ Copy-Item "$HOME\Neovim-Vim_Configuration\.ideavimrc" "$HOME\_ideavimrc"
 | `<leader>.` | **telescope.lua** | `builtin.find_files` | `:action GotoFile` | ✅ **PERFECT** | **One-handed** - Quick file search |
 | `,,` | **telescope.lua** | `builtin.find_files` | `:action GotoFile` | ✅ **PERFECT** | **Double comma** - Ultra quick access |
 
-**📊 Telescope Coverage**: **12/12 commands** (100% synchronized) | **Cobertura Telescope**: **12/12 comandos** (100% sincronizados)
+**Telescope**: same `f*` prefixes in Neovim and IdeaVim.
 
 ### 📁 Git Operations | Operaciones Git
 
@@ -180,7 +180,7 @@ Copy-Item "$HOME\Neovim-Vim_Configuration\.ideavimrc" "$HOME\_ideavimrc"
 | `<leader>gcp` | `<Plug>(git-conflict-prev-conflict)` | `:action VcsShowPrevChangeMarker` | Conflict prev |
 | `<leader>gcnn` | `<Plug>(git-conflict-next-conflict)` | `:action VcsShowNextChangeMarker` | Conflict next |
 
-**📊 Git v5.0**: **28 commands** (0 uppercase, 100% synchronized) | **28 comandos** (0 mayúsculas, 100% sincronizados)
+**Git**: `g*` prefixes in Neovim and IdeaVim (see master table below).
 
 **🚀 Key v5.0 Improvements**:
 - ⚡ **25% faster**: `gpl`→`gl`, `gps`→`gp` (removed extra keypress)
@@ -204,7 +204,7 @@ Copy-Item "$HOME\Neovim-Vim_Configuration\.ideavimrc" "$HOME\_ideavimrc"
 | `<leader>rn` | `vim.lsp.buf.rename` | `:action RenameElement` | Rename symbol |
 | `<leader>fm` | `vim.lsp.buf.format` | `:action OptimizeImports` | Format document |
 
-**📊 LSP v5.0**: **7 commands** (100% synchronized) | **7 comandos** (100% sincronizados)
+**LSP**: native `gd`/`gi`/`K` plus `<leader>rn`/`ca`/`fm`.
 
 **🚀 Key v5.0 Improvements**:
 - 🗑️ **Eliminated 10 duplicates**: Removed `<leader>gd`, `<leader>gi`, `<leader>gr`, `gD`, `gT`, `<leader>I`, `<leader>lh`, `<leader>ls` (all duplicated native commands)
@@ -213,7 +213,7 @@ Copy-Item "$HOME\Neovim-Vim_Configuration\.ideavimrc" "$HOME\_ideavimrc"
 
 ### 📌 Marks & Harpoon | Marcas y Harpoon
 
-> **✅ 100% Synchronized** | **100% Sincronizado** - Complete quick file access and bookmarking
+> Harpoon `m*` prefixes shared with IdeaVim bookmarks.
 
 | Keymap | Neovim Plugin | Neovim Action | IntelliJ Action | Status | Description |
 |--------|---------------|---------------|-----------------|---------|-------------|
@@ -234,7 +234,7 @@ Copy-Item "$HOME\Neovim-Vim_Configuration\.ideavimrc" "$HOME\_ideavimrc"
 | `<leader>8` | **harpoon.lua** | `harpoon:list():select(8)` | `'8` (vim mark) | ✅ **ADAPTED** | Quick jump to slot 8 |
 | `<leader>9` | **harpoon.lua** | `harpoon:list():select(9)` | `'9` (vim mark) | ✅ **ADAPTED** | Quick jump to slot 9 |
 
-**📊 Harpoon Coverage**: **13/13 commands** (100% synchronized) | **Cobertura Harpoon**: **13/13 comandos** (100% sincronizados)
+**Harpoon**: `ma`/`mh`/`1`–`9`/`mp`/`mn`.
 
 **🔧 Key v4.0 Improvements**:
 - ✅ **Navigation Restored**: `<leader>mp` and `<leader>mn` for harpoon navigation
@@ -296,7 +296,7 @@ Copy-Item "$HOME\Neovim-Vim_Configuration\.ideavimrc" "$HOME\_ideavimrc"
 | `<leader>fll` | Flutter LSP | `:action RestartFlutterLsp` | Restart LSP (was Fl) |
 | `<leader>fla` | Flutter start | `:action RunClass` | Start app (was Fs) |
 
-**📊 Flutter v5.0**: **11 commands** (0 uppercase, 100% synchronized) | **11 comandos** (0 mayúsculas, 100% sincronizados)
+**Flutter**: `fl*` lowercase prefixes (IdeaVim maps the same letters).
 
 **🚀 Key v5.0 Improvements**:
 - 🚫 **0 uppercase**: All `F*` converted to `fl*` (no Shift needed)
@@ -314,7 +314,7 @@ Copy-Item "$HOME\Neovim-Vim_Configuration\.ideavimrc" "$HOME\_ideavimrc"
 | `<leader>tena` | Test all | `:action RunAll` | Test all suite |
 | `<leader>tenl` | Test last | `:action Rerun` | Rerun last test |
 
-**📊 Testing**: **4 commands** (`ten*` prefix, 100% synchronized) | **4 comandos** (prefijo `ten*`, 100% sincronizados)
+**Testing**: `ten*` prefix (`ten` / `tenf` / `tena` / `tenl`).
 
 **🚀 Testing notes**:
 - 🎯 **Logical prefix**: `ten*` groups all testing commands for autocomplete
@@ -712,17 +712,17 @@ The included `.ideavimrc` (repo **root**, not inside `.config/nvim/`) mirrors th
 - **Lazy loading**: Plugins load only when needed
 - **Async operations**: Non-blocking LSP and formatting
 - **Memory efficient**: Smart caching and cleanup
-- **Fast startup**: ~50ms cold start time
+- **Fast startup**: ~9 of ~77 specs load at idle (lazy.nvim)
 
 ---
 
 ## 📊 **Configuration Stats | Estadísticas de Configuración**
 
 ### 📈 **By the Numbers | Por los Números** (measured September 2026)
-- **76 plugin specs**: curated, lazy-loaded (~60% load at startup idle)
-- **500+ runtime keymaps**: 130+ `<leader>` commands, audited conflict-free
-- **11 LSP servers**: Mason auto-enables Lua, C/C++, Kotlin, JSON, YAML, Go, Python, TypeScript, Astro when installed; Dart is started by flutter-tools; Swift is macOS-only (`sourcekit-lsp`)
-- **Formatters**: stylua, prettier, clang-format, dart_format (auto-installed via Mason)
+- **~77 plugin specs**: curated; ~9 load at idle startup
+- **Runtime keymaps**: audited conflict-free (prefix delays wait `timeoutlen=300`)
+- **LSP**: Mason auto-enables Lua, C/C++, Kotlin, JSON, YAML, Go, Python, TypeScript, Astro, PHP (intelephense) when installed; Dart is started by flutter-tools; Swift is macOS-only (`sourcekit-lsp`)
+- **Formatters**: stylua, prettier (Mason); black / clang-format via `uv` on Windows; dart_format / gofmt from SDKs
 - **7 themes**: Dracula (default), molokai, solarized, onedark, gruvbox, rose-pine, catppuccin
 - **Cross-platform**: Windows, macOS, Linux (shells, paths and tools auto-detected)
 - **3 ways**: Quick file access (`ff`, `<leader>.`, `,,`)
