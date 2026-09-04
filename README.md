@@ -116,7 +116,7 @@ Leader is **Space**. After Space, wait ~300 ms or keep typing the rest of the sh
 | `:GrugFar` | Project search-replace |
 | `:SwaggerPreview` | OpenAPI preview (if you have the CLI) |
 
-Full tables: [WORKFLOW.md](WORKFLOW.md). For AI agents extending this repo: [AGENTS.md](AGENTS.md).
+Full tables: [WORKFLOW.md](WORKFLOW.md). Course (zero → IDE, plugin by plugin): [COURSE.md](COURSE.md) / [COURSE.pdf](COURSE.pdf). For AI agents: [AGENTS.md](AGENTS.md).
 
 **Cómo usarlo (ES):** Leader = **Espacio**. `nvim` sin archivo abre el dashboard CAPDESIS (`f` buscar, `g` grep, `e` explorador, `a` IA, `q` salir). Cada día: `<leader>ff` archivo, `<leader>fg` texto, `<leader>fm` formatear, `gd` ir a definición. Git: `<leader>gs` → `<leader>gsa` → `<leader>gc` → `<leader>gp`. Lista viva de atajos: `:Telescope keymaps`.
 
