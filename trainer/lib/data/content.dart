@@ -119,6 +119,91 @@ root="\$(cd "\$(dirname "\$0")" && pwd)"
     return strtoupper(trim(\$raw));
 }''',
   ),
+  Snippet(
+    id: 'js',
+    language: 'JavaScript',
+    body: '''export function clamp(n, min, max) {
+  return Math.min(max, Math.max(min, n));
+}''',
+  ),
+  Snippet(
+    id: 'java',
+    language: 'Java',
+    body: '''public final class Sku {
+    public static String normalize(String raw) {
+        return raw.trim().toUpperCase();
+    }
+}''',
+  ),
+  Snippet(
+    id: 'kotlin',
+    language: 'Kotlin',
+    body: '''fun normalize(raw: String): String =
+    raw.trim().uppercase()''',
+  ),
+  Snippet(
+    id: 'swift',
+    language: 'Swift',
+    body: '''func normalize(_ raw: String) -> String {
+    raw.trimmingCharacters(in: .whitespaces).uppercased()
+}''',
+  ),
+  Snippet(
+    id: 'css',
+    language: 'CSS',
+    body: '''.card {
+  display: flex;
+  gap: 8px;
+  color: #e6edf3;
+}''',
+  ),
+  Snippet(
+    id: 'c',
+    language: 'C',
+    body: '''int clamp(int n, int min, int max) {
+    if (n < min) return min;
+    if (n > max) return max;
+    return n;
+}''',
+  ),
+  Snippet(
+    id: 'cpp',
+    language: 'C++',
+    body: '''template <typename T>
+T clamp(T n, T lo, T hi) {
+    return n < lo ? lo : (n > hi ? hi : n);
+}''',
+  ),
+  Snippet(
+    id: 'rust',
+    language: 'Rust',
+    body: '''fn clamp(n: i32, lo: i32, hi: i32) -> i32 {
+    n.max(lo).min(hi)
+}''',
+  ),
+  Snippet(
+    id: 'csharp',
+    language: 'C#',
+    body: '''public static class Sku {
+    public static string Normalize(string raw) =>
+        raw.Trim().ToUpperInvariant();
+}''',
+  ),
+  Snippet(
+    id: 'ruby',
+    language: 'Ruby',
+    body: '''def normalize(raw)
+  raw.strip.upcase
+end''',
+  ),
+  Snippet(
+    id: 'json',
+    language: 'JSON',
+    body: '''{
+  "ok": true,
+  "items": 3
+}''',
+  ),
 ];
 
 const katas = <Kata>[

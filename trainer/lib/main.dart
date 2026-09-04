@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:capdesis_practice/data/content.dart';
+import 'package:capdesis_practice/data/import_local.dart';
 import 'package:capdesis_practice/engine/vim.dart';
 import 'package:capdesis_practice/i18n.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -59,8 +63,11 @@ class _HomePageState extends State<HomePage> {
   int typedCount = 0;
   int correctCount = 0;
   String? vimStatus;
+  List<Snippet> imported = [];
+  String? importNote;
 
   T get t => T(es);
+  List<Snippet> get pool => imported.isEmpty ? snippets : imported;
 
   @override
   void initState() {
@@ -207,8 +214,31 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Future<void> _importFolder() async {
+    final path = await FilePicker.platform.getDirectoryPath();
+    if (path == null) return;
+    final got = await loadProjectFolder(path);
+    setState(() {
+      imported = got;
+      snippet = 0;
+      importNote = got.isEmpty ? t.importFail : '${got.length}';
+      _resetType();
+    });
+  }
+
+  void _dropImport() {
+    setState(() {
+      imported = [];
+      snippet = 0;
+      importNote = null;
+      _resetType();
+    });
+  }
+
   Widget _typewriter() {
-    final s = snippets[snippet];
+    final list = pool;
+    final i = snippet.clamp(0, list.length - 1);
+    final s = list[i];
     final target = s.body;
     final got = typed.toString();
     final secs = started == null
@@ -223,13 +253,36 @@ class _HomePageState extends State<HomePage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(t.typeHint, style: const TextStyle(color: _muted, fontSize: 13)),
+          const SizedBox(height: 8),
+          Text(t.privacy, style: const TextStyle(color: _muted, fontSize: 12)),
           const SizedBox(height: 12),
           Wrap(
             spacing: 8,
+            runSpacing: 8,
+            crossAxisAlignment: WrapCrossAlignment.center,
             children: [
-              for (var i = 0; i < snippets.length; i++)
+              FilledButton(onPressed: _importFolder, child: Text(t.importFolder)),
+              if (imported.isNotEmpty)
+                TextButton(onPressed: _dropImport, child: Text(t.clearImport)),
+              if (importNote != null)
+                Text(importNote!, style: const TextStyle(color: _muted, fontSize: 12)),
+            ],
+          ),
+          const SizedBox(height: 12),
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxHeight: 96),
+            child: SingleChildScrollView(
+              child: Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (var i = 0; i < list.length; i++)
                 ChoiceChip(
-                  label: Text(snippets[i].language),
+                  label: Text(
+                    imported.isEmpty
+                        ? list[i].language
+                        : '${list[i].language} ${File(list[i].id).uri.pathSegments.last}',
+                  ),
                   selected: i == snippet,
                   onSelected: (_) => setState(() {
                     snippet = i;
@@ -237,6 +290,8 @@ class _HomePageState extends State<HomePage> {
                   }),
                 ),
             ],
+              ),
+            ),
           ),
           const SizedBox(height: 8),
           Text(

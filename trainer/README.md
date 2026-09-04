@@ -8,7 +8,7 @@ Copyright © 2026 CAPDESIS / chochy2001. MIT License (see `/LICENSE`). Free to d
 
 ### What it is
 
-- **Typewriter** — Dart, Go, Python, TypeScript, HTML, SQL, Lua, Bash, PHP. WPM/accuracy. No Vim in this tab.
+- **Typewriter** — 20 built-in languages (Dart, Go, Python, TS/JS, Java, Kotlin, Swift, SQL, HTML/CSS, PHP, Lua, Bash, C/C++, Rust, C#, Ruby, JSON). Optional: open a project folder; files stay in RAM only (skip `.git` / `node_modules`, max 40 files × 12 KB). Drop files to forget them. Nothing is uploaded.
 - **Vim** — 13 katas. Each has a `solve` sequence asserted in `flutter test`. Commands: hjkl, 0^$, web, gg G, {}, insert, x X D C J, dd dw diw ciw, % (same line), yy p, u, f t F T ;, >>, counts. Not Neovim.
 
 ### What it is not

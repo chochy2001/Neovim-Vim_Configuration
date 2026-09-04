@@ -30,6 +30,12 @@ class T {
   String get typeHint => es
       ? 'Escribe el código tal cual. No uses Vim aquí: es un ejercicio de teclado.'
       : 'Type the code as shown. No Vim here: this is a keyboard drill.';
+  String get importFolder => es ? 'Abrir carpeta del proyecto' : 'Open project folder';
+  String get clearImport => es ? 'Soltar archivos' : 'Drop files';
+  String get privacy => es
+      ? 'La carpeta se lee solo en RAM. No se copia, no se sube, no se guarda al cerrar. El código es open source: puedes comprobarlo.'
+      : 'The folder is read into RAM only. Not copied, not uploaded, not kept after quit. Open source: you can verify.';
+  String get importFail => es ? 'No se leyeron archivos de código (límite 40, 12 KB, sin node_modules/.git).' : 'No code files read (cap 40 files, 12 KB, skips node_modules/.git).';
   String get vimHint => es
       ? 'El cursor empieza donde indica el ejercicio. No hay flechas a propósito.'
       : 'The cursor starts where the exercise says. Arrow keys are ignored on purpose.';
