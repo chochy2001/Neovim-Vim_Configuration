@@ -1,9 +1,22 @@
 import 'package:capdesis_practice/main.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('app title', (tester) async {
+  testWidgets('tabs and about', (tester) async {
+    tester.view.physicalSize = const Size(1400, 900);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
     await tester.pumpWidget(const PracticeApp());
-    expect(find.text('CAPDESIS Practice'), findsOneWidget);
+    expect(find.text('CAPDESIS Practice'), findsWidgets);
+    expect(find.text('Dart'), findsOneWidget);
+    expect(find.text('Go'), findsOneWidget);
+    await tester.tap(find.text('Vim'));
+    await tester.pumpAndSettle();
+    expect(find.text('Comprobar'), findsOneWidget);
+    await tester.tap(find.text('Acerca de'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('MIT'), findsOneWidget);
   });
 }

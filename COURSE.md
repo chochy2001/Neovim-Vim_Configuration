@@ -413,3 +413,5 @@ Los prefijos coinciden. No copies el `.vimrc` clásico dentro de IdeaVim (lleva 
 7. Instalar *esta* config y Telescope / git / LSP sobre un archivo real.
 
 Si alguien pide “el atajo de buscar archivo” el día 1, se puede enseñar `<leader>ff`, pero que sepa que es azúcar. El editor de verdad es el capítulo 4.
+
+Grabación Udemy (secciones, vídeos, slides): [UDEMY.md](UDEMY.md).

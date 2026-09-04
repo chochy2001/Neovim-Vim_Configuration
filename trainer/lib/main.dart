@@ -423,10 +423,10 @@ class _HomePageState extends State<HomePage> {
                   if (vimStatus != null)
                     Text(vimStatus == 'ok' ? t.ok : t.notYet,
                         style: TextStyle(color: vimStatus == 'ok' ? _ok : _bad)),
-                  Row(
+                  Wrap(
+                    spacing: 8,
                     children: [
                       FilledButton(onPressed: _checkVim, child: Text(t.check)),
-                      const SizedBox(width: 8),
                       TextButton(
                         onPressed: () => setState(_resetVim),
                         child: Text(t.reset),

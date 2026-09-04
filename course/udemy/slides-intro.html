@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>CAPDESIS — Introducción</title>
+  <style>
+    html, body { margin: 0; height: 100%; background: #0d1117; color: #e6edf3;
+      font-family: "Segoe UI", system-ui, sans-serif; }
+    .slide { display: none; height: 100%; padding: 8vh 10vw; box-sizing: border-box; }
+    .slide.on { display: flex; flex-direction: column; justify-content: center; }
+    h1 { font-size: 2.4rem; font-weight: 600; margin: 0 0 1rem; }
+    p, li { font-size: 1.25rem; line-height: 1.5; color: #c9d1d9; }
+    .muted { color: #8b949e; font-size: 1rem; }
+    code { font-family: Consolas, "JetBrains Mono", monospace; color: #58a6ff; }
+    a { color: #58a6ff; }
+    #bar { position: fixed; bottom: 16px; right: 24px; color: #8b949e; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <div class="slide on"><h1>Neovim desde cero</h1><p>CAPDESIS · curso en vídeo</p><p class="muted">MIT · github.com/chochy2001/Neovim-Vim_Configuration</p></div>
+  <div class="slide"><h1>Al terminar</h1><p>Abrir un repo real y editarlo con Neovim 0.12 y <em>esta</em> config.</p></div>
+  <div class="slide"><h1>Esto no es</h1><p>Un bootcamp de Flutter. Un certificado de Linux. CAPDESIS Practice no es Neovim.</p></div>
+  <div class="slide"><h1>Tres nombres</h1><p><strong>vi</strong> ~1976 (Bill Joy) → <strong>Vim</strong> 1991 (Bram Moolenaar) → <strong>Neovim</strong> 2014.</p><p class="muted">Fuente: documentación de Vim y neovim.io</p></div>
+  <div class="slide"><h1>Charter de Neovim</h1><p>Extensible. Usable. Vim.</p><p>Meta que <em>no</em> persiguen: “convertir Vim en un IDE”.</p><p class="muted"><a href="https://neovim.io/charter/">neovim.io/charter</a></p></div>
+  <div class="slide"><h1>¿Y el IDE?</h1><p>VS Code y JetBrains siguen teniendo sentido. Aquí: el mismo teclado en local y por SSH.</p></div>
+  <div class="slide"><h1>El repo</h1><p>Open source. No clones <em>dentro</em> de <code>~/.config/nvim</code>.</p><p><code>git clone …</code> y un enlace (Junction / symlink).</p></div>
+  <div class="slide"><h1>Orden</h1><p>Manos → gramática Vim → esta config → plugins.</p><p class="muted">Si pides Telescope el día 1, vale: es azúcar. El núcleo es <code>dw</code> y <code>ciw</code>.</p></div>
+  <div class="slide"><h1>Práctica</h1><p>Carpeta <code>trainer/</code> · <code>flutter test</code> · elegir archivos (RAM, no se suben).</p></div>
+  <div class="slide"><h1>Siguiente</h1><p>Instalar Neovim 0.12 en tu sistema operativo.</p></div>
+  <div id="bar"></div>
+  <script>
+    const s = [...document.querySelectorAll('.slide')];
+    let i = 0;
+    function show(n) {
+      i = (n + s.length) % s.length;
+      s.forEach((el, k) => el.classList.toggle('on', k === i));
+      document.getElementById('bar').textContent = (i + 1) + ' / ' + s.length + '  ·  N / P';
+    }
+    document.addEventListener('keydown', e => {
+      if (e.key === 'n' || e.key === 'N' || e.key === 'ArrowRight' || e.key === ' ') show(i + 1);
+      if (e.key === 'p' || e.key === 'P' || e.key === 'ArrowLeft') show(i - 1);
+    });
+    show(0);
+  </script>
+</body>
+</html>
