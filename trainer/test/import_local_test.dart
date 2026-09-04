@@ -29,6 +29,20 @@ void main() {
     }
   });
 
+  test('loadPaths keeps only chosen files', () async {
+    final dir = await Directory.systemTemp.createTemp('capdesis_pick_');
+    try {
+      final a = File('${dir.path}/a.go')..writeAsStringSync('package main');
+      final b = File('${dir.path}/b.java')..writeAsStringSync('class A {}');
+      File('${dir.path}/skip.bin').writeAsBytesSync([0, 1, 0]);
+      final got = loadPaths([a.path, b.path, '${dir.path}/skip.bin']);
+      expect(got.length, 2);
+      expect(got.map((s) => s.language).toSet(), {'Go', 'Java'});
+    } finally {
+      await dir.delete(recursive: true);
+    }
+  });
+
   test('loadProjectFolder reads a temp dart file and skips .git', () async {
     final dir = await Directory.systemTemp.createTemp('capdesis_practice_');
     try {

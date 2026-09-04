@@ -214,6 +214,24 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Future<void> _importFiles() async {
+    final exts = langByExt.keys.map((e) => e.substring(1)).toList();
+    final result = await FilePicker.platform.pickFiles(
+      allowMultiple: true,
+      type: FileType.custom,
+      allowedExtensions: exts,
+    );
+    if (result == null) return;
+    final paths = result.paths.whereType<String>();
+    final got = loadPaths(paths);
+    setState(() {
+      imported = got;
+      snippet = 0;
+      importNote = got.isEmpty ? t.importFail : '${got.length}';
+      _resetType();
+    });
+  }
+
   Future<void> _importFolder() async {
     final path = await FilePicker.platform.getDirectoryPath();
     if (path == null) return;
@@ -222,6 +240,19 @@ class _HomePageState extends State<HomePage> {
       imported = got;
       snippet = 0;
       importNote = got.isEmpty ? t.importFail : '${got.length}';
+      _resetType();
+    });
+  }
+
+  void _removeImported(int i) {
+    setState(() {
+      imported = [...imported]..removeAt(i);
+      if (imported.isEmpty) {
+        snippet = 0;
+        importNote = null;
+      } else {
+        snippet = snippet.clamp(0, imported.length - 1);
+      }
       _resetType();
     });
   }
@@ -261,7 +292,8 @@ class _HomePageState extends State<HomePage> {
             runSpacing: 8,
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
-              FilledButton(onPressed: _importFolder, child: Text(t.importFolder)),
+              FilledButton(onPressed: _importFiles, child: Text(t.importFiles)),
+              OutlinedButton(onPressed: _importFolder, child: Text(t.importFolder)),
               if (imported.isNotEmpty)
                 TextButton(onPressed: _dropImport, child: Text(t.clearImport)),
               if (importNote != null)
@@ -277,17 +309,18 @@ class _HomePageState extends State<HomePage> {
             runSpacing: 8,
             children: [
               for (var i = 0; i < list.length; i++)
-                ChoiceChip(
+                InputChip(
                   label: Text(
                     imported.isEmpty
                         ? list[i].language
                         : '${list[i].language} ${File(list[i].id).uri.pathSegments.last}',
                   ),
                   selected: i == snippet,
-                  onSelected: (_) => setState(() {
+                  onPressed: () => setState(() {
                     snippet = i;
                     _resetType();
                   }),
+                  onDeleted: imported.isEmpty ? null : () => _removeImported(i),
                 ),
             ],
               ),

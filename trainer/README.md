@@ -8,7 +8,7 @@ Copyright © 2026 CAPDESIS / chochy2001. MIT License (see `/LICENSE`). Free to d
 
 ### What it is
 
-- **Typewriter** — 20 built-in languages (Dart, Go, Python, TS/JS, Java, Kotlin, Swift, SQL, HTML/CSS, PHP, Lua, Bash, C/C++, Rust, C#, Ruby, JSON). Optional: open a project folder; files stay in RAM only (skip `.git` / `node_modules`, max 40 files × 12 KB). Drop files to forget them. Nothing is uploaded.
+- **Typewriter** — 20 built-in languages. For a large repo: **Choose files** (multi-select) or open a folder then remove chips you do not want. RAM only (max 40 × 12 KB). Drop files to forget. Nothing is uploaded.
 - **Vim** — 13 katas. Each has a `solve` sequence asserted in `flutter test`. Commands: hjkl, 0^$, web, gg G, {}, insert, x X D C J, dd dw diw ciw, % (same line), yy p, u, f t F T ;, >>, counts. Not Neovim.
 
 ### What it is not

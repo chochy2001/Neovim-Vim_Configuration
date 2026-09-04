@@ -31,6 +31,7 @@ class T {
       ? 'Escribe el código tal cual. No uses Vim aquí: es un ejercicio de teclado.'
       : 'Type the code as shown. No Vim here: this is a keyboard drill.';
   String get importFolder => es ? 'Abrir carpeta del proyecto' : 'Open project folder';
+  String get importFiles => es ? 'Elegir archivos' : 'Choose files';
   String get clearImport => es ? 'Soltar archivos' : 'Drop files';
   String get privacy => es
       ? 'La carpeta se lee solo en RAM. No se copia, no se sube, no se guarda al cerrar. El código es open source: puedes comprobarlo.'

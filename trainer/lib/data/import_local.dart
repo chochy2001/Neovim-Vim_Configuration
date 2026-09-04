@@ -68,6 +68,33 @@ String? languageFor(String path) {
 
 bool skipDir(String name) => skipDirNames.contains(name);
 
+Snippet? snippetFromPath(String path) {
+  final lang = languageFor(path);
+  if (lang == null) return null;
+  final f = File(path);
+  try {
+    final len = f.lengthSync();
+    if (len <= 0 || len > maxFileBytes) return null;
+    final body = f.readAsStringSync();
+    if (body.contains('\u0000')) return null;
+    return Snippet(id: path, language: lang, body: body);
+  } on FileSystemException {
+    return null;
+  }
+}
+
+List<Snippet> loadPaths(Iterable<String> paths) {
+  final out = <Snippet>[];
+  final seen = <String>{};
+  for (final path in paths) {
+    if (out.length >= maxFiles) break;
+    if (!seen.add(path)) continue;
+    final s = snippetFromPath(path);
+    if (s != null) out.add(s);
+  }
+  return out;
+}
+
 /// Reads text files into memory only. Caller must drop the list to forget them.
 Future<List<Snippet>> loadProjectFolder(String root) async {
   final out = <Snippet>[];
@@ -90,18 +117,8 @@ Future<void> _walk(Directory dir, int depth, List<Snippet> out) async {
       if (skipDir(name) || name.startsWith('.')) continue;
       await _walk(e, depth + 1, out);
     } else if (e is File) {
-      final lang = languageFor(e.path);
-      if (lang == null) continue;
-      final len = e.lengthSync();
-      if (len <= 0 || len > maxFileBytes) continue;
-      late final String body;
-      try {
-        body = e.readAsStringSync();
-      } on FileSystemException {
-        continue;
-      }
-      if (body.contains('\u0000')) continue;
-      out.add(Snippet(id: e.path, language: lang, body: body));
+      final s = snippetFromPath(e.path);
+      if (s != null) out.add(s);
     }
   }
 }
