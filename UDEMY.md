@@ -1,6 +1,18 @@
 # Guía Udemy — Neovim desde cero (CAPDESIS)
 
-Cómo grabar el curso. El cuaderno del alumno es [COURSE.md](COURSE.md). Atajos de esta config: [WORKFLOW.md](WORKFLOW.md). App de práctica: [trainer/](trainer/). Repo: https://github.com/chochy2001/Neovim-Vim_Configuration (MIT).
+Cómo grabar el curso. El cuaderno del alumno es [COURSE.md](COURSE.md). Atajos: [WORKFLOW.md](WORKFLOW.md). Práctica: [trainer/](trainer/). Repo: https://github.com/chochy2001/Neovim-Vim_Configuration (MIT).
+
+## Antes de pulsar grabar
+
+1. Terminal con fuente **JetBrainsMono NFM**. Repo en `main`.
+2. `nvim --headless "+lua print('boot-ok')" +qa` imprime `boot-ok`.
+3. `cd trainer && flutter test` → All tests passed.
+4. IdeaVim: `:source ~/.ideavimrc` (copia del `.ideavimrc` del repo).
+5. Slides intro: abrir `course/udemy/slides-intro.html` (`N`/`P`). El resto de secciones: demo en terminal, no PowerPoint de stock.
+6. En cada vídeo de atajos, si dudas: `:Telescope keymaps`. No leas el README de `.config/nvim` (tablas `:action` viejas).
+
+**Título Udemy sugerido:** Neovim desde cero — de `hjkl` a IDE (config CAPDESIS)  
+**Subtítulo:** Gramática de Vim primero; después Telescope, Git, LSP y Flutter. Repo MIT incluido.
 
 **No digas en cámara** que IntelliJ quedó validado por un script, ni que CAPDESIS Practice es Neovim, ni que los builds van firmados. Neovim arranca: `nvim --headless "+lua print('boot-ok')" +qa`. La app de práctica: `cd trainer && flutter test`.
 
