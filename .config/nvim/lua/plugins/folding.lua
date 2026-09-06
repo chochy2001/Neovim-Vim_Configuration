@@ -3,7 +3,7 @@ return {
     {
         "kevinhwang91/nvim-ufo",
         dependencies = { "kevinhwang91/promise-async" },
-        event = "BufReadPost",
+        event = { "BufReadPost", "BufNewFile" },
         opts = {
             provider_selector = function(_, filetype, _)
                 -- Use treesitter for most languages, indent as fallback

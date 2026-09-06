@@ -47,7 +47,7 @@ return {
 					condition = function()
 						return vim.fn.executable("prettier") == 1
 					end,
-					extra_filetypes = { "toml" },
+					extra_filetypes = {},
 					extra_args = {
 						"--tab-width", "2",
 						"--semi", "true",

@@ -276,7 +276,7 @@ return {
             end
 
             require('code_runner').setup({
-                mode = "toggle",
+                mode = "toggleterm",
                 focus = true,
                 startinsert = true,
                 filetype = filetypes,

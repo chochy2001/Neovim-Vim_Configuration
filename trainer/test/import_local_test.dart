@@ -18,6 +18,7 @@ void main() {
   test('skip heavy vendor dirs', () {
     expect(skipDir('node_modules'), isTrue);
     expect(skipDir('.git'), isTrue);
+    expect(skipDir('venv'), isTrue);
     expect(skipDir('lib'), isFalse);
   });
 

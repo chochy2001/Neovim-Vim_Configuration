@@ -22,7 +22,7 @@ return {
 				-- svn = false,
 				-- cvs = false,
 				-- dbout = false,
-				["--"] = false, -- Files without extension
+				[""] = false,
 			}
 
 			-- Disable the default <Tab> mapping if it interferes with other plugins
@@ -44,8 +44,16 @@ return {
 			for _, root in ipairs(nvm_roots) do
 				local dirs = vim.fn.glob(root .. "/v22*", false, true)
 				if #dirs > 0 then
-					vim.g.copilot_node_command = dirs[#dirs] .. "/bin/node"
-					break
+					local unix = dirs[#dirs] .. "/bin/node"
+					local win = dirs[#dirs] .. "\\node.exe"
+					if vim.fn.executable(unix) == 1 then
+						vim.g.copilot_node_command = unix
+						break
+					end
+					if vim.fn.executable(win) == 1 then
+						vim.g.copilot_node_command = win
+						break
+					end
 				end
 			end
 		end,

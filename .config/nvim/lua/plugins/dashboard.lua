@@ -29,13 +29,23 @@ return {
                         { desc = "Live grep", key = "g", action = "Telescope live_grep" },
                         { desc = "Recent files", key = "r", action = "Telescope oldfiles" },
                         { desc = "Explorer", key = "e", action = "Neotree toggle" },
-                        { desc = "AI (opencode)", key = "a", action = "lua require('ai-terminals').toggle('opencode')" },
+                        {
+                            desc = "AI (opencode)",
+                            key = "a",
+                            action = function()
+                                pcall(require, "toggleterm")
+                                require("ai-terminals").toggle("opencode")
+                            end,
+                        },
                         { desc = "Mason / LSP", key = "m", action = "Mason" },
                         { desc = "Lazy plugins", key = "l", action = "Lazy" },
                         { desc = "Quit", key = "q", action = "qa" },
                     },
                     footer = function()
                         local stats = require("lazy").stats()
+                        if not stats.startuptime or stats.startuptime == 0 then
+                            return { "", string.format("  %d plugins (lazy)", stats.count) }
+                        end
                         return {
                             "",
                             string.format("  %d/%d plugins loaded in %.0f ms", stats.loaded, stats.count, stats.startuptime),

@@ -2,7 +2,7 @@
 
 Leader key: **Space**
 
-All keybindings are synchronized between Neovim and JetBrains IDEs (.ideavimrc).
+Leader prefixes are shared with JetBrains IdeaVim (`.ideavimrc`). AI CLIs and CopilotChat are Neovim-only.
 
 ---
 

@@ -90,9 +90,11 @@ class _HomePageState extends State<HomePage> {
 
   KeyEventResult _onKey(FocusNode node, KeyEvent event) {
     if (event is! KeyDownEvent) return KeyEventResult.ignored;
-    if (HardwareKeyboard.instance.isControlPressed ||
-        HardwareKeyboard.instance.isMetaPressed ||
-        HardwareKeyboard.instance.isAltPressed) {
+    final ch = event.character;
+    final printable = ch != null && ch.isNotEmpty && ch.codeUnitAt(0) >= 32;
+    if (!printable &&
+        (HardwareKeyboard.instance.isControlPressed ||
+            HardwareKeyboard.instance.isMetaPressed)) {
       return KeyEventResult.ignored;
     }
     if (tab == 0) {

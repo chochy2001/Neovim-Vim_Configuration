@@ -283,7 +283,9 @@ return {
                     vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "Rename Symbol" }))
                     vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, vim.tbl_extend("force", opts, { desc = "Code Action" }))
 
-                    -- Navigation
+                    -- Navigation (docs/WORKFLOW/IdeaVim: gd/gi — not 0.12 CTRL-] / gri)
+                    vim.keymap.set("n", "gd", vim.lsp.buf.definition, vim.tbl_extend("force", opts, { desc = "Go to Definition" }))
+                    vim.keymap.set("n", "gi", vim.lsp.buf.implementation, vim.tbl_extend("force", opts, { desc = "Go to Implementation" }))
                     vim.keymap.set("n", "go", vim.lsp.buf.type_definition, vim.tbl_extend("force", opts, { desc = "Go to Type Definition" }))
                     vim.keymap.set("n", "gs", vim.lsp.buf.signature_help, vim.tbl_extend("force", opts, { desc = "Signature Help" }))
 
@@ -378,7 +380,7 @@ return {
             },
             -- stylua ships an LSP mode but formatting is already covered
             -- by none-ls: avoid duplicate formatting clients
-            automatic_enable = { exclude = { "stylua" } },
+            automatic_enable = { exclude = { "stylua", "dartls" } },
         },
     },
 

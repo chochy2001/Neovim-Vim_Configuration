@@ -105,17 +105,8 @@ return {
                         }
                     },
                     custom_filter = function(buf_number, buf_numbers)
-                        -- filter out filetypes you don't want to see
-                        if vim.bo[buf_number].filetype ~= "oil" then
-                            return true
-                        end
-                        -- filter out by buffer name
-                        if vim.fn.bufname(buf_number) ~= "" then
-                            return true
-                        end
-                        -- filter out based on arbitrary rules
-                        -- e.g. filter out vim help files
-                        if vim.bo[buf_number].filetype == "help" then
+                        local ft = vim.bo[buf_number].filetype
+                        if ft == "oil" or ft == "help" or ft == "qf" then
                             return false
                         end
                         return true

@@ -19,6 +19,9 @@ const skipDirNames = {
   'target',
   '.gradle',
   'xcuserdata',
+  'venv',
+  'env',
+  'site-packages',
 };
 
 const maxFileBytes = 12 * 1024;
@@ -79,6 +82,8 @@ Snippet? snippetFromPath(String path) {
     if (body.contains('\u0000')) return null;
     return Snippet(id: path, language: lang, body: body);
   } on FileSystemException {
+    return null;
+  } on FormatException {
     return null;
   }
 }
