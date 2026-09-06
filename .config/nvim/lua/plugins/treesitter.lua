@@ -31,7 +31,9 @@ return {
                 end
             end
             if #to_install > 0 then
-                ts.install(to_install)
+                vim.schedule(function()
+                    ts.install(to_install)
+                end)
             end
 
             -- Enable treesitter highlighting via FileType autocmd (required in new nvim-treesitter)

@@ -4,6 +4,8 @@
 >
 > **ES**: Configuración profesional de Neovim con lazy.nvim, LSP nativo (Neovim 0.12+), y más de 70 plugins con **más de 130 keymaps con leader (auditados: cero conflictos)** agrupados por prefijos lógicos para desarrollo en múltiples lenguajes + sincronización completa con Android Studio/IntelliJ IDEA. **✅ Multiplataforma: Windows, macOS y Linux (validado en septiembre de 2026)**.
 
+> **Maps:** tables below still show old `:action` cells. Source of truth: repo-root [README.md](../../README.md), [WORKFLOW.md](../../WORKFLOW.md), `:Telescope keymaps`. IdeaVim: `.ideavimrc` with `nmap … <Action>(id)` (not `:action` in mappings).
+
 ---
 
 ## 📚 Table of Contents | Índice
