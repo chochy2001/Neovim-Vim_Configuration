@@ -4,6 +4,19 @@ return {
     {
         "akinsho/flutter-tools.nvim",
         ft = "dart",
+        keys = {
+            { "<leader>flr", "<cmd>FlutterReload<cr>", desc = "Flutter: Hot Reload" },
+            { "<leader>fls", "<cmd>FlutterRestart<cr>", desc = "Flutter: Hot Restart" },
+            { "<leader>fld", "<cmd>FlutterDevTools<cr>", desc = "Flutter: DevTools" },
+            { "<leader>fla", "<cmd>FlutterRun<cr>", desc = "Flutter: Start App" },
+            { "<leader>flsd", "<cmd>FlutterDevices<cr>", desc = "Flutter: Select Device" },
+            { "<leader>fle", "<cmd>FlutterEmulators<cr>", desc = "Flutter: Start Emulator" },
+            { "<leader>flq", "<cmd>FlutterQuit<cr>", desc = "Flutter: Quit/Stop" },
+            { "<leader>flo", "<cmd>FlutterOutlineToggle<cr>", desc = "Flutter: Toggle Outline" },
+            { "<leader>flc", "<cmd>FlutterLogClear<cr>", desc = "Flutter: Clear Log" },
+            { "<leader>flp", "<cmd>FlutterCopyProfilerUrl<cr>", desc = "Flutter: Copy Profiler URL" },
+            { "<leader>fll", "<cmd>FlutterLspRestart<cr>", desc = "Flutter: Restart LSP" },
+        },
         dependencies = {
             "nvim-lua/plenary.nvim",
             "mfussenegger/nvim-dap", -- Required for debugging

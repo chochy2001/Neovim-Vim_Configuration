@@ -2,7 +2,7 @@
 
 Leader key: **Space**
 
-Leader prefixes are shared with JetBrains IdeaVim (`.ideavimrc`). AI CLIs and CopilotChat are Neovim-only.
+Leader prefixes and the chords listed in `.ideavimrc` match Neovim where IntelliJ has an `<Action>(id)`. AI (`<leader>a*`) and CopilotChat (`<leader>c*`) are Neovim-only. Reload IdeaVim with `:source ~/.ideavimrc`.
 
 ---
 

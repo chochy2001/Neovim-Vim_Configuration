@@ -8,8 +8,6 @@ return {
             -- Git Core (2 keys)
             { "<leader>gs", "<cmd>Git<cr>", desc = "Git Status" },
             { "<leader>gc", "<cmd>Git commit<cr>", desc = "Git Commit" },
-            { "<leader>gp", "<cmd>Neogit push<cr>", desc = "Git Push" },  -- Moved from gps
-            { "<leader>gl", "<cmd>Neogit pull<cr>", desc = "Git Pull/Load" },  -- Moved from gpl
             { "<leader>gf", "<cmd>Git fetch<cr>", desc = "Git Fetch" },
             
             -- Git Blame & Branches (gb*)
@@ -38,6 +36,14 @@ return {
     {
         "lewis6991/gitsigns.nvim",
         event = { "BufReadPre", "BufNewFile" },
+        keys = {
+            { "<leader>gsa", function() require("gitsigns").stage_hunk() end, desc = "Git: Stage Add (hunk)" },
+            { "<leader>gsr", function() require("gitsigns").reset_hunk() end, desc = "Git: Stage Reset (hunk)" },
+            { "<leader>gsu", function() require("gitsigns").stage_hunk() end, desc = "Git: Undo Stage (hunk)" },
+            { "<leader>gsp", function() require("gitsigns").preview_hunk() end, desc = "Git: Stage Preview" },
+            { "<leader>gn", function() require("gitsigns").nav_hunk("next") end, desc = "Git: Next hunk" },
+            { "<leader>gnp", function() require("gitsigns").nav_hunk("prev") end, desc = "Git: Prev hunk" },
+        },
         config = function()
             require("gitsigns").setup({
                 signs = {
@@ -180,6 +186,10 @@ return {
             "nvim-telescope/telescope.nvim",
         },
         cmd = "Neogit",
+        keys = {
+            { "<leader>gp", "<cmd>Neogit push<cr>", desc = "Git Push" },
+            { "<leader>gl", "<cmd>Neogit pull<cr>", desc = "Git Pull/Load" },
+        },
         config = function()
             require("neogit").setup({
                 disable_hint = false,
@@ -206,6 +216,12 @@ return {
         "akinsho/git-conflict.nvim",
         version = "*",
         event = "BufReadPre",
+        keys = {
+            { "<leader>gco", "<Plug>(git-conflict-ours)", desc = "Git: Conflict choose Ours" },
+            { "<leader>gct", "<Plug>(git-conflict-theirs)", desc = "Git: Conflict choose Theirs" },
+            { "<leader>gcb", "<Plug>(git-conflict-both)", desc = "Git: Conflict choose Both" },
+            { "<leader>gcn", "<Plug>(git-conflict-none)", desc = "Git: Conflict choose None" },
+        },
         config = function()
             require('git-conflict').setup({
                 -- false: plugin defaults (`ct`/`cb`/`c0`) steal native vim
