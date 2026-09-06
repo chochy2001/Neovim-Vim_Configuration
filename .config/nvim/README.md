@@ -269,7 +269,7 @@ Dashboard (empty `nvim` only): `f` find · `g` grep · `r` recent · `e` explore
 | `<leader>pv` | Neo-tree toggle | `:action ActivateProjectToolWindow` | **EN**: Toggle project tree / **ES**: Alternar árbol de proyecto |
 | `<leader>pe` | Neo-tree focus | `:action ActivateProjectToolWindow` | **EN**: Focus project tree / **ES**: Enfocar árbol de proyecto |
 | `<leader>bf` | Neo-tree buffers | `:action Switcher` | **EN**: Show buffer tree / **ES**: Mostrar árbol de buffers |
-| `-` | Oil file explorer | `:action ActivateProjectToolWindow` | **EN**: Oil directory editor / **ES**: Editor de directorio Oil |
+| `<leader>-` | Oil file explorer | `<Action>(ActivateProjectToolWindow)` | **EN**: Oil directory editor / **ES**: Editor de directorio Oil |
 | `<leader>-` | Oil parent directory | `:action ActivateProjectToolWindow` | **EN**: Oil parent directory / **ES**: Directorio padre Oil |
 | `<leader>oe` | Oil file explorer | `:action ActivateProjectToolWindow` | **EN**: Oil file explorer / **ES**: Explorador de archivos Oil |
 
@@ -497,7 +497,7 @@ Dashboard (empty `nvim` only): `f` find · `g` grep · `r` recent · `e` explore
 - **Quick File Access**: Multiple options for different workflows:
   - `<leader>ff` for general file search
   - `,,` for quick file access (like IntelliJ double-shift)
-  - `<leader><leader>` for quick search with leader
+  - `<leader><leader>` clears search highlight (`:nohl`), not a finder
   - `<leader>.` for one-handed quick search
 - **Navigation Speed**:
   - `<S-h>`/`<S-l>` for buffer navigation

@@ -82,8 +82,8 @@ All keybindings are synchronized between Neovim and JetBrains IDEs (.ideavimrc).
 | `<leader>pf` | Normal | Focus project tree |
 | `<leader>fr` | Normal | Reveal current file in tree |
 | `<leader>bf` | Normal | Show buffers (floating) |
-| `<leader>we` | Normal | Focus editor window |
-| `<leader>wt` | Normal | Focus tree window |
+| `<leader>we` | Normal (neo-tree buffer) | Focus editor window |
+| `<leader>wt` | Normal (neo-tree buffer) | Focus tree window |
 
 ### Oil.nvim (edit directory as buffer)
 
@@ -140,7 +140,7 @@ All keybindings are synchronized between Neovim and JetBrains IDEs (.ideavimrc).
 | `<leader>gsu` | Normal | Undo stage hunk |
 | `<leader>gsp` | Normal | Preview hunk |
 | `<leader>gsb` | Normal | Reset entire buffer |
-| `<leader>ih` | Operator/Visual | Select hunk (text object) |
+| `ih` | Operator/Visual | Select hunk (text object) |
 
 ### Conflict Resolution
 

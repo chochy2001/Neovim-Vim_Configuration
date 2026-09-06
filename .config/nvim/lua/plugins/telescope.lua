@@ -36,6 +36,7 @@ return {
             { "<leader>fk", desc = "Find Keymaps" },
             { "<leader>ps", desc = "Find Project Symbols" },
             { "<leader>.", desc = "Quick Find Files" },
+            { ",,", desc = "Quick Find Files" },
         },
         config = function()
             require("telescope").setup({

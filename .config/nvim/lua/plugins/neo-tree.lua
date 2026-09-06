@@ -13,6 +13,7 @@ return {
 		-- IntelliJ-like navigation between tree and editor
 		{ "<leader>fr", "<cmd>Neotree filesystem reveal<cr>", desc = "Reveal current file in tree" },
 		{ "<leader>pe", "<cmd>Neotree filesystem focus<cr>", desc = "Focus NeoTree (Project Explore)" },
+		{ "<leader>pf", "<cmd>Neotree filesystem focus<cr>", desc = "Project Focus" },
 	},
 	config = function()
 		-- Configuration with error handling
@@ -154,12 +155,7 @@ return {
 			},
 		})
 
-		-- Additional keymaps for universal navigation (compatible with all terminals)
-		-- REMOVED: <leader>1 conflicts with harpoon from .ideavimrc
-		-- Universal alternatives without macOS dependency
-		vim.keymap.set("n", "<leader>pf", "<cmd>Neotree filesystem focus<cr>", { desc = "Project Focus" })
-
-		-- Keymap to reveal current file in tree (already exists in keys above)
+		-- <leader>pv/pe/pf/fr/bf live in spec `keys` (first press loads neo-tree).
 
 		-- Auto-commands to improve navigation (safe version)
 		vim.api.nvim_create_autocmd("FileType", {
