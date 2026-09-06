@@ -87,7 +87,7 @@ return {
             -- Stage operations (gsa, gsr, gsu, gsp, gsb)
             vim.keymap.set("n", "<leader>gsa", gs.stage_hunk, vim.tbl_extend("force", opts, { desc = "Git: Stage Add (hunk)" }))
             vim.keymap.set("n", "<leader>gsr", gs.reset_hunk, vim.tbl_extend("force", opts, { desc = "Git: Stage Reset (hunk)" }))
-            vim.keymap.set("n", "<leader>gsu", gs.undo_stage_hunk, vim.tbl_extend("force", opts, { desc = "Git: Undo Stage (hunk)" }))
+            vim.keymap.set("n", "<leader>gsu", gs.stage_hunk, vim.tbl_extend("force", opts, { desc = "Git: Undo Stage (hunk)" }))
             vim.keymap.set("n", "<leader>gsp", gs.preview_hunk, vim.tbl_extend("force", opts, { desc = "Git: Stage Preview" }))
             vim.keymap.set("n", "<leader>gsb", gs.reset_buffer, vim.tbl_extend("force", opts, { desc = "Git: Stage Buffer reset" }))
             
@@ -182,20 +182,10 @@ return {
         cmd = "Neogit",
         config = function()
             require("neogit").setup({
-                disable_signs = false,
                 disable_hint = false,
                 disable_context_highlighting = false,
-                disable_commit_confirmation = false,
-                auto_refresh = true,
                 sort_branches = "-committerdate",
-                disable_builtin_notifications = false,
-                use_magit_keybindings = false,
-                commit_popup = {
-                    kind = "split",
-                },
-                console = {
-                    kind = "split",
-                },
+                commit_editor = { kind = "split" },
                 integrations = {
                     telescope = true,
                     diffview = true,

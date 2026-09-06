@@ -289,25 +289,26 @@ return {
                     vim.keymap.set("n", "go", vim.lsp.buf.type_definition, vim.tbl_extend("force", opts, { desc = "Go to Type Definition" }))
                     vim.keymap.set("n", "gs", vim.lsp.buf.signature_help, vim.tbl_extend("force", opts, { desc = "Signature Help" }))
 
-                    -- Format: prefer none-ls when it is attached so we do not
-                    -- run gopls+gofmt, clangd+clang-format, jsonls+prettier, etc.
                     vim.keymap.set("n", "<leader>fm", function()
                         local bufnr = ev.buf
-                        local has_null = false
-                        for _, c in ipairs(vim.lsp.get_clients({ bufnr = bufnr })) do
-                            if c.name == "null-ls" then
-                                has_null = true
-                                break
+                        local ft = vim.bo[bufnr].filetype
+                        local null_formats = false
+                        local ok_nl, nl = pcall(require, "null-ls")
+                        if ok_nl then
+                            local ok_src, src = pcall(require, "null-ls.sources")
+                            if ok_src and src.get_available then
+                                local avail = src.get_available(ft, nl.methods.FORMATTING) or {}
+                                null_formats = #avail > 0
                             end
                         end
                         vim.lsp.buf.format({
                             bufnr = bufnr,
                             async = true,
                             filter = function(c)
-                                if has_null then
+                                if null_formats then
                                     return c.name == "null-ls"
                                 end
-                                return true
+                                return c.name ~= "null-ls"
                             end,
                         })
                     end, vim.tbl_extend("force", opts, { desc = "Format document" }))

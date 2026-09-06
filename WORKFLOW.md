@@ -174,7 +174,7 @@ Leader prefixes are shared with JetBrains IdeaVim (`.ideavimrc`). AI CLIs and Co
 |-----|------|--------|
 | `<leader>rn` | Normal | Rename symbol |
 | `<leader>ca` | Normal/Visual | Code action |
-| `<leader>fm` | Normal | Format document |
+| `<leader>fm` | Normal | Format (none-ls if it has a formatter for this filetype, else LSP) |
 | `<C-space>` | Insert | Trigger completion |
 
 ---

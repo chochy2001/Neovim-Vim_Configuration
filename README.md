@@ -1,6 +1,6 @@
 # Neovim + Vim + IntelliJ Configuration
 
-Cross-platform (macOS / Linux / Windows) development environment with synchronized keybindings across Neovim, Vim, and JetBrains IDEs.
+Cross-platform (macOS / Linux / Windows) Neovim 0.12 config. IdeaVim shares **leader prefixes** (not every chord). Classic `.vimrc` is a smaller legacy set.
 
 **Requires Neovim 0.12+** | Updated September 2026 (Windows / macOS / Linux)
 
@@ -173,7 +173,7 @@ Leader key: `Space`
 | `K` | Hover documentation |
 | `<leader>rn` | Rename symbol |
 | `<leader>ca` | Code action |
-| `<leader>fm` | Format document |
+| `<leader>fm` | Format: none-ls if a formatter exists for this filetype, else the LSP |
 
 ### Harpoon (Quick Marks)
 
@@ -425,8 +425,7 @@ IDE mappings use `nmap … <Action>(id)` ([required](https://github.com/JetBrain
 │   │   ├── vim-options.lua               # Core vim settings & keymaps
 │   │   ├── lsp-utils.lua                 # LSP helper commands
 │   │   ├── fix-flutter-neotree-conflict.lua  # Dart LSP dedup
-│   │   ├── plugins.lua                   # Lazy.nvim plugin loader
-│   │   └── plugins/                      # 28 plugin config files
+│   │   └── plugins/                      # lazy.nvim specs (`require("lazy").setup("plugins")`)
 │   │       ├── lsp-config.lua            # vim.lsp.config() + vim.lsp.enable()
 │   │       ├── treesitter.lua            # Parser management + TS highlighting
 │   │       ├── telescope.lua             # Fuzzy finder (v0.2.2, latest)
@@ -434,12 +433,14 @@ IDE mappings use `nmap … <Action>(id)` ([required](https://github.com/JetBrain
 │   │       ├── git-stuff.lua             # Fugitive, gitsigns, diffview, neogit
 │   │       ├── trouble.lua               # Diagnostics list (Trouble v3)
 │   │       ├── ai-terminal.lua           # AI CLIs in floating terminals
-│   │       └── ...                       # remaining specs (28 files total)
-│   ├── README.md                         # Detailed nvim-specific docs
-├── .ideavimrc                            # JetBrains IDE config (synced)
+│   │       └── ...
+│   ├── README.md                         # Extra nvim notes (tables may lag; prefer WORKFLOW.md)
+├── .ideavimrc                            # IdeaVim (leader prefixes)
 ├── .vimrc                                # Legacy Vim config
-├── WORKFLOW.md                           # Full keymap-by-keymap workflow guide
-├── AGENTS.md                             # How to extend this config (EN + ES)
+├── WORKFLOW.md                           # Keymap tables
+├── COURSE.md / COURSE.pdf / UDEMY.md     # Class notebook + recording guide
+├── trainer/                              # CAPDESIS Practice (Flutter desktop)
+├── LICENSE / COPYRIGHT
 └── .gitignore
 ```
 

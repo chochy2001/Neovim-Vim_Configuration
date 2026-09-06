@@ -343,7 +343,7 @@ Prefijos (Espacio y una letra):
 | `a` | terminales de IA (solo Neovim) |
 | `c` | Copilot Chat (solo Neovim) |
 
-Flujo típico de un archivo: `<leader>ff` lo abres → editas con `ciw` y compañía → `gd` va a la definición si hay LSP → `<leader>fm` formatea → `<leader>gs` git.
+Flujo típico: `<leader>ff` abre → `ciw` edita → `gd` definición (si hay LSP) → `<leader>fm` formatea (none-ls o LSP) → `<leader>gs` git.
 
 ---
 
