@@ -16,12 +16,13 @@ Las decisiones técnicas se apoyan en [SOURCES.md](SOURCES.md).
 | Formateadores reales | StyLua/Lua y Prettier/JSON modifican el texto exactamente como se espera |
 | LSP en archivos reales | 15 servidores: cliente único, adjunto y petición respondida |
 | Referencia de edición | 50 casos coinciden con Neovim en texto, cursor y modo, incluidos los 13 ejercicios |
-| Entrenador | 88 tests pasan; análisis sin incidencias; formato Dart correcto |
-| Cobertura del entrenador | 768/819 líneas: 93,77%; mínimo de CI 90%, sin excluir la interfaz |
+| Entrenador | 89 tests pasan; análisis sin incidencias; formato Dart correcto |
+| Cobertura del entrenador | 770/821 líneas: 93,79%; mínimo de CI 90%, sin excluir la interfaz |
 | Verificador de cobertura | 6 tests Python pasan; rechaza informes vacíos, incompletos, inconsistentes y umbrales incumplidos |
-| Compilación de escritorio | Windows release generado correctamente |
+| Compilación de escritorio | Release de Windows, Linux y macOS generado y empaquetado en runners nativos |
 | Vim clásico | Arranque básico con el Vim de Git for Windows, sin vim-plug instalado |
 | Herramientas Mason de la configuración | 16 versiones coinciden con el registro actualizado; Astro actualizado a 2.16.16 |
+| Plugins de lazy | 80 comprobados mediante fetch; sin errores ni actualizaciones pendientes según ramas/versiones configuradas |
 | Material del curso | PDF de 17 páginas regenerado, texto/enlaces comprobados y páginas inspeccionadas; diapositivas comprobadas en Chrome |
 
 Los tests LSP se ejecutaron sobre archivos del propio repo (configuración Lua,
@@ -102,10 +103,12 @@ cancelación, `cw`, `cc`, deshacer, pegado y movimientos entre líneas, entre ot
 Las aserciones comparan resultados exactos; no basta con un prefijo del texto.
 La ampliación a 50 casos detectó y corrigió `ciw` seguido de deshacer en un
 búfer vacío, y añadió `<BS>` a la interpretación de secuencias. Se prueba
-también el modo devuelto por Neovim. La cobertura creció de 80,42% a 93,77%
+también el modo devuelto por Neovim. La cobertura creció de 80,42% a 93,79%
 con interacciones de teclado, importación, cancelación, eliminación y límites
 de archivos/carpetas. Solo se sustituye el diálogo nativo del selector; se leen
 archivos temporales reales.
+Otra regresión demostró que Tab no introducía tabulaciones en mecanografía:
+se corrigió y ahora pueden completarse los archivos importados que las contienen.
 
 El umbral usa el porcentaje sin redondear y exige que estén presentes todos los
 archivos Dart de `trainer/lib`; no usa exclusiones para elevar el resultado.
@@ -141,6 +144,8 @@ no se deduce calidad visual solo de extraer texto.
 - Ejecución con rutas protegidas y compilación condicionada al éxito; el
   comando renderizado evita la expansión adicional de variables de code_runner.
 - file_picker 12, importaciones normalizadas y motor de prácticas corregido.
+- Remoto de la copia local de flutter-tools actualizado de `akinsho` a
+  `nvim-flutter`, coincidiendo con el spec; lazy vuelve a comprobarlo sin errores.
 - Se retiraron del índice de Git 13 gitlinks sin `.gitmodules`, la copia de
   vim-plug, el historial netrw y `.zshrc`. Las copias locales se conservaron.
   Esto no reescribe el historial Git.
@@ -154,14 +159,19 @@ Mason y los SDK externos no quedan fijados por ese archivo.
 0.13.0 y `test_api` 0.7.12 permanecen restringidos por la versión de Flutter;
 sus versiones publicadas más nuevas no se fuerzan con overrides.
 
-## Alcance pendiente de otros entornos
+## Entornos y límites de la validación
 
-- La revisión inicial `12a376f` pasó la matriz CI Linux/macOS/Windows, el
-  entrenador y la documentación en [GitHub Actions](https://github.com/chochy2001/Neovim-Vim_Configuration/actions/runs/34083835237).
+- La revisión `be1ce68` pasó la matriz CI Linux/macOS/Windows, el entrenador,
+  el umbral de cobertura y la documentación en [GitHub Actions](https://github.com/chochy2001/Neovim-Vim_Configuration/actions/runs/34084380721).
   Cada push vuelve a validar el commit publicado; el estado actual está en
   [validate](https://github.com/chochy2001/Neovim-Vim_Configuration/actions/workflows/validate.yml).
-- La compilación nativa Linux/macOS y las acciones de JetBrains requieren sus
-  entornos respectivos. El arranque de Vim básico no certifica sus plugins legados.
+- Las tres compilaciones de `be1ce68` pasaron y generaron paquetes descargables
+  en [desktop-release](https://github.com/chochy2001/Neovim-Vim_Configuration/actions/runs/34084340736).
+  Los paquetes no están firmados; compilar no sustituye probar cada diálogo
+  nativo en una sesión gráfica. Las siguientes ejecuciones quedan en el
+  [historial del workflow](https://github.com/chochy2001/Neovim-Vim_Configuration/actions/workflows/desktop-release.yml).
+- Las acciones de JetBrains requieren su IDE. El arranque de Vim básico no
+  certifica sus plugins legados.
 - Los LSP no enumerados arriba, las sesiones de depuración, los SDK adicionales
   y los flujos autenticados de GitHub/Copilot/CLI necesitan pruebas específicas.
 - El entrenador implementa un subconjunto de Vim; 50 ejemplos no equivalen a

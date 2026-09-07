@@ -100,7 +100,8 @@ class _HomePageState extends State<HomePage> {
     if (!printable &&
         event.logicalKey != LogicalKeyboardKey.enter &&
         event.logicalKey != LogicalKeyboardKey.escape &&
-        event.logicalKey != LogicalKeyboardKey.backspace) {
+        event.logicalKey != LogicalKeyboardKey.backspace &&
+        !(tab == 0 && event.logicalKey == LogicalKeyboardKey.tab)) {
       return KeyEventResult.ignored;
     }
     if (tab == 0) {
@@ -126,6 +127,7 @@ class _HomePageState extends State<HomePage> {
     }
     var ch = event.character;
     if (event.logicalKey == LogicalKeyboardKey.enter) ch = '\n';
+    if (event.logicalKey == LogicalKeyboardKey.tab) ch = '\t';
     if (ch == null || ch.isEmpty || typed.toString() == target) return;
     started ??= DateTime.now();
     typedCount++;

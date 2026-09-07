@@ -19,6 +19,7 @@ ejecución se registran por separado en [VALIDATION.md](VALIDATION.md).
 | Conflictos Git | [git-conflict](https://github.com/akinsho/git-conflict.nvim) | Compatibilidad localizada de 2.1; no reemplazar APIs globales |
 | IdeaVim | [Executing IDE actions](https://github.com/JetBrains/ideavim#executing-ide-actions) | nmap con Action; validación de acciones dentro del IDE |
 | Selector de archivos | [file_picker 12](https://pub.dev/packages/file_picker) | Migración a API estática y lista vacía al cancelar |
+| SDK de Flutter | [Archivo oficial](https://docs.flutter.dev/install/archive) | Flutter estable 3.47.2 / Dart 3.13.2; se respetan las versiones de dependencias fijadas por el SDK |
 | Duración y evaluación | [Udemy: outline your course](https://teach.udemy.com/course-creation/outline-your-course/) | Introducción 2-4 min; lecciones 3-6 min y actividades prácticas |
 
 ## Decisiones que no son garantías

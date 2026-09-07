@@ -9,7 +9,8 @@ sobre código y un subconjunto de edición Vim. Funciona sin servicios remotos.
   carpeta. Los archivos importados se guardan solo en RAM, no se ejecutan ni suben.
   Máximo 40 archivos de 12 KiB, profundidad de carpetas 6; se omiten directorios
   de dependencias, compilación y control de versiones. BOM y finales CRLF se
-  normalizan. Los chips permiten descartar archivos.
+  normalizan; Enter introduce un salto de línea y Tab una tabulación literal.
+  Los chips permiten descartar archivos.
 - **Vim:** 13 katas con texto inicial, objetivo, pista y secuencia de solución.
   La comprobación exige el texto exacto y estar en modo Normal.
 - **Evaluación:** el entrenador sirve para practicar. El proyecto final del curso
@@ -48,10 +49,10 @@ flutter build macos --release
 flutter build linux --release
 ```
 
-Los 88 tests incluyen importación, interacción de widgets y 50 comparaciones
+Los 89 tests incluyen importación, interacción de widgets y 50 comparaciones
 con resultados de **Neovim real** (37 casos de borde y las 13 katas).
 No se calcula el resultado esperado usando el propio motor.
-La cobertura de líneas medida es **93,77%** (768/819). CI exige al menos 90%
+La cobertura de líneas medida es **93,79%** (770/821). CI exige al menos 90%
 sobre los cinco archivos de `lib`, incluida la interfaz; rechaza informes
 ausentes, vacíos, incompletos o inconsistentes. El verificador tiene seis tests
 Python propios. La cobertura no demuestra equivalencia con todo Vim.
@@ -79,7 +80,7 @@ CI: [validación](../.github/workflows/validate.yml) en pushes/PRs y
 Offline desktop keyboard trainer with 20 built-in language samples and 13 Vim
 katas. Imported files stay in memory; they are neither executed nor uploaded.
 The Vim engine is a deliberately limited subset, checked against 50 fixtures
-produced by real Neovim, with 88 tests in total. Measured line coverage is 93.77%;
+produced by real Neovim, with 89 tests in total. Measured line coverage is 93.79%;
 CI enforces 90% across all application sources. See the commands above to run,
 test, regenerate reference fixtures and build on each native desktop platform.
 

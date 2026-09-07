@@ -187,6 +187,19 @@ void main() {
     expect(codeSpans(tester).first.style!.color, const Color(0xFF58A6FF));
   });
 
+  testWidgets('typing can complete imported source containing a tab', (
+    tester,
+  ) async {
+    select('indented.go', '\t');
+    await openApp(tester);
+    await tester.tap(find.text('Elegir archivos'));
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.pump();
+    expect(codeSpans(tester).single.text, '\t');
+    expect(codeSpans(tester).single.style!.color, const Color(0xFF3FB950));
+  });
+
   testWidgets('Vim Enter, Backspace, reset and exercise navigation', (
     tester,
   ) async {
