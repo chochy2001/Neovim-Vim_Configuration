@@ -52,13 +52,13 @@ nvim --headless "+lua local v=vim.version(); print('boot-ok '..v.major..'.'..v.m
 # HTML:   .../index.html                   → html
 ```
 
-Keymap audit: dump `nvim_get_keymap` for modes n/v/x and assert no two maps share `(mode, lhs)` with different rhs.
+Run `python scripts/verify.py` and `python scripts/vim_reference.py --check`. Final keymap dumps cannot detect overwritten maps; compare source declarations and test real actions. See docs/VALIDATION.md.
 
 ### Performance rules
 
-- Default every new plugin to `event` / `cmd` / `keys` / `ft`. Never add a bare spec that loads at startup unless it is the colorscheme or `nvim-web-devicons`.
-- `mason-tool-installer` `run_on_start` is the only remaining startup I/O by design (one-shot installs).
-- Treesitter parsers compile via `tree-sitter-cli` (`npm i -g tree-sitter-cli`).
+- Default every new plugin to `event` / `cmd` / `keys` / `ft`. Never add a bare spec that loads at startup unless it is the colorscheme, `nvim-web-devicons`, or nvim-treesitter (upstream requires eager loading).
+- Automatic downloads are limited to missing lazy plugins, missing/outdated parser metadata and the Mason subset; `NVIM_OFFLINE=1` disables these startup downloads.
+- Treesitter parsers need a C compiler and tree-sitter CLI >= 0.26.1 installed outside npm (official binaries/Cargo/package manager). nvim-treesitter must use lazy=false per upstream.
 
 ### Cross-platform checklist
 
@@ -100,11 +100,11 @@ Configuración de Neovim 0.12+ multiplataforma (`lazy.nvim`) más `.ideavimrc` s
 
 ### Cómo validar (sin falsos positivos)
 
-Arranque headless (debe imprimir `boot-ok`, sin `Error detected` / `E####`). Abre un archivo real de cada stack y espera ~10 s. Auditoría de keymaps: volcado de `nvim_get_keymap` y cero pares `(modo, lhs)` con rhs distinto.
+Arranque headless (debe imprimir `boot-ok`, sin `Error detected` / `E####`). Abre un archivo real de cada stack y espera ~10 s. Ejecuta `python scripts/verify.py` y `python scripts/vim_reference.py --check`. Un volcado final no detecta mapas sobrescritos; se comparan declaraciones y comportamientos. Ver docs/VALIDATION.md.
 
 ### Rendimiento
 
-Todo plugin nuevo debe tener `event` / `cmd` / `keys` / `ft`. No añadas un spec vacío que cargue al arranque salvo el colorscheme o `nvim-web-devicons`.
+Todo plugin nuevo debe tener `event` / `cmd` / `keys` / `ft`. No añadas un spec vacío que cargue al arranque salvo el colorscheme, `nvim-web-devicons` o nvim-treesitter (requisito upstream).
 
 ### Multiplataforma
 

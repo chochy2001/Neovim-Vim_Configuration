@@ -1,457 +1,185 @@
-# Neovim + Vim + IntelliJ Configuration
+# Neovim, Vim e IdeaVim - CAPDESIS
 
-Cross-platform (macOS / Linux / Windows) Neovim 0.12 config. IdeaVim shares **leader prefixes** (not every chord). Classic `.vimrc` is a smaller legacy set.
+Configuración personal de Neovim para Windows, Linux y macOS, con curso y entrenador
+de escritorio. Requiere **Neovim 0.12+**; referencia de esta revisión: **0.12.5**.
+Resultados y límites: [docs/VALIDATION.md](docs/VALIDATION.md).
 
-**Requires Neovim 0.12+** | Updated September 2026 (Windows / macOS / Linux)
+## Empieza aquí
 
-## Features
+| Necesitas | Documento |
+|---|---|
+| Aprender Vim | [COURSE.md](COURSE.md) / [COURSE.pdf](COURSE.pdf) |
+| Consultar atajos | [WORKFLOW.md](WORKFLOW.md), o `:Telescope keymaps` |
+| Grabar el curso | [UDEMY.md](UDEMY.md) |
+| Entender el código | [.config/nvim/README.md](.config/nvim/README.md) |
+| Pruebas y fuentes | [VALIDATION](docs/VALIDATION.md) / [SOURCES](docs/SOURCES.md) |
+| Practicar sin Neovim | [trainer/README.md](trainer/README.md) |
 
-- **Neovim 0.12 native APIs** - Uses `vim.lsp.config()` / `vim.lsp.enable()`, `vim.treesitter.start()`, modern diagnostics
-- **lazy.nvim** (~79 specs, ~10 load at idle startup)
-- **IdeaVim** config (`.ideavimrc`) shares the same leader **prefixes**; AI CLIs and CopilotChat are Neovim-only
-- **Legacy Vim** config (`.vimrc`) with vim-plug (`~/vimfiles` on Windows, `~/.vim` on Unix)
-- **Cross-platform** — shells, paths, builds and CLIs are guarded (`win32` / `executable` / `os_homedir`)
-- **Keymaps** — runtime-audited: no two actions share the same mode+key. Prefix delays (`<leader>f` vs `<leader>ff`) wait `timeoutlen=300` by design
+## Requisitos
 
-## Stack decisions (researched, September 2026)
+| Herramienta | Uso |
+|---|---|
+| [Neovim 0.12+](https://github.com/neovim/neovim/releases) | Editor |
+| Git | Plugins y operaciones Git |
+| Node.js 22+ mantenido | Servidores JS/TS, Prettier y Copilot |
+| ripgrep (`rg`) y fd | Búsquedas; fd puede llamarse `fdfind` en Debian |
+| Nerd Font | Iconos; por ejemplo JetBrainsMono NFM |
+| tree-sitter CLI >= 0.26.1, curl, tar y compilador C | Compilar parsers |
+| Python 3 | Scripts de validación |
 
-| Choice | Why this one |
-|--------|--------------|
-| `mason-org/mason.nvim` + `mason-lspconfig` | Upstream moved `williamboman/*` → `mason-org/*` (v2.x, actively maintained) |
-| `nvimtools/none-ls.nvim` (kept) | Community-maintained null-ls successor (not archived); covers formatting + code actions in one client |
-| `nvim-cmp` + LuaSnip (kept) | Pure Lua, stable, validated conflict-free; `blink.cmp` needs a Rust toolchain and moves fast — not worth the churn |
-| `github/copilot.vim` + CopilotChat | Official inline client + best-rated chat UI; AI CLIs (`<leader>a*`) cover agentic work with their own subscriptions |
-| `telescope.nvim` pinned `v0.2.2` | Latest tag; `file-browser` extension removed (never loaded — neo-tree + oil cover it) |
-| Single icon provider | `nvim-web-devicons` only (`mini.icons` removed, nothing used it) |
+Tree-sitter necesita un compilador en el entorno de Neovim. En Windows usa Visual
+Studio con C++ y una **Developer PowerShell**; instalar el IDE no añade `cl` a
+cualquier terminal. macOS: `xcode-select --install`; Linux: GCC/Clang.
+El [README de nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter#requirements)
+pide instalar la CLI **fuera de npm**: usa el gestor del SO,
+[binarios oficiales](https://github.com/tree-sitter/tree-sitter/releases) o,
+con Rust instalado, `cargo install tree-sitter-cli --locked`.
 
-## Requirements
+El entrenador usa **Flutter 3.47.2 / Dart 3.13.2** en CI. Cada lenguaje necesita su
+SDK. ctags, LazyGit, codelldb, cuentas de IA y swagger-ui-watcher son opcionales.
 
-| Tool | Why | Install |
-|------|-----|---------|
-| Neovim 0.12+ | Editor | Windows: `winget install Neovim.Neovim` · macOS: `brew install neovim` · Linux: distro package or [release](https://github.com/neovim/neovim/releases) |
-| Git | Plugins, LSP updates | Preinstalled on macOS/Linux; Windows: `winget install Git.Git` |
-| Node.js 22+ | Copilot, Mason packages | [nodejs.org](https://nodejs.org) or `winget install OpenJS.NodeJS` / `brew install node` |
-| C compiler | Treesitter parsers, LuaSnip build | Windows: Visual Studio Build Tools · macOS: `xcode-select --install` · Linux: `gcc` |
-| Nerd Font | File/UI icons | Windows: `winget install DEVCOM.JetBrainsMonoNerdFont` then set terminal font to **JetBrainsMono NFM**. macOS: `brew install --cask font-jetbrains-mono-nerd-font`. Linux: install from [nerdfonts.com](https://www.nerdfonts.com). Without this, Telescope/neo-tree show empty boxes. |
-| ripgrep + fd | Fast search (recommended) | `winget install BurntSushi.ripgrep.MSVC sharkdp.fd` · `brew install ripgrep fd` · `apt install ripgrep fd-find` |
-| tree-sitter CLI | Parser compilation | `npm install -g tree-sitter-cli` |
-| AI CLIs (optional) | `<leader>a*` terminals | npm: `opencode-ai`, `@openai/codex`, `@anthropic-ai/claude-code`, `@google/gemini-cli`, `@github/copilot`. Grok: xAI CLI on PATH (not npm). Each keeps its own login. |
-| uv (Windows, optional) | `black` / `clang-format` | `winget install astral-sh.uv` then `uv tool install black clang-format` |
+## Instalación
 
-Mason self-installs: `lua_ls`, `clangd`, `jsonls`, `yamlls`, `gopls`, `pyright`, `vtsls`, `astro`, `intelephense`, `bashls`, `dockerls`, `html`, `cssls`, `taplo`, plus formatters `stylua` and `prettier`. Dart LSP comes from **flutter-tools** (Flutter SDK). On Windows, `black` and `clang-format` need `uv tool install black clang-format`.
+Clona en una carpeta dedicada y enlaza **su subcarpeta** `.config/nvim`.
+Si el destino ya existe, respáldalo antes de crear el enlace. Estos comandos
+no fuerzan su reemplazo.
 
-## Quick Install
+### Windows / PowerShell
 
-```bash
-# Clone the repository
-git clone git@github.com:chochy2001/Neovim-Vim_Configuration.git ~/Neovim-Vim_Configuration
-
-# Symlink Neovim config
-mkdir -p ~/.config
-ln -sfn ~/Neovim-Vim_Configuration/.config/nvim ~/.config/nvim
-
-# Symlink IdeaVim config
-ln -sf ~/Neovim-Vim_Configuration/.ideavimrc ~/.ideavimrc
-
-# (Optional) Symlink legacy Vim config
-ln -sf ~/Neovim-Vim_Configuration/.vimrc ~/.vimrc
-
-# Install tree-sitter CLI (required for treesitter parser compilation)
-npm install -g tree-sitter-cli
-
-# Launch Neovim - plugins install automatically
+```powershell
+winget install --id Neovim.Neovim --exact
+winget install --id Git.Git --exact
+winget install --id DEVCOM.JetBrainsMonoNerdFont --exact
+git clone https://github.com/chochy2001/Neovim-Vim_Configuration.git "$HOME/Neovim-Vim_Configuration"
+New-Item -ItemType Junction -Path "$env:LOCALAPPDATA/nvim" -Target "$HOME/Neovim-Vim_Configuration/.config/nvim"
 nvim
 ```
 
-### Windows
+Instala Node.js, ripgrep y tree-sitter según los requisitos. Selecciona
+**JetBrainsMono NFM** en el terminal y abre una terminal nueva.
 
-```powershell
-git clone git@github.com:chochy2001/Neovim-Vim_Configuration.git $HOME\Neovim-Vim_Configuration
-New-Item -ItemType Junction -Path "$env:LOCALAPPDATA\nvim" -Target "$HOME\Neovim-Vim_Configuration\.config\nvim"
-Copy-Item "$HOME\Neovim-Vim_Configuration\.ideavimrc" "$HOME\.ideavimrc"
-```
-
-## How to use
-
-Leader is **Space**. After Space, wait ~300 ms or keep typing the rest of the shortcut. Press Space again (`<leader><leader>`) to clear search highlight — that is **not** find-files.
-
-**First launch:** open a terminal, run `nvim` with no file. The CAPDESIS dashboard appears (only when you did not pass a path). Plugins install on their own; Mason installs LSPs/formatters in the background.
-
-| Dashboard key | Action |
-|---------------|--------|
-| `f` | Find file |
-| `g` | Live grep |
-| `r` | Recent files |
-| `e` | File explorer (neo-tree) |
-| `a` | AI terminal (opencode) |
-| `m` | Mason (LSP installer) |
-| `l` | Lazy (plugins) |
-| `q` | Quit |
-
-**Every day**
-
-1. `nvim` in a project (or `nvim path/to/file`).
-2. `<leader>ff` find a file, `<leader>fg` search text, `<leader>pv` tree.
-3. Edit. LSP starts when the language binary exists (statusline shows `dartls`, `gopls`, …).
-4. `<leader>fm` format. `gd` go to definition, `<leader>ca` code action, `<leader>rn` rename.
-5. Git: `<leader>gs` status → `<leader>gsa` stage hunk → `<leader>gc` commit → `<leader>gp` push.
-6. AI: visual-select code → `<leader>as` → pick agent → type what to change. Or `<leader>aa` for opencode.
-
-**Commands (type `:` then the name)**
-
-| Command | What it does |
-|---------|----------------|
-| `:Telescope keymaps` | **Live list of every shortcut** (source of truth) |
-| `:Lazy` | Plugin manager |
-| `:Mason` | Install/update LSP servers and formatters |
-| `:checkhealth` | Diagnose Neovim |
-| `:checkhealth vim.lsp` | Active language servers |
-| `:CopilotChat` | Copilot chat |
-| `:LspRestartDart` | Restart Dart LSP |
-| `:LspStatus` | List LSP clients |
-| `:CheckFormatters` | List none-ls formatters |
-| `:Neotree` / `:Oil` | File tree / directory editor |
-| `:DiffviewOpen` | Git diff UI |
-| `:ZenMode` | Focus mode |
-| `:GrugFar` | Project search-replace |
-| `:SwaggerPreview` | OpenAPI preview (if you have the CLI) |
-
-Full tables: [WORKFLOW.md](WORKFLOW.md). Course: [COURSE.md](COURSE.md) / [COURSE.pdf](COURSE.pdf). Udemy recording guide: [UDEMY.md](UDEMY.md). For AI agents: [AGENTS.md](AGENTS.md).
-
-**Cómo usarlo (ES):** Leader = **Espacio**. `nvim` sin archivo abre el dashboard CAPDESIS (`f` buscar, `g` grep, `e` explorador, `a` IA, `q` salir). Cada día: `<leader>ff` archivo, `<leader>fg` texto, `<leader>fm` formatear, `gd` ir a definición. Git: `<leader>gs` → `<leader>gsa` → `<leader>gc` → `<leader>gp`. Lista viva de atajos: `:Telescope keymaps`.
-
-## Keybinding System
-
-Leader key: `Space`
-
-### Find & Search (Telescope)
-
-| Key | Action | IdeaVim Equivalent |
-|-----|--------|--------------------|
-| `<leader>ff` | Find files | `GotoFile` |
-| `<leader>fg` | Live grep | `FindInPath` |
-| `<leader>fo` | Recent files | `RecentFiles` |
-| `<leader>fb` | Buffers | `Switcher` |
-| `<leader>fh` | Help tags | `HelpTopics` |
-| `<leader>fc` | Commands | `GotoAction` |
-| `<leader>fk` | Keymaps | `GotoAction` |
-| `<leader>ps` | Workspace symbols | `GotoSymbol` |
-| `<leader>fp` | Projects | `ManageRecentProjects` |
-
-### Git Operations
-
-| Key | Action |
-|-----|--------|
-| `<leader>gs` | Git status |
-| `<leader>gc` | Git commit |
-| `<leader>gp` | Git push |
-| `<leader>gl` | Git pull |
-| `<leader>gf` | Git fetch |
-| `<leader>gb` | Git blame toggle |
-| `<leader>gd` | Git diff |
-| `<leader>gn` | Next hunk |
-| `<leader>gnp` | Previous hunk |
-| `<leader>gsa` | Stage hunk |
-| `<leader>gsr` | Reset hunk |
-| `<leader>gsu` | Undo stage hunk |
-| `<leader>gsp` | Preview hunk |
-| `<leader>gdo` | Open diffview |
-| `<leader>gdq` | Close diffview |
-| `<leader>gco` | Conflict: choose ours |
-| `<leader>gct` | Conflict: choose theirs |
-| `<leader>gcb` | Conflict: choose both |
-
-### LSP & Code Intelligence
-
-| Key | Action |
-|-----|--------|
-| `gd` | Go to definition (native 0.11+) |
-| `gi` | Go to implementation (native 0.11+) |
-| `gR` | Find references (Trouble) |
-| `go` | Go to type definition |
-| `gs` | Signature help |
-| `K` | Hover documentation |
-| `<leader>rn` | Rename symbol |
-| `<leader>ca` | Code action |
-| `<leader>fm` | Format: none-ls if a formatter exists for this filetype, else the LSP |
-
-### Harpoon (Quick Marks)
-
-| Key | Action |
-|-----|--------|
-| `<leader>ma` | Add file to harpoon |
-| `<leader>mh` | Toggle harpoon UI |
-| `<leader>1-9` | Jump to mark 1-9 |
-| `<leader>mp` | Previous mark |
-| `<leader>mn` | Next mark |
-
-### Debugging (DAP)
-
-| Key | Action |
-|-----|--------|
-| `<leader>db` | Toggle breakpoint |
-| `<leader>dc` | Continue / start |
-| `<leader>do` | Step over |
-| `<leader>di` | Step into |
-| `<leader>dO` | Step out |
-| `<leader>du` | Toggle debug UI |
-| `<leader>dx` | Terminate |
-
-### Diagnostics (Trouble v3)
-
-| Key | Action |
-|-----|--------|
-| `<leader>xx` | Toggle diagnostics |
-| `<leader>xX` | Buffer diagnostics |
-| `<leader>xw` | Workspace diagnostics |
-| `<leader>xd` | Document diagnostics |
-| `<leader>xl` | Location list |
-| `<leader>xq` | Quickfix list |
-| `<leader>xn` | Next error |
-| `<leader>xp` | Previous error |
-| `<leader>xt` | TODOs list |
-| `gR` | LSP references |
-
-### File Explorer
-
-| Key | Action |
-|-----|--------|
-| `<leader>pv` | Toggle neo-tree |
-| `<leader>fr` | Reveal current file |
-| `<leader>-` / `<leader>oe` | Oil (edit directory as a buffer) |
-| `<leader>tb` | Tagbar (needs `ctags` on PATH) |
-
-### Terminal & Tasks
-
-| Key | Action |
-|-----|--------|
-| `<leader>tt` | Float terminal |
-| `<leader>tg` | LazyGit |
-| `<leader>tn` | Node REPL |
-| `<leader>tp` | Python REPL |
-| `<leader>tu` | System monitor |
-| `<leader>tF` | Flutter terminal |
-| `<leader>r` | Run code |
-| `<leader>rf` | Run file |
-| `<leader>rp` | Run project |
-| `<leader>rs` | Stop |
-| `<leader>rb` | Build |
-| `<leader>oo` | Overseer toggle |
-| `<leader>or` | Overseer run task |
-| `<leader>ob` | Overseer build |
-| `<leader>oi` | Overseer info |
-
-### Testing (vim-test)
-
-| Key | Action |
-|-----|--------|
-| `<leader>ten` | Test nearest |
-| `<leader>tenf` | Test file |
-| `<leader>tena` | Test suite |
-| `<leader>tenl` | Rerun last |
-
-### Sessions
-
-| Key | Action |
-|-----|--------|
-| `<leader>qs` | Restore session |
-| `<leader>ql` | Restore last session |
-| `<leader>qd` | Don't save session |
-
-### AI Assistants (terminal CLIs + Copilot)
-
-| Key | Action |
-|-----|--------|
-| `<leader>aa` | opencode terminal |
-| `<leader>ax` | codex terminal |
-| `<leader>ac` | claude terminal |
-| `<leader>ag` | gemini terminal |
-| `<leader>ak` | grok terminal |
-| `<leader>ap` | copilot CLI terminal |
-| `<leader>as` (visual) | Send selection to any agent (picker) |
-| `<leader>cc` | Copilot chat toggle |
-| `<leader>ce` | Explain (normal/visual) |
-| `<leader>cr` | Review (normal/visual) |
-| `<leader>cf` | Fix (normal/visual) |
-| `<leader>co` | Optimize (normal/visual) |
-| `<leader>ct` | Generate tests (normal/visual) |
-
-### Flutter Development
-
-| Key | Action |
-|-----|--------|
-| `<leader>flr` | Hot reload |
-| `<leader>fls` | Hot restart |
-| `<leader>fld` | DevTools |
-| `<leader>fla` | Run app |
-| `<leader>flsd` | Select device |
-| `<leader>fle` | Start emulator |
-| `<leader>flq` | Quit |
-| `<leader>flo` | Toggle outline |
-| `<leader>flc` | Clear log |
-| `<leader>flp` | Copy profiler URL |
-| `<leader>fll` | Restart LSP |
-
-### Buffer & Window Management
-
-| Key | Action |
-|-----|--------|
-| `<leader>b` | Back (previous location) |
-| `<leader>bn` | Next buffer |
-| `<leader>bp` | Previous buffer |
-| `<leader>bd` | Close buffer |
-| `<leader>bl` | Close buffers to the right |
-| `<leader>bh` | Close buffers to the left |
-| `<leader>bP` | Pick buffer |
-| `<leader>bt` | Toggle pin buffer |
-| `<leader>to` | Close all other buffers |
-| `<S-l>` / `<S-h>` | Next / previous buffer |
-| `<leader>sv` | Split vertical |
-| `<leader>sh` | Split horizontal |
-| `<leader>sc` | Close split |
-| `<leader>wh/j/k/l` | Navigate windows |
-| `<leader>wm` | Move window (WinShift) |
-| `<leader>ws` | Swap window |
-| `<leader>zz` | Zen mode |
-
-### Core Editing
-
-| Key | Action |
-|-----|--------|
-| `s` | Flash jump (n/v/o) |
-| `S` | Flash treesitter (n/o); visual `S` = surround |
-| `jj` | Exit insert mode |
-| `<leader><leader>` | Clear search highlight |
-| `<A-j>` / `<A-k>` | Move line down/up |
-| `n` / `N` | Search next/prev (centered) |
-| `<leader>za` | Toggle fold |
-| `<leader>zR` / `<leader>zM` | Expand/collapse all folds |
-| `<leader>u` | Normal: undo tree · Visual: lowercase |
-| `<leader>U` (visual) | To uppercase |
-| `<leader>sr` | Search and replace (grug-far) |
-
-## Plugin Ecosystem
-
-| Category | Plugins |
-|----------|---------|
-| **Package Manager** | lazy.nvim |
-| **LSP** | nvim-lspconfig (lsp/ defs), vim.lsp.config(), none-ls, schemastore |
-| **Completion** | nvim-cmp, LuaSnip, friendly-snippets |
-| **Syntax** | nvim-treesitter (parser manager), vim.treesitter.start(), treesitter-context |
-| **Git** | fugitive, gitsigns, diffview, neogit, git-conflict |
-| **Navigation** | telescope, harpoon, neo-tree, oil |
-| **UI** | lualine, bufferline, dashboard (CAPDESIS), dropbar, nvim-highlight-colors, dressing, nvim-notify, which-key, indent-blankline |
-| **Editing** | Comment.nvim, vim-surround, nvim-autopairs, todo-comments, flash.nvim |
-| **Text Objects** | nvim-treesitter-textobjects (function, class, argument, loop, conditional) |
-| **LSP Management** | mason.nvim, mason-lspconfig (auto-install servers), mason-tool-installer (auto-install formatters) |
-| **LSP UI** | fidget.nvim (progress), noice.nvim (modern command line) |
-| **AI** | copilot.vim, CopilotChat.nvim, AI terminal CLIs (opencode, codex, claude, gemini, grok, copilot) |
-| **Debugging** | nvim-dap, nvim-dap-ui, nvim-dap-virtual-text |
-| **Folding** | nvim-ufo (treesitter-based smart folding) |
-| **Flutter** | flutter-tools, dart-vim-plugin, awesome-flutter-snippets |
-| **Terminal** | toggleterm, overseer, code_runner, vim-test |
-| **Themes** | dracula, molokai, solarized, onedark, gruvbox, rose-pine, catppuccin |
-| **Focus** | zen-mode, twilight |
-| **Other** | undotree, trouble, grug-far, winshift, persistence, project.nvim, tagbar, swagger-preview |
-
-## What this config is for
-
-Built around the CAPDESIS / personal GitHub stack (Flutter apps, Go APIs, Astro landings, PHP backends, Python, Kotlin, C). Open any of those repos and the matching LSP/formatter attaches when the binary exists.
-
-| Product area | Languages |
-|--------------|-----------|
-| Tracker, CapTienda, CapMenu, CapLiving, CapGym, Formulae, photos_class, … | Dart / Flutter |
-| IngeTracker, POS, CapLiving, CapGym, billing, academy, ancare, … | Go |
-| capdesis-web, landings, leon-entertainment, xunkaab, … | Astro / TypeScript |
-| CapMenu, Opus, GestionInventarioQR | PHP |
-| Distributed_System, scripts, tooling | Python |
-| Android embeddings (CapGym, etc.) | Kotlin |
-| 2027-1 / firmware notes | C / C++ |
-
-## Languages Supported
-
-| Language | LSP | Formatter | Extras |
-|----------|-----|-----------|--------|
-| Lua | lua_ls | stylua | Neovim runtime integration |
-| Dart/Flutter | dartls (flutter-tools) | `<leader>fm` / none-ls | outline, snippets, DAP |
-| Go | gopls | gofmt | staticcheck, gofumpt |
-| Python | pyright | black (`uv tool install black`) | openFiles diagnostics |
-| TypeScript/JavaScript | vtsls | prettier | - |
-| Astro | astro | prettier | Pinned to Mason copy (ignores broken project-local installs) |
-| JSON | jsonls | prettier | SchemaStore integration |
-| YAML | yamlls | prettier | pubspec.yaml schemas |
-| C/C++ | clangd | clang-format | Header insertion, clang-tidy |
-| Kotlin | kotlin_language_server | - | Gradle project detection (needs `gradle` on PATH for full classpath) |
-| Swift | sourcekit-lsp (macOS) | - | - |
-| HTML / CSS | html, cssls | prettier | landings + Flutter web |
-| PHP | intelephense | — | CapMenu / Opus / Inventario QR backends |
-| Bash | bashls | — | fleet `.sh` scripts |
-| Docker | dockerls | — | Dockerfiles across products |
-| TOML | taplo | prettier | pyproject, Cargo, tool configs |
-| SQL | — | — | Treesitter highlighting |
-
-## IdeaVim (IntelliJ / Android Studio)
-
-Official plugin: [IdeaVim](https://plugins.jetbrains.com/plugin/164-ideavim). Config file is **`~/.ideavimrc`** on every OS (Windows: `%USERPROFILE%\.ideavimrc`). XDG: `$XDG_CONFIG_HOME/ideavim/ideavimrc`.
-
-1. Settings → Plugins → install **IdeaVim** → **Tools | Vim**.
-2. Copy this repo’s `.ideavimrc` to `~/.ideavimrc` (do **not** `source` the classic `.vimrc` — it uses vim-plug).
-3. Reload: `:source ~/.ideavimrc`.
-4. Unknown action IDs: `:actionlist <pattern>` or Search Everywhere → **IdeaVim: track action IDs**.
-
-IDE mappings use `nmap … <Action>(id)` ([required](https://github.com/JetBrains/ideavim#executing-ide-actions); `nnoremap` + `:action` does not work). Same leader prefixes as Neovim. **Neovim-only:** `<leader>a*` AI CLIs, `<leader>c*` CopilotChat. Flutter keys need the [Flutter plugin](https://plugins.jetbrains.com/plugin/9212-flutter). IdeaVim cannot be GUI-tested from this repo’s CLI — confirm inside the IDE.
-
-- `<leader>f*` - Find/search
-- `<leader>g*` - Git (IDE VCS)
-- `<leader>fl*` - Flutter (plugin)
-- `<leader>x*` - Problems tool window
-- `<leader>m*` - Bookmarks
-- `<leader>b*` - Tabs (`<leader>b` alone = Back, same 300 ms prefix as Neovim)
-- `<leader>w*` - Windows
-- `<leader>t*` - Terminal
-- `<leader>r*` - Run
-- `<leader>z*` - Fold / distraction-free
-- `<leader>d*` - Debug
-- `<leader>o*` - Run tool window / Run Anything
-
-## File Structure
-
-```
-.
-├── .config/nvim/
-│   ├── init.lua                          # Entry point (lazy.nvim bootstrap)
-│   ├── lazy-lock.json                    # Plugin version lock file
-│   ├── lua/
-│   │   ├── vim-options.lua               # Core vim settings & keymaps
-│   │   ├── lsp-utils.lua                 # LSP helper commands
-│   │   ├── fix-flutter-neotree-conflict.lua  # Dart LSP dedup
-│   │   └── plugins/                      # lazy.nvim specs (`require("lazy").setup("plugins")`)
-│   │       ├── lsp-config.lua            # vim.lsp.config() + vim.lsp.enable()
-│   │       ├── treesitter.lua            # Parser management + TS highlighting
-│   │       ├── telescope.lua             # Fuzzy finder (v0.2.2, latest)
-│   │       ├── completions.lua           # nvim-cmp + LuaSnip
-│   │       ├── git-stuff.lua             # Fugitive, gitsigns, diffview, neogit
-│   │       ├── trouble.lua               # Diagnostics list (Trouble v3)
-│   │       ├── ai-terminal.lua           # AI CLIs in floating terminals
-│   │       └── ...
-│   ├── README.md                         # Extra nvim notes (tables may lag; prefer WORKFLOW.md)
-├── .ideavimrc                            # IdeaVim (leader prefixes)
-├── .vimrc                                # Legacy Vim config
-├── WORKFLOW.md                           # Keymap tables
-├── COURSE.md / COURSE.pdf / UDEMY.md     # Class notebook + recording guide
-├── trainer/                              # CAPDESIS Practice (Flutter desktop)
-├── LICENSE / COPYRIGHT
-└── .gitignore
-```
-
-## CAPDESIS Practice (desktop)
-
-Offline trainer in [`trainer/`](trainer/): typing on code + a **tested Vim subset**. Windows / Linux / macOS. MIT. Not Neovim. CI builds are **unsigned**.
+### macOS / Linux
 
 ```bash
-cd trainer && flutter test && flutter run
+git clone https://github.com/chochy2001/Neovim-Vim_Configuration.git ~/Neovim-Vim_Configuration
+mkdir -p ~/.config
+ln -s ~/Neovim-Vim_Configuration/.config/nvim ~/.config/nvim
+nvim
 ```
 
-## License
+Comprueba `nvim --version`: si el paquete de la distribución es anterior a 0.12,
+usa la release oficial para tu arquitectura.
 
-MIT. Copyright © 2026 CAPDESIS / chochy2001. See [LICENSE](LICENSE).
+## Primer arranque y actualizaciones
+
+lazy.nvim instala plugins usando [lazy-lock.json](.config/nvim/lazy-lock.json).
+Tree-sitter instala parsers faltantes. Mason instala los servidores configurados
+al abrir archivos y los formateadores al quedar inactivo. Espera a que terminen.
+Revisa fallos de red/compilación en `:Lazy`, `:Mason` y `:checkhealth nvim-treesitter`.
+Arrancar no verifica por sí solo estas funciones.
+
+- `:Lazy restore`: vuelve a las revisiones del lockfile.
+- `:Lazy update`: actualiza plugins; revisa el lockfile y ejecuta las pruebas.
+- `:TSUpdate`: actualiza parsers tras cambiar nvim-treesitter.
+- `:Mason`: revisa herramientas externas. lazy-lock.json **no fija** sus versiones.
+- `NVIM_OFFLINE=1`: desactiva descargas automáticas de plugins, parsers y herramientas.
+  No bloquea la red de LSP/Git/IA ni órdenes explícitas de actualización.
+
+Actualizar plugins no instala paquetes npm globales. Si necesitas Swagger,
+instala `swagger-ui-watcher` explícitamente.
+
+## Uso diario
+
+Leader = **Espacio**. `<leader>ff` significa Espacio, f, f. Espacio dos veces limpia
+la búsqueda. `<leader>f`, `b`, `r`, `gs`, `gc` también son prefijos y esperan
+`timeoutlen=300`. Eso no equivale a dos acciones con la misma combinación.
+
+1. `nvim archivo` abre un archivo; `nvim` abre el dashboard.
+2. `<leader>ff` busca archivos, `fg` texto, `pv` abre el árbol.
+3. `gd` definición, `K` ayuda, `<leader>rn` renombrar.
+4. `<leader>fm` elige **un cliente adjunto**: none-ls con fuente aplicable, o un LSP.
+5. `<leader>gs` Git; `gsa` cambia stage del hunk, `gc` commit, `gp` interfaz de push.
+
+Dashboard: `f` archivo, `g` grep, `r` recientes, `e` explorador, `a` IA,
+`m` Mason, `l` Lazy, `q` salir.
+
+Completado: `Ctrl-Space`; selecciona una entrada antes de Enter. LuaSnip:
+`Ctrl-j` avanza/expande, `Ctrl-k` retrocede. Copilot requiere autenticación.
+
+Visual `<leader>as` captura la selección **antes** del selector, pide una instrucción,
+copia el prompt al portapapeles y registro `a`, y abre el CLI.
+**Pega cuando esté listo, revisa y envía**. Sin portapapeles, usa `"ap` en modo
+terminal-normal. No se adivina el arranque con temporizadores.
+
+## Lenguajes y formato
+
+| Lenguaje | LSP | Formato |
+|---|---|---|
+| Lua | lua_ls (Mason) | StyLua (Mason) |
+| Dart/Flutter | dartls, gestionado por flutter-tools | dart format del SDK |
+| Go | gopls (Mason), requiere Go | gofmt |
+| Python | pyright (Mason) | Black en PATH |
+| JS/TS | vtsls (Mason) | Prettier (Mason/proyecto) |
+| Astro | astro (Mason) | Prettier **con prettier-plugin-astro en el proyecto** |
+| JSON/YAML | jsonls/yamlls (Mason) | Prettier |
+| C/C++ | clangd (Mason) | clang-format en PATH |
+| Kotlin | kotlin_language_server en PATH | Según servidor/proyecto |
+| Swift | sourcekit-lsp en macOS | Según servidor/proyecto |
+| HTML/CSS | html/cssls (Mason) | Prettier |
+| PHP | intelephense (Mason) | Según servidor/proyecto |
+| Bash/Dockerfile | bashls/dockerls (Mason) | Sin formateador externo configurado |
+| TOML | taplo (Mason) | Taplo LSP |
+| SQL | Sin LSP configurado | Resaltado Tree-sitter |
+
+Mason configura su PATH antes de comprobar ejecutables. Los servidores recién
+instalados se configuran al terminar; no se habilitan otros automáticamente.
+Dart tiene un solo dueño; `:LspRestartDart` actúa desde un buffer Dart.
+
+none-ls no se adjunta a archivos de más de 50 KiB en disco; el formateo puede usar
+el LSP adjunto. Solo Lua/JSON tienen formato al guardar. Se respetan las opciones
+del proyecto (`.stylua.toml`, `.prettierrc`, `.clang-format`).
+`:CheckFormatters` muestra fuentes y cliente elegido; no certifica dependencias
+internas de Prettier.
+Prettier respeta `.gitignore` y `.prettierignore`: un archivo ignorado puede
+quedar sin cambios aunque el formateador esté instalado.
+
+Opcionales: `uv tool install black` y `uv tool install clang-format`, por separado.
+Los alias vacíos de Microsoft Store pueden no ser ejecutables para Neovim:
+comprueba `:echo executable('python')` y usa una instalación real en PATH.
+
+## Ejecutar y depurar
+
+`<leader>r`/`rf` ejecutan archivos **guardados** con el SDK disponible.
+Los comandos protegen rutas con espacios/comillas; un fallo de compilación no
+ejecuta el binario. Los binarios temporales quedan en el directorio temporal.
+Java usa el modo archivo fuente (JDK 11+). TypeScript usa Deno o Node; su
+compatibilidad depende de la sintaxis y versión del runtime.
+
+`rp`/`or` abren tareas de Overseer. `rs` detiene el terminal actual o permite
+elegir uno activo. `ten` usa vim-test; vimux solo dentro de tmux. DAP está
+preparado para Flutter y codelldb cuando están disponibles.
+
+## IdeaVim y Vim clásico
+
+Instala IdeaVim en el IDE y copia `.ideavimrc` a tu carpeta personal, conservando
+antes cualquier archivo existente. Recarga con `:source ~/.ideavimrc`.
+Sus acciones usan `nmap ... <Action>(id)`; consulta `:actionlist` si falta una.
+Flutter requiere el plugin del IDE. Compartir prefijos no implica acciones idénticas.
+
+`.vimrc` es **legado** y no se carga dentro de IdeaVim. Sin vim-plug conserva
+la edición básica; para plugins, instala [vim-plug](https://github.com/junegunn/vim-plug)
+en el runtime de Vim y ejecuta `:PlugInstall`.
+Las dependencias de Vim clásico no comparten el lockfile de Neovim.
+El arranque básico se comprueba por separado de las acciones reales de JetBrains.
+Las copias instaladas de plugins, el historial de navegación y `.zshrc` son
+archivos locales; no deben versionarse en este repositorio.
+
+## English
+
+Neovim 0.12+ configuration, Spanish course, legacy Vim and IdeaVim mappings,
+and a Flutter desktop trainer. Clone outside the Neovim config directory and
+link `.config/nvim`. Restore plugins with `:Lazy restore`, validate with
+`python scripts/verify.py`. Full English shortcuts: [WORKFLOW.md](WORKFLOW.md).
+Exact evidence/limitations: [docs/VALIDATION.md](docs/VALIDATION.md).
+
+MIT. Copyright © 2026 CAPDESIS / chochy2001. [LICENSE](LICENSE).

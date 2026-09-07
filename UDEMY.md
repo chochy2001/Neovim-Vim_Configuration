@@ -4,19 +4,19 @@ Cómo grabar el curso. El cuaderno del alumno es [COURSE.md](COURSE.md). Atajos:
 
 ## Antes de pulsar grabar
 
-1. Terminal con fuente **JetBrainsMono NFM**. Repo en `main`.
+1. Terminal con fuente **JetBrainsMono NFM**. Revisión probada: registra `git rev-parse HEAD` y conserva el lockfile.
 2. `nvim --headless "+lua print('boot-ok')" +qa` imprime `boot-ok`.
 3. `cd trainer && flutter test` → All tests passed.
 4. IdeaVim: `:source ~/.ideavimrc` (copia del `.ideavimrc` del repo).
 5. Slides intro: abrir `course/udemy/slides-intro.html` (`N`/`P`). El resto de secciones: demo en terminal, no PowerPoint de stock.
-6. En cada vídeo de atajos, si dudas: `:Telescope keymaps`. No leas el README de `.config/nvim` (tablas `:action` viejas).
+6. Consulta `:Telescope keymaps` y WORKFLOW.md. Usa `nvim --clean` para Vim nativo.
 
 **Título Udemy sugerido:** Neovim desde cero — de `hjkl` a IDE (config CAPDESIS)  
 **Subtítulo:** Gramática de Vim primero; después Telescope, Git, LSP y Flutter. Repo MIT incluido.
 
 **No digas en cámara** que IntelliJ quedó validado por un script, ni que CAPDESIS Practice es Neovim, ni que los builds van firmados. Neovim arranca: `nvim --headless "+lua print('boot-ok')" +qa`. La app de práctica: `cd trainer && flutter test`.
 
-Duración por vídeo: 8–15 min (Udemy recomienda no alargarse). Demo en terminal real, no slides leyendo código.
+Una habilidad por vídeo. Udemy sugiere introducciones de **2-4 minutos** y lecciones de **3-6 minutos**; divide demos complejas. Fuente: [Outline your course](https://teach.udemy.com/course-creation/outline-your-course/).
 
 ---
 
@@ -34,13 +34,13 @@ Duración por vídeo: 8–15 min (Udemy recomienda no alargarse). Demo en termin
 |-------------|----------------------|
 | VS Code + extensión Vim | Ya vives en VS Code; quieres hjkl sin cambiar de casa |
 | JetBrains + IdeaVim | Android Studio / IntelliJ diario; nuestro `.ideavimrc` comparte *prefijos* |
-| LazyVim, NvChad, kickstart | Distros listas; este repo es **una config propia**, no una distro |
+| LazyVim, NvChad, kickstart.nvim | Distribuciones y, en el caso de kickstart, punto de partida; este repo es **una config propia**, no una distro |
 | Helix / Kakoune | Gramática distinta; no es Vim |
 | IDEs sin Vim | Ratón, GUI de debug, wizards. Siguen siendo válidos |
 
 **Por qué terminal + Neovim aquí:** el mismo teclado en Windows, macOS, Linux y SSH a un servidor. Gramática `d2w` / `ci"` no depende del ratón. LSP (Mason / flutter-tools) cubre el hueco “IDE” **cuando el binario existe**. No es magia: sin `gopls` no hay Go.
 
-Cursos / materiales ajenos (para no copiar, para no repetir sus agujeros): `vimtutor`, *Learn Vim the Smart Way*, vim-galore, ThePrimeagen “0 to LSP”, Typecraft. Ellos o saltan lo básico o no usan *este* repo.
+Referencia principal: tutor y manual oficial de Neovim. La secuencia es propia; no implica evaluar a otros autores. Fuentes: [docs/SOURCES.md](docs/SOURCES.md).
 
 ### Qué tiene el alumno el día 1
 
@@ -79,8 +79,8 @@ Cada carpeta = una sección en el dashboard de Udemy. Cada ítem = un vídeo.
 
 | # | Vídeo | Demo obligatoria |
 |---|--------|------------------|
-| 3.1 | `nvim +Tutor` | Completar una lección en vivo |
-| 3.2 | Modos | `i` `Esc` `jj` `:w` `:q` `:q!` |
+| 3.1 | `nvim --clean +Tutor` | Completar una lección en vivo |
+| 3.2 | Modos | `i` `Esc` `:w` `:q` `:q!`; `jj` pertenece a esta config |
 | 3.3 | `hjkl` 0 $ gg G w b | Sin flechas |
 | 3.4 | Gramática d/c/y + conteo | `dw` `c3w` `yy` `p` `.` `u` |
 | 3.5 | Objetos | `ciw` `ci"` `ci{` |
@@ -158,3 +158,7 @@ Plantilla HTML oscura (sin red): [course/udemy/slides-intro.html](course/udemy/s
 ## Guion corto (1.3 — ¿Vim o IDE?)
 
 No atacar IDEs. Di: el IDE gana en wizards y a veces en debug gráfico. Neovim gana cuando escribes mucho, cuando entras por SSH, cuando quieres la misma gramática en Flutter, Go y el `init.lua`. Esta config **añade** LSP; si Mason no instaló el servidor, no hay autocompletado. Eso es el curso siendo honesto.
+
+## Control del material
+
+Antes de grabar: `python scripts/verify.py`, `python scripts/vim_reference.py --check` y las pruebas del entrenador. Completa [docs/VALIDATION.md](docs/VALIDATION.md), prueba el SO que grabas y revisa el PDF contra su fuente. Declarar CI no equivale a haberla ejecutado.

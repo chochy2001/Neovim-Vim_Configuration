@@ -79,7 +79,8 @@ nnoremap <leader>wj <C-w>j
 nnoremap <leader>wk <C-w>k
 nnoremap <leader>wl <C-w>l
 
-" Harpoon-like: Vim marks 1-9 (same keys as Neovim harpoon)
+" Numbered Vim history marks (not the bookmarks toggled by <leader>ma).
+" Same chords as Neovim Harpoon, with different semantics.
 nnoremap <leader>1 '1
 nnoremap <leader>2 '2
 nnoremap <leader>3 '3
@@ -161,7 +162,7 @@ nmap <leader>gn <Action>(VcsShowNextChangeMarker)
 nmap <leader>gnp <Action>(VcsShowPrevChangeMarker)
 nmap <leader>gsa <Action>(Git.Add)
 nmap <leader>gsr <Action>(Vcs.RollbackChangedLines)
-nmap <leader>gsu <Action>(Vcs.RollbackChangedLines)
+" No gsu alias: RollbackChangedLines discards edits; it does not unstage a hunk.
 nmap <leader>gsb <Action>(ChangesView.Revert)
 nmap <leader>gsp <Action>(VcsShowCurrentChangeMarker)
 nmap <leader>u <Action>(LocalHistory.ShowHistory)

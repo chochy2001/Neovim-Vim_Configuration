@@ -6,12 +6,40 @@ return {
         event = "VeryLazy",
         opts = {},
         keys = {
-            { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash: Jump" },
+            {
+                "s",
+                mode = { "n", "x", "o" },
+                function()
+                    require("flash").jump()
+                end,
+                desc = "Flash: Jump",
+            },
             -- Visual `S` is vim-surround (wrap selection). Flash treesitter
             -- select stays on normal/operator so the two can coexist.
-            { "S", mode = { "n", "o" }, function() require("flash").treesitter() end, desc = "Flash: Treesitter select" },
-            { "r", mode = "o", function() require("flash").remote() end, desc = "Flash: Remote" },
-            { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Flash: Treesitter search" },
+            {
+                "S",
+                mode = { "n", "o" },
+                function()
+                    require("flash").treesitter()
+                end,
+                desc = "Flash: Treesitter select",
+            },
+            {
+                "r",
+                mode = "o",
+                function()
+                    require("flash").remote()
+                end,
+                desc = "Flash: Remote",
+            },
+            {
+                "R",
+                mode = { "o", "x" },
+                function()
+                    require("flash").treesitter_search()
+                end,
+                desc = "Flash: Treesitter search",
+            },
         },
     },
     -- Surround text (ysiw", cs"', ds")
@@ -55,8 +83,20 @@ return {
         dependencies = { "nvim-lua/plenary.nvim" },
         opts = {},
         keys = {
-            { "]t", function() require("todo-comments").jump_next() end, desc = "Next TODO comment" },
-            { "[t", function() require("todo-comments").jump_prev() end, desc = "Previous TODO comment" },
+            {
+                "]t",
+                function()
+                    require("todo-comments").jump_next()
+                end,
+                desc = "Next TODO comment",
+            },
+            {
+                "[t",
+                function()
+                    require("todo-comments").jump_prev()
+                end,
+                desc = "Previous TODO comment",
+            },
             { "<leader>xt", "<cmd>Trouble todo<cr>", desc = "TODOs in Trouble" },
         },
     },

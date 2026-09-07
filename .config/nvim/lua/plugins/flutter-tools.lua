@@ -2,7 +2,7 @@
 return {
     -- Main Flutter plugin
     {
-        "akinsho/flutter-tools.nvim",
+        "nvim-flutter/flutter-tools.nvim",
         ft = "dart",
         keys = {
             { "<leader>flr", "<cmd>FlutterReload<cr>", desc = "Flutter: Hot Reload" },
@@ -39,7 +39,7 @@ return {
                         app_version = false,
                         device = true,
                         project_config = false,
-                    }
+                    },
                 },
                 debugger = {
                     enabled = true,
@@ -68,7 +68,7 @@ return {
                                 dartSdkPath = paths.dart_sdk,
                                 flutterSdkPath = paths.flutter_sdk,
                                 cwd = "${workspaceFolder}",
-                            }
+                            },
                         }
                     end,
                 },
@@ -98,7 +98,7 @@ return {
                 closing_tags = {
                     highlight = "Comment",
                     prefix = "// ",
-                    enabled = true
+                    enabled = true,
                 },
                 dev_log = {
                     enabled = true,
@@ -116,28 +116,11 @@ return {
                 -- dartls is started here (flutter-tools always attaches).
                 -- Do not also enable dartls in lsp-config.lua.
                 lsp = {
+                    capabilities = require("cmp_nvim_lsp").default_capabilities(),
                     -- NOTE: no `color` table: plugin-managed colors are
                     -- deprecated on Neovim 0.12+
-                }
+                },
             })
-
-            -- Global Flutter keymaps - synced with .ideavimrc
-            -- Main Hot Reload and Restart (matching Android Studio)
-            vim.keymap.set("n", "<leader>flr", "<cmd>FlutterReload<cr>", { desc = "Flutter: Hot Reload" })
-            vim.keymap.set("n", "<leader>fls", "<cmd>FlutterRestart<cr>", { desc = "Flutter: Hot Restart" })
-            vim.keymap.set("n", "<leader>fld", "<cmd>FlutterDevTools<cr>", { desc = "Flutter: DevTools" })
-
-            -- Additional useful commands (no conflict with .ideavimrc)
-            vim.keymap.set("n", "<leader>fla", "<cmd>FlutterRun<cr>", { desc = "Flutter: Start App" })
-            vim.keymap.set("n", "<leader>flsd", "<cmd>FlutterDevices<cr>", { desc = "Flutter: Select Device" })
-            vim.keymap.set("n", "<leader>fle", "<cmd>FlutterEmulators<cr>", { desc = "Flutter: Start Emulator" })
-
-            -- ADDED: missing Flutter commands for full sync
-            vim.keymap.set("n", "<leader>flq", "<cmd>FlutterQuit<cr>", { desc = "Flutter: Quit/Stop" })
-            vim.keymap.set("n", "<leader>flo", "<cmd>FlutterOutlineToggle<cr>", { desc = "Flutter: Toggle Outline" })
-            vim.keymap.set("n", "<leader>flc", "<cmd>FlutterLogClear<cr>", { desc = "Flutter: Clear Log" })
-            vim.keymap.set("n", "<leader>flp", "<cmd>FlutterCopyProfilerUrl<cr>", { desc = "Flutter: Copy Profiler URL" })
-            vim.keymap.set("n", "<leader>fll", "<cmd>FlutterLspRestart<cr>", { desc = "Flutter: Restart LSP" })
         end,
     },
 
@@ -157,6 +140,6 @@ return {
             -- Format-on-save is none-ls / <leader>fm only (this flag would
             -- stack a third dart format on top of dartls + none-ls)
             vim.g.dart_format_on_save = 0
-        end
+        end,
     },
 }

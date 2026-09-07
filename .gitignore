@@ -63,8 +63,20 @@ secrets*
 credentials*
 
 # Vim state files con historial de paths
+.vim/
 .vim/.netrwhist
 .viminfo
 
-# Plugin lock files (regenerables)
-.config/nvim/lazy-lock.json
+# Reproducible configuration, verification and course tooling
+!tests/
+!tests/**
+!scripts/
+!scripts/**
+!docs/
+!docs/**
+!.stylua.toml
+!.gitattributes
+!requirements-docs.txt
+__pycache__/
+*.pyc
+tmp/

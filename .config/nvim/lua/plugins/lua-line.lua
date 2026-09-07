@@ -32,7 +32,11 @@ return {
                     lualine_b = { { "branch", icon = "" }, "diff" },
                     lualine_c = {
                         { "filename", path = 1, symbols = { modified = " ●", readonly = " " } },
-                        { "diagnostics", sources = { "nvim_lsp" }, symbols = { error = " ", warn = " ", info = " ", hint = " " } },
+                        {
+                            "diagnostics",
+                            sources = { "nvim_lsp" },
+                            symbols = { error = " ", warn = " ", info = " ", hint = " " },
+                        },
                     },
                     lualine_x = { lsp_names, "filetype" },
                     lualine_y = { "progress" },

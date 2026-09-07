@@ -3,9 +3,9 @@ return {
     {
         "ThePrimeagen/harpoon",
         branch = "harpoon2", -- Using branch 'harpoon2' because it contains the modern API
-                            -- required by our configuration. Version v1 has a different
-                            -- and incompatible API. Update to a specific tag when
-                            -- harpoon2 has a stable release to avoid breaking changes.
+        -- required by our configuration. Version v1 has a different
+        -- and incompatible API. Update to a specific tag when
+        -- harpoon2 has a stable release to avoid breaking changes.
         dependencies = { "nvim-lua/plenary.nvim" },
         -- Restore lazy loading by user's original keys
         keys = {

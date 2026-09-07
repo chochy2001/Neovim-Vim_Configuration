@@ -33,10 +33,7 @@ class PracticeApp extends StatelessWidget {
       theme: ThemeData(
         brightness: Brightness.dark,
         scaffoldBackgroundColor: _bg,
-        colorScheme: const ColorScheme.dark(
-          surface: _panel,
-          primary: _accent,
-        ),
+        colorScheme: const ColorScheme.dark(surface: _panel, primary: _accent),
         fontFamily: 'Segoe UI',
         useMaterial3: true,
       ),
@@ -89,12 +86,21 @@ class _HomePageState extends State<HomePage> {
   }
 
   KeyEventResult _onKey(FocusNode node, KeyEvent event) {
-    if (event is! KeyDownEvent) return KeyEventResult.ignored;
+    if ((event is! KeyDownEvent && event is! KeyRepeatEvent) || tab == 2) {
+      return KeyEventResult.ignored;
+    }
     final ch = event.character;
     final printable = ch != null && ch.isNotEmpty && ch.codeUnitAt(0) >= 32;
+    final keyboard = HardwareKeyboard.instance;
+    final altGr =
+        keyboard.isAltPressed && keyboard.isControlPressed && printable;
+    if (keyboard.isMetaPressed || (keyboard.isControlPressed && !altGr)) {
+      return KeyEventResult.ignored;
+    }
     if (!printable &&
-        (HardwareKeyboard.instance.isControlPressed ||
-            HardwareKeyboard.instance.isMetaPressed)) {
+        event.logicalKey != LogicalKeyboardKey.enter &&
+        event.logicalKey != LogicalKeyboardKey.escape &&
+        event.logicalKey != LogicalKeyboardKey.backspace) {
       return KeyEventResult.ignored;
     }
     if (tab == 0) {
@@ -105,7 +111,7 @@ class _HomePageState extends State<HomePage> {
     return KeyEventResult.handled;
   }
 
-  void _typeKey(KeyDownEvent event) {
+  void _typeKey(KeyEvent event) {
     final list = pool;
     if (list.isEmpty) return;
     final target = list[snippet.clamp(0, list.length - 1)].body;
@@ -113,23 +119,26 @@ class _HomePageState extends State<HomePage> {
       final s = typed.toString();
       if (s.isNotEmpty) {
         typed.clear();
-        typed.write(s.substring(0, s.length - 1));
+        typed.write(s.characters.skipLast(1).toString());
         setState(() {});
       }
       return;
     }
     var ch = event.character;
     if (event.logicalKey == LogicalKeyboardKey.enter) ch = '\n';
-    if (ch == null || ch.isEmpty) return;
+    if (ch == null || ch.isEmpty || typed.toString() == target) return;
     started ??= DateTime.now();
     typedCount++;
     final next = typed.length;
-    if (next < target.length && ch == target[next]) correctCount++;
+    if (next < target.length && target.substring(next).startsWith(ch)) {
+      correctCount++;
+    }
     typed.write(ch);
     setState(() {});
   }
 
-  void _vimKey(KeyDownEvent event) {
+  void _vimKey(KeyEvent event) {
+    vimStatus = null;
     if (event.logicalKey == LogicalKeyboardKey.arrowLeft ||
         event.logicalKey == LogicalKeyboardKey.arrowRight ||
         event.logicalKey == LogicalKeyboardKey.arrowUp ||
@@ -159,7 +168,7 @@ class _HomePageState extends State<HomePage> {
 
   void _checkVim() {
     final k = katas[kata];
-    final textOk = vim.text == k.expect;
+    final textOk = vim.text == k.expect && vim.mode == 'n';
     final colOk = k.expectCol == null || vim.col == k.expectCol;
     setState(() => vimStatus = textOk && colOk ? 'ok' : 'no');
   }
@@ -194,8 +203,10 @@ class _HomePageState extends State<HomePage> {
         runSpacing: 4,
         crossAxisAlignment: WrapCrossAlignment.center,
         children: [
-          const Text('CAPDESIS Practice',
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
+          const Text(
+            'CAPDESIS Practice',
+            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+          ),
           _tab(0, t.typewriter),
           _tab(1, t.vim),
           _tab(2, t.about),
@@ -217,21 +228,22 @@ class _HomePageState extends State<HomePage> {
           tab = i;
           vimStatus = null;
         }),
-        child: Text(label,
-            style: TextStyle(color: on ? _accent : _muted, fontSize: 13)),
+        child: Text(
+          label,
+          style: TextStyle(color: on ? _accent : _muted, fontSize: 13),
+        ),
       ),
     );
   }
 
   Future<void> _importFiles() async {
     final exts = langByExt.keys.map((e) => e.substring(1)).toList();
-    final result = await FilePicker.platform.pickFiles(
-      allowMultiple: true,
+    final result = await FilePicker.pickFiles(
       type: FileType.custom,
       allowedExtensions: exts,
     );
-    if (result == null) return;
-    final paths = result.paths.whereType<String>();
+    if (!mounted || result.isEmpty) return;
+    final paths = result.map((file) => file.path).whereType<String>();
     final got = loadPaths(paths);
     setState(() {
       imported = got;
@@ -242,9 +254,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _importFolder() async {
-    final path = await FilePicker.platform.getDirectoryPath();
-    if (path == null) return;
+    final path = await FilePicker.getDirectoryPath();
+    if (!mounted || path == null) return;
     final got = await loadProjectFolder(path);
+    if (!mounted) return;
     setState(() {
       imported = got;
       snippet = 0;
@@ -284,7 +297,11 @@ class _HomePageState extends State<HomePage> {
     final secs = started == null
         ? 1.0
         : DateTime.now().difference(started!).inMilliseconds / 1000.0;
-    final wpm = secs < 0.4 ? 0 : ((correctCount / 5) / (secs / 60));
+    var currentCorrect = 0;
+    for (var j = 0; j < got.length && j < target.length; j++) {
+      if (got[j] == target[j]) currentCorrect++;
+    }
+    final wpm = secs < 0.4 ? 0 : ((currentCorrect / 5) / (secs / 60));
     final acc = typedCount == 0 ? 100 : (100 * correctCount / typedCount);
 
     return Padding(
@@ -302,11 +319,17 @@ class _HomePageState extends State<HomePage> {
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               FilledButton(onPressed: _importFiles, child: Text(t.importFiles)),
-              OutlinedButton(onPressed: _importFolder, child: Text(t.importFolder)),
+              OutlinedButton(
+                onPressed: _importFolder,
+                child: Text(t.importFolder),
+              ),
               if (imported.isNotEmpty)
                 TextButton(onPressed: _dropImport, child: Text(t.clearImport)),
               if (importNote != null)
-                Text(importNote!, style: const TextStyle(color: _muted, fontSize: 12)),
+                Text(
+                  importNote!,
+                  style: const TextStyle(color: _muted, fontSize: 12),
+                ),
             ],
           ),
           const SizedBox(height: 12),
@@ -314,31 +337,36 @@ class _HomePageState extends State<HomePage> {
             constraints: const BoxConstraints(maxHeight: 96),
             child: SingleChildScrollView(
               child: Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              for (var i = 0; i < list.length; i++)
-                InputChip(
-                  label: Text(
-                    imported.isEmpty
-                        ? list[i].language
-                        : '${list[i].language} ${File(list[i].id).uri.pathSegments.last}',
-                  ),
-                  selected: i == snippet,
-                  onPressed: () => setState(() {
-                    snippet = i;
-                    _resetType();
-                  }),
-                  onDeleted: imported.isEmpty ? null : () => _removeImported(i),
-                ),
-            ],
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  for (var i = 0; i < list.length; i++)
+                    InputChip(
+                      label: Text(
+                        imported.isEmpty
+                            ? list[i].language
+                            : '${list[i].language} ${File(list[i].id).uri.pathSegments.last}',
+                      ),
+                      selected: i == snippet,
+                      onPressed: () => setState(() {
+                        snippet = i;
+                        _resetType();
+                      }),
+                      onDeleted: imported.isEmpty
+                          ? null
+                          : () => _removeImported(i),
+                    ),
+                ],
               ),
             ),
           ),
           const SizedBox(height: 8),
           Text(
             '${t.wpm} ${wpm.toStringAsFixed(0)}   ${t.acc} ${acc.toStringAsFixed(0)}%',
-            style: const TextStyle(color: _muted, fontFeatures: [FontFeature.tabularFigures()]),
+            style: const TextStyle(
+              color: _muted,
+              fontFeatures: [FontFeature.tabularFigures()],
+            ),
           ),
           const SizedBox(height: 12),
           Expanded(
@@ -351,17 +379,22 @@ class _HomePageState extends State<HomePage> {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: SingleChildScrollView(
-                child: Text.rich(_typedSpan(target, got),
-                    style: const TextStyle(
-                      fontFamily: 'Consolas',
-                      fontSize: 16,
-                      height: 1.45,
-                    )),
+                child: Text.rich(
+                  _typedSpan(target, got),
+                  style: const TextStyle(
+                    fontFamily: 'Consolas',
+                    fontSize: 16,
+                    height: 1.45,
+                  ),
+                ),
               ),
             ),
           ),
           const SizedBox(height: 12),
-          TextButton(onPressed: () => setState(_resetType), child: Text(t.reset)),
+          TextButton(
+            onPressed: () => setState(_resetType),
+            child: Text(t.reset),
+          ),
         ],
       ),
     );
@@ -377,16 +410,36 @@ class _HomePageState extends State<HomePage> {
     final rest = _muted.withValues(alpha: 0.45);
     final spans = <InlineSpan>[];
     if (match > 0) {
-      spans.add(TextSpan(text: target.substring(0, match), style: const TextStyle(color: _ok)));
+      spans.add(
+        TextSpan(
+          text: target.substring(0, match),
+          style: const TextStyle(color: _ok),
+        ),
+      );
     }
     if (got.length > match && match < target.length) {
       final errTo = got.length < target.length ? got.length : target.length;
-      spans.add(TextSpan(text: target.substring(match, errTo), style: const TextStyle(color: _bad)));
+      spans.add(
+        TextSpan(
+          text: target.substring(match, errTo),
+          style: const TextStyle(color: _bad),
+        ),
+      );
     }
     if (got.length < target.length) {
-      spans.add(TextSpan(text: target[got.length], style: const TextStyle(color: _accent)));
+      spans.add(
+        TextSpan(
+          text: target[got.length],
+          style: const TextStyle(color: _accent),
+        ),
+      );
       if (got.length + 1 < target.length) {
-        spans.add(TextSpan(text: target.substring(got.length + 1), style: TextStyle(color: rest)));
+        spans.add(
+          TextSpan(
+            text: target.substring(got.length + 1),
+            style: TextStyle(color: rest),
+          ),
+        );
       }
     }
     return TextSpan(children: spans);
@@ -407,8 +460,10 @@ class _HomePageState extends State<HomePage> {
                 return ListTile(
                   dense: true,
                   selected: i == kata,
-                  title: Text(es ? item.titleEs : item.titleEn,
-                      style: const TextStyle(fontSize: 13)),
+                  title: Text(
+                    es ? item.titleEs : item.titleEn,
+                    style: const TextStyle(fontSize: 13),
+                  ),
                   onTap: () => setState(() {
                     kata = i;
                     _resetVim();
@@ -424,25 +479,41 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(es ? k.titleEs : k.titleEn,
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+                  Text(
+                    es ? k.titleEs : k.titleEn,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                   const SizedBox(height: 8),
-                  Text(es ? k.hintEs : k.hintEn,
-                      style: const TextStyle(color: _muted)),
+                  Text(
+                    es ? k.hintEs : k.hintEn,
+                    style: const TextStyle(color: _muted),
+                  ),
                   const SizedBox(height: 8),
-                  Text(t.vimHint, style: const TextStyle(color: _muted, fontSize: 12)),
+                  Text(
+                    t.vimHint,
+                    style: const TextStyle(color: _muted, fontSize: 12),
+                  ),
                   const SizedBox(height: 8),
-                  Text(vim.mode == 'i' ? t.modeI : t.modeN,
-                      style: TextStyle(
-                        color: vim.mode == 'i' ? const Color(0xFFD29922) : _accent,
-                        fontFamily: 'Consolas',
-                      )),
+                  Text(
+                    vim.mode == 'i' ? t.modeI : t.modeN,
+                    style: TextStyle(
+                      color: vim.mode == 'i'
+                          ? const Color(0xFFD29922)
+                          : _accent,
+                      fontFamily: 'Consolas',
+                    ),
+                  ),
                   const SizedBox(height: 12),
                   Expanded(child: _buffer()),
                   const SizedBox(height: 12),
                   if (vimStatus != null)
-                    Text(vimStatus == 'ok' ? t.ok : t.notYet,
-                        style: TextStyle(color: vimStatus == 'ok' ? _ok : _bad)),
+                    Text(
+                      vimStatus == 'ok' ? t.ok : t.notYet,
+                      style: TextStyle(color: vimStatus == 'ok' ? _ok : _bad),
+                    ),
                   Wrap(
                     spacing: 8,
                     children: [
@@ -478,13 +549,20 @@ class _HomePageState extends State<HomePage> {
         border: Border.all(color: _hair),
         borderRadius: BorderRadius.circular(8),
       ),
-      child: DefaultTextStyle(
-        style: const TextStyle(fontFamily: 'Consolas', fontSize: 16, color: _text, height: 1.45),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            for (var r = 0; r < vim.lines.length; r++) _bufferLine(r),
-          ],
+      child: SingleChildScrollView(
+        child: DefaultTextStyle(
+          style: const TextStyle(
+            fontFamily: 'Consolas',
+            fontSize: 16,
+            color: _text,
+            height: 1.45,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              for (var r = 0; r < vim.lines.length; r++) _bufferLine(r),
+            ],
+          ),
         ),
       ),
     );
@@ -497,14 +575,18 @@ class _HomePageState extends State<HomePage> {
     final before = line.substring(0, c);
     final at = c < line.length ? line[c] : ' ';
     final after = c < line.length ? line.substring(c + 1) : '';
-    return Text.rich(TextSpan(children: [
-      TextSpan(text: before),
+    return Text.rich(
       TextSpan(
-        text: at,
-        style: const TextStyle(backgroundColor: _accent, color: _bg),
+        children: [
+          TextSpan(text: before),
+          TextSpan(
+            text: at,
+            style: const TextStyle(backgroundColor: _accent, color: _bg),
+          ),
+          TextSpan(text: after),
+        ],
       ),
-      TextSpan(text: after),
-    ]));
+    );
   }
 
   Widget _about() {
@@ -517,11 +599,17 @@ class _HomePageState extends State<HomePage> {
           children: [
             Text(t.subset, style: const TextStyle(fontSize: 15, height: 1.5)),
             const SizedBox(height: 12),
-            Text(t.keys, style: const TextStyle(fontFamily: 'Consolas', color: _muted)),
+            Text(
+              t.keys,
+              style: const TextStyle(fontFamily: 'Consolas', color: _muted),
+            ),
             const SizedBox(height: 24),
             Text(t.copy, style: const TextStyle(color: _muted)),
             const SizedBox(height: 8),
-            Text(t.unsigned, style: const TextStyle(color: _muted, fontSize: 13)),
+            Text(
+              t.unsigned,
+              style: const TextStyle(color: _muted, fontSize: 13),
+            ),
           ],
         ),
       ),

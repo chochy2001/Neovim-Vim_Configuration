@@ -3,7 +3,7 @@
 -- Other themes load on demand with :colorscheme <name>
 
 -- Default theme configuration (change here to use another theme)
-local DEFAULT_THEME = "dracula"  -- Options: "dracula", "gruvbox", "catppuccin", "onedark", etc.
+local DEFAULT_THEME = "dracula" -- Options: "dracula", "gruvbox", "catppuccin", "onedark", etc.
 
 return {
     -- Default theme (loads immediately)

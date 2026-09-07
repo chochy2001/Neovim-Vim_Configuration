@@ -2,47 +2,80 @@
 return {
     {
         "nvim-treesitter/nvim-treesitter",
-        build = function()
-            pcall(function() require("nvim-treesitter").update() end)
-        end,
-        event = { "BufReadPre", "BufNewFile" },
-        dependencies = {
-            "nvim-treesitter/nvim-treesitter-textobjects",
-        },
+        branch = "main",
+        lazy = false, -- upstream explicitly does not support lazy-loading
+        build = ":TSUpdate",
         config = function()
             local langs = {
-                "lua", "vim", "vimdoc", "query",
-                "dart", "kotlin", "c", "cpp", "go",
-                "python", "javascript", "typescript", "tsx",
-                "html", "css", "php", "astro",
-                "json", "yaml", "toml", "sql", "dockerfile",
-                "markdown", "markdown_inline", "bash", "swift",
+                "lua",
+                "vim",
+                "vimdoc",
+                "query",
+                "dart",
+                "kotlin",
+                "c",
+                "cpp",
+                "go",
+                "python",
+                "javascript",
+                "typescript",
+                "tsx",
+                "html",
+                "css",
+                "php",
+                "astro",
+                "json",
+                "yaml",
+                "toml",
+                "sql",
+                "dockerfile",
+                "markdown",
+                "markdown_inline",
+                "bash",
+                "swift",
             }
 
             -- Install missing parsers
             local ts = require("nvim-treesitter")
-            local installed = ts.get_installed()
+            local installed = ts.get_installed("parsers")
             local installed_set = {}
-            for _, l in ipairs(installed) do installed_set[l] = true end
+            for _, l in ipairs(installed) do
+                installed_set[l] = true
+            end
             local to_install = {}
             for _, l in ipairs(langs) do
-                if not installed_set[l] then
+                local revision = vim.fn.stdpath("data") .. "/site/parser-info/" .. l .. ".revision"
+                if not installed_set[l] or not vim.uv.fs_stat(revision) then
                     table.insert(to_install, l)
                 end
             end
-            if #to_install > 0 then
+            if #to_install > 0 and vim.env.NVIM_OFFLINE ~= "1" then
                 vim.schedule(function()
-                    ts.install(to_install)
+                    local missing = {}
+                    for _, cmd in ipairs({ "tree-sitter", "curl", "tar" }) do
+                        if vim.fn.executable(cmd) ~= 1 then
+                            table.insert(missing, cmd)
+                        end
+                    end
+                    if #missing > 0 then
+                        vim.notify(
+                            "Parser installation needs: " .. table.concat(missing, ", ") .. ". See README.",
+                            vim.log.levels.WARN
+                        )
+                        return
+                    end
+                    -- Repair parsers copied from an older installation without revision metadata.
+                    ts.install(to_install, { force = true })
                 end)
             end
 
             -- Enable treesitter highlighting via FileType autocmd (required in new nvim-treesitter)
             vim.api.nvim_create_autocmd("FileType", {
                 group = vim.api.nvim_create_augroup("TreesitterHighlight", { clear = true }),
-                callback = function()
-                    local lang = vim.treesitter.language.get_lang(vim.bo.filetype)
+                callback = function(ev)
+                    local lang = vim.treesitter.language.get_lang(vim.bo[ev.buf].filetype)
                     if lang and pcall(vim.treesitter.query.get, lang, "highlights") then
-                        pcall(vim.treesitter.start)
+                        pcall(vim.treesitter.start, ev.buf)
                     end
                 end,
             })
@@ -51,6 +84,7 @@ return {
     -- Text objects for functions, classes, arguments, etc.
     {
         "nvim-treesitter/nvim-treesitter-textobjects",
+        branch = "main",
         event = { "BufReadPre", "BufNewFile" },
         dependencies = { "nvim-treesitter/nvim-treesitter" },
         config = function()
@@ -58,37 +92,77 @@ return {
             local select_ok, ts_select = pcall(require, "nvim-treesitter-textobjects.select")
             if select_ok then
                 local map = vim.keymap.set
-                map({ "x", "o" }, "af", function() ts_select.select_textobject("@function.outer", "textobjects") end, { desc = "Around function" })
-                map({ "x", "o" }, "if", function() ts_select.select_textobject("@function.inner", "textobjects") end, { desc = "Inside function" })
-                map({ "x", "o" }, "ac", function() ts_select.select_textobject("@class.outer", "textobjects") end, { desc = "Around class" })
-                map({ "x", "o" }, "ic", function() ts_select.select_textobject("@class.inner", "textobjects") end, { desc = "Inside class" })
-                map({ "x", "o" }, "aa", function() ts_select.select_textobject("@parameter.outer", "textobjects") end, { desc = "Around argument" })
-                map({ "x", "o" }, "ia", function() ts_select.select_textobject("@parameter.inner", "textobjects") end, { desc = "Inside argument" })
-                map({ "x", "o" }, "ai", function() ts_select.select_textobject("@conditional.outer", "textobjects") end, { desc = "Around conditional" })
-                map({ "x", "o" }, "ii", function() ts_select.select_textobject("@conditional.inner", "textobjects") end, { desc = "Inside conditional" })
-                map({ "x", "o" }, "al", function() ts_select.select_textobject("@loop.outer", "textobjects") end, { desc = "Around loop" })
-                map({ "x", "o" }, "il", function() ts_select.select_textobject("@loop.inner", "textobjects") end, { desc = "Inside loop" })
+                map({ "x", "o" }, "af", function()
+                    ts_select.select_textobject("@function.outer", "textobjects")
+                end, { desc = "Around function" })
+                map({ "x", "o" }, "if", function()
+                    ts_select.select_textobject("@function.inner", "textobjects")
+                end, { desc = "Inside function" })
+                map({ "x", "o" }, "ac", function()
+                    ts_select.select_textobject("@class.outer", "textobjects")
+                end, { desc = "Around class" })
+                map({ "x", "o" }, "ic", function()
+                    ts_select.select_textobject("@class.inner", "textobjects")
+                end, { desc = "Inside class" })
+                map({ "x", "o" }, "aa", function()
+                    ts_select.select_textobject("@parameter.outer", "textobjects")
+                end, { desc = "Around argument" })
+                map({ "x", "o" }, "ia", function()
+                    ts_select.select_textobject("@parameter.inner", "textobjects")
+                end, { desc = "Inside argument" })
+                map({ "x", "o" }, "ai", function()
+                    ts_select.select_textobject("@conditional.outer", "textobjects")
+                end, { desc = "Around conditional" })
+                map({ "x", "o" }, "ii", function()
+                    ts_select.select_textobject("@conditional.inner", "textobjects")
+                end, { desc = "Inside conditional" })
+                map({ "x", "o" }, "al", function()
+                    ts_select.select_textobject("@loop.outer", "textobjects")
+                end, { desc = "Around loop" })
+                map({ "x", "o" }, "il", function()
+                    ts_select.select_textobject("@loop.inner", "textobjects")
+                end, { desc = "Inside loop" })
             end
 
             -- Move keymaps
             local move_ok, ts_move = pcall(require, "nvim-treesitter-textobjects.move")
             if move_ok then
                 local map = vim.keymap.set
-                map({ "n", "x", "o" }, "]f", function() ts_move.goto_next_start("@function.outer", "textobjects") end, { desc = "Next function" })
-                map({ "n", "x", "o" }, "[f", function() ts_move.goto_previous_start("@function.outer", "textobjects") end, { desc = "Previous function" })
-                map({ "n", "x", "o" }, "]c", function() ts_move.goto_next_start("@class.outer", "textobjects") end, { desc = "Next class" })
-                map({ "n", "x", "o" }, "[c", function() ts_move.goto_previous_start("@class.outer", "textobjects") end, { desc = "Previous class" })
-                map({ "n", "x", "o" }, "]a", function() ts_move.goto_next_start("@parameter.inner", "textobjects") end, { desc = "Next argument" })
-                map({ "n", "x", "o" }, "[a", function() ts_move.goto_previous_start("@parameter.inner", "textobjects") end, { desc = "Previous argument" })
-                map({ "n", "x", "o" }, "]F", function() ts_move.goto_next_end("@function.outer", "textobjects") end, { desc = "Next function end" })
-                map({ "n", "x", "o" }, "[F", function() ts_move.goto_previous_end("@function.outer", "textobjects") end, { desc = "Previous function end" })
+                map({ "n", "x", "o" }, "]f", function()
+                    ts_move.goto_next_start("@function.outer", "textobjects")
+                end, { desc = "Next function" })
+                map({ "n", "x", "o" }, "[f", function()
+                    ts_move.goto_previous_start("@function.outer", "textobjects")
+                end, { desc = "Previous function" })
+                map({ "n", "x", "o" }, "]c", function()
+                    ts_move.goto_next_start("@class.outer", "textobjects")
+                end, { desc = "Next class" })
+                map({ "n", "x", "o" }, "[c", function()
+                    ts_move.goto_previous_start("@class.outer", "textobjects")
+                end, { desc = "Previous class" })
+                map({ "n", "x", "o" }, "]a", function()
+                    ts_move.goto_next_start("@parameter.inner", "textobjects")
+                end, { desc = "Next argument" })
+                map({ "n", "x", "o" }, "[a", function()
+                    ts_move.goto_previous_start("@parameter.inner", "textobjects")
+                end, { desc = "Previous argument" })
+                map({ "n", "x", "o" }, "]F", function()
+                    ts_move.goto_next_end("@function.outer", "textobjects")
+                end, { desc = "Next function end" })
+                map({ "n", "x", "o" }, "[F", function()
+                    ts_move.goto_previous_end("@function.outer", "textobjects")
+                end, { desc = "Previous function end" })
             end
 
             -- Swap keymaps
             local swap_ok, ts_swap = pcall(require, "nvim-treesitter-textobjects.swap")
             if swap_ok then
-                vim.keymap.set("n", "<leader>sa", function() ts_swap.swap_next("@parameter.inner", "textobjects") end, { desc = "Swap with next argument" })
-                vim.keymap.set("n", "<leader>sA", function() ts_swap.swap_previous("@parameter.inner", "textobjects") end, { desc = "Swap with previous argument" })
+                vim.keymap.set("n", "<leader>sa", function()
+                    ts_swap.swap_next("@parameter.inner", "textobjects")
+                end, { desc = "Swap with next argument" })
+                vim.keymap.set("n", "<leader>sA", function()
+                    ts_swap.swap_previous("@parameter.inner", "textobjects")
+                end, { desc = "Swap with previous argument" })
             end
         end,
     },

@@ -5,6 +5,16 @@ import 'package:capdesis_practice/data/import_local.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  test('CRLF and BOM imports are typeable using Enter', () async {
+    final dir = await Directory.systemTemp.createTemp('capdesis_crlf_');
+    try {
+      final file = File('${dir.path}/example.py');
+      file.writeAsStringSync('\uFEFFone\r\ntwo\r\n');
+      expect(snippetFromPath(file.path)!.body, 'one\ntwo\n');
+    } finally {
+      await dir.delete(recursive: true);
+    }
+  });
   test('language map covers common extensions', () {
     expect(languageFor('a.go'), 'Go');
     expect(languageFor('a.java'), 'Java');

@@ -137,7 +137,7 @@ Leader prefixes and the chords listed in `.ideavimrc` match Neovim where Intelli
 | `<leader>gnp` | Normal | Previous hunk |
 | `<leader>gsa` | Normal | Stage hunk |
 | `<leader>gsr` | Normal | Reset hunk |
-| `<leader>gsu` | Normal | Undo stage hunk |
+| `<leader>gsu` | Normal | Toggle stage of hunk under cursor (same action as gsa) |
 | `<leader>gsp` | Normal | Preview hunk |
 | `<leader>gsb` | Normal | Reset entire buffer |
 | `ih` | Operator/Visual | Select hunk (text object) |
@@ -161,8 +161,8 @@ Leader prefixes and the chords listed in `.ideavimrc` match Neovim where Intelli
 
 | Key | Mode | Action |
 |-----|------|--------|
-| `gd` | Normal | Go to definition (native 0.11+) |
-| `gi` | Normal | Go to implementation (native 0.11+) |
+| `gd` | Normal | Go to definition (configured on LspAttach) |
+| `gi` | Normal | Go to implementation (configured on LspAttach) |
 | `go` | Normal | Go to type definition |
 | `gs` | Normal | Signature help / parameter info |
 | `gR` | Normal | References in Trouble |
@@ -174,7 +174,7 @@ Leader prefixes and the chords listed in `.ideavimrc` match Neovim where Intelli
 |-----|------|--------|
 | `<leader>rn` | Normal | Rename symbol |
 | `<leader>ca` | Normal/Visual | Code action |
-| `<leader>fm` | Normal | Format (none-ls if it has a formatter for this filetype, else LSP) |
+| `<leader>fm` | Normal | Format (one attached none-ls client with an applicable source, otherwise one attached LSP) |
 | `<C-space>` | Insert | Trigger completion |
 
 ---
@@ -230,9 +230,9 @@ Leader prefixes and the chords listed in `.ideavimrc` match Neovim where Intelli
 | `<leader>r` | Normal | Run code |
 | `<leader>rf` | Normal | Run file |
 | `<leader>rft` | Normal | Run file in new tab |
-| `<leader>rp` | Normal | Run project |
+| `<leader>rp` | Normal | Run project task (Overseer) |
 | `<leader>rc` | Normal | Close runner |
-| `<leader>rs` | Normal | Stop running process |
+| `<leader>rs` | Normal | Stop current terminal job or choose an active terminal |
 | `<leader>rb` | Normal | Build (make) |
 
 ### Overseer (Task Runner)
@@ -269,9 +269,9 @@ Leader prefixes and the chords listed in `.ideavimrc` match Neovim where Intelli
 | `<leader>ag` | Normal | gemini terminal |
 | `<leader>ak` | Normal | grok terminal |
 | `<leader>ap` | Normal | copilot CLI terminal |
-| `<leader>as` | Visual | Send selection to any agent (picker + instruction) |
+| `<leader>as` | Visual | Prepare selection for an agent (picker + instruction) |
 
-Workflow: select code → `<leader>as` → pick agent → type what to change → the prompt is sent to its floating terminal (a backup copy stays in the clipboard). Missing CLIs show their install command instead of failing.
+Workflow: select code → `<leader>as` → pick agent → type what to change → the CLI opens and the prompt is copied to the clipboard and register a. Paste when ready, review, then submit. Missing CLIs show their install command instead of failing.
 
 ---
 

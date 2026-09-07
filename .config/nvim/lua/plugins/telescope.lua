@@ -107,7 +107,12 @@ return {
             vim.keymap.set("n", "<leader>fk", builtin.keymaps, { desc = "Find Keymaps" })
 
             -- Project/Symbol search - synced with .ideavimrc
-            vim.keymap.set("n", "<leader>ps", builtin.lsp_dynamic_workspace_symbols, { desc = "Find Project Symbols" })
+            vim.keymap.set(
+                "n",
+                "<leader>ps",
+                builtin.lsp_dynamic_workspace_symbols,
+                { desc = "Find Project Symbols" }
+            )
 
             -- REMOVED: <leader><leader> conflicts with clear search highlight from .ideavimrc
             -- REMOVED: <leader>fd unnecessary duplicate

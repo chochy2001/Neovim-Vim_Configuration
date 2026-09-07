@@ -2,7 +2,8 @@
 /// Commands are listed in [supported] and covered by test/vim_test.dart.
 class Vim {
   Vim(String text, {this.row = 0, this.col = 0})
-      : lines = text.isEmpty ? [''] : text.split('\n') {
+    : lines = text.isEmpty ? [''] : text.split('\n') {
+    row = row.clamp(0, lines.length - 1);
     col = _clampCol(row, col);
   }
 
@@ -15,7 +16,8 @@ class Vim {
   String? pending;
   String register = '';
   bool linewise = false;
-  _Snap? _undo;
+  final List<_Snap> _undo = [];
+  int _operatorCount = 1;
   String? _findChar;
   int _findDir = 1;
   bool _findTill = false;
@@ -31,12 +33,26 @@ class Vim {
   String get text => lines.join('\n');
 
   void feed(String key) {
+    if (key == 'Escape') {
+      if (mode == 'i') {
+        mode = 'n';
+        _set(row, col > 0 ? col - 1 : 0);
+      }
+      count = '';
+      op = null;
+      pending = null;
+      _operatorCount = 1;
+      return;
+    }
     if (pending == 'r') {
       pending = null;
       if (key.length == 1 && mode == 'n' && lines[row].isNotEmpty) {
         _save();
         final line = lines[row];
-        lines[row] = line.substring(0, col) + key + line.substring(col + 1);
+        final n = _n();
+        if (col + n > line.length) return;
+        lines[row] = line.substring(0, col) + key * n + line.substring(col + n);
+        col += n - 1;
       }
       return;
     }
@@ -50,7 +66,7 @@ class Vim {
     }
     if (pending == 'g') {
       pending = null;
-      if (key == 'g') _set(0, 0);
+      if (key == 'g') _set(_n() - 1, 0);
       return;
     }
 
@@ -112,6 +128,7 @@ class Vim {
     }
     if (key == 'd' || key == 'c' || key == 'y') {
       op = key;
+      _operatorCount = _n();
       return;
     }
     if (key == 'x') {
@@ -132,8 +149,7 @@ class Vim {
       return;
     }
     if (key == 'C') {
-      _delete(row, col, row, lines[row].length, false);
-      mode = 'i';
+      _delete(row, col, row, lines[row].length, false, change: true);
       return;
     }
     if (key == 'Y') {
@@ -150,29 +166,34 @@ class Vim {
       return;
     }
     if (key == ';') {
-      _doFind();
+      _doFind(repeat: true);
       return;
     }
     if (key == '>' || key == '<') {
       op = key;
+      _operatorCount = _n();
       return;
     }
     if (key == 'i') {
+      _save();
       mode = 'i';
       return;
     }
     if (key == 'a') {
+      _save();
       mode = 'i';
       col = (col + 1).clamp(0, lines[row].length);
       return;
     }
     if (key == 'I') {
+      _save();
       mode = 'i';
       final m = lines[row].indexOf(RegExp(r'\S'));
       col = m < 0 ? 0 : m;
       return;
     }
     if (key == 'A') {
+      _save();
       mode = 'i';
       col = lines[row].length;
       return;
@@ -200,12 +221,14 @@ class Vim {
       _paste(false);
       return;
     }
-    if (key == 'u' && _undo != null) {
-      final cur = _Snap(lines, row, col);
-      lines = [..._undo!.lines];
-      row = _undo!.row;
-      col = _undo!.col;
-      _undo = cur;
+    if (key == 'u') {
+      final n = _n();
+      for (var i = 0; i < n && _undo.isNotEmpty; i++) {
+        final snap = _undo.removeLast();
+        lines = [...snap.lines];
+        row = snap.row;
+        col = snap.col;
+      }
       mode = 'n';
       return;
     }
@@ -248,7 +271,9 @@ class Vim {
 
   int _clampCol(int r, int c) {
     final line = lines[r];
-    final max = mode == 'i' ? line.length : (line.isEmpty ? 0 : line.length - 1);
+    final max = mode == 'i'
+        ? line.length
+        : (line.isEmpty ? 0 : line.length - 1);
     return c.clamp(0, max);
   }
 
@@ -258,7 +283,8 @@ class Vim {
   }
 
   void _save() {
-    _undo = _Snap(lines, row, col);
+    if (mode == 'i') return; // the entire insert session is one change
+    _undo.add(_Snap(lines, row, col));
   }
 
   String _kind(String? c) {
@@ -269,7 +295,9 @@ class Vim {
   }
 
   void _motion(String key) {
-    final times = key == '0' || key == '^' || key == '\$' || key == 'G' ? 1 : _n();
+    final times = key == '0' || key == '^' || key == '\$' || key == 'G'
+        ? 1
+        : _n();
     if (key == 'h') {
       _set(row, col - times);
     } else if (key == 'j') {
@@ -330,6 +358,7 @@ class Vim {
       }
       row++;
       col = 0;
+      if (lines[row].isEmpty) break;
     }
   }
 
@@ -396,44 +425,82 @@ class Vim {
   }
 
   void _doOp(String key) {
+    final times = _operatorCount * _n();
+    _operatorCount = 1;
+    count = times.toString();
     if (op == '>' || op == '<') {
-      if (key == '>' || key == '<') _indent(op == '>');
+      if (key == op) _indent(op == '>');
+      count = '';
       return;
     }
-    final startRow = row;
-    final startCol = col;
+    final startRow = row, startCol = col;
     if (key == op) {
-      final times = _n();
+      count = '';
+      final end = (row + times).clamp(1, lines.length);
       if (op == 'y') {
-        register = lines.sublist(row, (row + times).clamp(1, lines.length)).join('\n');
+        register = lines.sublist(row, end).join('\n');
         linewise = true;
       } else {
-        _delete(row, 0, row + times - 1, 0, true);
-        if (op == 'c') mode = 'i';
+        _delete(row, 0, end - 1, 0, true, change: op == 'c');
       }
       return;
     }
-    if ('we\$0hl'.contains(key)) {
-      _motion(key);
-      final endCol = key == '\$'
-          ? lines[startRow].length
-          : key == 'e'
-              ? col + 1
-              : col;
-      row = startRow;
-      col = startCol;
-      if (startRow == row) {
-        final a = startCol < endCol ? startCol : endCol;
-        final b = startCol < endCol ? endCol : startCol;
-        if (op == 'y') {
-          register = lines[row].substring(a.clamp(0, lines[row].length), b.clamp(0, lines[row].length));
-          linewise = false;
-        } else {
-          _delete(row, a, row, b, false);
-          if (op == 'c') mode = 'i';
-        }
-      }
+    if (!['w', 'e', '\$', '0', 'h', 'l'].contains(key)) {
+      count = '';
+      return;
     }
+    // Vim's cw uses ce on a nonblank character, preserving following spaces.
+    final motion =
+        op == 'c' &&
+            key == 'w' &&
+            lines[row].isNotEmpty &&
+            _kind(lines[row][col]) != 'ws'
+        ? 'e'
+        : key;
+    _motion(motion);
+    var endRow = row, endCol = col;
+    if (motion == '\$' || motion == 'e') endCol++;
+    // A word operator ending just beyond EOL excludes the line break.
+    if (key == 'w' && endRow > startRow && endCol == 0) {
+      endRow--;
+      endCol = lines[endRow].length;
+    } else if (key == 'w' &&
+        endRow == startRow &&
+        endCol == startCol &&
+        endCol == lines[endRow].length - 1) {
+      endCol++;
+    } else if (key == 'w' &&
+        endRow == lines.length - 1 &&
+        endCol == lines[endRow].length - 1) {
+      endCol++;
+    }
+    row = startRow;
+    col = startCol;
+    var r1 = startRow, c1 = startCol, r2 = endRow, c2 = endCol;
+    if (r1 > r2 || (r1 == r2 && c1 > c2)) {
+      r1 = endRow;
+      c1 = endCol;
+      r2 = startRow;
+      c2 = startCol;
+    }
+    if (op == 'y') {
+      register = _region(r1, c1, r2, c2);
+      linewise = false;
+    } else {
+      _delete(r1, c1, r2, c2, false, change: op == 'c');
+    }
+    count = '';
+  }
+
+  String _region(int r1, int c1, int r2, int c2) {
+    c1 = c1.clamp(0, lines[r1].length);
+    c2 = c2.clamp(0, lines[r2].length);
+    if (r1 == r2) return lines[r1].substring(c1, c2);
+    return [
+      lines[r1].substring(c1),
+      ...lines.sublist(r1 + 1, r2),
+      lines[r2].substring(0, c2),
+    ].join('\n');
   }
 
   void _changeInner(String key, String innerOp) {
@@ -460,7 +527,7 @@ class Vim {
       final close = pairs[key];
       if (close == null) return;
       final i = line.lastIndexOf(key, col);
-      final j = line.indexOf(close, col);
+      final j = line.indexOf(close, i >= 0 ? i + 1 : col);
       if (i >= 0 && j > i) {
         a = i + 1;
         b = j;
@@ -472,8 +539,8 @@ class Vim {
       linewise = false;
       return;
     }
-    _delete(row, a, row, b, false);
-    if (innerOp == 'c') mode = 'i';
+    _delete(row, a, row, b, false, change: innerOp == 'c');
+    count = '';
   }
 
   void _join() {
@@ -502,50 +569,42 @@ class Vim {
   }
 
   void _blank(int dir) {
-    var r = row + dir;
-    while (r >= 0 && r < lines.length && lines[r].trim().isNotEmpty) {
-      r += dir;
-    }
-    while (r >= 0 && r < lines.length && lines[r].trim().isEmpty) {
-      r += dir;
-    }
-    if (dir < 0) {
-      while (r > 0 && lines[r - 1].trim().isNotEmpty) {
-        r--;
+    var r = row;
+    if (lines[r].isEmpty) {
+      while (r + dir >= 0 && r + dir < lines.length && lines[r].isEmpty) {
+        r += dir;
       }
+    }
+    r += dir;
+    while (r >= 0 && r < lines.length && lines[r].isNotEmpty) {
+      r += dir;
     }
     _set(r.clamp(0, lines.length - 1), 0);
   }
 
-  void _doFind() {
-    if (_findChar == null) return;
+  void _doFind({bool repeat = false}) {
+    final n = _n();
+    if (_findChar == null || _findChar!.length != 1) return;
     final line = lines[row];
-    final ch = _findChar!;
-    if (_findDir > 0) {
-      var from = col + 1;
-      while (from < line.length) {
-        final i = line.indexOf(ch, from);
-        if (i < 0) return;
-        final land = _findTill ? i - 1 : i;
-        if (land > col && land >= 0) {
-          col = land;
-          return;
+    var from = col;
+    var found = -1;
+    for (var k = 0; k < n; k++) {
+      if (_findDir > 0) {
+        found = line.indexOf(_findChar!, from + 1);
+        if (repeat && _findTill && k == 0 && found == col + 1) {
+          found = line.indexOf(_findChar!, found + 1);
         }
-        from = i + 1;
-      }
-    } else {
-      var from = col - 1;
-      while (from >= 0) {
-        final i = line.lastIndexOf(ch, from);
-        if (i < 0) return;
-        final land = _findTill ? i + 1 : i;
-        if (land < col && land < line.length) {
-          col = land;
-          return;
+      } else {
+        if (from <= 0) return;
+        found = line.lastIndexOf(_findChar!, from - 1);
+        if (repeat && _findTill && k == 0 && found == col - 1) {
+          found = found > 0 ? line.lastIndexOf(_findChar!, found - 1) : -1;
         }
-        from = i - 1;
       }
+      if (found < 0) return;
+      from = found;
     }
+    col = found - (_findTill ? _findDir : 0);
   }
 
   void _percent() {
@@ -593,26 +652,25 @@ class Vim {
     }
   }
 
-  void _delete(int r1, int c1, int r2, int c2, bool lw) {
+  void _delete(int r1, int c1, int r2, int c2, bool lw, {bool change = false}) {
+    if (!lw && r1 == r2 && c1 == c2 && !change) return;
     _save();
+    if (change) mode = 'i';
     if (lw) {
-      final from = r1 < r2 ? r1 : r2;
-      final to = r1 < r2 ? r2 : r1;
-      final end = (to + 1).clamp(0, lines.length);
-      register = lines.sublist(from, end).join('\n');
+      final end = (r2 + 1).clamp(0, lines.length);
+      register = lines.sublist(r1, end).join('\n');
       linewise = true;
-      lines.removeRange(from, end);
+      lines.replaceRange(r1, end, change ? [''] : <String>[]);
       if (lines.isEmpty) lines = [''];
-      _set(from.clamp(0, lines.length - 1), 0);
+      _set(r1.clamp(0, lines.length - 1), 0);
       return;
     }
-    if (r1 != r2) return;
-    final line = lines[r1];
-    final a = (c1 < c2 ? c1 : c2).clamp(0, line.length);
-    final b = (c1 < c2 ? c2 : c1).clamp(0, line.length);
-    register = line.substring(a, b);
+    final a = c1.clamp(0, lines[r1].length);
+    final b = c2.clamp(0, lines[r2].length);
+    register = _region(r1, a, r2, b);
     linewise = false;
-    lines[r1] = line.substring(0, a) + line.substring(b);
+    final replacement = lines[r1].substring(0, a) + lines[r2].substring(b);
+    lines.replaceRange(r1, r2 + 1, [replacement]);
     _set(r1, a);
   }
 
@@ -629,7 +687,7 @@ class Vim {
     final line = lines[row];
     final i = after ? (col + 1).clamp(0, line.length) : col;
     lines[row] = line.substring(0, i) + register + line.substring(i);
-    _set(row, i);
+    _set(row, i + register.length - 1);
   }
 }
 

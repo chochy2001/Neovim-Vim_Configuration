@@ -1,9 +1,5 @@
 class Snippet {
-  const Snippet({
-    required this.id,
-    required this.language,
-    required this.body,
-  });
+  const Snippet({required this.id, required this.language, required this.body});
   final String id;
   final String language;
   final String body;

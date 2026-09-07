@@ -3,14 +3,11 @@ local M = {}
 
 -- Restart Dart LSP when there are issues
 M.restart_dart_lsp = function()
-    local clients = vim.lsp.get_clients({ name = "dartls" })
-    for _, client in ipairs(clients) do
-        client:stop(true)
+    if vim.bo.filetype ~= "dart" then
+        vim.notify("Open a Dart buffer before restarting its LSP", vim.log.levels.WARN)
+        return
     end
-    vim.defer_fn(function()
-        vim.cmd("LspRestart")
-        vim.notify("Dart LSP restarted", vim.log.levels.INFO)
-    end, 1000)
+    require("flutter-tools.lsp").restart()
 end
 
 -- Check LSP status

@@ -1,0 +1,467 @@
+{
+  "version": "0.12.5+v0.12.5",
+  "cases": [
+    {
+      "keys": "cwNEW<Esc>",
+      "start": "old new",
+      "id": "change-word",
+      "expected": {
+        "col": 2,
+        "text": "NEW new",
+        "row": 0
+      }
+    },
+    {
+      "keys": "cwNEW<Esc>",
+      "start": "old",
+      "id": "change-last-word",
+      "expected": {
+        "col": 2,
+        "text": "NEW",
+        "row": 0
+      }
+    },
+    {
+      "keys": "dw",
+      "start": "old",
+      "id": "delete-last-word",
+      "expected": {
+        "col": 0,
+        "text": "",
+        "row": 0
+      }
+    },
+    {
+      "keys": "ccNEW<Esc>",
+      "start": "one\ntwo",
+      "id": "change-line",
+      "expected": {
+        "col": 2,
+        "text": "NEW\ntwo",
+        "row": 0
+      }
+    },
+    {
+      "keys": "5lCNEW<Esc>",
+      "start": "keep DROP",
+      "id": "change-tail",
+      "expected": {
+        "col": 7,
+        "text": "keep NEW",
+        "row": 0
+      }
+    },
+    {
+      "keys": "d<Esc>l",
+      "start": "hello world",
+      "id": "cancel-operator",
+      "expected": {
+        "col": 1,
+        "text": "hello world",
+        "row": 0
+      }
+    },
+    {
+      "keys": "3<Esc>j",
+      "start": "a\nb\nc\nd",
+      "id": "cancel-count",
+      "expected": {
+        "col": 0,
+        "text": "a\nb\nc\nd",
+        "row": 1
+      }
+    },
+    {
+      "keys": "f<Esc>l",
+      "start": "abc def",
+      "id": "cancel-find",
+      "expected": {
+        "col": 1,
+        "text": "abc def",
+        "row": 0
+      }
+    },
+    {
+      "keys": "iXY<Esc>u",
+      "start": "ab",
+      "id": "insert-undo",
+      "expected": {
+        "col": 0,
+        "text": "ab",
+        "row": 0
+      }
+    },
+    {
+      "keys": "cwNEW<Esc>u",
+      "start": "old new",
+      "id": "change-undo",
+      "expected": {
+        "col": 0,
+        "text": "old new",
+        "row": 0
+      }
+    },
+    {
+      "keys": "xxuu",
+      "start": "abcd",
+      "id": "delete-undo-twice",
+      "expected": {
+        "col": 0,
+        "text": "abcd",
+        "row": 0
+      }
+    },
+    {
+      "keys": "3ggj",
+      "start": "a\nb\nc\nd",
+      "id": "counted-gg",
+      "expected": {
+        "col": 0,
+        "text": "a\nb\nc\nd",
+        "row": 3
+      }
+    },
+    {
+      "keys": "2d3d",
+      "start": "a\nb\nc\nd\ne\nf\ng",
+      "id": "counted-delete",
+      "expected": {
+        "col": 0,
+        "text": "g",
+        "row": 0
+      }
+    },
+    {
+      "keys": "2fX",
+      "start": "aXbXcX",
+      "id": "counted-find",
+      "expected": {
+        "col": 3,
+        "text": "aXbXcX",
+        "row": 0
+      }
+    },
+    {
+      "keys": "tX",
+      "start": "aXXbX",
+      "id": "find-adjacent",
+      "expected": {
+        "col": 0,
+        "text": "aXXbX",
+        "row": 0
+      }
+    },
+    {
+      "keys": "tX;",
+      "start": "abXcdX",
+      "id": "repeat-till",
+      "expected": {
+        "col": 4,
+        "text": "abXcdX",
+        "row": 0
+      }
+    },
+    {
+      "keys": "}",
+      "start": "one\ntwo\n\nthree",
+      "id": "paragraph-next",
+      "expected": {
+        "col": 0,
+        "text": "one\ntwo\n\nthree",
+        "row": 2
+      }
+    },
+    {
+      "keys": "G{",
+      "start": "one\ntwo\n\nthree",
+      "id": "paragraph-previous",
+      "expected": {
+        "col": 0,
+        "text": "one\ntwo\n\nthree",
+        "row": 2
+      }
+    },
+    {
+      "keys": ">>",
+      "start": "x",
+      "id": "indent-cursor",
+      "expected": {
+        "col": 0,
+        "text": "    x",
+        "row": 0
+      }
+    },
+    {
+      "keys": "J",
+      "start": "foo\nbar",
+      "id": "join-cursor",
+      "expected": {
+        "col": 3,
+        "text": "foo bar",
+        "row": 0
+      }
+    },
+    {
+      "keys": "yelp",
+      "start": "hello world",
+      "id": "paste-char-cursor",
+      "expected": {
+        "col": 6,
+        "text": "hehellollo world",
+        "row": 0
+      }
+    },
+    {
+      "keys": "oNEW<Esc>u",
+      "start": "one\ntwo",
+      "id": "new-line-undo",
+      "expected": {
+        "col": 0,
+        "text": "one\ntwo",
+        "row": 0
+      }
+    },
+    {
+      "keys": "ccNEW<Esc>",
+      "start": "",
+      "id": "change-empty",
+      "expected": {
+        "col": 2,
+        "text": "NEW",
+        "row": 0
+      }
+    },
+    {
+      "keys": "ciwX<Esc>",
+      "start": "hello",
+      "id": "inner-last-word",
+      "expected": {
+        "col": 0,
+        "text": "X",
+        "row": 0
+      }
+    },
+    {
+      "keys": "4lci\"new<Esc>",
+      "start": "x = \"old\";",
+      "id": "inner-quotes-at-open",
+      "expected": {
+        "col": 7,
+        "text": "x = \"new\";",
+        "row": 0
+      }
+    },
+    {
+      "keys": "3rx",
+      "start": "abcd",
+      "id": "counted-replace",
+      "expected": {
+        "col": 2,
+        "text": "xxxd",
+        "row": 0
+      }
+    },
+    {
+      "keys": "w",
+      "start": "one\n\ntwo",
+      "id": "empty-word-motion",
+      "expected": {
+        "col": 0,
+        "text": "one\n\ntwo",
+        "row": 1
+      }
+    },
+    {
+      "keys": "dw",
+      "start": "one\ntwo",
+      "id": "cross-line-delete-word",
+      "expected": {
+        "col": 0,
+        "text": "\ntwo",
+        "row": 0
+      }
+    },
+    {
+      "keys": "ll",
+      "start": "abc",
+      "id": "kata-hjkl",
+      "expected": {
+        "col": 2,
+        "text": "abc",
+        "row": 0
+      },
+      "kataColumn": 2,
+      "kataExpected": "abc",
+      "col": 0,
+      "row": 0
+    },
+    {
+      "keys": "x",
+      "start": "Xhello",
+      "id": "kata-x",
+      "expected": {
+        "col": 0,
+        "text": "hello",
+        "row": 0
+      },
+      "kataColumn": null,
+      "kataExpected": "hello",
+      "col": 0,
+      "row": 0
+    },
+    {
+      "keys": "jdd",
+      "start": "keep\ndelete me\nkeep",
+      "id": "kata-dd",
+      "expected": {
+        "col": 0,
+        "text": "keep\nkeep",
+        "row": 1
+      },
+      "kataColumn": null,
+      "kataExpected": "keep\nkeep",
+      "col": 0,
+      "row": 0
+    },
+    {
+      "keys": "dw",
+      "start": "remove remaining text",
+      "id": "kata-dw",
+      "expected": {
+        "col": 0,
+        "text": "remaining text",
+        "row": 0
+      },
+      "kataColumn": null,
+      "kataExpected": "remaining text",
+      "col": 0,
+      "row": 0
+    },
+    {
+      "keys": "ciwok<Esc>",
+      "start": "say NOPE now",
+      "id": "kata-ciw",
+      "expected": {
+        "col": 5,
+        "text": "say ok now",
+        "row": 0
+      },
+      "kataColumn": null,
+      "kataExpected": "say ok now",
+      "col": 4,
+      "row": 0
+    },
+    {
+      "keys": "ci\"yes<Esc>",
+      "start": "msg = \"no\";",
+      "id": "kata-quotes",
+      "expected": {
+        "col": 9,
+        "text": "msg = \"yes\";",
+        "row": 0
+      },
+      "kataColumn": null,
+      "kataExpected": "msg = \"yes\";",
+      "col": 8,
+      "row": 0
+    },
+    {
+      "keys": "I//<Esc>",
+      "start": "todo",
+      "id": "kata-insert",
+      "expected": {
+        "col": 1,
+        "text": "//todo",
+        "row": 0
+      },
+      "kataColumn": null,
+      "kataExpected": "//todo",
+      "col": 0,
+      "row": 0
+    },
+    {
+      "keys": "yyp",
+      "start": "row",
+      "id": "kata-yy",
+      "expected": {
+        "col": 0,
+        "text": "row\nrow",
+        "row": 1
+      },
+      "kataColumn": null,
+      "kataExpected": "row\nrow",
+      "col": 0,
+      "row": 0
+    },
+    {
+      "keys": "J",
+      "start": "foo\nbar",
+      "id": "kata-join",
+      "expected": {
+        "col": 3,
+        "text": "foo bar",
+        "row": 0
+      },
+      "kataColumn": null,
+      "kataExpected": "foo bar",
+      "col": 0,
+      "row": 0
+    },
+    {
+      "keys": "D",
+      "start": "keep DROP",
+      "id": "kata-D",
+      "expected": {
+        "col": 4,
+        "text": "keep ",
+        "row": 0
+      },
+      "kataColumn": null,
+      "kataExpected": "keep ",
+      "col": 5,
+      "row": 0
+    },
+    {
+      "keys": "diw",
+      "start": "say hello now",
+      "id": "kata-diw",
+      "expected": {
+        "col": 4,
+        "text": "say  now",
+        "row": 0
+      },
+      "kataColumn": null,
+      "kataExpected": "say  now",
+      "col": 4,
+      "row": 0
+    },
+    {
+      "keys": "%",
+      "start": "foo(bar)",
+      "id": "kata-percent",
+      "expected": {
+        "col": 7,
+        "text": "foo(bar)",
+        "row": 0
+      },
+      "kataColumn": 7,
+      "kataExpected": "foo(bar)",
+      "col": 3,
+      "row": 0
+    },
+    {
+      "keys": ">>",
+      "start": "x",
+      "id": "kata-indent",
+      "expected": {
+        "col": 0,
+        "text": "    x",
+        "row": 0
+      },
+      "kataColumn": null,
+      "kataExpected": "    x",
+      "col": 0,
+      "row": 0
+    }
+  ]
+}

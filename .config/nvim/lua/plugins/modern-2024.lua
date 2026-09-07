@@ -17,7 +17,7 @@ return {
         "MagicDuck/grug-far.nvim",
         cmd = "GrugFar",
         config = function()
-            require('grug-far').setup({
+            require("grug-far").setup({
                 -- configuration here, or leave empty to use defaults
             })
         end,
@@ -35,9 +35,9 @@ return {
                     })
                 end,
                 mode = { "n", "v" },
-                desc = "Search and Replace"
-            }
-        }
+                desc = "Search and Replace",
+            },
+        },
     },
 
     -- dressing.nvim is configured in ui.lua

@@ -21,7 +21,13 @@ return {
                         "  ╚██████╗██║  ██║██║     ██████╔╝███████╗███████║██║███████║",
                         "   ╚═════╝╚═╝  ╚═╝╚═╝     ╚═════╝ ╚══════╝╚══════╝╚═╝╚══════╝",
                         "",
-                        "              Neovim " .. v.major .. "." .. v.minor .. "." .. v.patch .. "  ·  CAPDESIS",
+                        "              Neovim "
+                            .. v.major
+                            .. "."
+                            .. v.minor
+                            .. "."
+                            .. v.patch
+                            .. "  ·  CAPDESIS",
                         "",
                     },
                     center = {
@@ -48,7 +54,12 @@ return {
                         end
                         return {
                             "",
-                            string.format("  %d/%d plugins loaded in %.0f ms", stats.loaded, stats.count, stats.startuptime),
+                            string.format(
+                                "  %d/%d plugins loaded in %.0f ms",
+                                stats.loaded,
+                                stats.count,
+                                stats.startuptime
+                            ),
                         }
                     end,
                 },

@@ -10,25 +10,28 @@ Cuando dudes de un atajo de *esta* config: `:Telescope keymaps`.
 
 ---
 
-## Cómo está armado (y qué suelen quejarse otros cursos)
+## Objetivos y ruta de aprendizaje
 
-El tutor oficial (`vimtutor`), el manual de Bram (`:help usr_02`) y guías como *Learn Vim the Smart Way* y *vim-galore* coinciden en lo mismo:
+Al terminar podrás editar/deshacer con operadores, manejar buffers/ventanas,
+repetir tareas con registros/macros y comprobar LSP/plugins en un proyecto.
+Esta secuencia didáctica parte de los manuales oficiales
+[`usr_02`](https://neovim.io/doc/user/usr_02/) y
+[`usr_04`](https://neovim.io/doc/user/usr_04/). Es una decisión del curso,
+no una valoración sobre otros autores.
 
-1. Primero modos, movimiento y la gramática **operador + movimiento**.
-2. Luego objetos de texto (`diw`, `ci"`), no al revés.
-3. Buffers, ventanas y saltos *antes* de Telescope.
-4. Registros, macros y `:s` antes de “el plugin que lo hace por ti”.
-5. Plugins al final. vim-galore lo dice claro: aprende Vim bien *antes* de llenarlo de extensiones.
+**Capítulos 2-9: usa `nvim --clean archivo.txt`** para aprender sin mapas del repo.
+Después repite con `nvim archivo.txt`. `jj`, búsquedas centradas y atajos con
+leader se identifican como añadidos. Así no se confunden `H`/`L` nativos con
+Shift-h/Shift-l de bufferline.
 
-Lo que la gente suele echar en falta cuando un curso “de Neovim” empieza por lazy.nvim: no saber salir, no entender `d` frente a `x`, no haber usado nunca `ciw`, no saber qué es un buffer. Aquí eso va primero. Los plugins de este repo van después, y solo con teclas que existen en el Lua.
-
-IntelliJ con IdeaVim y Vim clásico no se “validan” desde esta guía: hay que abrir el IDE. Neovim sí: `nvim --headless "+lua print('boot-ok')" +qa`.
+`boot-ok` comprueba solo el arranque. Pruebas y límites:
+[docs/VALIDATION.md](docs/VALIDATION.md). IdeaVim requiere una sesión del IDE.
 
 ---
 
 # 0. Manos en el teclado
 
-Vim premia no mirar el teclado. `h j k l` están en la fila home a propósito.
+Practicar sin mirar ayuda a localizar teclas. `h j k l` están en la fila central de QWERTY.
 
 Practica 15 minutos al día, sin este editor:
 
@@ -39,10 +42,10 @@ Practica 15 minutos al día, sin este editor:
 Cuando ya no busques la `J` con los ojos, abre [openvim.com](https://www.openvim.com) (tutorial en el navegador) o, mejor, el tutor que trae Vim:
 
 ```
-nvim +Tutor
+nvim --clean +Tutor
 ```
 
-(En Vim clásico el comando es `vimtutor`. En Neovim: `nvim +Tutor`.)
+(En Vim clásico el comando es `vimtutor`. En Neovim: `nvim --clean +Tutor`.)
 
 Haz el tutor entero una vez. Aburre. Funciona.
 
@@ -52,16 +55,24 @@ Entrenador de escritorio (Windows / Linux / macOS, sin red): carpeta [`trainer/`
 
 # 1. Instalar esta config
 
-Neovim **0.12 o más**. No clones el repo *dentro* de `~/.config/nvim`.
+Neovim **0.12 o más**; referencia probada: **0.12.5**. Requisitos y compiladores: [README.md](README.md). Respalda una configuración existente antes de enlazar. No clones el repo *dentro* de `~/.config/nvim`.
 
 **Windows**
 
 ```powershell
-winget install Neovim.Neovim Git.Git OpenJS.NodeJS DEVCOM.JetBrainsMonoNerdFont
-npm install -g tree-sitter-cli
-git clone git@github.com:chochy2001/Neovim-Vim_Configuration.git $HOME\Neovim-Vim_Configuration
-New-Item -ItemType Junction -Path "$env:LOCALAPPDATA\nvim" -Target "$HOME\Neovim-Vim_Configuration\.config\nvim"
-Copy-Item "$HOME\Neovim-Vim_Configuration\.ideavimrc" "$HOME\.ideavimrc"
+winget install --id Neovim.Neovim --exact
+winget install --id Git.Git --exact
+winget install --id DEVCOM.JetBrainsMonoNerdFont --exact
+# tree-sitter CLI >= 0.26.1: binarios oficiales o Cargo; consulta README.md
+$nvimRepo = Join-Path $HOME "Neovim-Vim_Configuration"
+git clone https://github.com/chochy2001/Neovim-Vim_Configuration.git $nvimRepo
+$nvimLink = @{
+    ItemType = "Junction"
+    Path = "$env:LOCALAPPDATA\nvim"
+    Target = "$nvimRepo\.config\nvim"
+}
+New-Item @nvimLink
+Copy-Item "$nvimRepo\.ideavimrc" "$HOME\.ideavimrc"
 ```
 
 En el terminal pon fuente **JetBrainsMono NFM** y ciérralo. Sin esa fuente los iconos salen como recuadros.
@@ -70,11 +81,11 @@ En el terminal pon fuente **JetBrainsMono NFM** y ciérralo. Sin esa fuente los 
 
 ```bash
 # neovim, git, node, compilador C, ripgrep, fd — con brew o el paquete de la distro
-npm install -g tree-sitter-cli
-git clone git@github.com:chochy2001/Neovim-Vim_Configuration.git ~/Neovim-Vim_Configuration
+# tree-sitter CLI >= 0.26.1: binarios oficiales o Cargo; consulta README.md
+git clone https://github.com/chochy2001/Neovim-Vim_Configuration.git ~/Neovim-Vim_Configuration
 mkdir -p ~/.config
-ln -sfn ~/Neovim-Vim_Configuration/.config/nvim ~/.config/nvim
-ln -sf ~/Neovim-Vim_Configuration/.ideavimrc ~/.ideavimrc
+ln -s ~/Neovim-Vim_Configuration/.config/nvim ~/.config/nvim
+ln -s ~/Neovim-Vim_Configuration/.ideavimrc ~/.ideavimrc
 ```
 
 Primera vez: `nvim` y espera a que lazy.nvim instale. `:Lazy` para mirar. Mason instala servidores de lenguaje en segundo plano.
@@ -85,7 +96,7 @@ Comprobar arranque:
 nvim --headless "+lua print('boot-ok')" +qa
 ```
 
-Tiene que salir `boot-ok`, sin `Error detected`.
+Tiene que salir `boot-ok`, sin `Error detected`. Después ejecuta `python scripts/verify.py` desde la raíz; arrancar no prueba los plugins diferidos.
 
 ---
 
@@ -96,7 +107,7 @@ Vim no es un bloc de notas con atajos. Es un editor **modal**: la misma tecla ha
 | Estás en… | Entras con | Sales con | Sirve para |
 |-----------|------------|-----------|------------|
 | Normal | al abrir, o `Esc` | — | moverte y dar órdenes |
-| Insertar | `i` `a` `o` `I` `A` `o` `O` | `Esc` o `jj` | escribir |
+| Insertar | `i` `a` `I` `A` `o` `O` | `Esc` o `jj` | escribir |
 | Visual | `v` `V` `Ctrl-v` | `Esc` | seleccionar |
 | Línea de comandos | `:` `/` `?` | `Enter` o `Esc` | guardar, buscar, ayuda |
 
@@ -145,7 +156,7 @@ Delante de casi todo puedes poner un **número**: `5j` baja cinco líneas, `3w` 
 
 # 4. La gramática: operador + movimiento
 
-Esto es el núcleo. Bram y *Learn Vim* lo llaman gramática. Un **operador** espera un **movimiento** (o un objeto de texto).
+Esta es la base de la edición. Un **operador** espera un **movimiento** (o un objeto de texto).
 
 Operadores que vas a usar todos los días:
 
@@ -155,7 +166,7 @@ Operadores que vas a usar todos los días:
 | `c` | borrar y entrar a insertar (*change*) |
 | `y` | copiar (*yank*) |
 | `>` `<` | indentar / desindentar |
-| `=` | reindentar (con LSP/treesitter más adelante) |
+| `=` | reindentar según indentexpr/cindent; no equivale a formatear con LSP |
 | `gU` `gu` `g~` | mayúsculas, minúsculas, invertir |
 
 Movimiento = *dónde*. Entonces:
@@ -243,7 +254,7 @@ Sustituir (línea de comandos):
 :%s/viejo/nuevo/gc     « todo el archivo, preguntando
 ```
 
-`%` es el rango “archivo entero”. `:'<,'>s/` (sale solo si venías de visual) actúa sobre la selección.
+`%` es el rango “archivo entero”. `:'<,'>s/` (sale solo si venías de visual) actúa sobre las **líneas** seleccionadas, no solo sus columnas. Para limitar a la zona visual, consulta `:help /\%V`.
 
 **Ejercicio.** Pon tres veces la palabra `gato`. `:%s/gato/perro/g` y comprueba.
 
@@ -322,7 +333,7 @@ En el help, `Ctrl-d` después de un tema incompleto lista coincidencias.
 
 # 10. Esta config como IDE
 
-Hasta aquí todo es Vim. Lo siguiente *añade* cosas. Si algo no carga, `:Lazy`. Si no hay autocompletado, el LSP de ese lenguaje no está (`:Mason`, `:checkhealth vim.lsp`).
+Hasta aquí se explica Vim nativo y se señalan las adiciones de esta config. Lo siguiente *añade* cosas. Si algo no carga, `:Lazy`. Si no hay autocompletado, el LSP de ese lenguaje no está (`:Mason`, `:checkhealth vim.lsp`).
 
 Dashboard: solo si abres `nvim` sin archivo. `f` archivo, `g` grep, `r` recientes, `e` árbol, `a` opencode, `m` Mason, `l` Lazy, `q` salir.
 
@@ -349,7 +360,7 @@ Flujo típico: `<leader>ff` abre → `ciw` edita → `gd` definición (si hay LS
 
 # 11. Plugins de este repo (cuándo, no el catálogo entero)
 
-Tablas largas: [WORKFLOW.md](WORKFLOW.md). Aquí el *cuándo*.
+Tablas largas: [WORKFLOW.md](WORKFLOW.md). Aquí los atajos abreviados como `fg`, `pv`, `tt` o `cc` llevan **Espacio delante**. Atajos sin leader: `gcc`, `gd`, `K`, `s`, `af`; varios dependen de LSP o plugins.
 
 **which-key** — Espacio y espera. Es el índice.
 
@@ -361,7 +372,7 @@ Tablas largas: [WORKFLOW.md](WORKFLOW.md). Aquí el *cuándo*.
 
 **Comment / surround / flash** — `gcc` comenta la línea. Surround: `ysiw"` pone comillas a la palabra, `ds"` las quita, `cs"'` cambia `"` por `'`. Flash: `s` salta a un carácter. **Visual `S` es surround, no Flash.**
 
-**treesitter** — colores de verdad. En visual/operador: `af`/`if` función, `ac`/`ic` clase (cuando el parser está). Eso es *además* de `iw`/`i"`.
+**treesitter** — resaltado basado en la estructura del código. En visual/operador: `af`/`if` función, `ac`/`ic` clase (cuando el parser está). Eso es *además* de `iw`/`i"`.
 
 **LSP + cmp + none-ls** — `gd` definición, `K` documentación, `gR` referencias, `<leader>rn` renombrar, `ca` code action, `fm` format. Completar: `Ctrl-Space` en insertar. Dart lo arranca flutter-tools (Flutter SDK), no Mason.
 
@@ -375,7 +386,7 @@ Tablas largas: [WORKFLOW.md](WORKFLOW.md). Aquí el *cuándo*.
 
 **Flutter** — `fla` run, `flr` reload, `fls` restart, `flq` quit.
 
-**Copilot / AI** — CopilotChat `cc`. Visual `as` manda la selección a un CLI (opencode, claude, …) si está en PATH; si no, te dice cómo instalarlo.
+**Copilot / AI** — CopilotChat `cc`. Visual `<leader>as` prepara la selección y abre el CLI. Pega el prompt cuando esté listo, revisa y envía. Hay copia en el registro `a` aunque no haya portapapeles.
 
 **undotree** — `<leader>u` en *normal* es el árbol de undo. En *visual*, `u` sigue siendo minúsculas.
 
@@ -404,7 +415,7 @@ Los prefijos coinciden. No copies el `.vimrc` clásico dentro de IdeaVim (lleva 
 
 # Orden sugerido en clase
 
-1. Mecanografía + `nvim +Tutor` (una sesión).
+1. Mecanografía + `nvim --clean +Tutor` (una sesión).
 2. Modos, `hjkl`, `i`/`Esc`, `:w` `:q` (una sesión).
 3. Gramática `d/c/y` + movimientos y números (una sesión).
 4. Objetos `ciw` `ci"` `ci{` y visual (una sesión).
@@ -415,3 +426,27 @@ Los prefijos coinciden. No copies el `.vimrc` clásico dentro de IdeaVim (lleva 
 Si alguien pide “el atajo de buscar archivo” el día 1, se puede enseñar `<leader>ff`, pero que sepa que es azúcar. El editor de verdad es el capítulo 4.
 
 Grabación Udemy (secciones, vídeos, slides, checklist): [UDEMY.md](UDEMY.md).
+
+## Evaluación práctica
+
+| Etapa | Evidencia para avanzar |
+|---|---|
+| Modos/edición | Crear un archivo, corregir una palabra, deshacer y guardar |
+| Movimientos/objetos | Resolver `dw`, `ciw` y `ci"` y explicar la diferencia |
+| Búsqueda | Sustituir con confirmación; distinguir rango de líneas y zona visual |
+| Buffers/ventanas | Mostrar dos vistas del mismo buffer y volver por el historial |
+| Registros/macros | Guardar en `a` y repetir un cambio sobre tres líneas |
+| Config como IDE | Cliente LSP adjunto, definición y formato en un archivo de prueba |
+| Git | Revisar un diff y preparar un commit local |
+
+Proyecto final: en un repo de práctica, cambia una función, ejecuta sus pruebas,
+revisa el diff y crea un commit local. No hace falta publicar ni hacer push.
+Guarda versión, comando y resultado.
+
+## Fuentes y mantenimiento
+
+[docs/SOURCES.md](docs/SOURCES.md) reúne fuentes oficiales.
+`python scripts/vim_reference.py --check` contrasta los casos del entrenador
+con Neovim; no prueba un emulador completo. Genera el PDF desde este archivo con
+`python scripts/build_course_pdf.py`. Evidencia y límites:
+[docs/VALIDATION.md](docs/VALIDATION.md).

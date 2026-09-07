@@ -6,6 +6,7 @@ return {
         event = "InsertEnter",
         dependencies = {
             "hrsh7th/cmp-nvim-lsp",
+            "hrsh7th/cmp-buffer",
             -- friendly-snippets rides along so `lazy_load()` above keeps
             -- working exactly as before (1000+ snippets, now lazily loaded)
             { "L3MON4D3/LuaSnip", dependencies = { "rafamadriz/friendly-snippets" } },
@@ -32,7 +33,23 @@ return {
                     ["<C-f>"] = cmp.mapping.scroll_docs(4),
                     ["<C-Space>"] = cmp.mapping.complete(),
                     ["<C-e>"] = cmp.mapping.abort(),
-                    ["<CR>"] = cmp.mapping.confirm({ select = true }),
+                    ["<CR>"] = cmp.mapping.confirm({ select = false }),
+                    ["<C-j>"] = cmp.mapping(function(fallback)
+                        local ls = require("luasnip")
+                        if ls.expand_or_jumpable() then
+                            ls.expand_or_jump()
+                        else
+                            fallback()
+                        end
+                    end, { "i", "s" }),
+                    ["<C-k>"] = cmp.mapping(function(fallback)
+                        local ls = require("luasnip")
+                        if ls.jumpable(-1) then
+                            ls.jump(-1)
+                        else
+                            fallback()
+                        end
+                    end, { "i", "s" }),
                 }),
                 sources = cmp.config.sources({
                     { name = "nvim_lsp" },

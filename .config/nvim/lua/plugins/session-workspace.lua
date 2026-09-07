@@ -6,13 +6,31 @@ return {
         event = "BufReadPre",
         opts = {
             dir = vim.fn.expand(vim.fn.stdpath("state") .. "/sessions/"),
-            options = { "buffers", "curdir", "tabpages", "winsize", "help", "globals", "skiprtp" }
+            options = { "buffers", "curdir", "tabpages", "winsize", "help", "globals", "skiprtp" },
         },
         keys = {
-            { "<leader>qs", function() require("persistence").load() end, desc = "Restore Session" },
-            { "<leader>ql", function() require("persistence").load({ last = true }) end, desc = "Restore Last Session" },
-            { "<leader>qd", function() require("persistence").stop() end, desc = "Don't Save Current Session" },
-        }
+            {
+                "<leader>qs",
+                function()
+                    require("persistence").load()
+                end,
+                desc = "Restore Session",
+            },
+            {
+                "<leader>ql",
+                function()
+                    require("persistence").load({ last = true })
+                end,
+                desc = "Restore Last Session",
+            },
+            {
+                "<leader>qd",
+                function()
+                    require("persistence").stop()
+                end,
+                desc = "Don't Save Current Session",
+            },
+        },
     },
 
     -- Advanced project management
@@ -24,33 +42,45 @@ return {
                 manual_mode = false,
                 detection_methods = { "lsp", "pattern" },
                 patterns = {
-                    ".git", "_darcs", ".hg", ".bzr", ".svn",
-                    "Makefile", "package.json", "pubspec.yaml",
-                    "Cargo.toml", "go.mod", "CMakeLists.txt",
-                    "build.gradle", "build.gradle.kts", "pom.xml",
-                    "Package.swift", "*.xcodeproj", "*.xcworkspace"
+                    ".git",
+                    "_darcs",
+                    ".hg",
+                    ".bzr",
+                    ".svn",
+                    "Makefile",
+                    "package.json",
+                    "pubspec.yaml",
+                    "Cargo.toml",
+                    "go.mod",
+                    "CMakeLists.txt",
+                    "build.gradle",
+                    "build.gradle.kts",
+                    "pom.xml",
+                    "Package.swift",
+                    "*.xcodeproj",
+                    "*.xcworkspace",
                 },
                 ignore_lsp = {},
                 exclude_dirs = {},
                 show_hidden = false,
                 silent_chdir = true,
-                scope_chdir = 'global',
+                scope_chdir = "global",
                 datapath = vim.fn.stdpath("data"),
             })
 
             -- Integration with telescope
-            require('telescope').load_extension('projects')
+            require("telescope").load_extension("projects")
 
             -- Keymaps
             vim.keymap.set("n", "<leader>fp", "<Cmd>Telescope projects<CR>", { desc = "Find Projects" })
-        end
+        end,
     },
 
     -- Enhanced workspace tabs
     {
         "akinsho/bufferline.nvim",
         version = "*",
-        dependencies = 'nvim-tree/nvim-web-devicons',
+        dependencies = "nvim-tree/nvim-web-devicons",
         event = "VeryLazy",
         config = function()
             require("bufferline").setup({
@@ -58,19 +88,19 @@ return {
                     mode = "buffers", -- "tabs" or "buffers"
                     themable = true,
                     numbers = "none", -- "none" | "ordinal" | "buffer_id" | "both"
-                    close_command = "bdelete! %d",
-                    right_mouse_command = "bdelete! %d",
+                    close_command = "bdelete %d",
+                    right_mouse_command = "bdelete %d",
                     left_mouse_command = "buffer %d",
                     middle_mouse_command = nil,
                     indicator = {
-                        icon = '▎',
-                        style = 'icon',
+                        icon = "▎",
+                        style = "icon",
                     },
-                    buffer_close_icon = '×',
-                    modified_icon = '●',
-                    close_icon = '×',
-                    left_trunc_marker = '‹',
-                    right_trunc_marker = '›',
+                    buffer_close_icon = "×",
+                    modified_icon = "●",
+                    close_icon = "×",
+                    left_trunc_marker = "‹",
+                    right_trunc_marker = "›",
                     max_name_length = 18,
                     max_prefix_length = 15,
                     truncate_names = true,
@@ -93,16 +123,16 @@ return {
                     hover = {
                         enabled = true,
                         delay = 200,
-                        reveal = {'close'}
+                        reveal = { "close" },
                     },
-                    sort_by = 'insert_after_current',
+                    sort_by = "insert_after_current",
                     offsets = {
                         {
                             filetype = "neo-tree",
                             text = "File Explorer",
                             text_align = "left",
-                            separator = true
-                        }
+                            separator = true,
+                        },
                     },
                     custom_filter = function(buf_number, buf_numbers)
                         local ft = vim.bo[buf_number].filetype
@@ -111,7 +141,7 @@ return {
                         end
                         return true
                     end,
-                }
+                },
             })
 
             -- Bufferline keymaps - synced with .ideavimrc
@@ -126,7 +156,12 @@ return {
             vim.keymap.set("n", "<leader>bd", ":bd<CR>", { desc = "Buffer: Delete/Close" }) -- FIXED: use bd directly like CloseContent
             vim.keymap.set("n", "<leader>bl", ":BufferLineCloseRight<CR>", { desc = "Buffer: Close Right" })
             vim.keymap.set("n", "<leader>bh", ":BufferLineCloseLeft<CR>", { desc = "Buffer: Close Left" })
-            vim.keymap.set("n", "<leader>to", ":BufferLineCloseLeft<CR>:BufferLineCloseRight<CR>", { desc = "Close All Others (Tabs Only)" })
+            vim.keymap.set(
+                "n",
+                "<leader>to",
+                ":BufferLineCloseLeft<CR>:BufferLineCloseRight<CR>",
+                { desc = "Close All Others (Tabs Only)" }
+            )
 
             -- Additional bufferline commands (no conflict with .ideavimrc)
             vim.keymap.set("n", "<leader>bP", ":BufferLinePick<CR>", { desc = "Buffer: Pick" }) -- Moved to uppercase P
@@ -135,7 +170,7 @@ return {
             -- Shift mappings that worked well
             vim.keymap.set("n", "<S-l>", ":BufferLineCycleNext<CR>", { desc = "Buffer: Next" })
             vim.keymap.set("n", "<S-h>", ":BufferLineCyclePrev<CR>", { desc = "Buffer: Previous" })
-        end
+        end,
     },
 
     -- Better window management
@@ -181,7 +216,7 @@ return {
             })
             -- NOTE: `<leader>wm`/`<leader>ws` live in the spec `keys` above so
             -- the first press loads the plugin.
-        end
+        end,
     },
 
     -- Focus mode for concentration

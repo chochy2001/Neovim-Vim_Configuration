@@ -9,13 +9,19 @@ return {
             stages = "fade",
             render = "compact",
             top_down = false,
-            max_height = function() return math.floor(vim.o.lines * 0.4) end,
-            max_width = function() return math.floor(vim.o.columns * 0.45) end,
+            max_height = function()
+                return math.floor(vim.o.lines * 0.4)
+            end,
+            max_width = function()
+                return math.floor(vim.o.columns * 0.45)
+            end,
         },
         config = function(_, opts)
             local notify = require("notify")
             notify.setup(opts)
-            vim.notify = notify
+            if #vim.api.nvim_list_uis() > 0 then
+                vim.notify = notify
+            end
         end,
     },
     -- vim.ui.input only. vim.ui.select is owned by telescope-ui-select

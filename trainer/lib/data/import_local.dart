@@ -78,7 +78,11 @@ Snippet? snippetFromPath(String path) {
   try {
     final len = f.lengthSync();
     if (len <= 0 || len > maxFileBytes) return null;
-    final body = f.readAsStringSync();
+    final body = f
+        .readAsStringSync()
+        .replaceAll('\r\n', '\n')
+        .replaceAll('\r', '\n')
+        .replaceFirst(RegExp(r'^\uFEFF'), '');
     if (body.contains('\u0000')) return null;
     return Snippet(id: path, language: lang, body: body);
   } on FileSystemException {
@@ -111,7 +115,8 @@ Future<void> _walk(Directory dir, int depth, List<Snippet> out) async {
   if (out.length >= maxFiles || depth > maxDepth) return;
   late final List<FileSystemEntity> list;
   try {
-    list = dir.listSync(followLinks: false);
+    list = await dir.list(followLinks: false).toList();
+    list.sort((a, b) => a.path.compareTo(b.path));
   } on FileSystemException {
     return;
   }

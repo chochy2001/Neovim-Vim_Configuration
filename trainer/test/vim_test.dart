@@ -99,7 +99,7 @@ void main() {
   test('cw changes word', () {
     final v = Vim('old new');
     v.feedSeq('cwNEW<Esc>');
-    expect(v.text.startsWith('NEW'), true);
+    expect(v.text, 'NEW new');
   });
 
   test('J joins lines', () {

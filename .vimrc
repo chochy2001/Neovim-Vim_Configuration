@@ -4,6 +4,8 @@
 " This file is kept for compatibility with classic Vim.
 " =============================================================================
 
+" Install vim-plug separately; keep core editing available without it.
+if !empty(globpath(&runtimepath, 'autoload/plug.vim'))
 " Cross-platform vim-plug path: Windows uses ~/vimfiles, Unix uses ~/.vim
 if has('win32')
     call plug#begin(expand('~/vimfiles/plugged'))
@@ -47,6 +49,11 @@ Plug 'scrooloose/nerdcommenter'
 Plug 'Yggdroot/indentLine'
 " One completion stack: ALE (not YCM + coc together)
 call plug#end()
+else
+    echohl WarningMsg
+    echom 'vim-plug is not installed; see README.md before using plugin commands'
+    echohl None
+endif
 
 let g:ale_fix_on_save = 1
 let g:ale_linters = {
@@ -154,7 +161,9 @@ syntax enable
 syntax on
 
 " Set Dracula as the current colorscheme
-colorscheme dracula
+if !empty(globpath(&runtimepath, 'colors/dracula.vim'))
+    colorscheme dracula
+endif
 
 " Enable airline tabline and theme
 let g:airline#extensions#tabline#enabled = 1
@@ -208,5 +217,4 @@ nnoremap <silent> <leader>tt :FloatermToggle<CR>
 " Toggle Startify
 nnoremap <leader>st :Startify<CR>
 
-" Scripts
-command! Fjson :execute 'source' expand((has('win32') ? '~/vimfiles' : '~/.vim') . '/scripts/formatear_json.vim')
+" Fjson was removed: its referenced script was not shipped by this repository.
