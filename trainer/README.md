@@ -32,7 +32,8 @@ cd trainer
 flutter pub get
 flutter analyze
 dart format --output=none --set-exit-if-changed lib test
-flutter test
+flutter test --coverage
+python ../scripts/check_coverage.py --min 90
 flutter run -d windows
 ```
 
@@ -47,9 +48,13 @@ flutter build macos --release
 flutter build linux --release
 ```
 
-Los 69 tests incluyen importación, interacción de widgets y 41 comparaciones
-con resultados de **Neovim real** (28 casos de borde y las 13 katas).
+Los 88 tests incluyen importación, interacción de widgets y 50 comparaciones
+con resultados de **Neovim real** (37 casos de borde y las 13 katas).
 No se calcula el resultado esperado usando el propio motor.
+La cobertura de líneas medida es **93,77%** (768/819). CI exige al menos 90%
+sobre los cinco archivos de `lib`, incluida la interfaz; rechaza informes
+ausentes, vacíos, incompletos o inconsistentes. El verificador tiene seis tests
+Python propios. La cobertura no demuestra equivalencia con todo Vim.
 
 Desde la raíz del repositorio, con Neovim y Dart en PATH:
 
@@ -60,20 +65,22 @@ python scripts/vim_reference.py
 ```
 
 `--check` compara los fixtures versionados sin modificarlos. Una actualización
-requiere revisar texto, cursor y modo resultantes. Los tests originales se
+requiere revisar texto, cursor y modo resultantes. El JSON se escribe con orden
+estable y finales LF para facilitar la revisión. Los tests originales se
 conservan como regresiones complementarias.
 
 CI: [validación](../.github/workflows/validate.yml) en pushes/PRs y
 [compilaciones de escritorio](../.github/workflows/desktop-release.yml) con tags
-`v*`. Los paquetes no están firmados. Resultados y límites comprobados:
+`v*` o ejecución manual de Actions. Los paquetes no están firmados. Resultados y límites comprobados:
 [VALIDATION.md](../docs/VALIDATION.md).
 
 ## English
 
 Offline desktop keyboard trainer with 20 built-in language samples and 13 Vim
 katas. Imported files stay in memory; they are neither executed nor uploaded.
-The Vim engine is a deliberately limited subset, checked against 41 fixtures
-produced by real Neovim, with 69 tests in total. See the commands above to run,
+The Vim engine is a deliberately limited subset, checked against 50 fixtures
+produced by real Neovim, with 88 tests in total. Measured line coverage is 93.77%;
+CI enforces 90% across all application sources. See the commands above to run,
 test, regenerate reference fixtures and build on each native desktop platform.
 
 MIT. Copyright © 2026 CAPDESIS / chochy2001. [License](../LICENSE).

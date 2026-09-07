@@ -5,6 +5,68 @@ import 'package:capdesis_practice/data/import_local.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  test('rejects missing, oversized, empty, binary and invalid UTF-8 files', () {
+    final dir = Directory.systemTemp.createTempSync('capdesis_invalid_');
+    addTearDown(() => dir.deleteSync(recursive: true));
+    expect(snippetFromPath('${dir.path}/missing.dart'), isNull);
+    for (final entry in <String, List<int>>{
+      'large.dart': List.filled(maxFileBytes + 1, 65),
+      'empty.dart': [],
+      'binary.dart': [65, 0, 66],
+      'invalid.dart': [0xC3, 0x28],
+    }.entries) {
+      final file = File('${dir.path}/${entry.key}')
+        ..writeAsBytesSync(entry.value);
+      expect(snippetFromPath(file.path), isNull, reason: entry.key);
+    }
+  });
+
+  test('selected files deduplicate and respect the 40-file limit', () {
+    final dir = Directory.systemTemp.createTempSync('capdesis_limit_');
+    addTearDown(() => dir.deleteSync(recursive: true));
+    final paths = List.generate(maxFiles + 1, (i) {
+      return (File('${dir.path}/$i.dart')..writeAsStringSync('$i')).path;
+    });
+    final result = loadPaths([paths.first, ...paths]);
+    expect(
+      result.map((s) => File(s.id).uri),
+      paths.take(maxFiles).map((p) => File(p).uri),
+    );
+  });
+
+  test('folder traversal is ordered and stops at the file limit', () async {
+    final dir = Directory.systemTemp.createTempSync('capdesis_folder_limit_');
+    addTearDown(() => dir.deleteSync(recursive: true));
+    final paths = List.generate(maxFiles + 1, (i) {
+      return (File(
+        '${dir.path}/${i.toString().padLeft(2, '0')}.dart',
+      )..writeAsStringSync('$i')).path;
+    });
+    final result = await loadProjectFolder(dir.path);
+    expect(
+      result.map((s) => File(s.id).uri),
+      paths.take(maxFiles).map((p) => File(p).uri),
+    );
+  });
+
+  test(
+    'folder traversal handles missing roots and excludes deep files',
+    () async {
+      final dir = Directory.systemTemp.createTempSync('capdesis_depth_');
+      addTearDown(() => dir.deleteSync(recursive: true));
+      expect(await loadProjectFolder('${dir.path}/missing'), isEmpty);
+      var path = dir.path;
+      for (var i = 0; i < maxDepth; i++) {
+        path = '$path/child';
+      }
+      Directory('$path/child').createSync(recursive: true);
+      final boundary = File('$path/ok.dart')..writeAsStringSync('at depth 6');
+      File('$path/child/excluded.dart').writeAsStringSync('at depth 7');
+      final result = await loadProjectFolder(dir.path);
+      expect(result.map((s) => File(s.id).uri), [boundary.uri]);
+    },
+  );
+
   test('CRLF and BOM imports are typeable using Enter', () async {
     final dir = await Directory.systemTemp.createTemp('capdesis_crlf_');
     try {

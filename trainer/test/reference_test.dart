@@ -18,7 +18,12 @@ void main() {
       );
       v.feedSeq(c['keys'] as String);
       final expected = c['expected'] as Map<String, dynamic>;
-      expect({'text': v.text, 'row': v.row, 'col': v.col}, expected);
+      expect({
+        'text': v.text,
+        'row': v.row,
+        'col': v.col,
+        'mode': v.mode,
+      }, expected);
     });
   }
 }

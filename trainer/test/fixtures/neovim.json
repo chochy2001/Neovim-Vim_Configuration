@@ -1,467 +1,607 @@
 {
-  "version": "0.12.5+v0.12.5",
   "cases": [
     {
-      "keys": "cwNEW<Esc>",
-      "start": "old new",
+      "expected": {
+        "col": 2,
+        "mode": "n",
+        "row": 0,
+        "text": "NEW new"
+      },
       "id": "change-word",
-      "expected": {
-        "col": 2,
-        "text": "NEW new",
-        "row": 0
-      }
-    },
-    {
       "keys": "cwNEW<Esc>",
-      "start": "old",
-      "id": "change-last-word",
-      "expected": {
-        "col": 2,
-        "text": "NEW",
-        "row": 0
-      }
+      "start": "old new"
     },
     {
-      "keys": "dw",
-      "start": "old",
-      "id": "delete-last-word",
+      "expected": {
+        "col": 2,
+        "mode": "n",
+        "row": 0,
+        "text": "NEW"
+      },
+      "id": "change-last-word",
+      "keys": "cwNEW<Esc>",
+      "start": "old"
+    },
+    {
       "expected": {
         "col": 0,
-        "text": "",
-        "row": 0
-      }
+        "mode": "n",
+        "row": 0,
+        "text": ""
+      },
+      "id": "delete-last-word",
+      "keys": "dw",
+      "start": "old"
     },
     {
-      "keys": "ccNEW<Esc>",
-      "start": "one\ntwo",
-      "id": "change-line",
       "expected": {
         "col": 2,
-        "text": "NEW\ntwo",
-        "row": 0
-      }
+        "mode": "n",
+        "row": 0,
+        "text": "NEW\ntwo"
+      },
+      "id": "change-line",
+      "keys": "ccNEW<Esc>",
+      "start": "one\ntwo"
     },
     {
-      "keys": "5lCNEW<Esc>",
-      "start": "keep DROP",
-      "id": "change-tail",
       "expected": {
         "col": 7,
-        "text": "keep NEW",
-        "row": 0
-      }
+        "mode": "n",
+        "row": 0,
+        "text": "keep NEW"
+      },
+      "id": "change-tail",
+      "keys": "5lCNEW<Esc>",
+      "start": "keep DROP"
     },
     {
-      "keys": "d<Esc>l",
-      "start": "hello world",
+      "expected": {
+        "col": 1,
+        "mode": "n",
+        "row": 0,
+        "text": "hello world"
+      },
       "id": "cancel-operator",
-      "expected": {
-        "col": 1,
-        "text": "hello world",
-        "row": 0
-      }
+      "keys": "d<Esc>l",
+      "start": "hello world"
     },
     {
-      "keys": "3<Esc>j",
-      "start": "a\nb\nc\nd",
+      "expected": {
+        "col": 0,
+        "mode": "n",
+        "row": 1,
+        "text": "a\nb\nc\nd"
+      },
       "id": "cancel-count",
-      "expected": {
-        "col": 0,
-        "text": "a\nb\nc\nd",
-        "row": 1
-      }
+      "keys": "3<Esc>j",
+      "start": "a\nb\nc\nd"
     },
     {
-      "keys": "f<Esc>l",
-      "start": "abc def",
-      "id": "cancel-find",
       "expected": {
         "col": 1,
-        "text": "abc def",
-        "row": 0
-      }
+        "mode": "n",
+        "row": 0,
+        "text": "abc def"
+      },
+      "id": "cancel-find",
+      "keys": "f<Esc>l",
+      "start": "abc def"
     },
     {
-      "keys": "iXY<Esc>u",
-      "start": "ab",
+      "expected": {
+        "col": 0,
+        "mode": "n",
+        "row": 0,
+        "text": "ab"
+      },
       "id": "insert-undo",
-      "expected": {
-        "col": 0,
-        "text": "ab",
-        "row": 0
-      }
+      "keys": "iXY<Esc>u",
+      "start": "ab"
     },
     {
-      "keys": "cwNEW<Esc>u",
-      "start": "old new",
+      "expected": {
+        "col": 0,
+        "mode": "n",
+        "row": 0,
+        "text": "old new"
+      },
       "id": "change-undo",
-      "expected": {
-        "col": 0,
-        "text": "old new",
-        "row": 0
-      }
+      "keys": "cwNEW<Esc>u",
+      "start": "old new"
     },
     {
-      "keys": "xxuu",
-      "start": "abcd",
+      "expected": {
+        "col": 0,
+        "mode": "n",
+        "row": 0,
+        "text": "abcd"
+      },
       "id": "delete-undo-twice",
-      "expected": {
-        "col": 0,
-        "text": "abcd",
-        "row": 0
-      }
+      "keys": "xxuu",
+      "start": "abcd"
     },
     {
-      "keys": "3ggj",
-      "start": "a\nb\nc\nd",
+      "expected": {
+        "col": 0,
+        "mode": "n",
+        "row": 3,
+        "text": "a\nb\nc\nd"
+      },
       "id": "counted-gg",
-      "expected": {
-        "col": 0,
-        "text": "a\nb\nc\nd",
-        "row": 3
-      }
+      "keys": "3ggj",
+      "start": "a\nb\nc\nd"
     },
     {
-      "keys": "2d3d",
-      "start": "a\nb\nc\nd\ne\nf\ng",
+      "expected": {
+        "col": 0,
+        "mode": "n",
+        "row": 0,
+        "text": "g"
+      },
       "id": "counted-delete",
-      "expected": {
-        "col": 0,
-        "text": "g",
-        "row": 0
-      }
+      "keys": "2d3d",
+      "start": "a\nb\nc\nd\ne\nf\ng"
     },
     {
-      "keys": "2fX",
-      "start": "aXbXcX",
-      "id": "counted-find",
       "expected": {
         "col": 3,
-        "text": "aXbXcX",
-        "row": 0
-      }
+        "mode": "n",
+        "row": 0,
+        "text": "aXbXcX"
+      },
+      "id": "counted-find",
+      "keys": "2fX",
+      "start": "aXbXcX"
     },
     {
-      "keys": "tX",
-      "start": "aXXbX",
-      "id": "find-adjacent",
       "expected": {
         "col": 0,
-        "text": "aXXbX",
-        "row": 0
-      }
+        "mode": "n",
+        "row": 0,
+        "text": "aXXbX"
+      },
+      "id": "find-adjacent",
+      "keys": "tX",
+      "start": "aXXbX"
     },
     {
-      "keys": "tX;",
-      "start": "abXcdX",
-      "id": "repeat-till",
       "expected": {
         "col": 4,
-        "text": "abXcdX",
-        "row": 0
-      }
+        "mode": "n",
+        "row": 0,
+        "text": "abXcdX"
+      },
+      "id": "repeat-till",
+      "keys": "tX;",
+      "start": "abXcdX"
     },
     {
-      "keys": "}",
-      "start": "one\ntwo\n\nthree",
+      "expected": {
+        "col": 0,
+        "mode": "n",
+        "row": 2,
+        "text": "one\ntwo\n\nthree"
+      },
       "id": "paragraph-next",
-      "expected": {
-        "col": 0,
-        "text": "one\ntwo\n\nthree",
-        "row": 2
-      }
+      "keys": "}",
+      "start": "one\ntwo\n\nthree"
     },
     {
-      "keys": "G{",
-      "start": "one\ntwo\n\nthree",
+      "expected": {
+        "col": 0,
+        "mode": "n",
+        "row": 2,
+        "text": "one\ntwo\n\nthree"
+      },
       "id": "paragraph-previous",
-      "expected": {
-        "col": 0,
-        "text": "one\ntwo\n\nthree",
-        "row": 2
-      }
+      "keys": "G{",
+      "start": "one\ntwo\n\nthree"
     },
     {
-      "keys": ">>",
-      "start": "x",
+      "expected": {
+        "col": 0,
+        "mode": "n",
+        "row": 0,
+        "text": "    x"
+      },
       "id": "indent-cursor",
-      "expected": {
-        "col": 0,
-        "text": "    x",
-        "row": 0
-      }
+      "keys": ">>",
+      "start": "x"
     },
     {
-      "keys": "J",
-      "start": "foo\nbar",
-      "id": "join-cursor",
       "expected": {
         "col": 3,
-        "text": "foo bar",
-        "row": 0
-      }
+        "mode": "n",
+        "row": 0,
+        "text": "foo bar"
+      },
+      "id": "join-cursor",
+      "keys": "J",
+      "start": "foo\nbar"
     },
     {
-      "keys": "yelp",
-      "start": "hello world",
-      "id": "paste-char-cursor",
       "expected": {
         "col": 6,
-        "text": "hehellollo world",
-        "row": 0
-      }
+        "mode": "n",
+        "row": 0,
+        "text": "hehellollo world"
+      },
+      "id": "paste-char-cursor",
+      "keys": "yelp",
+      "start": "hello world"
     },
     {
-      "keys": "oNEW<Esc>u",
-      "start": "one\ntwo",
-      "id": "new-line-undo",
       "expected": {
         "col": 0,
-        "text": "one\ntwo",
-        "row": 0
-      }
+        "mode": "n",
+        "row": 0,
+        "text": "one\ntwo"
+      },
+      "id": "new-line-undo",
+      "keys": "oNEW<Esc>u",
+      "start": "one\ntwo"
     },
     {
-      "keys": "ccNEW<Esc>",
-      "start": "",
-      "id": "change-empty",
       "expected": {
         "col": 2,
-        "text": "NEW",
-        "row": 0
-      }
+        "mode": "n",
+        "row": 0,
+        "text": "NEW"
+      },
+      "id": "change-empty",
+      "keys": "ccNEW<Esc>",
+      "start": ""
     },
     {
-      "keys": "ciwX<Esc>",
-      "start": "hello",
-      "id": "inner-last-word",
       "expected": {
         "col": 0,
-        "text": "X",
-        "row": 0
-      }
+        "mode": "n",
+        "row": 0,
+        "text": "X"
+      },
+      "id": "inner-last-word",
+      "keys": "ciwX<Esc>",
+      "start": "hello"
     },
     {
-      "keys": "4lci\"new<Esc>",
-      "start": "x = \"old\";",
-      "id": "inner-quotes-at-open",
       "expected": {
         "col": 7,
-        "text": "x = \"new\";",
-        "row": 0
-      }
+        "mode": "n",
+        "row": 0,
+        "text": "x = \"new\";"
+      },
+      "id": "inner-quotes-at-open",
+      "keys": "4lci\"new<Esc>",
+      "start": "x = \"old\";"
     },
     {
-      "keys": "3rx",
-      "start": "abcd",
+      "expected": {
+        "col": 2,
+        "mode": "n",
+        "row": 0,
+        "text": "xxxd"
+      },
       "id": "counted-replace",
-      "expected": {
-        "col": 2,
-        "text": "xxxd",
-        "row": 0
-      }
+      "keys": "3rx",
+      "start": "abcd"
     },
     {
-      "keys": "w",
-      "start": "one\n\ntwo",
+      "expected": {
+        "col": 0,
+        "mode": "n",
+        "row": 1,
+        "text": "one\n\ntwo"
+      },
       "id": "empty-word-motion",
-      "expected": {
-        "col": 0,
-        "text": "one\n\ntwo",
-        "row": 1
-      }
+      "keys": "w",
+      "start": "one\n\ntwo"
     },
     {
-      "keys": "dw",
-      "start": "one\ntwo",
+      "expected": {
+        "col": 0,
+        "mode": "n",
+        "row": 0,
+        "text": "\ntwo"
+      },
       "id": "cross-line-delete-word",
-      "expected": {
-        "col": 0,
-        "text": "\ntwo",
-        "row": 0
-      }
-    },
-    {
-      "keys": "ll",
-      "start": "abc",
-      "id": "kata-hjkl",
-      "expected": {
-        "col": 2,
-        "text": "abc",
-        "row": 0
-      },
-      "kataColumn": 2,
-      "kataExpected": "abc",
-      "col": 0,
-      "row": 0
-    },
-    {
-      "keys": "x",
-      "start": "Xhello",
-      "id": "kata-x",
-      "expected": {
-        "col": 0,
-        "text": "hello",
-        "row": 0
-      },
-      "kataColumn": null,
-      "kataExpected": "hello",
-      "col": 0,
-      "row": 0
-    },
-    {
-      "keys": "jdd",
-      "start": "keep\ndelete me\nkeep",
-      "id": "kata-dd",
-      "expected": {
-        "col": 0,
-        "text": "keep\nkeep",
-        "row": 1
-      },
-      "kataColumn": null,
-      "kataExpected": "keep\nkeep",
-      "col": 0,
-      "row": 0
-    },
-    {
       "keys": "dw",
-      "start": "remove remaining text",
-      "id": "kata-dw",
-      "expected": {
-        "col": 0,
-        "text": "remaining text",
-        "row": 0
-      },
-      "kataColumn": null,
-      "kataExpected": "remaining text",
-      "col": 0,
-      "row": 0
+      "start": "one\ntwo"
     },
     {
-      "keys": "ciwok<Esc>",
-      "start": "say NOPE now",
-      "id": "kata-ciw",
-      "expected": {
-        "col": 5,
-        "text": "say ok now",
-        "row": 0
-      },
-      "kataColumn": null,
-      "kataExpected": "say ok now",
-      "col": 4,
-      "row": 0
-    },
-    {
-      "keys": "ci\"yes<Esc>",
-      "start": "msg = \"no\";",
-      "id": "kata-quotes",
-      "expected": {
-        "col": 9,
-        "text": "msg = \"yes\";",
-        "row": 0
-      },
-      "kataColumn": null,
-      "kataExpected": "msg = \"yes\";",
-      "col": 8,
-      "row": 0
-    },
-    {
-      "keys": "I//<Esc>",
-      "start": "todo",
-      "id": "kata-insert",
       "expected": {
         "col": 1,
-        "text": "//todo",
-        "row": 0
+        "mode": "n",
+        "row": 0,
+        "text": "ab"
       },
+      "id": "insert-backspace",
+      "keys": "A<BS><Esc>",
+      "start": "abc"
+    },
+    {
+      "expected": {
+        "col": 2,
+        "mode": "n",
+        "row": 0,
+        "text": "onetwo"
+      },
+      "id": "insert-join-backspace",
+      "keys": "ji<BS><Esc>",
+      "start": "one\ntwo"
+    },
+    {
+      "expected": {
+        "col": 5,
+        "mode": "n",
+        "row": 0,
+        "text": "  new body"
+      },
+      "id": "insert-start",
+      "keys": "Inew <Esc>",
+      "start": "  body"
+    },
+    {
+      "expected": {
+        "col": 0,
+        "mode": "n",
+        "row": 0,
+        "text": "one\ntwo"
+      },
+      "id": "open-above-undo",
+      "keys": "ONEW<Esc>u",
+      "start": "one\ntwo"
+    },
+    {
+      "expected": {
+        "col": 9,
+        "mode": "n",
+        "row": 0,
+        "text": "cat dogcat"
+      },
+      "id": "yank-inner-and-paste",
+      "keys": "yiw$p",
+      "start": "cat dog"
+    },
+    {
+      "expected": {
+        "col": 0,
+        "mode": "n",
+        "row": 0,
+        "text": "f"
+      },
+      "id": "reverse-delete",
+      "keys": "$d0",
+      "start": "abc def"
+    },
+    {
+      "expected": {
+        "col": 0,
+        "mode": "n",
+        "row": 0,
+        "text": "one\ntwo"
+      },
+      "id": "unindent-lines",
+      "keys": "2<<",
+      "start": "    one\n    two"
+    },
+    {
+      "expected": {
+        "col": 4,
+        "mode": "n",
+        "row": 0,
+        "text": "aXbXcXd"
+      },
+      "id": "backwards-till-repeat",
+      "keys": "$TX;",
+      "start": "aXbXcXd"
+    },
+    {
+      "expected": {
+        "col": 0,
+        "mode": "n",
+        "row": 0,
+        "text": ""
+      },
+      "id": "empty-inner-change-undo",
+      "keys": "ciwNEW<Esc>u",
+      "start": ""
+    },
+    {
+      "col": 0,
+      "expected": {
+        "col": 2,
+        "mode": "n",
+        "row": 0,
+        "text": "abc"
+      },
+      "id": "kata-hjkl",
+      "kataColumn": 2,
+      "kataExpected": "abc",
+      "keys": "ll",
+      "row": 0,
+      "start": "abc"
+    },
+    {
+      "col": 0,
+      "expected": {
+        "col": 0,
+        "mode": "n",
+        "row": 0,
+        "text": "hello"
+      },
+      "id": "kata-x",
+      "kataColumn": null,
+      "kataExpected": "hello",
+      "keys": "x",
+      "row": 0,
+      "start": "Xhello"
+    },
+    {
+      "col": 0,
+      "expected": {
+        "col": 0,
+        "mode": "n",
+        "row": 1,
+        "text": "keep\nkeep"
+      },
+      "id": "kata-dd",
+      "kataColumn": null,
+      "kataExpected": "keep\nkeep",
+      "keys": "jdd",
+      "row": 0,
+      "start": "keep\ndelete me\nkeep"
+    },
+    {
+      "col": 0,
+      "expected": {
+        "col": 0,
+        "mode": "n",
+        "row": 0,
+        "text": "remaining text"
+      },
+      "id": "kata-dw",
+      "kataColumn": null,
+      "kataExpected": "remaining text",
+      "keys": "dw",
+      "row": 0,
+      "start": "remove remaining text"
+    },
+    {
+      "col": 4,
+      "expected": {
+        "col": 5,
+        "mode": "n",
+        "row": 0,
+        "text": "say ok now"
+      },
+      "id": "kata-ciw",
+      "kataColumn": null,
+      "kataExpected": "say ok now",
+      "keys": "ciwok<Esc>",
+      "row": 0,
+      "start": "say NOPE now"
+    },
+    {
+      "col": 8,
+      "expected": {
+        "col": 9,
+        "mode": "n",
+        "row": 0,
+        "text": "msg = \"yes\";"
+      },
+      "id": "kata-quotes",
+      "kataColumn": null,
+      "kataExpected": "msg = \"yes\";",
+      "keys": "ci\"yes<Esc>",
+      "row": 0,
+      "start": "msg = \"no\";"
+    },
+    {
+      "col": 0,
+      "expected": {
+        "col": 1,
+        "mode": "n",
+        "row": 0,
+        "text": "//todo"
+      },
+      "id": "kata-insert",
       "kataColumn": null,
       "kataExpected": "//todo",
-      "col": 0,
-      "row": 0
+      "keys": "I//<Esc>",
+      "row": 0,
+      "start": "todo"
     },
     {
-      "keys": "yyp",
-      "start": "row",
-      "id": "kata-yy",
+      "col": 0,
       "expected": {
         "col": 0,
-        "text": "row\nrow",
-        "row": 1
+        "mode": "n",
+        "row": 1,
+        "text": "row\nrow"
       },
+      "id": "kata-yy",
       "kataColumn": null,
       "kataExpected": "row\nrow",
-      "col": 0,
-      "row": 0
+      "keys": "yyp",
+      "row": 0,
+      "start": "row"
     },
     {
-      "keys": "J",
-      "start": "foo\nbar",
-      "id": "kata-join",
+      "col": 0,
       "expected": {
         "col": 3,
-        "text": "foo bar",
-        "row": 0
+        "mode": "n",
+        "row": 0,
+        "text": "foo bar"
       },
+      "id": "kata-join",
       "kataColumn": null,
       "kataExpected": "foo bar",
-      "col": 0,
-      "row": 0
+      "keys": "J",
+      "row": 0,
+      "start": "foo\nbar"
     },
     {
-      "keys": "D",
-      "start": "keep DROP",
-      "id": "kata-D",
+      "col": 5,
       "expected": {
         "col": 4,
-        "text": "keep ",
-        "row": 0
+        "mode": "n",
+        "row": 0,
+        "text": "keep "
       },
+      "id": "kata-D",
       "kataColumn": null,
       "kataExpected": "keep ",
-      "col": 5,
-      "row": 0
+      "keys": "D",
+      "row": 0,
+      "start": "keep DROP"
     },
     {
-      "keys": "diw",
-      "start": "say hello now",
-      "id": "kata-diw",
+      "col": 4,
       "expected": {
         "col": 4,
-        "text": "say  now",
-        "row": 0
+        "mode": "n",
+        "row": 0,
+        "text": "say  now"
       },
+      "id": "kata-diw",
       "kataColumn": null,
       "kataExpected": "say  now",
-      "col": 4,
-      "row": 0
+      "keys": "diw",
+      "row": 0,
+      "start": "say hello now"
     },
     {
-      "keys": "%",
-      "start": "foo(bar)",
-      "id": "kata-percent",
+      "col": 3,
       "expected": {
         "col": 7,
-        "text": "foo(bar)",
-        "row": 0
+        "mode": "n",
+        "row": 0,
+        "text": "foo(bar)"
       },
+      "id": "kata-percent",
       "kataColumn": 7,
       "kataExpected": "foo(bar)",
-      "col": 3,
-      "row": 0
+      "keys": "%",
+      "row": 0,
+      "start": "foo(bar)"
     },
     {
-      "keys": ">>",
-      "start": "x",
-      "id": "kata-indent",
+      "col": 0,
       "expected": {
         "col": 0,
-        "text": "    x",
-        "row": 0
+        "mode": "n",
+        "row": 0,
+        "text": "    x"
       },
+      "id": "kata-indent",
       "kataColumn": null,
       "kataExpected": "    x",
-      "col": 0,
-      "row": 0
+      "keys": ">>",
+      "row": 0,
+      "start": "x"
     }
-  ]
+  ],
+  "version": "0.12.5+v0.12.5"
 }

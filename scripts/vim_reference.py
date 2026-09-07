@@ -36,6 +36,15 @@ cases = [
     ("counted-replace", "abcd", "3rx"),
     ("empty-word-motion", "one\n\ntwo", "w"),
     ("cross-line-delete-word", "one\ntwo", "dw"),
+    ("insert-backspace", "abc", "A<BS><Esc>"),
+    ("insert-join-backspace", "one\ntwo", "ji<BS><Esc>"),
+    ("insert-start", "  body", "Inew <Esc>"),
+    ("open-above-undo", "one\ntwo", "ONEW<Esc>u"),
+    ("yank-inner-and-paste", "cat dog", "yiw$p"),
+    ("reverse-delete", "abc def", "$d0"),
+    ("unindent-lines", "    one\n    two", "2<<"),
+    ("backwards-till-repeat", "aXbXcXd", "$TX;"),
+    ("empty-inner-change-undo", "", "ciwNEW<Esc>u"),
 ]
 payload = [{"id": name, "start": start, "keys": keys} for name, start, keys in cases]
 kata = subprocess.run(
@@ -60,13 +69,15 @@ data = json.loads(output.read_text(encoding="utf-8"))
 fixture = ROOT / "trainer/test/fixtures/neovim.json"
 if "--check" in sys.argv:
     old = json.loads(fixture.read_text(encoding="utf-8"))
-    assert old["cases"] == data["cases"], (
-        "Neovim reference changed; inspect before refreshing fixtures"
-    )
+    assert (
+        old["cases"] == data["cases"]
+    ), "Neovim reference changed; inspect before refreshing fixtures"
     print(f"PASS {len(data['cases'])} cases match Neovim {data['version']}")
 else:
     fixture.parent.mkdir(parents=True, exist_ok=True)
     fixture.write_text(
-        json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+        json.dumps(data, indent=2, ensure_ascii=False, sort_keys=True) + "\n",
+        encoding="utf-8",
+        newline="\n",
     )
     print(f"Wrote {len(data['cases'])} reference cases from Neovim {data['version']}")

@@ -71,11 +71,6 @@ class Vim {
     }
 
     if (mode == 'i') {
-      if (key == 'Escape') {
-        mode = 'n';
-        _set(row, col > 0 ? col - 1 : 0);
-        return;
-      }
       if (key == 'Enter') {
         _save();
         final line = lines[row];
@@ -255,6 +250,9 @@ class Vim {
         i += 5;
       } else if (seq.startsWith('<CR>', i)) {
         feed('Enter');
+        i += 4;
+      } else if (seq.startsWith('<BS>', i)) {
+        feed('Backspace');
         i += 4;
       } else {
         feed(seq[i]);
@@ -509,7 +507,10 @@ class Vim {
     int? b;
     if (key == 'w') {
       if (line.isEmpty) {
-        if (innerOp == 'c') mode = 'i';
+        if (innerOp == 'c') {
+          _save();
+          mode = 'i';
+        }
         return;
       }
       final t = _kind(line[col]);

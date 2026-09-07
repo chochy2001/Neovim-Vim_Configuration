@@ -19,6 +19,7 @@ for _, case in ipairs(cases) do
         text = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n"),
         row = pos[1] - 1,
         col = pos[2],
+        mode = vim.api.nvim_get_mode().mode,
     }
     if case.kataExpected then
         assert(case.kataExpected == case.expected.text, case.id .. ": kata differs from Neovim")

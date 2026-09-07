@@ -15,8 +15,10 @@ Las decisiones técnicas se apoyan en [SOURCES.md](SOURCES.md).
 | Parsers instalados | 27 bibliotecas cargan, producen árboles y compilan sus consultas |
 | Formateadores reales | StyLua/Lua y Prettier/JSON modifican el texto exactamente como se espera |
 | LSP en archivos reales | 15 servidores: cliente único, adjunto y petición respondida |
-| Referencia de edición | 41 casos coinciden con Neovim, incluidos los 13 ejercicios |
-| Entrenador | 69 tests pasan; análisis sin incidencias; formato Dart correcto |
+| Referencia de edición | 50 casos coinciden con Neovim en texto, cursor y modo, incluidos los 13 ejercicios |
+| Entrenador | 88 tests pasan; análisis sin incidencias; formato Dart correcto |
+| Cobertura del entrenador | 768/819 líneas: 93,77%; mínimo de CI 90%, sin excluir la interfaz |
+| Verificador de cobertura | 6 tests Python pasan; rechaza informes vacíos, incompletos, inconsistentes y umbrales incumplidos |
 | Compilación de escritorio | Windows release generado correctamente |
 | Vim clásico | Arranque básico con el Vim de Git for Windows, sin vim-plug instalado |
 | Herramientas Mason de la configuración | 16 versiones coinciden con el registro actualizado; Astro actualizado a 2.16.16 |
@@ -89,7 +91,8 @@ cd trainer
 flutter pub get
 flutter analyze
 dart format --output=none --set-exit-if-changed lib test
-flutter test
+flutter test --coverage
+python ../scripts/check_coverage.py --min 90
 flutter build windows --release
 ```
 
@@ -97,6 +100,20 @@ Los fixtures contienen texto, cursor y modo producidos por Neovim limpio. Antes
 de la corrección, 17 de los 41 casos revelaban diferencias del motor: conteos,
 cancelación, `cw`, `cc`, deshacer, pegado y movimientos entre líneas, entre otros.
 Las aserciones comparan resultados exactos; no basta con un prefijo del texto.
+La ampliación a 50 casos detectó y corrigió `ciw` seguido de deshacer en un
+búfer vacío, y añadió `<BS>` a la interpretación de secuencias. Se prueba
+también el modo devuelto por Neovim. La cobertura creció de 80,42% a 93,77%
+con interacciones de teclado, importación, cancelación, eliminación y límites
+de archivos/carpetas. Solo se sustituye el diálogo nativo del selector; se leen
+archivos temporales reales.
+
+El umbral usa el porcentaje sin redondear y exige que estén presentes todos los
+archivos Dart de `trainer/lib`; no usa exclusiones para elevar el resultado.
+Para probar el propio verificador desde la raíz:
+
+```sh
+python -m unittest discover -s tests -p "test_*.py"
+```
 
 Documentación y PDF:
 
@@ -139,13 +156,15 @@ sus versiones publicadas más nuevas no se fuerzan con overrides.
 
 ## Alcance pendiente de otros entornos
 
-- La matriz CI Linux/macOS/Windows está configurada, pero estos cambios locales
-  aún no se han ejecutado en GitHub Actions.
+- La revisión inicial `12a376f` pasó la matriz CI Linux/macOS/Windows, el
+  entrenador y la documentación en [GitHub Actions](https://github.com/chochy2001/Neovim-Vim_Configuration/actions/runs/34083835237).
+  Cada push vuelve a validar el commit publicado; el estado actual está en
+  [validate](https://github.com/chochy2001/Neovim-Vim_Configuration/actions/workflows/validate.yml).
 - La compilación nativa Linux/macOS y las acciones de JetBrains requieren sus
   entornos respectivos. El arranque de Vim básico no certifica sus plugins legados.
 - Los LSP no enumerados arriba, las sesiones de depuración, los SDK adicionales
   y los flujos autenticados de GitHub/Copilot/CLI necesitan pruebas específicas.
-- El entrenador implementa un subconjunto de Vim; 41 ejemplos no equivalen a
+- El entrenador implementa un subconjunto de Vim; 50 ejemplos no equivalen a
   conformidad completa con todo Vim ni con toda la edición Unicode.
 - Comparar declaraciones de mapas detecta propietarios repetidos en los specs;
   no demuestra que ningún plugin cree sobrescrituras dinámicas en otro estado.
