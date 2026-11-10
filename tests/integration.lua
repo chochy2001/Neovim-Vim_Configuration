@@ -144,6 +144,10 @@ end)
 test("terminal keys open tmux-style splits and hide them all", function()
     vim.cmd("silent! only")
     local function press(keys)
+        if vim.bo.buftype == "terminal" then
+            vim.cmd.stopinsert()
+            vim.cmd.wincmd("p")
+        end
         vim.api.nvim_feedkeys(vim.keycode(keys), "mx", false)
         vim.cmd.stopinsert()
         vim.wait(200)
@@ -161,7 +165,10 @@ test("terminal keys open tmux-style splits and hide them all", function()
     local right = layout[2][#layout[2]]
     assert(right[1] == "leaf" and is_term(right[2]), "<leader>tv did not open on the right")
     local first = vim.api.nvim_win_get_buf(right[2])
-    press("<C-w>h")
+    -- Move like the user would after jj, without typing into the shell
+    -- (keys fed in terminal mode go to the shell, not to Neovim).
+    vim.cmd.stopinsert()
+    vim.cmd.wincmd("h")
     press("2 th")
     -- Bottom split: a column whose last cell is a full-width terminal.
     layout = vim.fn.winlayout()
