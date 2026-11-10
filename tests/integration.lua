@@ -175,10 +175,21 @@ test("terminal keys open tmux-style splits and hide them all", function()
     eq(0, #terms())
     local job = vim.b[first].terminal_job_id
     eq(-1, vim.fn.jobwait({ job }, 0)[1]) -- hidden, still running
+    local before = vim.api.nvim_get_current_win()
     press(" ta")
     eq(2, #terms())
+    eq(before, vim.api.nvim_get_current_win()) -- restored without stealing focus
     press(" tv") -- same key hides terminal 1 again
-    eq(1, #terms())
+    local left = terms()
+    assert(#left == 1, "<leader>tv did not hide terminal 1: " .. vim.inspect({
+        windows = #left,
+        mode = vim.api.nvim_get_mode().mode,
+        current = vim.bo.buftype,
+        jobs = vim.tbl_map(function(win)
+            local job = vim.b[vim.api.nvim_win_get_buf(win)].terminal_job_id
+            return job and vim.fn.jobwait({ job }, 0)[1]
+        end, left),
+    }))
     for _, buf in ipairs(vim.api.nvim_list_bufs()) do
         if vim.bo[buf].buftype == "terminal" then
             vim.api.nvim_buf_delete(buf, { force = true })

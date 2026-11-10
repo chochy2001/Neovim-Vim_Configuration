@@ -64,7 +64,8 @@ local function alive(buf)
     return job ~= nil and vim.fn.jobwait({ job }, 0)[1] == -1
 end
 
-local function show(n)
+local function show(n, keep_focus)
+    local from = vim.api.nvim_get_current_win()
     local term = splits[n]
     local vertical = term.direction == "vertical"
     vim.cmd(vertical and "botright vsplit" or "botright split")
@@ -81,7 +82,11 @@ local function show(n)
         vim.bo[term.buf].buflisted = false
         vim.b[term.buf].split_terminal = n
     end
-    vim.cmd.startinsert()
+    if keep_focus then
+        vim.api.nvim_set_current_win(from)
+    else
+        vim.cmd.startinsert()
+    end
 end
 
 --- Open terminal n in a split, or hide it when it is already visible.
@@ -113,13 +118,13 @@ function M.toggle_all()
         end
         return
     end
+    -- Bring them back like tmux panes: the cursor stays where it was.
     for _, n in ipairs(hidden) do
         if splits[n] and alive(splits[n].buf) then
-            show(n)
+            show(n, true)
         end
     end
     hidden = {}
-    vim.cmd.stopinsert()
 end
 
 --- Pick any running terminal (split or toggleterm) and jump to it.
