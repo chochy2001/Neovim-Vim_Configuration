@@ -12,7 +12,9 @@ Se evita duplicar sus tablas para mantener una sola referencia.
 | `lua/lsp-utils.lua` | Estado LSP y reinicio Dart mediante flutter-tools |
 | `lua/formatting.lua` | Elegir un cliente de formato adjunto |
 | `lua/ai-terminals.lua` | Selección visual, prompts y terminales IA |
-| `lua/terminals.lua` | Terminales opcionales y parada de un job elegido |
+| `lua/terminals.lua` | Terminales tipo tmux (`<leader>tv/th/ta/tl`), terminales dedicadas y parada de un job |
+| `lua/external-changes.lua` | Recarga lo que los agentes cambian en disco sin pisar cambios sin guardar |
+| `lua/icons.lua` | Iconos Nerd Font por código, con alternativa ASCII (`NVIM_NERD_FONT=0`) |
 | `lua/runner.lua` | Comandos de archivos sueltos y quoting por shell |
 | `lua/compat/git-conflict.lua` | Adaptador local de APIs de git-conflict 2.1 |
 
