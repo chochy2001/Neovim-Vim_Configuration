@@ -23,6 +23,10 @@
 !.github/workflows/
 !.github/workflows/**
 
+# Browser practice page (GitHub Pages)
+!practice/
+!practice/**
+
 # CAPDESIS Practice (Flutter desktop)
 !trainer/
 !trainer/**

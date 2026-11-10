@@ -1,21 +1,59 @@
-# Neovim, Vim e IdeaVim - CAPDESIS
+<div align="center">
 
-Configuración personal de Neovim para Windows, Linux y macOS, con curso y entrenador
-de escritorio. Requiere **Neovim 0.12+**; referencia de esta revisión: **0.12.6**.
-Resultados y límites: [docs/VALIDATION.md](docs/VALIDATION.md).
+# Neovim, Vim e IdeaVim · CAPDESIS
 
-## Empieza aquí
+**Una configuración de Neovim para leer código, pedirle cambios a la IA y aprender Vim paso a paso.**
+Mismos atajos en Neovim e IntelliJ/Android Studio. Windows, Linux y macOS.
+
+[![validate](https://github.com/chochy2001/Neovim-Vim_Configuration/actions/workflows/validate.yml/badge.svg?branch=main)](https://github.com/chochy2001/Neovim-Vim_Configuration/actions/workflows/validate.yml)
+![Neovim](https://img.shields.io/badge/Neovim-0.12.6-57A143?logo=neovim&logoColor=white)
+![Plataformas](https://img.shields.io/badge/Windows%20%7C%20Linux%20%7C%20macOS-probado%20en%20CI-2D2D64)
+![IdeaVim](https://img.shields.io/badge/IdeaVim-87%20acciones%20verificadas-F3A63D)
+[![Licencia MIT](https://img.shields.io/badge/licencia-MIT-blue)](LICENSE)
+
+<img src="docs/images/dashboard.png" alt="Dashboard de Neovim con el logo CAPDESIS y accesos rápidos" width="760">
+
+</div>
+
+## ✨ Qué trae
+
+| | |
+|---|---|
+| 🤖 **Agentes de IA** | opencode, Codex, Claude, Gemini, Grok, Copilot, muse, Cursor, Antigravity y kimi en `<leader>a*`. Lo que un agente cambia en disco se recarga solo, también desde otro panel de herdr o tmux, sin pisar tus cambios sin guardar. |
+| 🧭 **Leer código** | Telescope, árbol de archivos, ruta y símbolo arriba (dropbar), 18 servidores LSP, Tree-sitter, Git con diff y blame. |
+| 🖥️ **Terminales tipo tmux** | `<leader>tv` a la derecha, `<leader>th` abajo, con número para varias; `<leader>ta` las oculta sin matar el proceso. |
+| 📝 **Markdown renderizado** | Títulos, tablas y bloques de código formateados dentro del buffer; `<leader>tm` vuelve al texto crudo. |
+| 🧠 **IdeaVim unido** | `.ideavimrc` usa los mismos atajos; una prueba compara cada acción del IDE con su atajo de Neovim. |
+| 🎓 **Curso y práctica** | [COURSE.md](COURSE.md) / [PDF](COURSE.pdf), 50 ejercicios validados contra Neovim real y un entrenador de escritorio. |
+
+## 📸 Así se ve
+
+<table>
+<tr>
+<td width="50%"><img src="docs/images/code.png" alt="Código Lua con árbol de archivos, LSP y barra de estado"><br><sub><b>Código</b>: árbol (<code>&lt;leader&gt;pv</code>), ruta y símbolo, LSP en la barra de estado.</sub></td>
+<td width="50%"><img src="docs/images/terminals.png" alt="Dos terminales: una a la derecha y otra abajo"><br><sub><b>Terminales</b>: <code>&lt;leader&gt;tv</code> a la derecha y <code>2&lt;leader&gt;th</code> abajo.</sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/images/whichkey.png" alt="Menú de atajos al pulsar Espacio"><br><sub><b>Atajos</b>: pulsa Espacio y espera; el menú muestra cada grupo.</sub></td>
+<td width="50%"><img src="docs/images/markdown.png" alt="WORKFLOW.md renderizado con tablas"><br><sub><b>Markdown</b>: tablas y títulos renderizados en el buffer.</sub></td>
+</tr>
+</table>
+
+<sub>Capturas reales: Neovim corriendo en un terminal emulado con JetBrainsMono Nerd Font.</sub>
+
+## 🚀 Empieza aquí
 
 | Necesitas | Documento |
 |---|---|
-| Aprender Vim | [COURSE.md](COURSE.md) / [COURSE.pdf](COURSE.pdf) |
-| Consultar atajos | [WORKFLOW.md](WORKFLOW.md), o `:Telescope keymaps` |
-| Grabar el curso | [UDEMY.md](UDEMY.md) |
-| Entender el código | [.config/nvim/README.md](.config/nvim/README.md) |
-| Pruebas y fuentes | [VALIDATION](docs/VALIDATION.md) / [SOURCES](docs/SOURCES.md) |
-| Practicar sin Neovim | [trainer/README.md](trainer/README.md) |
+| 📘 Aprender Vim | [COURSE.md](COURSE.md) / [COURSE.pdf](COURSE.pdf) |
+| ⌨️ Consultar atajos | [WORKFLOW.md](WORKFLOW.md), o `:Telescope keymaps` |
+| 🤖 Trabajar con agentes y herdr | [WORKFLOW.md, AI Assistants](WORKFLOW.md#ai-assistants-terminal-clis-your-subscriptions-no-api-keys) |
+| 🎬 Grabar el curso | [UDEMY.md](UDEMY.md) |
+| 🔧 Entender el código | [.config/nvim/README.md](.config/nvim/README.md) |
+| ✅ Pruebas y fuentes | [VALIDATION](docs/VALIDATION.md) / [SOURCES](docs/SOURCES.md) |
+| 🏋️ Practicar sin Neovim | [trainer/README.md](trainer/README.md) |
 
-## Requisitos
+## 📦 Requisitos
 
 | Herramienta | Uso |
 |---|---|
@@ -27,7 +65,7 @@ Resultados y límites: [docs/VALIDATION.md](docs/VALIDATION.md).
 | tree-sitter CLI >= 0.26.1, curl, tar y compilador C | Compilar parsers |
 | Python 3 | Scripts de validación |
 
-### Iconos
+### 🔣 Iconos
 
 Los iconos salen como recuadros con `?` cuando el **terminal** no usa una Nerd
 Font; Neovim no elige la fuente. Instala JetBrainsMono Nerd Font y selecciona
@@ -54,7 +92,7 @@ con Rust instalado, `cargo install tree-sitter-cli --locked`.
 El entrenador usa **Flutter 3.47.2 / Dart 3.13.2** en CI. Cada lenguaje necesita su
 SDK. ctags, LazyGit, codelldb, cuentas de IA y swagger-ui-watcher son opcionales.
 
-## Instalación
+## 💻 Instalación
 
 Clona en una carpeta dedicada y enlaza **su subcarpeta** `.config/nvim`.
 Si el destino ya existe, respáldalo antes de crear el enlace. Estos comandos
@@ -86,7 +124,7 @@ nvim
 Comprueba `nvim --version`: si el paquete de la distribución es anterior a 0.12,
 usa la release oficial para tu arquitectura.
 
-## Primer arranque y actualizaciones
+## 🔄 Primer arranque y actualizaciones
 
 lazy.nvim instala plugins usando [lazy-lock.json](.config/nvim/lazy-lock.json).
 Tree-sitter instala parsers faltantes. Mason instala los servidores configurados
@@ -104,7 +142,7 @@ Arrancar no verifica por sí solo estas funciones.
 Actualizar plugins no instala paquetes npm globales. Si necesitas Swagger,
 instala `swagger-ui-watcher` explícitamente.
 
-## Uso diario
+## ⌨️ Uso diario
 
 Leader = **Espacio**. `<leader>ff` significa Espacio, f, f. Espacio dos veces limpia
 la búsqueda. `<leader>f`, `b`, `r`, `gs`, `gc` también son prefijos y esperan
@@ -122,12 +160,16 @@ Dashboard: `f` archivo, `g` grep, `r` recientes, `e` explorador, `a` IA,
 Completado: `Ctrl-Space`; selecciona una entrada antes de Enter. LuaSnip:
 `Ctrl-j` avanza/expande, `Ctrl-k` retrocede. Copilot requiere autenticación.
 
+Terminales: `<leader>tv` derecha, `<leader>th` abajo, `2<leader>tv` una segunda
+terminal; `jj` vuelve a modo Normal y `Ctrl-h/j/k/l` cambia de ventana como en tmux.
+`<leader>ta` oculta o muestra todas sin cerrar sus procesos, `<leader>tl` elige una.
+
 Visual `<leader>as` captura la selección **antes** del selector, pide una instrucción,
 copia el prompt al portapapeles y registro `a`, y abre el CLI.
 **Pega cuando esté listo, revisa y envía**. Sin portapapeles, usa `"ap` en modo
 terminal-normal. No se adivina el arranque con temporizadores.
 
-## Lenguajes y formato
+## 🌐 Lenguajes y formato
 
 | Lenguaje | LSP | Formato |
 |---|---|---|
@@ -139,12 +181,14 @@ terminal-normal. No se adivina el arranque con temporizadores.
 | Astro | astro (Mason) | Prettier **con prettier-plugin-astro en el proyecto** |
 | JSON/YAML | jsonls/yamlls (Mason) | Prettier |
 | C/C++ | clangd (Mason) | clang-format en PATH |
-| Kotlin | kotlin_language_server en PATH | Según servidor/proyecto |
+| Kotlin | kotlin_language_server (Mason; necesita un JDK) | Según servidor/proyecto |
 | Swift | sourcekit-lsp en macOS | Según servidor/proyecto |
 | HTML/CSS | html/cssls (Mason) | Prettier |
 | PHP | intelephense (Mason) | Según servidor/proyecto |
 | Bash/Dockerfile | bashls/dockerls (Mason) | Sin formateador externo configurado |
 | TOML | taplo (Mason) | Taplo LSP |
+| Rust | rust-analyzer de rustup (`rustup component add rust-analyzer`) | rustfmt a través de rust-analyzer |
+| Markdown | Sin LSP | Prettier; se ve renderizado (`<leader>tm`) |
 | SQL | Sin LSP configurado | Resaltado Tree-sitter |
 
 Mason configura su PATH antes de comprobar ejecutables. Los servidores recién
@@ -163,7 +207,7 @@ Opcionales: `uv tool install black` y `uv tool install clang-format`, por separa
 Los alias vacíos de Microsoft Store pueden no ser ejecutables para Neovim:
 comprueba `:echo executable('python')` y usa una instalación real en PATH.
 
-## Ejecutar y depurar
+## ▶️ Ejecutar y depurar
 
 `<leader>r`/`rf` ejecutan archivos **guardados** con el SDK disponible.
 Los comandos protegen rutas con espacios/comillas; un fallo de compilación no
@@ -175,7 +219,7 @@ compatibilidad depende de la sintaxis y versión del runtime.
 elegir uno activo. `ten` usa vim-test; vimux solo dentro de tmux. DAP está
 preparado para Flutter y codelldb cuando están disponibles.
 
-## IdeaVim y Vim clásico
+## 🧠 IdeaVim y Vim clásico
 
 Instala IdeaVim en el IDE y copia `.ideavimrc` a tu carpeta personal, conservando
 antes cualquier archivo existente. Recarga con `:source ~/.ideavimrc`.
@@ -190,7 +234,7 @@ El arranque básico se comprueba por separado de las acciones reales de JetBrain
 Las copias instaladas de plugins, el historial de navegación y `.zshrc` son
 archivos locales; no deben versionarse en este repositorio.
 
-## English
+## 🇬🇧 English
 
 Neovim 0.12+ configuration, Spanish course, legacy Vim and IdeaVim mappings,
 and a Flutter desktop trainer. Clone outside the Neovim config directory and

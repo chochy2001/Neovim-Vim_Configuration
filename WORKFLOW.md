@@ -266,7 +266,7 @@ tmux-style workflow: `<leader>tv` opens a shell on the right, `2<leader>th` a se
 
 ---
 
-## AI Assistants (terminal CLIs — your subscriptions, no API keys)
+## AI Assistants (terminal CLIs, your subscriptions, no API keys)
 
 | Key | Mode | Action |
 |-----|------|--------|
