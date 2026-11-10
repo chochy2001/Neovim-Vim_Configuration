@@ -213,12 +213,12 @@ return {
                 show_help_hints = true,
                 watch_index = true,
                 icons = {
-                    folder_closed = "",
-                    folder_open = "",
+                    folder_closed = require("icons").folder_closed,
+                    folder_open = require("icons").folder_open,
                 },
                 signs = {
-                    fold_closed = "",
-                    fold_open = "",
+                    fold_closed = require("icons").fold_closed,
+                    fold_open = require("icons").fold_open,
                     done = "✓",
                 },
                 view = {

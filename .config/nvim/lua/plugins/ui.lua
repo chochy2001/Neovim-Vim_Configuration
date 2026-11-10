@@ -74,7 +74,16 @@ return {
     {
         "Bekaboo/dropbar.nvim",
         event = { "BufReadPost", "BufNewFile" },
-        opts = {},
+        -- Deep paths (android/app/src/main/kotlin/com/...) plus nested symbols
+        -- got squeezed to one letter each ("s… > m… > k…"). Keep the last two
+        -- folders, the file and the three closest symbols readable instead.
+        opts = {
+            sources = {
+                path = { max_depth = 3 },
+                treesitter = { max_depth = 3 },
+                lsp = { max_depth = 3 },
+            },
+        },
     },
     -- Noice: modern command line, messages, and popups UI
     {

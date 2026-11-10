@@ -276,6 +276,19 @@ return {
                     table.insert(enabled, "taplo")
                 end
 
+                -- 17. Rust (omnimon/macmon). rust-analyzer ships with rustup
+                -- (`rustup component add rust-analyzer`) and formats through
+                -- rustfmt, so no none-ls source is needed.
+                if vim.fn.executable("rust-analyzer") == 1 then
+                    vim.lsp.config("rust_analyzer", {
+                        capabilities = capabilities,
+                        cmd = { "rust-analyzer" },
+                        filetypes = { "rust" },
+                        root_markers = { "Cargo.toml", "rust-project.json", ".git" },
+                    })
+                    table.insert(enabled, "rust_analyzer")
+                end
+
                 -- Enable only the servers configured above
                 vim.lsp.enable(enabled)
             end
@@ -347,12 +360,7 @@ return {
                     border = "rounded",
                 },
                 signs = {
-                    text = {
-                        [vim.diagnostic.severity.ERROR] = " ",
-                        [vim.diagnostic.severity.WARN] = " ",
-                        [vim.diagnostic.severity.HINT] = " ",
-                        [vim.diagnostic.severity.INFO] = " ",
-                    },
+                    text = require("icons").diagnostic_signs(),
                 },
                 underline = true,
                 update_in_insert = false,
@@ -399,6 +407,7 @@ return {
                 "html",
                 "cssls",
                 "taplo",
+                "kotlin_language_server", -- runs on a JDK; guarded by executable()
             },
             -- stylua ships an LSP mode but formatting is already covered
             -- by none-ls: avoid duplicate formatting clients

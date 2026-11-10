@@ -4,6 +4,7 @@ return {
         dependencies = { "nvim-tree/nvim-web-devicons" },
         event = "VeryLazy",
         config = function()
+            local icons = require("icons")
             local function lsp_names()
                 local buf = vim.api.nvim_get_current_buf()
                 local names = {}
@@ -15,7 +16,7 @@ return {
                 if #names == 0 then
                     return ""
                 end
-                return " " .. table.concat(names, " ")
+                return icons.lsp .. " " .. table.concat(names, " ")
             end
 
             require("lualine").setup({
@@ -28,14 +29,23 @@ return {
                     disabled_filetypes = { statusline = { "dashboard", "alpha" } },
                 },
                 sections = {
-                    lualine_a = { { "mode", icon = "" } },
-                    lualine_b = { { "branch", icon = "" }, "diff" },
+                    lualine_a = { "mode" },
+                    lualine_b = { { "branch", icon = icons.git_branch }, "diff" },
                     lualine_c = {
-                        { "filename", path = 1, symbols = { modified = " ●", readonly = " " } },
+                        {
+                            "filename",
+                            path = 1,
+                            symbols = { modified = " ●", readonly = " " .. icons.readonly },
+                        },
                         {
                             "diagnostics",
                             sources = { "nvim_lsp" },
-                            symbols = { error = " ", warn = " ", info = " ", hint = " " },
+                            symbols = {
+                                error = icons.diagnostics.error .. " ",
+                                warn = icons.diagnostics.warn .. " ",
+                                info = icons.diagnostics.info .. " ",
+                                hint = icons.diagnostics.hint .. " ",
+                            },
                         },
                     },
                     lualine_x = { lsp_names, "filetype" },
