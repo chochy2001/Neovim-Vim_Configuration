@@ -7,6 +7,10 @@ local assistants = {
     gemini = { cmd = "gemini", hint = "npm i -g @google/gemini-cli" },
     grok = { cmd = "grok", hint = "configure your chosen grok CLI on PATH" },
     copilot = { cmd = "copilot", hint = "npm i -g @github/copilot" },
+    cursor = { cmd = "cursor-agent", hint = "curl https://cursor.com/install -fsS | bash" },
+    antigravity = { cmd = "agy", hint = "install Antigravity and enable its agy CLI" },
+    muse = { cmd = "muse", hint = "install the muse CLI and add it to PATH" },
+    kimi = { cmd = "kimi", hint = "install Kimi Code CLI and add kimi to PATH" },
 }
 local terms = {}
 
@@ -100,6 +104,14 @@ function M.send_visual_pick()
             prepare(choice, selection)
         end
     end)
+end
+function M.has_command(cmd)
+    for _, a in pairs(assistants) do
+        if a.cmd == cmd then
+            return true
+        end
+    end
+    return false
 end
 function M.names()
     local names = vim.tbl_keys(assistants)

@@ -18,8 +18,11 @@ Cross-platform Neovim 0.12+ config (`lazy.nvim`) plus a synced `.ideavimrc` for 
 - **Do** keep leader prefixes: `f*` find, `a*` AI CLIs, `g*` git, `fl*` flutter, `x*` diagnostics, `m*` harpoon, `b*` buffers, `w*` windows, `t*` terminal/test, `r*` run, `c*` CopilotChat, `d*` DAP, `z*` fold/zen, `q*` session, `o*` overseer/oil.
 - **Don't** invent `<leader><leader>` as a finder — it is `:nohl`.
 - **Don't** clone this repo *into* `~/.config/nvim`. Clone to a dedicated folder and **symlink** `.config/nvim` (Windows: Junction to `%LOCALAPPDATA%\nvim`).
-- **Don't** put API keys in the config. AI CLIs (`opencode`, `codex`, `claude`, `gemini`, `grok`, `copilot`) keep their own login.
+- **Don't** put API keys in the config. AI CLIs (`opencode`, `codex`, `claude`, `gemini`, `grok`, `copilot`, `muse`, `cursor-agent`, `agy`, `kimi`) keep their own login.
 - **Don't** enable an LSP unless `vim.fn.executable(...)` is 1. Mason auto-installs a subset. **Dart LSP is owned by flutter-tools** — do not also `vim.lsp.enable("dartls")`.
+- **Do** register a new AI CLI in `lua/ai-terminals.lua` and give it a `<leader>a*` key in `lua/plugins/ai-terminal.lua`; the regression suite fails if either side is missing.
+- Agents edit files outside Neovim: the `external_changes` autocmd group runs `checktime`. Don't remove it.
+- Agent entry points: `CLAUDE.md` and `GEMINI.md` (Antigravity/Gemini) only import this file. Codex, opencode and Cursor read `AGENTS.md` directly; point any other CLI (muse, kimi) at this file. Edit rules here, never in those stubs.
 - Dashboard keys are `f g r e a m l q` (only when `nvim` is started with no file). Do not document numbered `1`–`8` shortcuts.
 
 ### How to add a language tomorrow
@@ -86,7 +89,10 @@ Configuración de Neovim 0.12+ multiplataforma (`lazy.nvim`) más `.ideavimrc` s
 - **Sí** respeta los prefijos de leader: `f*` buscar, `a*` CLIs de IA, `g*` git, `fl*` flutter, `x*` diagnósticos, `m*` harpoon, `b*` buffers, `w*` ventanas, `t*` terminal/test, `r*` ejecutar, `c*` CopilotChat, `d*` DAP, `z*` plegado/zen, `q*` sesión, `o*` overseer/oil.
 - **No** uses `<leader><leader>` como buscador — es `:nohl`.
 - **No** clones este repo *dentro* de `~/.config/nvim`. Clónalo en una carpeta dedicada y **enlaza** `.config/nvim`.
-- **No** pongas claves API en la config. Los CLIs de IA (`opencode`, `codex`, `claude`, `gemini`, `grok`, `copilot`) guardan su propio inicio de sesión.
+- **No** pongas claves API en la config. Los CLIs de IA (`opencode`, `codex`, `claude`, `gemini`, `grok`, `copilot`, `muse`, `cursor-agent`, `agy`, `kimi`) guardan su propio inicio de sesión.
+- **Sí** registra un CLI de IA nuevo en `lua/ai-terminals.lua` y dale un atajo `<leader>a*` en `lua/plugins/ai-terminal.lua`; la suite de regresión falla si falta un lado.
+- Los agentes editan archivos fuera de Neovim: el grupo `external_changes` ejecuta `checktime`. No lo quites.
+- `CLAUDE.md` y `GEMINI.md` (Antigravity/Gemini) solo importan este archivo. Codex, opencode y Cursor leen `AGENTS.md` directamente; a otros CLIs (muse, kimi) indícales este archivo. Edita las reglas aquí.
 - **No** habilites un LSP si `vim.fn.executable(...)` no es 1. Mason autoinstala un subconjunto. **El LSP de Dart lo arranca flutter-tools** — no hagas también `vim.lsp.enable("dartls")`.
 
 ### Cómo añadir un lenguaje mañana

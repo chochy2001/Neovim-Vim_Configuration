@@ -49,6 +49,34 @@ return {
                 end,
                 desc = "AI: copilot CLI",
             },
+            {
+                "<leader>am",
+                function()
+                    require("ai-terminals").toggle("muse")
+                end,
+                desc = "AI: muse",
+            },
+            {
+                "<leader>au",
+                function()
+                    require("ai-terminals").toggle("cursor")
+                end,
+                desc = "AI: cursor agent",
+            },
+            {
+                "<leader>an",
+                function()
+                    require("ai-terminals").toggle("antigravity")
+                end,
+                desc = "AI: antigravity (agy)",
+            },
+            {
+                "<leader>ai",
+                function()
+                    require("ai-terminals").toggle("kimi")
+                end,
+                desc = "AI: kimi",
+            },
             -- Visual: pick any agent for the occasion, type the instruction,
             -- and the selection is sent to it (prompt also kept in clipboard)
             {

@@ -269,9 +269,15 @@ Leader prefixes and the chords listed in `.ideavimrc` match Neovim where Intelli
 | `<leader>ag` | Normal | gemini terminal |
 | `<leader>ak` | Normal | grok terminal |
 | `<leader>ap` | Normal | copilot CLI terminal |
+| `<leader>am` | Normal | muse terminal |
+| `<leader>au` | Normal | cursor agent terminal (`cursor-agent`) |
+| `<leader>an` | Normal | antigravity terminal (`agy`) |
+| `<leader>ai` | Normal | kimi terminal |
 | `<leader>as` | Visual | Prepare selection for an agent (picker + instruction) |
 
 Workflow: select code → `<leader>as` → pick agent → type what to change → the CLI opens and the prompt is copied to the clipboard and register a. Paste when ready, review, then submit. Missing CLIs show their install command instead of failing.
+
+Files changed on disk by an agent reload automatically on focus, when you leave a terminal, and on buffer switch (`checktime`). A buffer with unsaved edits is never overwritten: Neovim asks first.
 
 ---
 
