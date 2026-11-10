@@ -695,3 +695,10 @@ kbd.special { color: var(--navy-light); }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--text3); }
+
+/* Target cursor in the Start / Goal panels (Vim block cursor). */
+.cursor-mark {
+  background: var(--gold);
+  color: #1a1a2e;
+  border-radius: 2px;
+}

@@ -563,7 +563,7 @@ function buildExerciseCard(ex, index, total) {
   startLabel.textContent = LANG === "es" ? "Inicio" : "Start";
   const startCode = document.createElement("pre");
   startCode.className = "diff-code";
-  startCode.textContent = ex.start;
+  showWithCursor(startCode, ex.start, ex.startRow, ex.startCol);
   startPanel.appendChild(startLabel);
   startPanel.appendChild(startCode);
 
@@ -576,7 +576,9 @@ function buildExerciseCard(ex, index, total) {
   goalLabel.textContent = LANG === "es" ? "Meta" : "Goal";
   const goalCode = document.createElement("pre");
   goalCode.className = "diff-code";
-  goalCode.textContent = ex.expectedText;
+  // Show where the cursor must end: movement exercises have equal texts.
+  if (ex.checkCursor === false) goalCode.textContent = ex.expectedText;
+  else showWithCursor(goalCode, ex.expectedText, ex.expectedRow, ex.expectedCol);
   goalPanel.appendChild(goalLabel);
   goalPanel.appendChild(goalCode);
 
@@ -675,6 +677,27 @@ const SPECIAL_KEY_MAP = {
   "<C-o>": "Ctrl+o",
   "<C-v>": "Ctrl+v",
 };
+
+// Render text with the character under the cursor highlighted, like Vim's
+// block cursor. An empty line or end of line shows a highlighted space.
+function showWithCursor(pre, text, row, col) {
+  pre.textContent = "";
+  const lines = text.split("\n");
+  lines.forEach((line, i) => {
+    if (i > 0) pre.appendChild(document.createTextNode("\n"));
+    if (i !== row) {
+      pre.appendChild(document.createTextNode(line));
+      return;
+    }
+    const chars = Array.from(line);
+    pre.appendChild(document.createTextNode(chars.slice(0, col).join("")));
+    const mark = document.createElement("span");
+    mark.className = "cursor-mark";
+    mark.textContent = chars[col] || " ";
+    pre.appendChild(mark);
+    pre.appendChild(document.createTextNode(chars.slice(col + 1).join("")));
+  });
+}
 
 function renderKeySequence(keys) {
   // Split the keys string into individual tokens
