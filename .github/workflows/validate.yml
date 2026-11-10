@@ -23,7 +23,7 @@ jobs:
       - uses: rhysd/action-setup-vim@v1
         with:
           neovim: true
-          version: v0.12.5
+          version: v0.12.6
       - run: python scripts/verify.py --install
   trainer:
     runs-on: ubuntu-latest
@@ -39,7 +39,7 @@ jobs:
       - uses: rhysd/action-setup-vim@v1
         with:
           neovim: true
-          version: v0.12.5
+          version: v0.12.6
       - run: python scripts/vim_reference.py --check
       - run: flutter pub get
         working-directory: trainer

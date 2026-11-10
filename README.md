@@ -1,7 +1,7 @@
 # Neovim, Vim e IdeaVim - CAPDESIS
 
 Configuración personal de Neovim para Windows, Linux y macOS, con curso y entrenador
-de escritorio. Requiere **Neovim 0.12+**; referencia de esta revisión: **0.12.5**.
+de escritorio. Requiere **Neovim 0.12+**; referencia de esta revisión: **0.12.6**.
 Resultados y límites: [docs/VALIDATION.md](docs/VALIDATION.md).
 
 ## Empieza aquí
@@ -26,6 +26,22 @@ Resultados y límites: [docs/VALIDATION.md](docs/VALIDATION.md).
 | Nerd Font | Iconos; por ejemplo JetBrainsMono NFM |
 | tree-sitter CLI >= 0.26.1, curl, tar y compilador C | Compilar parsers |
 | Python 3 | Scripts de validación |
+
+### Iconos
+
+Los iconos salen como recuadros con `?` cuando el **terminal** no usa una Nerd
+Font; Neovim no elige la fuente. Instala JetBrainsMono Nerd Font y selecciona
+la variante **Mono** (`JetBrainsMono Nerd Font Mono`, abreviada NFM):
+
+| Terminal | Dónde |
+|---|---|
+| Warp | Settings > Appearance > Text > Terminal font, o `font_name` en `[appearance.text]` de `~/.warp/settings.toml` |
+| Windows Terminal | Perfil > Apariencia > Tipo de fuente |
+| WezTerm, kitty, Ghostty, Alacritty | `font` / `font_family` en su archivo de configuración |
+| GNOME Terminal, Konsole | Preferencias del perfil > Fuente personalizada |
+
+herdr, tmux y SSH heredan la fuente del terminal que los contiene. Sin Nerd
+Font, `NVIM_NERD_FONT=0 nvim` usa letras (`E W I H`) en signos y barra de estado.
 
 Tree-sitter necesita un compilador en el entorno de Neovim. En Windows usa Visual
 Studio con C++ y una **Developer PowerShell**; instalar el IDE no añade `cl` a

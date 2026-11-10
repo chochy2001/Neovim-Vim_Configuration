@@ -1,7 +1,8 @@
 # Validación de la revisión
 
-Fecha: **6 de septiembre de 2026**. Plataforma ejecutada: Windows x64,
-Neovim **0.12.5**, Flutter **3.47.2**, Dart **3.13.2**.
+Fecha: **10 de noviembre de 2026**. Plataforma ejecutada: macOS (Apple
+Silicon), Neovim **0.12.6**; la CI repite las suites en Windows, Linux y macOS.
+El entrenador se validó por última vez el 6 de septiembre con Flutter **3.47.2** y Dart **3.13.2**.
 Este documento registra pruebas concretas, su alcance y cómo repetirlas.
 Las decisiones técnicas se apoyan en [SOURCES.md](SOURCES.md).
 
@@ -9,10 +10,10 @@ Las decisiones técnicas se apoyan en [SOURCES.md](SOURCES.md).
 
 | Comprobación | Resultado |
 |---|---|
-| Regresiones de configuración | 9 pruebas pasan |
-| Integración cargando todos los plugins | 7 comprobaciones pasan |
+| Regresiones de configuración | 15 pruebas pasan; cada prueba nueva se comprobó fallando sin su arreglo |
+| Integración cargando todos los plugins | 12 comprobaciones pasan, incluidas paridad IdeaVim (87 acciones verificadas en el código de JetBrains), terminales laterales, Markdown renderizado y ausencia de APIs obsoletas |
 | Instalación de plugins desde cero en estado aislado | Pasa; restaura el lockfile y carga los plugins |
-| Parsers instalados | 27 bibliotecas cargan, producen árboles y compilan sus consultas |
+| Parsers instalados | 28 bibliotecas cargan, producen árboles y compilan sus consultas (Rust añadido) |
 | Formateadores reales | StyLua/Lua y Prettier/JSON modifican el texto exactamente como se espera |
 | LSP en archivos reales | 15 servidores: cliente único, adjunto y petición respondida |
 | Referencia de edición | 50 casos coinciden con Neovim en texto, cursor y modo, incluidos los 13 ejercicios |

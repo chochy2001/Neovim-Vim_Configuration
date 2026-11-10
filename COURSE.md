@@ -55,7 +55,7 @@ Entrenador de escritorio (Windows / Linux / macOS, sin red): carpeta [`trainer/`
 
 # 1. Instalar esta config
 
-Neovim **0.12 o más**; referencia probada: **0.12.5**. Requisitos y compiladores: [README.md](README.md). Respalda una configuración existente antes de enlazar. No clones el repo *dentro* de `~/.config/nvim`.
+Neovim **0.12 o más**; referencia probada: **0.12.6**. Requisitos y compiladores: [README.md](README.md). Respalda una configuración existente antes de enlazar. No clones el repo *dentro* de `~/.config/nvim`.
 
 **Windows**
 
@@ -404,7 +404,7 @@ Los prefijos coinciden. No copies el `.vimrc` clásico dentro de IdeaVim (lleva 
 
 | Qué ves | Qué mirar |
 |---------|-----------|
-| Recuadros en vez de iconos | Fuente Nerd Font y reiniciar el terminal |
+| Recuadros con `?` en vez de iconos | Fuente del terminal en JetBrainsMono Nerd Font Mono (README, Iconos) |
 | Plugin en rojo | `:Lazy` |
 | Completar vacío | `:Mason` y `:checkhealth vim.lsp` |
 | Dart mudo | Flutter en PATH; no dupliques dartls |

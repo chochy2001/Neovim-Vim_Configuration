@@ -215,13 +215,20 @@ Leader prefixes and the chords listed in `.ideavimrc` match Neovim where Intelli
 | Key | Mode | Action |
 |-----|------|--------|
 | `<leader>tt` | Normal | Float terminal (main) |
+| `<leader>tv` | Normal | Terminal split on the right (`2<leader>tv` = terminal 2) |
+| `<leader>th` | Normal | Terminal split at the bottom (`3<leader>th` = terminal 3) |
+| `<leader>ta` | Normal | Show / hide all terminals |
+| `<leader>tl` | Normal | Pick a terminal from a list |
 | `<leader>tg` | Normal | LazyGit terminal |
 | `<leader>tn` | Normal | Node REPL |
 | `<leader>tp` | Normal | Python REPL |
 | `<leader>tu` | Normal | System monitor (htop/tasklist) |
 | `<leader>tF` | Normal | Flutter terminal |
+| `<leader>tm` | Normal | Markdown: rendered (headings, tables, code) / raw |
 | `jj` | Terminal | Exit terminal mode |
 | `<C-[><C-[>` | Terminal | Exit terminal mode (alternative) |
+
+tmux-style workflow: `<leader>tv` opens a shell on the right, `2<leader>th` a second one at the bottom. In a terminal, `jj` (or `Ctrl+[` twice) returns to Normal mode; then `Ctrl+h/j/k/l` moves between windows like tmux panes and `i` types into the terminal again. `<leader>ta` hides every terminal and brings them back with their processes still running.
 
 ### Code Runner
 
@@ -277,7 +284,15 @@ Leader prefixes and the chords listed in `.ideavimrc` match Neovim where Intelli
 
 Workflow: select code → `<leader>as` → pick agent → type what to change → the CLI opens and the prompt is copied to the clipboard and register a. Paste when ready, review, then submit. Missing CLIs show their install command instead of failing.
 
-Files changed on disk by an agent reload automatically on focus, when you leave a terminal, and on buffer switch (`checktime`). A buffer with unsaved edits is never overwritten: Neovim asks first.
+Files changed on disk by an agent reload automatically, even while Neovim keeps focus: every open file is watched (`lua/external-changes.lua`), with `checktime` on focus, terminal leave, buffer switch and CursorHold as a fallback. A buffer with unsaved edits is never overwritten: you get a warning, then `:e!` takes the disk version and `:w` keeps yours.
+
+### herdr + Neovim + agents (outside Neovim)
+
+Layout: Neovim in one herdr pane to read and review code, one agent per pane (`opencode`, `codex`, `claude`, `agy`, `cursor-agent`, `muse`, `kimi`) editing the same repo. Every agent reads `AGENTS.md` (Claude through `CLAUDE.md`, Gemini/Antigravity through `GEMINI.md`). Grok only loads project rules in a workspace you trusted in grok.
+
+- The agent saves a file and Neovim shows it within ~0.1 s, no focus change needed. Review with `<leader>gsp` (preview hunk) or `<leader>gdo` (diffview), undo a hunk with `<leader>gsr`.
+- herdr's prefix is `Ctrl+b`, so Neovim's `Ctrl+b` (page up, completion docs up) does not reach Neovim while herdr is in front. Use `Ctrl+u` to scroll up, send the prefix through herdr, or set another `prefix` in `~/.config/herdr/config.toml` and run `herdr server reload-config`.
+- herdr forwards focus events, so switching to the Neovim pane also runs `checktime`. The font comes from the terminal around herdr (README, Iconos).
 
 ---
 

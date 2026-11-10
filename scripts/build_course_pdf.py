@@ -30,6 +30,11 @@ FONT_OPTIONS = [
         ("DejaVuSans.ttf", "DejaVuSans-Bold.ttf", "DejaVuSansMono.ttf"),
     ),
     (Path("/Library/Fonts"), ("Arial.ttf", "Arial Bold.ttf", "Courier New.ttf")),
+    # Current macOS ships these under Supplemental, not /Library/Fonts.
+    (
+        Path("/System/Library/Fonts/Supplemental"),
+        ("Arial.ttf", "Arial Bold.ttf", "Courier New.ttf"),
+    ),
 ]
 for directory, names in FONT_OPTIONS:
     if all((directory / name).is_file() for name in names):

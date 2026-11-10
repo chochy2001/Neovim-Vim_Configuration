@@ -5,7 +5,7 @@ ejecución se registran por separado en [VALIDATION.md](VALIDATION.md).
 
 | Tema | Fuente primaria | Aplicación en el repositorio |
 |---|---|---|
-| Neovim | [Release 0.12.5](https://github.com/neovim/neovim/releases/tag/v0.12.5) | Referencia de pruebas; APIs LSP 0.12 |
+| Neovim | [Release 0.12.6](https://github.com/neovim/neovim/releases/tag/v0.12.6) | Referencia de pruebas; APIs LSP 0.12 |
 | Edición y operadores | [Manual de cambios](https://neovim.io/doc/user/change/), [movimientos](https://neovim.io/doc/user/motion/) | cw/ce, rangos, conteos y curso; contrastados también ejecutando Neovim |
 | Aprendizaje | [usr_02](https://neovim.io/doc/user/usr_02/), [usr_04](https://neovim.io/doc/user/usr_04/) | Edición antes de personalización; la secuencia concreta es una elección del curso |
 | Visión de Neovim | [Charter](https://neovim.io/charter/) | Separar los objetivos del proyecto del uso como IDE mediante plugins |
