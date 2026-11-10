@@ -171,10 +171,20 @@ test("terminal keys open tmux-style splits and hide them all", function()
     eq(vim.o.columns, vim.api.nvim_win_get_width(bottom[2]))
     assert(vim.api.nvim_win_get_buf(bottom[2]) ~= first, "2<leader>th reused terminal 1")
     eq(2, #terms())
+    local function jobs()
+        local out = {}
+        for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+            local job = vim.bo[buf].buftype == "terminal" and vim.b[buf].terminal_job_id
+            if job then
+                out[buf] = { status = vim.fn.jobwait({ job }, 0)[1], win = vim.fn.bufwinid(buf) }
+            end
+        end
+        return vim.inspect(out)
+    end
     press(" ta")
-    eq(0, #terms())
+    assert(#terms() == 0, "<leader>ta left terminals visible: " .. jobs())
     local job = vim.b[first].terminal_job_id
-    eq(-1, vim.fn.jobwait({ job }, 0)[1]) -- hidden, still running
+    assert(vim.fn.jobwait({ job }, 0)[1] == -1, "hidden terminal 1 stopped running: " .. jobs())
     local before = vim.api.nvim_get_current_win()
     press(" ta")
     eq(2, #terms())

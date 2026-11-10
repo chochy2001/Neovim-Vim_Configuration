@@ -95,7 +95,8 @@ end
 function M.split(direction, n)
     n = n or 1
     local term = splits[n]
-    if term and alive(term.buf) and vim.fn.bufwinid(term.buf) ~= -1 then
+    -- Visible (even if its shell already exited): the key hides it.
+    if term and term.buf and vim.api.nvim_buf_is_valid(term.buf) and vim.fn.bufwinid(term.buf) ~= -1 then
         vim.api.nvim_win_close(vim.fn.bufwinid(term.buf), false)
         return
     end
@@ -107,7 +108,7 @@ end
 function M.toggle_all()
     local visible = {}
     for n, term in pairs(splits) do
-        if alive(term.buf) and vim.fn.bufwinid(term.buf) ~= -1 then
+        if vim.api.nvim_buf_is_valid(term.buf or -1) and vim.fn.bufwinid(term.buf) ~= -1 then
             table.insert(visible, n)
         end
     end
