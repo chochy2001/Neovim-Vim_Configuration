@@ -24,7 +24,7 @@ Mismos atajos en Neovim e IntelliJ/Android Studio. Windows, Linux y macOS.
 | 🖥️ **Terminales tipo tmux** | `<leader>tv` a la derecha, `<leader>th` abajo, con número para varias; `<leader>ta` las oculta sin matar el proceso. |
 | 📝 **Markdown renderizado** | Títulos, tablas y bloques de código formateados dentro del buffer; `<leader>tm` vuelve al texto crudo. |
 | 🧠 **IdeaVim unido** | `.ideavimrc` usa los mismos atajos; una prueba compara cada acción del IDE con su atajo de Neovim. |
-| 🎓 **Curso y práctica** | [COURSE.md](COURSE.md) / [PDF](COURSE.pdf), 50 ejercicios validados contra Neovim real y un entrenador de escritorio. |
+| 🎓 **Curso y práctica** | [COURSE.md](COURSE.md) / [PDF](COURSE.pdf), [práctica en el navegador](https://chochy2001.github.io/Neovim-Vim_Configuration/) y un entrenador de escritorio; los ejercicios se validan contra Neovim real. |
 
 ## 📸 Así se ve
 
@@ -51,6 +51,7 @@ Mismos atajos en Neovim e IntelliJ/Android Studio. Windows, Linux y macOS.
 | 🎬 Grabar el curso | [UDEMY.md](UDEMY.md) |
 | 🔧 Entender el código | [.config/nvim/README.md](.config/nvim/README.md) |
 | ✅ Pruebas y fuentes | [VALIDATION](docs/VALIDATION.md) / [SOURCES](docs/SOURCES.md) |
+| 🌐 Practicar en el navegador | [Página de práctica](https://chochy2001.github.io/Neovim-Vim_Configuration/): 41 ejercicios paso a paso, validados contra Neovim real |
 | 🏋️ Practicar sin Neovim | [trainer/README.md](trainer/README.md) |
 
 ## 📦 Requisitos

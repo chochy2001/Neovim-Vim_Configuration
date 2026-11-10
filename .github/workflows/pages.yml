@@ -1,0 +1,88 @@
+name: practice-pages
+
+# Builds the browser practice page from real Neovim results, proves every
+# exercise in headless Chromium, then publishes practice/ to GitHub Pages.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "practice/**"
+      - "scripts/build_practice.py"
+      - "scripts/export_katas.dart"
+      - "trainer/lib/data/content.dart"
+      - "tests/vim_reference.lua"
+      - "tests/test_practice.py"
+      - ".github/workflows/pages.yml"
+  pull_request:
+    paths:
+      - "practice/**"
+      - "scripts/build_practice.py"
+      - "scripts/export_katas.dart"
+      - "trainer/lib/data/content.dart"
+      - "tests/vim_reference.lua"
+      - "tests/test_practice.py"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - uses: rhysd/action-setup-vim@v1
+        with:
+          neovim: true
+          version: v0.12.6
+      # export_katas.dart reads the trainer's katas.
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: "3.47.2"
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.3.14"
+      - name: exercises.json matches real Neovim
+        run: python scripts/build_practice.py --check
+      - name: CodeMirror bundle matches its pinned versions
+        working-directory: practice/vendor
+        run: |
+          bun install --frozen-lockfile
+          bun run build
+          git diff --exit-code -- codemirror.js
+      - name: Install Chromium
+        run: |
+          pip install playwright==1.64.0
+          python -m playwright install --with-deps chromium
+      - name: Every exercise is solvable in the browser, and only when solved
+        env:
+          PRACTICE_REQUIRE_BROWSER: "1"
+        run: python -m unittest tests/test_practice.py -v
+        timeout-minutes: 10
+
+  deploy:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: verify
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: practice/
+      - id: deployment
+        uses: actions/deploy-pages@v4

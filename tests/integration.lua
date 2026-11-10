@@ -358,6 +358,29 @@ test("IdeaVim keys do the same thing as in Neovim", function()
     end
     assert(#problems == 0, table.concat(problems, "\n"))
 end)
+test("practice page cheat sheet lists only real Neovim keys", function()
+    local buf = vim.api.nvim_create_buf(true, false)
+    vim.api.nvim_exec_autocmds("LspAttach", { buffer = buf, data = { client_id = 0 } })
+    local known = { K = true } -- built-in hover
+    for _, mode in ipairs({ "n", "x", "o", "i", "t" }) do
+        for _, map in
+            ipairs(vim.list_extend(vim.api.nvim_get_keymap(mode), vim.api.nvim_buf_get_keymap(buf, mode)))
+        do
+            known[(map.lhs:gsub(" ", "<leader>"))] = true
+        end
+    end
+    vim.api.nvim_buf_delete(buf, { force = true })
+    local missing = {}
+    local source = table.concat(vim.fn.readfile("practice/app.js"), "\n")
+    for key in source:gmatch('{ key: "([^"]+)", desc_es:') do
+        for one in vim.gsplit(key, "%s*/%s*") do
+            if not known[one] then
+                table.insert(missing, one)
+            end
+        end
+    end
+    assert(#missing == 0, "cheat sheet keys not mapped in Neovim: " .. table.concat(missing, ", "))
+end)
 test("opening code files triggers no deprecated API", function()
     -- project.nvim's LSP root detection called vim.lsp.buf_get_clients().
     for _, file in ipairs({ ".config/nvim/lua/icons.lua", "README.md", "scripts/verify.py" }) do

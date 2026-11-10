@@ -1,0 +1,988 @@
+/**
+ * Vim Practice - interactive browser trainer
+ * Uses CodeMirror 6 with @replit/codemirror-vim for real vim key handling.
+ */
+
+import {
+  EditorView,
+  keymap,
+  lineNumbers,
+  drawSelection,
+  highlightActiveLine,
+  highlightActiveLineGutter,
+} from "./vendor/codemirror.js";
+import { EditorState, Prec } from "./vendor/codemirror.js";
+import { defaultKeymap, historyKeymap, history } from "./vendor/codemirror.js";
+import { oneDark } from "./vendor/codemirror.js";
+import { vim, Vim, getCM } from "./vendor/codemirror.js";
+import { indentUnit } from "./vendor/codemirror.js";
+
+// ---------------------------------------------------------------------------
+// Globals
+// ---------------------------------------------------------------------------
+
+let DATA = null;          // parsed exercises.json
+let LANG = "es";          // "es" | "en"
+let PROGRESS = new Set(); // completed exercise IDs
+let editors = new Map();  // exerciseId -> { view, cm, done }
+
+const STORAGE_KEY = "vim-practice-progress-v1";
+const LANG_KEY    = "vim-practice-lang-v1";
+
+// ---------------------------------------------------------------------------
+// Bootstrap
+// ---------------------------------------------------------------------------
+
+async function main() {
+  loadPrefs();
+  applyLang();
+  renderSkeletonHeader();
+
+  try {
+    const res = await fetch("./exercises.json");
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    DATA = await res.json();
+  } catch (err) {
+    document.querySelector(".main-content").innerHTML =
+      `<div class="empty-state">Error al cargar ejercicios: ${err.message}</div>`;
+    return;
+  }
+
+  renderSidebar();
+  renderProgressBar();
+
+  // Start on the first lesson that has exercises
+  const firstLesson = DATA.lessons.find(l => (l.exercises || []).length > 0);
+  if (firstLesson) {
+    showLesson(firstLesson.id);
+  } else {
+    showLesson(DATA.lessons[0].id);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Prefs persistence
+// ---------------------------------------------------------------------------
+
+function loadPrefs() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) PROGRESS = new Set(JSON.parse(raw));
+  } catch (_) {}
+  try {
+    const l = localStorage.getItem(LANG_KEY);
+    if (l === "en" || l === "es") LANG = l;
+  } catch (_) {}
+}
+
+function saveProgress() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify([...PROGRESS])); } catch (_) {}
+}
+
+function saveLang() {
+  try { localStorage.setItem(LANG_KEY, LANG); } catch (_) {}
+}
+
+// ---------------------------------------------------------------------------
+// i18n helper
+// ---------------------------------------------------------------------------
+
+function t(obj, esKey, enKey) {
+  if (LANG === "en" && obj[enKey]) return obj[enKey];
+  return obj[esKey] || obj[enKey] || "";
+}
+
+function applyLang() {
+  document.documentElement.setAttribute("data-lang", LANG);
+  document.querySelectorAll("[data-es]").forEach(el => {
+    el.textContent = LANG === "es" ? el.dataset.es : (el.dataset.en || el.dataset.es);
+  });
+  const btn = document.getElementById("btn-lang");
+  if (btn) btn.textContent = LANG === "es" ? "EN" : "ES";
+}
+
+function toggleLang() {
+  LANG = LANG === "es" ? "en" : "es";
+  saveLang();
+  // Re-render everything
+  applyLang();
+  renderSidebar();
+  // Re-render current lesson
+  const active = document.querySelector(".sidebar-ex-btn.active");
+  const lessonId = active ? active.closest("[data-lesson-id]")?.dataset.lessonId : null;
+  if (lessonId) showLesson(lessonId, false);
+}
+
+// ---------------------------------------------------------------------------
+// Header
+// ---------------------------------------------------------------------------
+
+function renderSkeletonHeader() {
+  const header = document.querySelector(".app-header");
+  if (!header) return;
+  header.innerHTML = `
+    <span class="header-pill">Vim</span>
+    <h1 data-es="Práctica interactiva" data-en="Interactive Practice">Práctica interactiva</h1>
+    <div class="header-links">
+      <a href="https://github.com/chochy2001/Neovim-Vim_Configuration" target="_blank" rel="noopener">GitHub</a>
+      <button class="btn-lang" id="btn-lang" aria-label="Switch language">${LANG === "es" ? "EN" : "ES"}</button>
+    </div>
+  `;
+  document.getElementById("btn-lang").addEventListener("click", toggleLang);
+}
+
+// ---------------------------------------------------------------------------
+// Sidebar
+// ---------------------------------------------------------------------------
+
+function renderSidebar() {
+  if (!DATA) return;
+  const sidebar = document.querySelector(".sidebar");
+  if (!sidebar) return;
+  sidebar.innerHTML = "";
+
+  const header = document.createElement("div");
+  header.className = "sidebar-section";
+  header.setAttribute("data-es", "Lecciones");
+  header.setAttribute("data-en", "Lessons");
+  header.textContent = LANG === "es" ? "Lecciones" : "Lessons";
+  sidebar.appendChild(header);
+
+  DATA.lessons.forEach(lesson => {
+    const exercises = lesson.exercises || [];
+    const wrap = document.createElement("div");
+    wrap.className = "sidebar-lesson";
+    wrap.setAttribute("data-lesson-id", lesson.id);
+
+    const title = document.createElement("div");
+    title.className = "sidebar-lesson-title";
+    title.textContent = t(lesson, "titleEs", "titleEn");
+    wrap.appendChild(title);
+
+    if (exercises.length === 0) {
+      const note = document.createElement("div");
+      note.className = "sidebar-ref-note";
+      note.setAttribute("data-es", "Solo referencia");
+      note.setAttribute("data-en", "Reference only");
+      note.textContent = LANG === "es" ? "Solo referencia" : "Reference only";
+      wrap.appendChild(note);
+    } else {
+      exercises.forEach((ex, i) => {
+        const btn = document.createElement("button");
+        btn.className = "sidebar-ex-btn" + (PROGRESS.has(ex.id) ? " done" : "");
+        btn.dataset.exId = ex.id;
+        btn.dataset.lessonId = lesson.id;
+        btn.setAttribute("aria-label", t(ex, "titleEs", "titleEn"));
+
+        const check = document.createElement("span");
+        check.className = "ex-check";
+        check.setAttribute("aria-hidden", "true");
+        check.textContent = PROGRESS.has(ex.id) ? "✓" : "○";
+
+        const label = document.createElement("span");
+        label.textContent = t(ex, "titleEs", "titleEn");
+
+        btn.appendChild(check);
+        btn.appendChild(label);
+        btn.addEventListener("click", () => {
+          showLesson(lesson.id);
+          scrollToExercise(ex.id);
+        });
+        wrap.appendChild(btn);
+      });
+    }
+
+    sidebar.appendChild(wrap);
+  });
+}
+
+function setSidebarActive(exId) {
+  document.querySelectorAll(".sidebar-ex-btn").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.exId === exId);
+  });
+}
+
+function setSidebarDone(exId) {
+  document.querySelectorAll(`.sidebar-ex-btn[data-ex-id="${exId}"]`).forEach(btn => {
+    btn.classList.add("done");
+    const check = btn.querySelector(".ex-check");
+    if (check) check.textContent = "✓";
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Progress bar
+// ---------------------------------------------------------------------------
+
+function renderProgressBar() {
+  const wrap = document.querySelector(".progress-bar-wrap");
+  if (!wrap || !DATA) return;
+  const total = DATA.lessons.reduce((s, l) => s + (l.exercises || []).length, 0);
+  const done = [...PROGRESS].filter(id => {
+    return DATA.lessons.some(l => (l.exercises || []).some(e => e.id === id));
+  }).length;
+  const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+  wrap.innerHTML = `<div class="progress-bar-fill" style="width:${pct}%" title="${done}/${total}"></div>`;
+}
+
+// ---------------------------------------------------------------------------
+// Lesson view
+// ---------------------------------------------------------------------------
+
+function showLesson(lessonId, destroyEditors = true) {
+  if (destroyEditors) {
+    editors.forEach(({ view }) => view.destroy());
+    editors.clear();
+  }
+
+  const lesson = DATA.lessons.find(l => l.id === lessonId);
+  if (!lesson) return;
+
+  const main = document.querySelector(".main-content");
+  if (!main) return;
+
+  main.innerHTML = "";
+
+  // Header
+  const header = document.createElement("div");
+  header.className = "lesson-header";
+  const h2 = document.createElement("h2");
+  h2.textContent = t(lesson, "titleEs", "titleEn");
+  const desc = document.createElement("p");
+  desc.className = "lesson-desc";
+  desc.textContent = t(lesson, "descriptionEs", "descriptionEn");
+  header.appendChild(h2);
+  if (lesson.descriptionEs || lesson.descriptionEn) header.appendChild(desc);
+  main.appendChild(header);
+
+  const exercises = lesson.exercises || [];
+
+  if (exercises.length === 0) {
+    // Reference-only section
+    renderRefSection(lesson, main);
+    return;
+  }
+
+  exercises.forEach((ex, i) => {
+    const card = buildExerciseCard(ex, i, exercises.length);
+    main.appendChild(card);
+    // Lazily initialize the editor on first intersection
+    scheduleEditor(ex);
+  });
+}
+
+function scrollToExercise(exId) {
+  // Create the editor now: the lazy observer only fires once the card is on
+  // screen, and the last card of a long lesson could stay below it.
+  const exercise = DATA.lessons.flatMap(l => l.exercises || []).find(e => e.id === exId);
+  if (exercise) initEditor(exercise);
+  const card = document.querySelector(`[data-exercise-id="${exId}"]`);
+  if (card) card.scrollIntoView({ block: "start" });
+  setSidebarActive(exId);
+  // initEditor registers the view on the next tick
+  setTimeout(() => {
+    const info = editors.get(exId);
+    if (info) info.view.focus();
+  }, 0);
+}
+
+// ---------------------------------------------------------------------------
+// Reference section rendering
+// ---------------------------------------------------------------------------
+
+const REFERENCE_CONTENT = {
+  "lesson-6": {
+    es: {
+      title: "Buscar y sustituir",
+      body: `Vim tiene un motor de búsqueda y sustitución integrado en la línea de comandos.
+
+Búsqueda: escribe <code>/patrón</code> y Enter para buscar hacia adelante, <code>?patrón</code> hacia atrás. Repite con <code>n</code> (siguiente) y <code>N</code> (anterior). <code>*</code> busca la palabra bajo el cursor.
+
+Sustitución: <code>:s/viejo/nuevo/</code> cambia la primera ocurrencia en la línea. <code>:s/viejo/nuevo/g</code> cambia todas. <code>:%s/viejo/nuevo/g</code> cambia en todo el fichero. Anade la bandera <code>c</code> para confirmar cada cambio.
+
+Estos comandos no se pueden emular fielmente en el navegador, por lo que esta lección es de referencia.`,
+    },
+    en: {
+      title: "Search and replace",
+      body: `Vim has a built-in search and replace engine accessible from the command line.
+
+Search: type <code>/pattern</code> and Enter to search forward, <code>?pattern</code> backward. Repeat with <code>n</code> (next) and <code>N</code> (previous). <code>*</code> searches the word under the cursor.
+
+Substitute: <code>:s/old/new/</code> replaces the first occurrence on the line. <code>:s/old/new/g</code> replaces all. <code>:%s/old/new/g</code> replaces across the whole file. Add the <code>c</code> flag to confirm each change.
+
+These commands cannot be reliably emulated in the browser, so this lesson is reference-only.`,
+    },
+  },
+  "lesson-7": {
+    es: {
+      title: "Buffers, ventanas y pestañas",
+      body: `Vim puede tener varios ficheros abiertos en memoria al mismo tiempo.
+
+<b>Buffers:</b> <code>:e fichero</code> abre un fichero. <code>:ls</code> lista los buffers. <code>:bn</code> va al siguiente, <code>:bp</code> al anterior. <code>:bd</code> cierra el buffer actual.
+
+<b>Ventanas (splits):</b> <code>:sp</code> divide horizontalmente, <code>:vsp</code> verticalmente. Muevete entre ventanas con <code>Ctrl-w h/j/k/l</code>. Cierra con <code>:q</code> o <code>Ctrl-w q</code>.
+
+<b>Pestanas:</b> <code>:tabnew</code> abre una nueva pestaña. <code>gt</code> va a la siguiente, <code>gT</code> a la anterior. <code>:tabclose</code> cierra la actual.`,
+    },
+    en: {
+      title: "Buffers, windows and tabs",
+      body: `Vim can keep several files open in memory at the same time.
+
+<b>Buffers:</b> <code>:e file</code> opens a file. <code>:ls</code> lists buffers. <code>:bn</code> goes to the next, <code>:bp</code> to the previous. <code>:bd</code> closes the current buffer.
+
+<b>Windows (splits):</b> <code>:sp</code> splits horizontally, <code>:vsp</code> vertically. Move between windows with <code>Ctrl-w h/j/k/l</code>. Close with <code>:q</code> or <code>Ctrl-w q</code>.
+
+<b>Tabs:</b> <code>:tabnew</code> opens a new tab. <code>gt</code> goes to the next, <code>gT</code> to the previous. <code>:tabclose</code> closes the current one.`,
+    },
+  },
+  "lesson-8": {
+    es: {
+      title: "Registros y macros",
+      body: `Vim permite guardar texto en registros y grabar secuencias de teclas.
+
+<b>Registros:</b> cada registro es un slot identificado por una letra (<code>"a</code> a <code>"z</code>). Yank a un registro: <code>"ayy</code> copia la línea al registro <code>a</code>. Pegar desde el: <code>"ap</code>. El registro <code>"+</code> es el portapapeles del sistema.
+
+<b>Macros:</b> <code>qa</code> empieza a grabar en el registro <code>a</code>. Haz los cambios. <code>q</code> detiene la grabación. <code>@a</code> reproduce la macro. <code>@@</code> repite la última. <code>5@a</code> la repite 5 veces.
+
+<b>Truco:</b> edita una macro con <code>"ap</code>, modifica el texto y vuelve a guardarlo con <code>"ay$</code>.`,
+    },
+    en: {
+      title: "Registers and macros",
+      body: `Vim lets you save text in registers and record key sequences.
+
+<b>Registers:</b> each register is a named slot from <code>"a</code> to <code>"z</code>. Yank to a register: <code>"ayy</code> copies the line to register <code>a</code>. Paste from it: <code>"ap</code>. Register <code>"+</code> is the system clipboard.
+
+<b>Macros:</b> <code>qa</code> starts recording into register <code>a</code>. Make your changes. <code>q</code> stops recording. <code>@a</code> replays the macro. <code>@@</code> repeats the last one. <code>5@a</code> repeats it 5 times.
+
+<b>Tip:</b> edit a macro by pasting it with <code>"ap</code>, editing the text, and saving it back with <code>"ay$</code>.`,
+    },
+  },
+  "lesson-9": {
+    es: {
+      title: "Ayuda, guardar y salir",
+      body: `Los comandos esenciales para el dia a dia.
+
+<b>Ayuda:</b> <code>:h tópico</code> abre la documentación de Vim. <code>Ctrl-]</code> sigue un enlace, <code>Ctrl-o</code> vuelve atrás. Cierra la ventana de ayuda con <code>:q</code>.
+
+<b>Guardar y salir:</b> <code>:w</code> guarda. <code>:q</code> sale si no hay cambios pendientes. <code>:wq</code> o <code>ZZ</code> guarda y sale. <code>:q!</code> o <code>ZQ</code> sale descartando cambios. <code>:wqa</code> guarda y cierra todos los buffers.
+
+<b>Deshacer/Rehacer:</b> <code>u</code> deshace, <code>Ctrl-r</code> rehace. Vim mantiene un árbol de cambios: <code>:earlier 5m</code> vuelve al estado de hace 5 minutos.`,
+    },
+    en: {
+      title: "Help, save and quit",
+      body: `The essential commands for everyday use.
+
+<b>Help:</b> <code>:h topic</code> opens Vim's documentation. <code>Ctrl-]</code> follows a link, <code>Ctrl-o</code> goes back. Close the help window with <code>:q</code>.
+
+<b>Save and quit:</b> <code>:w</code> saves. <code>:q</code> quits if there are no pending changes. <code>:wq</code> or <code>ZZ</code> saves and quits. <code>:q!</code> or <code>ZQ</code> quits discarding changes. <code>:wqa</code> saves and closes all buffers.
+
+<b>Undo/Redo:</b> <code>u</code> undoes, <code>Ctrl-r</code> redoes. Vim keeps a change tree: <code>:earlier 5m</code> returns the state from 5 minutes ago.`,
+    },
+  },
+};
+
+// Key shortcut groups from WORKFLOW.md
+const SHORTCUT_GROUPS = [
+  {
+    groupEs: "Edición básica", groupEn: "Basic editing",
+    rows: [
+      { key: "jj", desc_es: "Salir del modo insertar", desc_en: "Exit insert mode" },
+      { key: "<leader><leader>", desc_es: "Limpiar resaltado de búsqueda", desc_en: "Clear search highlight" },
+      { key: "gcc", desc_es: "Comentar línea", desc_en: "Toggle line comment" },
+      { key: "gc", desc_es: "Comentar selección (visual)", desc_en: "Toggle comment on selection" },
+      { key: "s / S", desc_es: "Flash: saltar a carácter", desc_en: "Flash: jump to character" },
+    ],
+  },
+  {
+    groupEs: "Búsqueda y archivos (Telescope)", groupEn: "Search and files (Telescope)",
+    rows: [
+      { key: "<leader>ff", desc_es: "Buscar archivos", desc_en: "Find files" },
+      { key: "<leader>fg", desc_es: "Búsqueda en contenido", desc_en: "Live grep" },
+      { key: "<leader>fo", desc_es: "Archivos recientes", desc_en: "Recent files" },
+      { key: "<leader>fb", desc_es: "Buffers abiertos", desc_en: "Open buffers" },
+      { key: "<leader>sr", desc_es: "Buscar y reemplazar", desc_en: "Search and replace" },
+    ],
+  },
+  {
+    groupEs: "Git (Fugitive/Gitsigns)", groupEn: "Git (Fugitive/Gitsigns)",
+    rows: [
+      { key: "<leader>gs", desc_es: "Estado de git", desc_en: "Git status" },
+      { key: "<leader>gc", desc_es: "Git commit", desc_en: "Git commit" },
+      { key: "<leader>gp", desc_es: "Git push", desc_en: "Git push" },
+      { key: "<leader>gb", desc_es: "Git blame", desc_en: "Git blame" },
+      { key: "<leader>gbt", desc_es: "Activar blame inline", desc_en: "Toggle inline blame" },
+    ],
+  },
+  {
+    groupEs: "Explorador de archivos", groupEn: "File explorer",
+    rows: [
+      { key: "<leader>pv", desc_es: "Abrir/cerrar árbol", desc_en: "Toggle file tree" },
+      { key: "<leader>-", desc_es: "Abrir directorio padre (oil)", desc_en: "Open parent directory" },
+    ],
+  },
+  {
+    groupEs: "LSP y diagnósticos", groupEn: "LSP and diagnostics",
+    rows: [
+      { key: "gd", desc_es: "Ir a definición", desc_en: "Go to definition" },
+      { key: "gR", desc_es: "Referencias (Trouble)", desc_en: "References (Trouble)" },
+      { key: "K", desc_es: "Hover / documentación", desc_en: "Hover / documentation" },
+      { key: "<leader>ca", desc_es: "Accion de código", desc_en: "Code action" },
+      { key: "<leader>rn", desc_es: "Renombrar símbolo", desc_en: "Rename symbol" },
+      { key: "]d / [d", desc_es: "Diagnóstico siguiente / anterior", desc_en: "Next / previous diagnostic" },
+    ],
+  },
+];
+
+function renderRefSection(lesson, container) {
+  const content = REFERENCE_CONTENT[lesson.id];
+  if (!content) {
+    const sec = document.createElement("div");
+    sec.className = "ref-section";
+    sec.innerHTML = `<p>${LANG === "es" ? "Esta lección es de referencia en el curso impreso." : "This lesson is reference-only in the printed course."}</p>`;
+    container.appendChild(sec);
+    return;
+  }
+
+  const data = LANG === "en" ? content.en : content.es;
+  const sec = document.createElement("div");
+  sec.className = "ref-section";
+  sec.innerHTML = `
+    <h2>${data.title}</h2>
+    <p>${data.body.replace(/\n\n/g, '</p><p>')}</p>
+    <p class="ref-note">${LANG === "es"
+      ? "Esta lección requiere Neovim real: los comandos de ex-line (:) y los registros no son emulables fiablemente en el navegador."
+      : "This lesson requires real Neovim: ex-line commands (:) and registers cannot be reliably emulated in the browser."}</p>
+  `;
+  container.appendChild(sec);
+
+  // Shortcut cheatsheet (only on lesson-9 as a summary)
+  if (lesson.id === "lesson-9") {
+    renderCheatsheet(container);
+  }
+}
+
+function renderCheatsheet(container) {
+  const wrap = document.createElement("div");
+  wrap.className = "ref-section cheatsheet";
+
+  const title = document.createElement("h2");
+  title.textContent = LANG === "es" ? "Atajos de tu configuración" : "Your config shortcuts";
+  wrap.appendChild(title);
+
+  const search = document.createElement("input");
+  search.type = "text";
+  search.className = "cheatsheet-search";
+  search.placeholder = LANG === "es" ? "Buscar atajo..." : "Search shortcut...";
+  wrap.appendChild(search);
+
+  const groups = document.createElement("div");
+  groups.id = "cheatsheet-groups";
+  SHORTCUT_GROUPS.forEach(g => {
+    const div = document.createElement("div");
+    div.className = "cheatsheet-group";
+    const h3 = document.createElement("h3");
+    h3.textContent = LANG === "es" ? g.groupEs : g.groupEn;
+    div.appendChild(h3);
+    g.rows.forEach(r => {
+      const row = document.createElement("div");
+      row.className = "shortcut-row";
+      const k = document.createElement("kbd");
+      k.textContent = r.key;
+      const d = document.createElement("span");
+      d.className = "shortcut-desc";
+      d.textContent = LANG === "es" ? r.desc_es : r.desc_en;
+      row.appendChild(k);
+      row.appendChild(d);
+      div.appendChild(row);
+    });
+    groups.appendChild(div);
+  });
+  wrap.appendChild(groups);
+
+  const note = document.createElement("p");
+  note.className = "cheatsheet-note";
+  note.textContent = LANG === "es"
+    ? "Referencia de WORKFLOW.md. Tecla lider: Espacio."
+    : "Reference from WORKFLOW.md. Leader key: Space.";
+  wrap.appendChild(note);
+
+  // Filter on search
+  search.addEventListener("input", () => {
+    const q = search.value.toLowerCase();
+    wrap.querySelectorAll(".shortcut-row").forEach(row => {
+      const text = row.textContent.toLowerCase();
+      row.style.display = !q || text.includes(q) ? "" : "none";
+    });
+    wrap.querySelectorAll(".cheatsheet-group").forEach(g => {
+      const anyVisible = [...g.querySelectorAll(".shortcut-row")].some(r => r.style.display !== "none");
+      g.style.display = anyVisible ? "" : "none";
+    });
+  });
+
+  container.appendChild(wrap);
+}
+
+// ---------------------------------------------------------------------------
+// Exercise card
+// ---------------------------------------------------------------------------
+
+function buildExerciseCard(ex, index, total) {
+  const card = document.createElement("div");
+  card.className = "exercise-card";
+  card.setAttribute("data-exercise-id", ex.id);
+
+  // --- Header ---
+  const exHeader = document.createElement("div");
+  exHeader.className = "ex-header";
+  const num = document.createElement("span");
+  num.className = "ex-num";
+  num.textContent = `${index + 1}/${total}`;
+  const title = document.createElement("h3");
+  title.className = "ex-title";
+  title.textContent = t(ex, "titleEs", "titleEn");
+  exHeader.appendChild(num);
+  exHeader.appendChild(title);
+  card.appendChild(exHeader);
+
+  // --- Hint ---
+  const hint = document.createElement("p");
+  hint.className = "ex-hint";
+  hint.textContent = t(ex, "hintEs", "hintEn");
+  card.appendChild(hint);
+
+  // --- Diff view ---
+  const diffWrap = document.createElement("div");
+  diffWrap.className = "diff-wrap";
+
+  const startPanel = document.createElement("div");
+  startPanel.className = "diff-panel start";
+  const startLabel = document.createElement("div");
+  startLabel.className = "diff-label";
+  startLabel.setAttribute("data-es", "Inicio");
+  startLabel.setAttribute("data-en", "Start");
+  startLabel.textContent = LANG === "es" ? "Inicio" : "Start";
+  const startCode = document.createElement("pre");
+  startCode.className = "diff-code";
+  startCode.textContent = ex.start;
+  startPanel.appendChild(startLabel);
+  startPanel.appendChild(startCode);
+
+  const goalPanel = document.createElement("div");
+  goalPanel.className = "diff-panel goal";
+  const goalLabel = document.createElement("div");
+  goalLabel.className = "diff-label";
+  goalLabel.setAttribute("data-es", "Meta");
+  goalLabel.setAttribute("data-en", "Goal");
+  goalLabel.textContent = LANG === "es" ? "Meta" : "Goal";
+  const goalCode = document.createElement("pre");
+  goalCode.className = "diff-code";
+  goalCode.textContent = ex.expectedText;
+  goalPanel.appendChild(goalLabel);
+  goalPanel.appendChild(goalCode);
+
+  diffWrap.appendChild(startPanel);
+  diffWrap.appendChild(goalPanel);
+  card.appendChild(diffWrap);
+
+  // --- Editor wrapper (placeholder, filled by scheduleEditor) ---
+  const editorOuter = document.createElement("div");
+  editorOuter.className = "editor-wrap";
+  editorOuter.id = `editor-${ex.id}`;
+
+  const modeBar = document.createElement("div");
+  modeBar.className = "mode-bar";
+  modeBar.id = `mode-${ex.id}`;
+  const modePill = document.createElement("span");
+  modePill.className = "mode-pill normal";
+  modePill.textContent = LANG === "es" ? "NORMAL" : "NORMAL";
+  const cursorPos = document.createElement("span");
+  cursorPos.className = "cursor-pos";
+  cursorPos.textContent = "1:1";
+  modeBar.appendChild(modePill);
+  modeBar.appendChild(cursorPos);
+
+  const editorMount = document.createElement("div");
+  editorMount.id = `cm-${ex.id}`;
+
+  editorOuter.appendChild(modeBar);
+  editorOuter.appendChild(editorMount);
+  card.appendChild(editorOuter);
+
+  // --- Controls ---
+  const controls = document.createElement("div");
+  controls.className = "ex-controls";
+
+  const btnReset = document.createElement("button");
+  btnReset.className = "btn btn-secondary";
+  btnReset.setAttribute("data-es", "Reiniciar");
+  btnReset.setAttribute("data-en", "Reset");
+  btnReset.textContent = LANG === "es" ? "Reiniciar" : "Reset";
+  btnReset.addEventListener("click", () => resetExercise(ex));
+
+  const btnSolve = document.createElement("button");
+  btnSolve.className = "btn btn-secondary";
+  btnSolve.setAttribute("data-es", "Ver solución");
+  btnSolve.setAttribute("data-en", "Show solution");
+  btnSolve.textContent = LANG === "es" ? "Ver solución" : "Show solution";
+  btnSolve.addEventListener("click", () => toggleSolution(ex, card));
+
+  controls.appendChild(btnReset);
+  controls.appendChild(btnSolve);
+  card.appendChild(controls);
+
+  // --- Solution box (hidden by default) ---
+  const solBox = document.createElement("div");
+  solBox.className = "solution-box";
+  solBox.id = `sol-${ex.id}`;
+  solBox.style.display = "none";
+  const solLabel = document.createElement("div");
+  solLabel.className = "sol-label";
+  solLabel.setAttribute("data-es", "Solución: teclas a pulsar");
+  solLabel.setAttribute("data-en", "Solution: keys to press");
+  solLabel.textContent = LANG === "es" ? "Solución: teclas a pulsar" : "Solution: keys to press";
+  const keySeq = document.createElement("div");
+  keySeq.className = "key-seq";
+  keySeq.innerHTML = renderKeySequence(ex.keys);
+  solBox.appendChild(solLabel);
+  solBox.appendChild(keySeq);
+  card.appendChild(solBox);
+
+  // --- Success message ---
+  const successMsg = document.createElement("div");
+  successMsg.className = "success-msg";
+  successMsg.id = `ok-${ex.id}`;
+  successMsg.style.display = PROGRESS.has(ex.id) ? "flex" : "none";
+  successMsg.innerHTML = `<span class="success-icon">✓</span>
+    <span data-es="Correcto. Pasa al siguiente ejercicio." data-en="Correct. Move to the next exercise.">${
+      LANG === "es" ? "Correcto. Pasa al siguiente ejercicio." : "Correct. Move to the next exercise."
+    }</span>`;
+  card.appendChild(successMsg);
+
+  return card;
+}
+
+// ---------------------------------------------------------------------------
+// Key sequence formatter
+// ---------------------------------------------------------------------------
+
+const SPECIAL_KEY_MAP = {
+  "<Esc>": "Esc",
+  "<CR>": "Enter",
+  "<Space>": "Space",
+  "<Tab>": "Tab",
+  "<BS>": "Backspace",
+  "<C-r>": "Ctrl+r",
+  "<C-o>": "Ctrl+o",
+  "<C-v>": "Ctrl+v",
+};
+
+function renderKeySequence(keys) {
+  // Split the keys string into individual tokens
+  const tokens = [];
+  let i = 0;
+  while (i < keys.length) {
+    if (keys[i] === "<") {
+      const end = keys.indexOf(">", i);
+      if (end !== -1) {
+        tokens.push(keys.slice(i, end + 1));
+        i = end + 1;
+        continue;
+      }
+    }
+    tokens.push(keys[i]);
+    i++;
+  }
+
+  return tokens.map(tok => {
+    const label = SPECIAL_KEY_MAP[tok] || tok;
+    const isSpecial = tok.startsWith("<");
+    return `<kbd class="${isSpecial ? "special" : ""}">${escapeHtml(label)}</kbd>`;
+  }).join(" ");
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+// ---------------------------------------------------------------------------
+// Lazy editor initialization
+// ---------------------------------------------------------------------------
+
+let editorObserver = null;
+
+function scheduleEditor(ex) {
+  if (!editorObserver) {
+    editorObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          const exId = el.dataset.lazyExId;
+          editorObserver.unobserve(el);
+          delete el.dataset.lazyExId;
+          const exercise = DATA.lessons
+            .flatMap(l => l.exercises || [])
+            .find(e => e.id === exId);
+          if (exercise) initEditor(exercise);
+        }
+      });
+    }, { rootMargin: "200px 0px" });
+  }
+
+  const mount = document.getElementById(`cm-${ex.id}`);
+  if (mount) {
+    mount.dataset.lazyExId = ex.id;
+    editorObserver.observe(mount);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// CodeMirror editor init
+// ---------------------------------------------------------------------------
+
+function isDarkTheme() {
+  if (document.documentElement.dataset.theme === "dark") return true;
+  if (document.documentElement.dataset.theme === "light") return false;
+  return window.matchMedia("(prefers-color-scheme: dark)").matches;
+}
+
+function posFromRowCol(state, row, col) {
+  const lineCount = state.doc.lines;
+  const lineNum = Math.min(row + 1, lineCount);
+  const line = state.doc.line(lineNum);
+  return line.from + Math.min(col, line.length);
+}
+
+function rowColFromPos(state, pos) {
+  const line = state.doc.lineAt(pos);
+  return { row: line.number - 1, col: pos - line.from };
+}
+
+function initEditor(ex) {
+  const mount = document.getElementById(`cm-${ex.id}`);
+  // editors is filled on the next tick, so mark the mount now: the lazy
+  // observer and a sidebar click must not both create an editor.
+  if (!mount || editors.has(ex.id) || mount.dataset.ready) return;
+  mount.dataset.ready = "1";
+  if (editorObserver) editorObserver.unobserve(mount);
+
+  const extensions = [
+    vim(),
+    history(),
+    lineNumbers(),
+    drawSelection(),
+    highlightActiveLine(),
+    highlightActiveLineGutter(),
+    EditorView.lineWrapping,
+    // Same as the Neovim config and tests/vim_reference.lua: shiftwidth=4,
+    // expandtab. CodeMirror's default of 2 spaces made >> and << disagree.
+    indentUnit.of("    "),
+    EditorState.tabSize.of(4),
+  ];
+
+  if (isDarkTheme()) extensions.push(oneDark);
+
+  // Update listener to check correctness after every transaction
+  extensions.push(
+    EditorView.updateListener.of(update => {
+      if (update.docChanged) {
+        const info = editors.get(ex.id);
+        if (info) info.changed = true;
+      }
+      if (update.docChanged || update.selectionSet) {
+        onEditorUpdate(ex, update.view);
+      }
+    })
+  );
+
+  const startPos = posFromRowCol(
+    EditorState.create({ doc: ex.start }),
+    ex.startRow,
+    ex.startCol
+  );
+
+  const state = EditorState.create({
+    doc: ex.start,
+    selection: { anchor: startPos },
+    extensions,
+  });
+
+  const view = new EditorView({ state, parent: mount });
+
+  // Grab the CM5-compat adapter (set by codemirror-vim on the view instance)
+  // Try after a tick to ensure vim extension has initialized
+  setTimeout(() => {
+    const cm = getCM(view);
+    if (!cm) return;
+
+    editors.set(ex.id, { view, cm, done: PROGRESS.has(ex.id) });
+
+    // Mode change events
+    cm.on("vim-mode-change", ({ mode }) => {
+      updateModeBar(ex.id, mode);
+      onEditorUpdate(ex, view);
+    });
+
+    // Initial mode bar state
+    updateModeBar(ex.id, "normal");
+    updateCursorPos(ex.id, ex.startRow, ex.startCol);
+
+    // If already done, show the done state
+    if (PROGRESS.has(ex.id)) {
+      markEditorDone(ex.id);
+    }
+  }, 0);
+}
+
+// ---------------------------------------------------------------------------
+// Mode bar
+// ---------------------------------------------------------------------------
+
+function updateModeBar(exId, mode) {
+  const bar = document.getElementById(`mode-${exId}`);
+  if (!bar) return;
+  const pill = bar.querySelector(".mode-pill");
+  if (!pill) return;
+  pill.className = `mode-pill ${mode}`;
+  const labels = {
+    normal:  { es: "NORMAL",  en: "NORMAL"  },
+    insert:  { es: "INSERTAR", en: "INSERT" },
+    visual:  { es: "VISUAL",  en: "VISUAL"  },
+    replace: { es: "REEMPLAZAR", en: "REPLACE" },
+  };
+  const lab = labels[mode] || labels.normal;
+  pill.textContent = LANG === "es" ? lab.es : lab.en;
+}
+
+function updateCursorPos(exId, row, col) {
+  const bar = document.getElementById(`mode-${exId}`);
+  if (!bar) return;
+  const span = bar.querySelector(".cursor-pos");
+  if (span) span.textContent = `${row + 1}:${col + 1}`;
+}
+
+// ---------------------------------------------------------------------------
+// Correctness check
+// ---------------------------------------------------------------------------
+
+function onEditorUpdate(ex, view) {
+  const info = editors.get(ex.id);
+  if (!info || info.done) return;
+
+  const cm = info.cm || getCM(view);
+  if (!cm) return;
+
+  // Mode: must be normal (not insert, not visual)
+  const vimState = cm.state.vim;
+  const isNormal = vimState && !vimState.insertMode && !vimState.visualMode;
+  if (!isNormal) {
+    updateCursorPos(ex.id, ...Object.values(rowColFromPos(view.state, view.state.selection.main.head)));
+    return;
+  }
+
+  const text = view.state.doc.toString();
+  const sel = view.state.selection.main;
+  const { row, col } = rowColFromPos(view.state, sel.head);
+
+  updateCursorPos(ex.id, row, col);
+
+  if (
+    text === ex.expectedText &&
+    (ex.checkCursor === false || (row === ex.expectedRow && col === ex.expectedCol)) &&
+    (!ex.requiresChange || info.changed)
+  ) {
+    info.done = true;
+    PROGRESS.add(ex.id);
+    saveProgress();
+    markDone(ex.id);
+  }
+}
+
+function markDone(exId) {
+  markEditorDone(exId);
+  setSidebarDone(exId);
+  renderProgressBar();
+}
+
+function markEditorDone(exId) {
+  const outer = document.getElementById(`editor-${exId}`);
+  if (outer) outer.classList.add("correct");
+
+  const msg = document.getElementById(`ok-${exId}`);
+  if (msg) msg.style.display = "flex";
+}
+
+// ---------------------------------------------------------------------------
+// Reset exercise
+// ---------------------------------------------------------------------------
+
+function resetExercise(ex) {
+  const info = editors.get(ex.id);
+  if (!info) return;
+  const { view } = info;
+
+  const startPos = posFromRowCol(view.state, ex.startRow, ex.startCol);
+
+  // Escape to normal mode first (via Vim API)
+  const cm = info.cm || getCM(view);
+  if (cm) {
+    try { Vim.handleKey(cm, "<Esc>", "user"); } catch (_) {}
+    try { Vim.handleKey(cm, "<Esc>", "user"); } catch (_) {}
+  }
+
+  view.dispatch({
+    changes: { from: 0, to: view.state.doc.length, insert: ex.start },
+    selection: { anchor: startPos },
+  });
+
+  // Unflag done only visually (do not remove from PROGRESS - keep history)
+  info.done = false;
+  // The reset itself is not the learner's change (undo exercises need one).
+  info.changed = false;
+  const outer = document.getElementById(`editor-${ex.id}`);
+  if (outer) outer.classList.remove("correct");
+  const msg = document.getElementById(`ok-${ex.id}`);
+  if (msg) msg.style.display = "none";
+
+  view.focus();
+}
+
+// ---------------------------------------------------------------------------
+// Solution toggle
+// ---------------------------------------------------------------------------
+
+function toggleSolution(ex, card) {
+  const sol = document.getElementById(`sol-${ex.id}`);
+  if (!sol) return;
+  if (sol.style.display === "none") {
+    sol.style.display = "block";
+    const btn = card.querySelector(`[data-es="Ver solución"]`);
+    if (btn) btn.textContent = LANG === "es" ? "Ocultar solución" : "Hide solution";
+  } else {
+    sol.style.display = "none";
+    const btn = card.querySelector(`[data-es="Ver solución"], [data-es="Ocultar solución"]`);
+    if (btn) btn.textContent = LANG === "es" ? "Ver solución" : "Show solution";
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Theme watch
+// ---------------------------------------------------------------------------
+
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
+  // Reinitialize editors on theme change to pick up oneDark / light
+  const main = document.querySelector(".main-content");
+  const activeLessonId = main?.querySelector("[data-exercise-id]")
+    ?.closest(".main-content")
+    ? DATA?.lessons.find(l =>
+        (l.exercises || []).some(ex =>
+          document.getElementById(`cm-${ex.id}`) !== null
+        ))?.id
+    : null;
+  if (activeLessonId) showLesson(activeLessonId);
+});
+
+// ---------------------------------------------------------------------------
+// Entry point
+// ---------------------------------------------------------------------------
+
+document.addEventListener("DOMContentLoaded", main);

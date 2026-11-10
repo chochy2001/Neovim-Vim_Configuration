@@ -1,0 +1,220 @@
+"""Browser practice page: every exercise must be solvable, and only when solved.
+
+Runs practice/index.html in headless Chromium (python playwright). For EVERY
+exercise in practice/exercises.json it checks that the page does not show it
+as solved before typing, types the canonical keys into the real editor, and
+requires the page to mark it correct (text, cursor and Normal mode must match
+what real Neovim produced in scripts/build_practice.py).
+
+Without playwright the browser tests are skipped with a printed reason, unless
+PRACTICE_REQUIRE_BROWSER=1 (set in CI), where a missing browser is a failure.
+
+    python -m unittest tests/test_practice.py
+"""
+
+import functools
+import http.server
+import json
+import os
+import re
+import threading
+import unittest
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+PRACTICE = ROOT / "practice"
+DATA = json.loads((PRACTICE / "exercises.json").read_text(encoding="utf-8"))
+EXERCISES = [ex for lesson in DATA["lessons"] for ex in lesson.get("exercises", [])]
+
+try:
+    from playwright.sync_api import sync_playwright
+
+    HAVE_BROWSER = True
+except ImportError:
+    HAVE_BROWSER = False
+REQUIRE_BROWSER = os.environ.get("PRACTICE_REQUIRE_BROWSER") == "1"
+
+# Vim key notation -> Playwright key names.
+SPECIAL = {
+    "Esc": "Escape",
+    "BS": "Backspace",
+    "CR": "Enter",
+    "Tab": "Tab",
+    "Space": " ",
+    "lt": "<",
+}
+
+
+def playwright_keys(keys):
+    """Split "ciw<Esc>" into Playwright key presses."""
+    out = []
+    for token in re.findall(r"<[^<>]+>|.", keys):
+        if token.startswith("<") and token.endswith(">") and len(token) > 2:
+            name = token[1:-1]
+            if name in SPECIAL:
+                out.append(SPECIAL[name])
+            elif re.fullmatch(r"C-.", name):
+                out.append("Control+" + name[2])
+            else:
+                raise ValueError("unknown key notation " + token)
+        else:
+            out.append(token)
+    return out
+
+
+class ExerciseData(unittest.TestCase):
+    def test_every_exercise_expects_normal_mode_and_has_text(self):
+        self.assertGreater(len(EXERCISES), 40)
+        for ex in EXERCISES:
+            self.assertEqual("n", ex["expectedMode"], ex["id"])
+            for field in ("titleEs", "titleEn", "hintEs", "hintEn", "keys"):
+                self.assertTrue(ex[field].strip(), ex["id"] + " has no " + field)
+
+    def test_no_exercise_starts_already_solved(self):
+        for ex in EXERCISES:
+            start = (ex["start"], ex["startRow"], ex["startCol"])
+            goal = (ex["expectedText"], ex["expectedRow"], ex["expectedCol"])
+            if not ex["checkCursor"]:
+                start, goal = start[0], goal[0]
+            if ex.get("requiresChange"):
+                # Undo exercises: same state, but the page demands a change first.
+                self.assertIn("u", ex["keys"], ex["id"])
+                continue
+            self.assertNotEqual(start, goal, ex["id"] + " is solved before typing")
+
+    def test_ids_are_unique_and_exclusions_explained(self):
+        ids = [ex["id"] for ex in EXERCISES]
+        self.assertEqual(len(ids), len(set(ids)))
+        for item in DATA["excluded"]:
+            self.assertNotIn(item["id"], ids)
+            self.assertTrue(item["reason"].strip())
+
+    def test_no_em_or_en_dashes(self):
+        text = (PRACTICE / "exercises.json").read_text(encoding="utf-8")
+        for name in ("index.html", "app.js", "style.css"):
+            text += (PRACTICE / name).read_text(encoding="utf-8")
+        self.assertNotIn("\u2014", text)
+        self.assertNotIn("\u2013", text)
+
+    def test_key_notation_is_understood(self):
+        for ex in EXERCISES:
+            playwright_keys(ex["keys"])
+
+
+class Quiet(http.server.SimpleHTTPRequestHandler):
+    def log_message(self, *args):
+        pass
+
+
+@unittest.skipUnless(
+    HAVE_BROWSER or REQUIRE_BROWSER,
+    "playwright not installed: browser tests skipped (pip install playwright)",
+)
+class PracticePage(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        if not HAVE_BROWSER:
+            raise AssertionError("PRACTICE_REQUIRE_BROWSER=1 but playwright is missing")
+        handler = functools.partial(Quiet, directory=str(PRACTICE))
+        cls.server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), handler)
+        threading.Thread(target=cls.server.serve_forever, daemon=True).start()
+        cls.url = "http://127.0.0.1:%d/" % cls.server.server_address[1]
+        cls.pw = sync_playwright().start()
+        cls.browser = cls.pw.chromium.launch()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.browser.close()
+        cls.pw.stop()
+        cls.server.shutdown()
+
+    def open_exercise(self, page, ex):
+        """Open the lesson of `ex` from the sidebar and focus its editor."""
+        page.click('.sidebar-ex-btn[data-ex-id="%s"]' % ex["id"])
+        content = page.locator("#cm-%s .cm-content" % ex["id"])
+        content.wait_for(timeout=10_000)
+        page.wait_for_function(
+            "id => !!document.querySelector('#mode-' + id + ' .mode-pill')", arg=ex["id"]
+        )
+        # Focus without clicking: a click would move the cursor. Then wait for
+        # CodeMirror to report focus and for the Vim layer to finish setting up.
+        content.evaluate("el => el.focus()")
+        page.locator("#cm-%s .cm-editor.cm-focused" % ex["id"]).wait_for(timeout=5_000)
+        page.wait_for_timeout(150)
+
+    def solved(self, page, ex):
+        return page.locator("#ok-%s" % ex["id"]).is_visible()
+
+    def test_every_exercise_is_solved_by_its_keys_and_not_before(self):
+        context = self.browser.new_context()
+        page = context.new_page()
+        errors, remote_scripts = [], []
+        page.on("pageerror", lambda error: errors.append(str(error)))
+        page.on(
+            "request",
+            lambda request: remote_scripts.append(request.url)
+            if request.resource_type == "script" and not request.url.startswith(self.url)
+            else None,
+        )
+        page.goto(self.url)
+        page.wait_for_selector(".sidebar-ex-btn", timeout=15_000)
+        failures = []
+        for ex in EXERCISES:
+            self.open_exercise(page, ex)
+            if self.solved(page, ex):
+                failures.append(ex["id"] + ": shown as solved before typing")
+                continue
+            for key in playwright_keys(ex["keys"]):
+                page.keyboard.press(key)
+            try:
+                page.locator("#ok-%s" % ex["id"]).wait_for(state="visible", timeout=2_000)
+            except Exception:
+                pos = page.locator("#mode-%s .cursor-pos" % ex["id"]).inner_text()
+                failures.append("%s: keys %r not accepted (cursor %s)" % (ex["id"], ex["keys"], pos))
+        context.close()
+        self.assertEqual([], failures, "\n".join(failures))
+        self.assertEqual([], errors, "JavaScript errors while practising")
+        # CodeMirror is one local bundle: a CDN mix loaded two copies of
+        # @codemirror/state and broke every edit.
+        self.assertEqual([], remote_scripts)
+
+    def test_undo_exercises_need_a_real_change(self):
+        context = self.browser.new_context()
+        page = context.new_page()
+        page.goto(self.url)
+        page.wait_for_selector(".sidebar-ex-btn", timeout=15_000)
+        undo = [ex for ex in EXERCISES if ex.get("requiresChange")]
+        self.assertTrue(undo)
+        for ex in undo:
+            self.open_exercise(page, ex)
+            # Moving away and back returns to the start (= goal) without editing.
+            for key in ("l", "h", "j", "k"):
+                page.keyboard.press(key)
+            page.wait_for_timeout(150)
+            self.assertFalse(self.solved(page, ex), ex["id"] + " solved without a change")
+        context.close()
+
+    def test_wrong_keys_are_not_accepted(self):
+        context = self.browser.new_context()
+        page = context.new_page()
+        page.goto(self.url)
+        page.wait_for_selector(".sidebar-ex-btn", timeout=15_000)
+        checked = 0
+        for ex in EXERCISES[:10]:
+            self.open_exercise(page, ex)
+            # Half of the solution never reaches the goal state.
+            keys = playwright_keys(ex["keys"])
+            for key in keys[: max(1, len(keys) // 2)]:
+                page.keyboard.press(key)
+            page.keyboard.press("Escape")
+            page.wait_for_timeout(150)
+            if self.solved(page, ex):
+                # Only legitimate if half the keys already produce the goal.
+                continue
+            checked += 1
+        context.close()
+        self.assertGreaterEqual(checked, 5, "too few exercises rejected a partial solution")
+
+
+if __name__ == "__main__":
+    unittest.main()

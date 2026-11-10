@@ -26,6 +26,7 @@
 # Browser practice page (GitHub Pages)
 !practice/
 !practice/**
+practice/vendor/node_modules/
 
 # CAPDESIS Practice (Flutter desktop)
 !trainer/

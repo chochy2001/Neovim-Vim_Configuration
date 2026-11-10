@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="es" data-theme="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Vim Practice</title>
+  <meta name="description" content="Práctica interactiva de Vim y Neovim paso a paso. Interactive Vim practice, step by step." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- CodeMirror and its Vim mode are bundled in vendor/codemirror.js
+       (versions in vendor/package.json, rebuild: cd practice/vendor && bun install && bun run build). -->
+</head>
+<body>
+
+  <!-- ===== Header ===== -->
+  <header class="app-header" id="app-header">
+    <span class="header-pill">Vim</span>
+    <h1 data-es="Práctica interactiva" data-en="Interactive Practice">Práctica interactiva</h1>
+    <div class="header-links">
+      <a
+        href="https://github.com/chochy2001/Neovim-Vim_Configuration"
+        target="_blank"
+        rel="noopener"
+      >GitHub</a>
+      <button class="btn-lang" id="btn-lang" aria-label="Switch language">EN</button>
+    </div>
+  </header>
+
+  <!-- ===== Body ===== -->
+  <div class="app-body">
+
+    <!-- Sidebar nav (filled by app.js) -->
+    <nav class="sidebar" id="sidebar" aria-label="Lecciones"></nav>
+
+    <!-- Main content area -->
+    <main class="main-content" id="main-content">
+      <!-- Progress bar -->
+      <div class="progress-bar-wrap" id="progress-bar-wrap">
+        <div class="progress-bar-fill" style="width:0%"></div>
+      </div>
+
+      <!-- Exercise cards injected here by app.js -->
+      <div class="empty-state">
+        <span data-es="Cargando ejercicios..." data-en="Loading exercises...">Cargando ejercicios...</span>
+      </div>
+    </main>
+
+  </div><!-- .app-body -->
+
+  <!-- App module -->
+  <script type="module" src="app.js"></script>
+
+</body>
+</html>
