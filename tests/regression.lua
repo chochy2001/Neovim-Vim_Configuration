@@ -140,7 +140,18 @@ test("a key with an action in lazy keys is not mapped again in config", function
 end)
 test("every AI key opens a registered assistant and each CLI has a key", function()
     local names = require("ai-terminals").names()
-    for _, cli in ipairs({ "agy", "claude", "codex", "cursor-agent", "kimi", "muse", "opencode" }) do
+    for _, cli in ipairs({
+        "agy",
+        "claude",
+        "codex",
+        "copilot",
+        "cursor-agent",
+        "gemini",
+        "grok",
+        "kimi",
+        "muse",
+        "opencode",
+    }) do
         assert(require("ai-terminals").has_command(cli), cli .. " is not registered")
     end
     local spec = dofile(root .. "/.config/nvim/lua/plugins/ai-terminal.lua")[1]
@@ -196,6 +207,132 @@ end, 300)
     eq({ "new" }, vim.fn.readfile(out))
     vim.fn.delete(path)
     vim.fn.delete(out)
+end)
+test("agent edits reload idle buffers and never clobber unsaved edits", function()
+    -- Neovim keeps focus while an agent in another herdr pane edits the file:
+    -- no focus event fires, so only the file watcher can notice.
+    local dir = vim.fn.tempname()
+    vim.fn.mkdir(dir, "p")
+    local idle, renamed, dirty, untouched =
+        dir .. "/idle.txt", dir .. "/renamed.txt", dir .. "/dirty.txt", dir .. "/untouched.txt"
+    for _, f in ipairs({ idle, renamed, dirty, untouched }) do
+        vim.fn.writefile({ "old" }, f)
+    end
+    local out = dir .. "/out.json"
+    local script = string.format(
+        [[
+vim.opt.rtp:prepend(%q)
+require("vim-options")
+local warnings = {}
+local notify = vim.notify
+vim.notify = function(msg, level, opts)
+    if level == vim.log.levels.WARN then table.insert(warnings, msg) end
+    return notify(msg, level, opts)
+end
+local function open(f) vim.cmd.edit(f) return vim.api.nvim_get_current_buf() end
+local b = { idle = open(%q), renamed = open(%q), dirty = open(%q), untouched = open(%q) }
+vim.api.nvim_buf_set_lines(b.dirty, 0, -1, false, { "mine" })
+vim.api.nvim_buf_set_lines(b.untouched, 0, -1, false, { "mine too" })
+local watching = require("external-changes").count()
+local function text(k) return vim.api.nvim_buf_get_lines(b[k], 0, -1, false)[1] end
+-- Wait for each effect instead of fixed sleeps: file events are slower under load.
+vim.uv.sleep(1100) -- let the mtime move past the time the buffers were read
+vim.fn.writefile({ "new" }, %q)
+vim.fn.writefile({ "new" }, %q .. ".tmp")
+vim.uv.fs_rename(%q .. ".tmp", %q)
+vim.fn.writefile({ "agent" }, %q)
+vim.wait(10000, function() return text("idle") == "new" and text("renamed") == "new" and #warnings > 0 end, 50)
+vim.uv.sleep(1100)
+-- Second rename proves the watcher re-armed after the first one.
+vim.fn.writefile({ "newer" }, %q .. ".tmp")
+vim.uv.fs_rename(%q .. ".tmp", %q)
+vim.wait(10000, function() return text("renamed") == "newer" end, 50)
+vim.api.nvim_exec_autocmds("CursorHold", { buffer = b.untouched })
+vim.wait(300)
+local final = {}
+for k in pairs(b) do final[k] = text(k) end
+vim.fn.writefile({ vim.json.encode({ text = final, warnings = warnings, watching = watching }) }, %q)
+vim.cmd("qa!")
+]],
+        root .. "/.config/nvim",
+        idle,
+        renamed,
+        dirty,
+        untouched,
+        idle,
+        renamed,
+        renamed,
+        renamed,
+        dirty,
+        renamed,
+        renamed,
+        renamed,
+        out
+    )
+    local result =
+        vim.system({ vim.v.progpath, "--clean", "--headless", "-n", "-i", "NONE", "-c", "lua " .. script })
+            :wait(20000)
+    eq(0, result.code)
+    local got = vim.json.decode(vim.fn.readfile(out)[1])
+    eq(4, got.watching)
+    eq({ idle = "new", renamed = "newer", dirty = "mine", untouched = "mine too" }, got.text)
+    eq(1, #got.warnings)
+    assert(got.warnings[1]:find("dirty.txt", 1, true), got.warnings[1])
+    vim.fn.delete(dir, "rf")
+end)
+test("icons are real glyphs, with an ASCII fallback", function()
+    -- Icons once got stripped to blank strings and every sign went invisible.
+    local function load(env)
+        local code = "vim.env.NVIM_NERD_FONT = "
+            .. vim.inspect(env)
+            .. " package.loaded.icons = nil"
+            .. " local i = require('icons')"
+            .. " local out = {}"
+            .. " for _, v in pairs(i.diagnostic_signs()) do table.insert(out, v) end"
+            .. " for _, k in ipairs({ 'git_branch', 'readonly', 'lsp', 'folder_closed', 'fold_open' }) do"
+            .. " table.insert(out, i[k]) end"
+            .. " return out"
+        return assert(loadstring(code))()
+    end
+    for _, text in ipairs(load(nil)) do
+        local code = vim.fn.char2nr(text)
+        assert(code >= 0xE000 and code <= 0xF8FF, vim.inspect(text) .. " is not a Nerd Font glyph")
+    end
+    for _, text in ipairs(load("0")) do
+        assert(text:match("^[%w%+%-<>]+ ?$"), vim.inspect(text) .. " is not ASCII")
+    end
+    vim.env.NVIM_NERD_FONT = nil
+    package.loaded.icons = nil
+end)
+test("dashboard header is solid, aligned and every entry has an icon and its documented key", function()
+    local spec = dofile(root .. "/.config/nvim/lua/plugins/dashboard.lua")[1]
+    local old = package.loaded.dashboard
+    local opts
+    package.loaded.dashboard = {
+        setup = function(o)
+            opts = o
+        end,
+    }
+    spec.config()
+    package.loaded.dashboard = old
+    local art = vim.tbl_filter(function(line)
+        return line:find("█", 1, true) ~= nil
+    end, opts.config.header)
+    assert(#art == 5, "expected 5 logo rows, got " .. #art)
+    for _, line in ipairs(art) do
+        -- Box-drawing shadows render with gaps when the line height is not exact.
+        for _, box in ipairs({ "╗", "╔", "║", "═", "╝", "╚" }) do
+            assert(not line:find(box, 1, true), "logo uses box-drawing shadow: " .. line)
+        end
+        eq(vim.fn.strdisplaywidth(art[1]), vim.fn.strdisplaywidth(line))
+    end
+    local keys = {}
+    for _, item in ipairs(opts.config.center) do
+        local code = vim.fn.char2nr(item.icon)
+        assert(code >= 0xE000 and code <= 0xF8FF, item.desc .. " has no Nerd Font icon")
+        table.insert(keys, item.key)
+    end
+    eq({ "f", "g", "r", "e", "a", "m", "l", "q" }, keys)
 end)
 test("syntax of every config Lua file", function()
     for _, file in ipairs(vim.fn.glob(root .. "/.config/nvim/**/*.lua", false, true)) do

@@ -134,8 +134,8 @@ nmap <S-h> <Action>(PreviousTab)
 nmap <leader>bn <Action>(NextTab)
 nmap <leader>bp <Action>(PreviousTab)
 nmap <leader>bd <Action>(CloseContent)
-nmap <leader>bl <Action>(CloseAllEditorsToTheRight)
-nmap <leader>bh <Action>(CloseAllEditorsToTheLeft)
+nmap <leader>bl <Action>(CloseAllToTheRight)
+nmap <leader>bh <Action>(CloseAllToTheLeft)
 nmap <leader>to <Action>(CloseAllEditorsButActive)
 
 " Terminal
@@ -148,7 +148,7 @@ nmap <leader>gp <Action>(Vcs.Push)
 nmap <leader>gl <Action>(Vcs.UpdateProject)
 nmap <leader>gf <Action>(Git.Fetch)
 nmap <leader>gh <Action>(Vcs.ShowTabbedFileHistory)
-nmap <leader>ghd <Action>(Vcs.ShowTabbedFileHistory)
+nmap <leader>ghd <Action>(Vcs.Show.Log)
 nmap <leader>gb <Action>(Annotate)
 nmap <leader>gbl <Action>(Annotate)
 nmap <leader>gbt <Action>(Annotate)
@@ -190,7 +190,7 @@ nmap <leader>xn <Action>(GotoNextError)
 nmap <leader>xp <Action>(GotoPreviousError)
 
 " Folding
-nmap <leader>za <Action>(ExpandCollapseToggle)
+nmap <leader>za <Action>(ExpandCollapseToggleAction)
 nmap <leader>zR <Action>(ExpandAllRegions)
 nmap <leader>zM <Action>(CollapseAllRegions)
 nmap <leader>zr <Action>(ExpandRegion)
@@ -224,7 +224,9 @@ nmap <leader>oi <Action>(editRunConfigurations)
 " Tests
 nmap <leader>ten <Action>(RunClass)
 nmap <leader>tenf <Action>(RunClass)
-nmap <leader>tena <Action>(RunAll)
+" No IDE action runs every test: Run starts the selected run configuration
+" (point it at your test suite), matching Neovim "test all".
+nmap <leader>tena <Action>(Run)
 nmap <leader>tenl <Action>(Rerun)
 
 " Splits
