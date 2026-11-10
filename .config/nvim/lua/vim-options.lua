@@ -126,22 +126,6 @@ vim.keymap.set("n", "<leader>so", ":only<CR>", { desc = "Close All Other Splits"
 vim.keymap.set("n", "<leader>_", "<C-w>_", { desc = "Maximize Split Height" })
 
 -- AI agents (claude, codex, opencode, muse, cursor, agy...) edit files from
--- terminals and other apps. Re-check disk on focus, when leaving a terminal
--- and on buffer switch so open buffers never show stale text. Buffers with
--- unsaved edits are not overwritten: Neovim asks instead (W12).
-vim.opt.autoread = true
-local external = vim.api.nvim_create_augroup("external_changes", { clear = true })
-vim.api.nvim_create_autocmd({ "FocusGained", "TermLeave", "BufEnter" }, {
-    group = external,
-    callback = function()
-        if vim.fn.mode() ~= "c" and vim.fn.getcmdwintype() == "" then
-            vim.cmd("checktime")
-        end
-    end,
-})
-vim.api.nvim_create_autocmd("FileChangedShellPost", {
-    group = external,
-    callback = function(args)
-        vim.notify("Reloaded from disk: " .. vim.fn.fnamemodify(args.file, ":~:."), vim.log.levels.INFO)
-    end,
-})
+-- terminals, herdr panes and other apps: reload open buffers from disk
+-- without ever overwriting unsaved edits (see lua/external-changes.lua).
+require("external-changes").setup()

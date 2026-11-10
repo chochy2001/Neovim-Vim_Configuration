@@ -40,7 +40,8 @@ return {
         config = function()
             require("project_nvim").setup({
                 manual_mode = false,
-                detection_methods = { "lsp", "pattern" },
+                -- "lsp" calls vim.lsp.buf_get_clients(), deprecated since Neovim 0.12
+                detection_methods = { "pattern" },
                 patterns = {
                     ".git",
                     "_darcs",

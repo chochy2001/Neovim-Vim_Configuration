@@ -7,7 +7,11 @@ local assistants = {
     gemini = { cmd = "gemini", hint = "npm i -g @google/gemini-cli" },
     grok = { cmd = "grok", hint = "configure your chosen grok CLI on PATH" },
     copilot = { cmd = "copilot", hint = "npm i -g @github/copilot" },
-    cursor = { cmd = "cursor-agent", hint = "curl https://cursor.com/install -fsS | bash" },
+    cursor = {
+        cmd = "cursor-agent",
+        hint = vim.fn.has("win32") == 1 and "install the Cursor CLI from cursor.com/cli"
+            or "curl https://cursor.com/install -fsS | bash",
+    },
     antigravity = { cmd = "agy", hint = "install Antigravity and enable its agy CLI" },
     muse = { cmd = "muse", hint = "install the muse CLI and add it to PATH" },
     kimi = { cmd = "kimi", hint = "install Kimi Code CLI and add kimi to PATH" },
@@ -42,7 +46,8 @@ local function ensure(name)
         vim.notify("Unknown AI assistant: " .. tostring(name), vim.log.levels.ERROR)
         return
     end
-    if vim.fn.executable(a.cmd) ~= 1 then
+    -- A command may carry flags ("grok --flag"): check only the program.
+    if vim.fn.executable(a.cmd:match("^%S+")) ~= 1 then
         vim.notify("AI CLI missing: " .. a.cmd .. ". " .. a.hint, vim.log.levels.WARN)
         return
     end
@@ -107,7 +112,7 @@ function M.send_visual_pick()
 end
 function M.has_command(cmd)
     for _, a in pairs(assistants) do
-        if a.cmd == cmd then
+        if a.cmd:match("^%S+") == cmd then
             return true
         end
     end

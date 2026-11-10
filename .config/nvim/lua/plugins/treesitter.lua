@@ -33,6 +33,7 @@ return {
                 "markdown_inline",
                 "bash",
                 "swift",
+                "rust",
             }
 
             -- Install missing parsers

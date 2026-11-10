@@ -1,9 +1,9 @@
 return {
     "vim-test/vim-test",
     dependencies = {
-        -- vimux needs a running tmux server (Unix only); skip it on Windows
-        -- so startup doesn't warn about a missing tmux executable.
-        { "preservim/vimux", cond = vim.fn.has("win32") == 0 },
+        -- vimux drives tmux; without tmux installed (always on Windows) it
+        -- only prints "Failed to find executable tmux" when it loads.
+        { "preservim/vimux", cond = vim.fn.executable("tmux") == 1 },
     },
     -- keys here so the first press loads the plugin (not only in config)
     keys = {

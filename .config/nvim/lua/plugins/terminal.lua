@@ -3,9 +3,23 @@ return {
     {
         "akinsho/toggleterm.nvim",
         version = "*",
-        cmd = "ToggleTerm",
+        cmd = { "ToggleTerm", "ToggleTermToggleAll", "TermSelect" },
         keys = {
             { "<leader>tt", "<cmd>ToggleTerm direction=float<CR>", desc = "Terminal (Main)" },
+            -- tmux-style splits. A count picks the terminal: 2<leader>tv opens
+            -- terminal 2 on the right, 3<leader>th terminal 3 at the bottom.
+            {
+                "<leader>tv",
+                '<cmd>exe v:count1 . "ToggleTerm direction=vertical"<CR>',
+                desc = "Terminal: right split (count = number)",
+            },
+            {
+                "<leader>th",
+                '<cmd>exe v:count1 . "ToggleTerm direction=horizontal"<CR>',
+                desc = "Terminal: bottom split (count = number)",
+            },
+            { "<leader>ta", "<cmd>ToggleTermToggleAll<CR>", desc = "Terminal: show/hide all" },
+            { "<leader>tl", "<cmd>TermSelect<CR>", desc = "Terminal: pick one" },
             -- extras here so the first press loads the plugin (not only in config)
             {
                 "<leader>tg",
