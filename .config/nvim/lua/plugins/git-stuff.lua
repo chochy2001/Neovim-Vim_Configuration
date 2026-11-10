@@ -50,49 +50,15 @@ return {
     {
         "lewis6991/gitsigns.nvim",
         event = { "BufReadPre", "BufNewFile" },
+        -- Stubs only: the first press loads gitsigns; config() owns the
+        -- actions (hunk navigation also honours diff mode there).
         keys = {
-            {
-                "<leader>gsa",
-                function()
-                    require("gitsigns").stage_hunk()
-                end,
-                desc = "Git: Stage Add (hunk)",
-            },
-            {
-                "<leader>gsr",
-                function()
-                    require("gitsigns").reset_hunk()
-                end,
-                desc = "Git: Stage Reset (hunk)",
-            },
-            {
-                "<leader>gsu",
-                function()
-                    require("gitsigns").stage_hunk()
-                end,
-                desc = "Git: Toggle Stage (hunk)",
-            },
-            {
-                "<leader>gsp",
-                function()
-                    require("gitsigns").preview_hunk()
-                end,
-                desc = "Git: Stage Preview",
-            },
-            {
-                "<leader>gn",
-                function()
-                    require("gitsigns").nav_hunk("next")
-                end,
-                desc = "Git: Next hunk",
-            },
-            {
-                "<leader>gnp",
-                function()
-                    require("gitsigns").nav_hunk("prev")
-                end,
-                desc = "Git: Prev hunk",
-            },
+            { "<leader>gsa", desc = "Git: Stage Add (hunk)" },
+            { "<leader>gsr", desc = "Git: Stage Reset (hunk)" },
+            { "<leader>gsu", desc = "Git: Toggle Stage (hunk)" },
+            { "<leader>gsp", desc = "Git: Stage Preview" },
+            { "<leader>gn", desc = "Git: Next hunk" },
+            { "<leader>gnp", desc = "Git: Prev hunk" },
         },
         config = function()
             require("gitsigns").setup({
@@ -334,31 +300,7 @@ return {
                 },
             })
 
-            -- Git Conflict commands (gc*)
-            vim.keymap.set(
-                "n",
-                "<leader>gco",
-                "<Plug>(git-conflict-ours)",
-                { desc = "Git: Conflict choose Ours" }
-            )
-            vim.keymap.set(
-                "n",
-                "<leader>gct",
-                "<Plug>(git-conflict-theirs)",
-                { desc = "Git: Conflict choose Theirs" }
-            )
-            vim.keymap.set(
-                "n",
-                "<leader>gcb",
-                "<Plug>(git-conflict-both)",
-                { desc = "Git: Conflict choose Both" }
-            )
-            vim.keymap.set(
-                "n",
-                "<leader>gcn",
-                "<Plug>(git-conflict-none)",
-                { desc = "Git: Conflict choose None" }
-            )
+            -- gco/gct/gcb/gcn live in `keys`; only navigation is mapped here.
             vim.keymap.set(
                 "n",
                 "<leader>gcp",
