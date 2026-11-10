@@ -3,23 +3,40 @@ return {
     {
         "akinsho/toggleterm.nvim",
         version = "*",
-        cmd = { "ToggleTerm", "ToggleTermToggleAll", "TermSelect" },
+        cmd = "ToggleTerm",
         keys = {
             { "<leader>tt", "<cmd>ToggleTerm direction=float<CR>", desc = "Terminal (Main)" },
-            -- tmux-style splits. A count picks the terminal: 2<leader>tv opens
-            -- terminal 2 on the right, 3<leader>th terminal 3 at the bottom.
+            -- tmux-style splits (lua/terminals.lua). A count picks the shell:
+            -- 2<leader>tv opens terminal 2 on the right, 3<leader>th terminal 3
+            -- at the bottom. The same key hides it again; it keeps running.
             {
                 "<leader>tv",
-                '<cmd>exe v:count1 . "ToggleTerm direction=vertical"<CR>',
+                function()
+                    require("terminals").split("vertical", vim.v.count1)
+                end,
                 desc = "Terminal: right split (count = number)",
             },
             {
                 "<leader>th",
-                '<cmd>exe v:count1 . "ToggleTerm direction=horizontal"<CR>',
+                function()
+                    require("terminals").split("horizontal", vim.v.count1)
+                end,
                 desc = "Terminal: bottom split (count = number)",
             },
-            { "<leader>ta", "<cmd>ToggleTermToggleAll<CR>", desc = "Terminal: show/hide all" },
-            { "<leader>tl", "<cmd>TermSelect<CR>", desc = "Terminal: pick one" },
+            {
+                "<leader>ta",
+                function()
+                    require("terminals").toggle_all()
+                end,
+                desc = "Terminal: hide/show split terminals",
+            },
+            {
+                "<leader>tl",
+                function()
+                    require("terminals").pick()
+                end,
+                desc = "Terminal: pick a running one",
+            },
             -- extras here so the first press loads the plugin (not only in config)
             {
                 "<leader>tg",

@@ -8,6 +8,12 @@ local function test(name, fn)
         print("FAIL " .. failures[#failures])
     end
 end
+local function eq(expected, actual)
+    assert(
+        vim.deep_equal(expected, actual),
+        "expected " .. vim.inspect(expected) .. ", got " .. vim.inspect(actual)
+    )
+end
 local errors = {}
 local notify = vim.notify
 vim.notify = function(msg, level, opts)
@@ -137,41 +143,46 @@ end)
 
 test("terminal keys open tmux-style splits and hide them all", function()
     vim.cmd("silent! only")
-    local function press(lhs, count)
-        local map = vim.fn.maparg(lhs, "n", false, true)
-        assert(map.rhs or map.callback, lhs .. " is not mapped")
+    local function press(keys)
+        vim.api.nvim_feedkeys(vim.keycode(keys), "mx", false)
         vim.cmd.stopinsert()
-        vim.api.nvim_feedkeys((count or "") .. vim.keycode(lhs), "mx", false)
-        vim.cmd.stopinsert()
-        vim.wait(300)
+        vim.wait(200)
+    end
+    local function is_term(win)
+        return vim.bo[vim.api.nvim_win_get_buf(win)].buftype == "terminal"
     end
     local function terms()
-        local found = {}
-        for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
-            local buf = vim.api.nvim_win_get_buf(win)
-            if vim.bo[buf].buftype == "terminal" then
-                local pos = vim.api.nvim_win_get_position(win)
-                table.insert(found, { row = pos[1], col = pos[2], width = vim.api.nvim_win_get_width(win) })
-            end
-        end
-        return found
+        return vim.tbl_filter(is_term, vim.api.nvim_tabpage_list_wins(0))
     end
     press(" tv")
-    local right = terms()
-    assert(#right == 1 and right[1].col > 0, "<leader>tv did not open a right split: " .. vim.inspect(right))
-    press(" th", "2")
-    local both = terms()
-    assert(#both == 2, "2<leader>th did not open a second terminal: " .. vim.inspect(both))
-    local bottom = vim.tbl_filter(function(t)
-        return t.row > 0
-    end, both)
-    assert(#bottom >= 1, "<leader>th did not open at the bottom: " .. vim.inspect(both))
+    -- Right split: the screen becomes a row whose last cell is the terminal.
+    local layout = vim.fn.winlayout()
+    assert(layout[1] == "row", "<leader>tv layout: " .. vim.inspect(layout))
+    local right = layout[2][#layout[2]]
+    assert(right[1] == "leaf" and is_term(right[2]), "<leader>tv did not open on the right")
+    local first = vim.api.nvim_win_get_buf(right[2])
+    press("<C-w>h")
+    press("2 th")
+    -- Bottom split: a column whose last cell is a full-width terminal.
+    layout = vim.fn.winlayout()
+    assert(layout[1] == "col", "2<leader>th did not split at the bottom: " .. vim.inspect(layout))
+    local bottom = layout[2][#layout[2]]
+    assert(bottom[1] == "leaf" and is_term(bottom[2]), "bottom cell is not a terminal")
+    eq(vim.o.columns, vim.api.nvim_win_get_width(bottom[2]))
+    assert(vim.api.nvim_win_get_buf(bottom[2]) ~= first, "2<leader>th reused terminal 1")
+    eq(2, #terms())
     press(" ta")
-    assert(#terms() == 0, "<leader>ta did not hide the terminals")
+    eq(0, #terms())
+    local job = vim.b[first].terminal_job_id
+    eq(-1, vim.fn.jobwait({ job }, 0)[1]) -- hidden, still running
     press(" ta")
-    assert(#terms() == 2, "<leader>ta did not bring both terminals back")
-    for _, term in ipairs(require("toggleterm.terminal").get_all(true)) do
-        term:shutdown()
+    eq(2, #terms())
+    press(" tv") -- same key hides terminal 1 again
+    eq(1, #terms())
+    for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+        if vim.bo[buf].buftype == "terminal" then
+            vim.api.nvim_buf_delete(buf, { force = true })
+        end
     end
     vim.cmd("silent! only")
 end)
