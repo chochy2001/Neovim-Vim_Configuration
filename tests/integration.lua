@@ -137,7 +137,10 @@ test("the AI workflow: browse a repo, select code, an agent edits it, Neovim rel
     else
         vim.fn.writefile({
             "#!/bin/sh",
-            'printf "%s\\n" "$PWD" "$@" > "$AGENT_ARGS"',
+            -- Write then rename: the test polls for the file and must never
+            -- read it half written (it did on the Ubuntu runner).
+            'printf "%s\\n" "$PWD" "$@" > "$AGENT_ARGS.tmp"',
+            'mv "$AGENT_ARGS.tmp" "$AGENT_ARGS"',
             'printf "local x = 1\\nlocal function add(a, b)\\n    return a + b\\nend\\nreturn add\\n" > "$AGENT_FILE.tmp"',
             'mv "$AGENT_FILE.tmp" "$AGENT_FILE"',
             "sleep 30",
