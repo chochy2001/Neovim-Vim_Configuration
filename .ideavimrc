@@ -8,7 +8,7 @@
 " NOT :action in a mapping). Official: noremap does not work with <Action>.
 "
 " Shared with Neovim: leader = Space, same prefixes (f* find, g* git, fl* flutter,
-" x* diagnostics, m* marks, b* buffers, w* windows, t* terminal, r* run, d* debug).
+" x* diagnostics, m* marks, b* buffers, w* windows, t* terminal, r* run, d* debug, z* fold).
 " Neovim-only: <leader>a* AI CLIs, <leader>c* CopilotChat.
 
 let mapleader = " "

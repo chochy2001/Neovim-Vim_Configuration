@@ -43,7 +43,7 @@ nvim --headless "+lua local v=vim.version(); print('boot-ok '..v.major..'.'..v.m
 # Open a real file from each stack and inspect clients (wait ~10s):
 # Dart:   repos/.../lib/main.dart          → dartls (flutter-tools), null-ls
 # Go:     .../cmd/main.go                  → gopls,null-ls
-# Python: .../nodo.py                      → pyright (+ null-ls if file < 50 KB)
+# Python: .../nodo.py                      → pyright (+ null-ls if file < 50 KiB)
 # JS/TS:  .../astro.config.mjs             → vtsls,null-ls
 # Astro:  .../Footer.astro                 → astro,null-ls (Mason copy, not project node_modules)
 # JSON:   .../package.json                 → jsonls,null-ls
