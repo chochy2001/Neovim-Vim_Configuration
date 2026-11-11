@@ -1,0 +1,14 @@
+00-bienvenida	A learning journey shown as three connected platforms rising left to right: a presentation screen, a practice keyboard with a glowing key, and a full code editor workstation. A winding path connects them.
+01-modos	Three connected rooms or states of a modal text editor: a calm navigation room with a compass, a typing room with a keyboard, and a selection room with a highlighted block of text, connected by arrows like a state diagram.
+02-moverse	A cursor block hopping across rows of abstract text lines in precise arcs, with small trails showing jumps to line start, line end, next word and a matching bracket.
+03-gramatica	Two puzzle pieces snapping together: one piece is an action (scissors, eraser, copy icon) and the other is a direction arrow covering a stretch of text lines, forming a complete command.
+04-objetos-texto	Abstract text lines with pairs of brackets, quotes and parentheses; one inner region between a pair of brackets glows and is lifted out precisely, showing inside vs around.
+05-buscar	A magnifying glass scanning rows of abstract text lines, with several matching blocks highlighted and one block being swapped for a new glowing block.
+06-registros-macros	A row of small storage drawers holding text fragments, and a film reel recording a sequence of keystroke blocks that replays as a repeated pattern.
+07-ventanas-terminales	A screen divided into tiled panes like a terminal multiplexer: a code pane, a terminal pane on the right and another terminal pane at the bottom, with a cursor moving between panes.
+08-instalar	A toolbox opening with a plug connecting a configuration folder to an editor window, with small gears and packages flowing into it.
+09-ide	A code editor window with a file tree, a glowing lightbulb hint beside a line, a branching git graph, and diagnostic markers in the gutter.
+10-ia	Several friendly abstract robot assistants in separate terminal panes editing documents, while a central editor window updates live with small refresh arrows.
+11-plugins	Modular building blocks snapping onto a central editor core, each block a different shape and accent, arranged neatly.
+12-ideavim	Two different editor windows connected by a bridge, sharing the same keyboard below them, keys glowing identically on both sides.
+13-diagnostico	A wrench and a stethoscope examining an editor window with a small warning sign, showing calm troubleshooting and a green check emerging.

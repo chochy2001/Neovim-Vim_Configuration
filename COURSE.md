@@ -12,6 +12,14 @@ Cuando dudes de un atajo de *esta* config: `:Telescope keymaps`.
 
 ## Objetivos y ruta de aprendizaje
 
+Cada tema sigue el mismo camino, de menos a más:
+
+1. **Presentación** ([en línea](https://chochy2001.github.io/Neovim-Vim_Configuration/slides/) o [course/slides](course/slides/index.html)): la idea y los comandos, con ejemplos comprobados en Neovim real.
+2. **Práctica** ([página de práctica](https://chochy2001.github.io/Neovim-Vim_Configuration/)): ejercicios paso a paso en el navegador, con la misma numeración que los capítulos 1 a 7.
+3. **Configuración real** (capítulos 8 a 13): instalar esta config y usarla como IDE, con IA y en IntelliJ.
+
+Ningún capítulo usa un comando que no se haya enseñado antes.
+
 Al terminar podrás editar/deshacer con operadores, manejar buffers/ventanas,
 repetir tareas con registros/macros y comprobar LSP/plugins en un proyecto.
 Esta secuencia didáctica parte de los manuales oficiales
@@ -19,7 +27,7 @@ Esta secuencia didáctica parte de los manuales oficiales
 [`usr_04`](https://neovim.io/doc/user/usr_04/). Es una decisión del curso,
 no una valoración sobre otros autores.
 
-**Capítulos 2-9: usa `nvim --clean archivo.txt`** para aprender sin mapas del repo.
+**Capítulos 1-7: usa `nvim --clean archivo.txt`** para aprender sin mapas del repo.
 Después repite con `nvim archivo.txt`. `jj`, búsquedas centradas y atajos con
 leader se identifican como añadidos. Así no se confunden `H`/`L` nativos con
 Shift-h/Shift-l de bufferline.
@@ -35,9 +43,9 @@ Practicar sin mirar ayuda a localizar teclas. `h j k l` están en la fila centra
 
 Practica 15 minutos al día, sin este editor:
 
-- [keybr.com](https://www.keybr.com) — te va soltando letras.
-- [monkeytype.com](https://monkeytype.com) — velocidad.
-- [typingclub.com](https://www.typingclub.com) — lecciones (hay español).
+- [keybr.com](https://www.keybr.com): te va soltando letras.
+- [monkeytype.com](https://monkeytype.com): velocidad.
+- [typingclub.com](https://www.typingclub.com): lecciones (hay español).
 
 Cuando ya no busques la `J` con los ojos, abre [openvim.com](https://www.openvim.com) (tutorial en el navegador) o, mejor, el tutor que trae Vim:
 
@@ -53,60 +61,13 @@ Entrenador de escritorio (Windows / Linux / macOS, sin red): carpeta [`trainer/`
 
 ---
 
-# 1. Instalar esta config
-
-Neovim **0.12 o más**; referencia probada: **0.12.6**. Requisitos y compiladores: [README.md](README.md). Respalda una configuración existente antes de enlazar. No clones el repo *dentro* de `~/.config/nvim`.
-
-**Windows**
-
-```powershell
-winget install --id Neovim.Neovim --exact
-winget install --id Git.Git --exact
-winget install --id DEVCOM.JetBrainsMonoNerdFont --exact
-# tree-sitter CLI >= 0.26.1: binarios oficiales o Cargo; consulta README.md
-$nvimRepo = Join-Path $HOME "Neovim-Vim_Configuration"
-git clone https://github.com/chochy2001/Neovim-Vim_Configuration.git $nvimRepo
-$nvimLink = @{
-    ItemType = "Junction"
-    Path = "$env:LOCALAPPDATA\nvim"
-    Target = "$nvimRepo\.config\nvim"
-}
-New-Item @nvimLink
-Copy-Item "$nvimRepo\.ideavimrc" "$HOME\.ideavimrc"
-```
-
-En el terminal pon fuente **JetBrainsMono NFM** y ciérralo. Sin esa fuente los iconos salen como recuadros.
-
-**macOS / Linux**
-
-```bash
-# neovim, git, node, compilador C, ripgrep, fd — con brew o el paquete de la distro
-# tree-sitter CLI >= 0.26.1: binarios oficiales o Cargo; consulta README.md
-git clone https://github.com/chochy2001/Neovim-Vim_Configuration.git ~/Neovim-Vim_Configuration
-mkdir -p ~/.config
-ln -s ~/Neovim-Vim_Configuration/.config/nvim ~/.config/nvim
-ln -s ~/Neovim-Vim_Configuration/.ideavimrc ~/.ideavimrc
-```
-
-Primera vez: `nvim` y espera a que lazy.nvim instale. `:Lazy` para mirar. Mason instala servidores de lenguaje en segundo plano.
-
-Comprobar arranque:
-
-```
-nvim --headless "+lua print('boot-ok')" +qa
-```
-
-Tiene que salir `boot-ok`, sin `Error detected`. Después ejecuta `python scripts/verify.py` desde la raíz; arrancar no prueba los plugins diferidos.
-
----
-
-# 2. Modos (el único truco que hay que pillar)
+# 1. Modos y sobrevivir
 
 Vim no es un bloc de notas con atajos. Es un editor **modal**: la misma tecla hace cosas distintas según el modo.
 
 | Estás en… | Entras con | Sales con | Sirve para |
 |-----------|------------|-----------|------------|
-| Normal | al abrir, o `Esc` | — | moverte y dar órdenes |
+| Normal | al abrir, o `Esc` | (es el modo base) | moverte y dar órdenes |
 | Insertar | `i` `a` `I` `A` `o` `O` | `Esc` o `jj` | escribir |
 | Visual | `v` `V` `Ctrl-v` | `Esc` | seleccionar |
 | Línea de comandos | `:` `/` `?` | `Enter` o `Esc` | guardar, buscar, ayuda |
@@ -117,9 +78,30 @@ En esta config, `jj` también sale de insertar. `Esc` sigue existiendo. Aprende 
 
 **Ejercicio.** `nvim prueba.txt` → `i` → escribe tu nombre → `Esc` → `i` otra vez → `jj`. Mira la esquina: la statusline dice el modo (esta config oculta `-- INSERT --` nativo; lualine lo muestra).
 
+## Guardar, salir y pedir ayuda
+
+| Comando | Qué hace |
+|---------|----------|
+| `:w` | guardar |
+| `:q` | salir si no hay cambios |
+| `:wq` | guardar y salir (siempre escribe) |
+| `ZZ` | guardar y salir; solo escribe si hay cambios (igual que `:x`) |
+| `:q!` | salir tirando los cambios |
+| `:e!` | recargar el archivo del disco |
+| `:help` | manual |
+| `:help x` | la tecla `x` |
+| `:help :w` | el comando `:w` |
+| `:help 'number'` | una opción |
+| `Ctrl-]` | seguir un enlace en el help |
+| `Ctrl-t` o `Ctrl-o` | volver |
+
+En el help, `Ctrl-d` después de un tema incompleto lista coincidencias.
+
+Practica: [lección 1 de la página de práctica](https://chochy2001.github.io/Neovim-Vim_Configuration/#lesson-1)
+
 ---
 
-# 3. Moverse sin flechas
+# 2. Moverse sin flechas
 
 Las flechas funcionan. Te hacen sacar la mano de las letras. El manual de Vim insiste en `h j k l` por eso.
 
@@ -152,9 +134,11 @@ Delante de casi todo puedes poner un **número**: `5j` baja cinco líneas, `3w` 
 
 **Ejercicio.** Abre cualquier texto largo. Ve al final con `G`, al principio con `gg`, a la línea 20 con `20G`. Recorre un párrafo con `}` y vuelve con `{`. Busca una coma en la línea con `f,`.
 
+Practica: [lección 2 de la página de práctica](https://chochy2001.github.io/Neovim-Vim_Configuration/#lesson-2)
+
 ---
 
-# 4. La gramática: operador + movimiento
+# 3. La gramática: operador + movimiento
 
 Esta es la base de la edición. Un **operador** espera un **movimiento** (o un objeto de texto).
 
@@ -185,7 +169,7 @@ Otros que conviene tener en los dedos:
 |-------|----------|
 | `x` | borrar un carácter (`dl`) |
 | `X` | borrar el de atrás (`dh`) |
-| `s` | cambiar un carácter — **ojo:** en *esta* config, `s` es Flash (saltar). Para “change char” usa `cl` |
+| `s` | cambiar un carácter. **Ojo:** en *esta* config, `s` es Flash (saltar). Para “change char” usa `cl` |
 | `r` + letra | reemplazar un carácter sin entrar a insertar |
 | `J` | juntar esta línea con la de abajo |
 | `p` `P` | pegar después / antes |
@@ -206,9 +190,11 @@ Otros que conviene tener en los dedos:
 
 **Ejercicio.** Escribe tres líneas. `dd` la del medio. `p` la pega debajo. `u` la devuelve. `3j` no hace falta: estás en un archivo corto. Cambia una palabra con `cw` (escribe otra, `Esc`). Pulsa `.` en otra palabra: Vim repite el cambio.
 
+Practica: [lección 3 de la página de práctica](https://chochy2001.github.io/Neovim-Vim_Configuration/#lesson-3)
+
 ---
 
-# 5. Objetos de texto (antes de cualquier plugin)
+# 4. Objetos de texto (antes de cualquier plugin)
 
 Un movimiento va en *una* dirección. Un **objeto** es una cosa alrededor del cursor: una palabra, una frase, lo que hay entre comillas.
 
@@ -235,9 +221,11 @@ En esta config, `>` y `<` en visual **mantienen** la selección (para indentar v
 
 **Ejercicio.** Escribe `foo("hola mundo")`. Cursor en `hola`. `ci"` → escribe `adiós` → `Esc`. Cursor en `foo`. `ciw` → `bar`. `va(` y mira qué se selecciona.
 
+Practica: [lección 4 de la página de práctica](https://chochy2001.github.io/Neovim-Vim_Configuration/#lesson-4)
+
 ---
 
-# 6. Buscar y sustituir
+# 5. Buscar y sustituir
 
 `/palabra` Enter busca hacia adelante. `?palabra` hacia atrás. `n` siguiente, `N` anterior. En esta config, `n`/`N` además **centran** la pantalla.
 
@@ -258,9 +246,32 @@ Sustituir (línea de comandos):
 
 **Ejercicio.** Pon tres veces la palabra `gato`. `:%s/gato/perro/g` y comprueba.
 
+Practica: [lección 5 de la página de práctica](https://chochy2001.github.io/Neovim-Vim_Configuration/#lesson-5)
+
 ---
 
-# 7. Buffers, ventanas, pestañas
+# 6. Registros y macros
+
+Yank (`y`) no es “el portapapeles de Windows” nada más. Hay cajones:
+
+- `"` sin nombre: último yank o borrado
+- `0` último yank
+- `1` a `9` últimos borrados
+- `a` a `z` los tuyos (`"ayy` copia la línea al registro a)
+- `+` portapapeles del sistema (esta config usa `unnamedplus`)
+- `_` agujero negro (`"_dd` borra sin ensuciar el yank)
+
+`:reg` enseña el contenido.
+
+Macros: `q` + letra para grabar, `q` para parar, `@a` para reproducir, `@@` la última. Ejemplo: en una lista, `qa` → `I- ` Esc `j` `q` y luego `10@a`.
+
+**Ejercicio.** Copia una línea con `yy`. Muévete. `p`. Ahora `"ayy` en otra línea y `"ap`.
+
+Practica: [lección 6 de la página de práctica](https://chochy2001.github.io/Neovim-Vim_Configuration/#lesson-6)
+
+---
+
+# 7. Buffers, ventanas, pestañas y terminales
 
 Olvida un momento Telescope. En Vim:
 
@@ -286,52 +297,64 @@ Buffers con pestañas de bufferline: `Shift-l` / `Shift-h` siguiente/anterior, `
 
 **Saltos.** Cada vez que haces un salto grande (`G`, `/`, `gd` más adelante), Vim guarda el sitio. `Ctrl-o` vuelve atrás, `Ctrl-i` adelante. `:jumps` lista. `<leader>b` en esta config es “atrás” de historial (como el Back del IDE); espera 300 ms porque `bn`/`bp` empiezan igual.
 
-**Marcas.** `ma` guarda la posición en la marca `a`. `'a` vuelve al inicio de esa línea, `` `a `` a la columna exacta. Marcas `A`–`Z` son globales (otro archivo).
+**Marcas.** `ma` guarda la posición en la marca `a`. `'a` vuelve al inicio de esa línea, `` `a `` a la columna exacta. Marcas `A` a `Z` son globales (otro archivo).
 
 **Ejercicio.** Abre dos archivos con `:e`. Parte la ventana `Ctrl-w v`. Salta con `G`, vuelve con `Ctrl-o`.
 
----
+**Terminales (esta config).** `<leader>tv` abre una terminal a la derecha y `<leader>th` abajo, como paneles de tmux; con un número delante abres otra (`2<leader>th`). Dentro, `jj` vuelve a modo Normal y `Ctrl-h/j/k/l` cambia de ventana; `i` vuelve a escribir en la terminal. `<leader>ta` oculta o muestra todas sin cerrar sus procesos y `<leader>tl` elige una.
 
-# 8. Registros y macros
-
-Yank (`y`) no es “el portapapeles de Windows” nada más. Hay cajones:
-
-- `"` sin nombre: último yank o borrado
-- `0` último yank
-- `1`–`9` últimos borrados
-- `a`–`z` los tuyos (`"ayy` copia la línea al registro a)
-- `+` portapapeles del sistema (esta config usa `unnamedplus`)
-- `_` agujero negro (`"_dd` borra sin ensuciar el yank)
-
-`:reg` enseña el contenido.
-
-Macros: `q` + letra para grabar, `q` para parar, `@a` para reproducir, `@@` la última. Ejemplo: en una lista, `qa` → `I- ` Esc `j` `q` y luego `10@a`.
-
-**Ejercicio.** Copia una línea con `yy`. Muévete. `p`. Ahora `"ayy` en otra línea y `"ap`.
+Practica: [lección 7 de la página de práctica](https://chochy2001.github.io/Neovim-Vim_Configuration/#lesson-7)
 
 ---
 
-# 9. Ayuda, guardar, salir
+# 8. Instalar esta config
 
-| Comando | Qué hace |
-|---------|----------|
-| `:w` | guardar |
-| `:q` | salir si no hay cambios |
-| `:wq` o `ZZ` | guardar y salir |
-| `:q!` | salir tirando los cambios |
-| `:e!` | recargar el archivo del disco |
-| `:help` | manual |
-| `:help x` | la tecla `x` |
-| `:help :w` | el comando `:w` |
-| `:help 'number'` | una opción |
-| `Ctrl-]` | seguir un enlace en el help |
-| `Ctrl-t` o `Ctrl-o` | volver |
+Neovim **0.12 o más**; referencia probada: **0.12.6**. Requisitos y compiladores: [README.md](README.md). Respalda una configuración existente antes de enlazar. No clones el repo *dentro* de `~/.config/nvim`.
 
-En el help, `Ctrl-d` después de un tema incompleto lista coincidencias.
+**Windows**
+
+```powershell
+winget install --id Neovim.Neovim --exact
+winget install --id Git.Git --exact
+winget install --id DEVCOM.JetBrainsMonoNerdFont --exact
+# tree-sitter CLI >= 0.26.1: binarios oficiales o Cargo; consulta README.md
+$nvimRepo = Join-Path $HOME "Neovim-Vim_Configuration"
+git clone https://github.com/chochy2001/Neovim-Vim_Configuration.git $nvimRepo
+$nvimLink = @{
+    ItemType = "Junction"
+    Path = "$env:LOCALAPPDATA\nvim"
+    Target = "$nvimRepo\.config\nvim"
+}
+New-Item @nvimLink
+Copy-Item "$nvimRepo\.ideavimrc" "$HOME\.ideavimrc"
+```
+
+En el terminal pon fuente **JetBrainsMono NFM** y ciérralo. Sin esa fuente los iconos salen como recuadros.
+
+**macOS / Linux**
+
+```bash
+# neovim, git, node, compilador C, ripgrep, fd: con brew o el paquete de la distro
+# tree-sitter CLI >= 0.26.1: binarios oficiales o Cargo; consulta README.md
+git clone https://github.com/chochy2001/Neovim-Vim_Configuration.git ~/Neovim-Vim_Configuration
+mkdir -p ~/.config
+ln -s ~/Neovim-Vim_Configuration/.config/nvim ~/.config/nvim
+ln -s ~/Neovim-Vim_Configuration/.ideavimrc ~/.ideavimrc
+```
+
+Primera vez: `nvim` y espera a que lazy.nvim instale. `:Lazy` para mirar. Mason instala servidores de lenguaje en segundo plano.
+
+Comprobar arranque:
+
+```
+nvim --headless "+lua print('boot-ok')" +qa
+```
+
+Tiene que salir `boot-ok`, sin `Error detected`. Después ejecuta `python scripts/verify.py` desde la raíz; arrancar no prueba los plugins diferidos.
 
 ---
 
-# 10. Esta config como IDE
+# 9. Esta config como IDE
 
 Hasta aquí se explica Vim nativo y se señalan las adiciones de esta config. Lo siguiente *añade* cosas. Si algo no carga, `:Lazy`. Si no hay autocompletado, el LSP de ese lenguaje no está (`:Mason`, `:checkhealth vim.lsp`).
 
@@ -354,7 +377,30 @@ Prefijos (Espacio y una letra):
 | `a` | terminales de IA (solo Neovim) |
 | `c` | Copilot Chat (solo Neovim) |
 
+Neovim 0.12 ya trae de serie, también con `nvim --clean`: `Y` copia hasta el final de la línea (como `y$`), `gcc` comenta la línea, `grn` renombra, `gra` muestra acciones de código, `grr` busca referencias y `[d` `]d` saltan entre diagnósticos. Esta config añade sus equivalentes con leader (`<leader>rn`, `<leader>ca`, `gR`, `<leader>xn`), así que funcionan las dos formas.
+
 Flujo típico: `<leader>ff` abre → `ciw` edita → `gd` definición (si hay LSP) → `<leader>fm` formatea (none-ls o LSP) → `<leader>gs` git.
+
+---
+
+# 10. IA con Neovim
+
+Los agentes de IA son programas de terminal (opencode, Codex, Claude, Gemini, Grok, Copilot, muse, Cursor, Antigravity, kimi) que leen tu proyecto y editan archivos. Esta config los abre en una terminal flotante: `<leader>aa` opencode, `<leader>ax` Codex, `<leader>ac` Claude, `<leader>ag` Gemini, `<leader>ak` Grok, `<leader>ap` Copilot, `<leader>am` muse, `<leader>au` Cursor, `<leader>an` Antigravity y `<leader>ai` kimi. Cada uno usa su propia cuenta; la config no guarda claves.
+
+Pedir un cambio sobre código concreto: selecciona en Visual y pulsa `<leader>as`. Eliges el agente y escribes qué quieres ("refactoriza esto", "añade pruebas"). El archivo se guarda y el agente se abre a la derecha, en la raíz del repo, ya trabajando con tu instrucción, el archivo, las líneas y el código seleccionado. Con kimi, o en Windows con CLIs instalados por npm, el texto queda en el portapapeles y en el registro `a`: pégalo, revisa y envía.
+
+El flujo completo de un día de trabajo:
+
+1. `nvim` en la carpeta de tus proyectos; `<leader>fp` abre un proyecto reciente y `<leader>ff` busca un archivo.
+2. `<leader>pv` abre el árbol de carpetas: `j`/`k` para moverte, `Enter` abre, `<leader>pv` lo cierra.
+3. Lee el código: `gd` va a la definición, `K` muestra la documentación, `gR` lista las referencias y `Ctrl-o` vuelve.
+4. Selecciona con `V` y pide el cambio con `<leader>as`.
+5. Mira trabajar al agente a la derecha; cuando guarda, el archivo se recarga solo.
+6. Revisa: `<leader>gsp` muestra el cambio del bloque, `<leader>gdo` el diff completo y `<leader>gsr` deshace un bloque que no te guste.
+
+Si el agente edita un archivo que tienes abierto, Neovim lo recarga solo, también si el agente corre en otro panel de herdr o tmux. Si tú tenías cambios sin guardar, Neovim avisa y no los pisa: `:e!` toma la versión del disco y `:w` guarda la tuya. Revisa lo que cambió con `<leader>gsp` (vista del cambio) o `<leader>gdo` (diff).
+
+Las reglas para los agentes de este repo están en `AGENTS.md`; Claude y Gemini/Antigravity las leen a través de `CLAUDE.md` y `GEMINI.md`.
 
 ---
 
@@ -362,33 +408,33 @@ Flujo típico: `<leader>ff` abre → `ciw` edita → `gd` definición (si hay LS
 
 Tablas largas: [WORKFLOW.md](WORKFLOW.md). Aquí los atajos abreviados como `fg`, `pv`, `tt` o `cc` llevan **Espacio delante**. Atajos sin leader: `gcc`, `gd`, `K`, `s`, `af`; varios dependen de LSP o plugins.
 
-**which-key** — Espacio y espera. Es el índice.
+**which-key**: Espacio y espera. Es el índice.
 
-**telescope** — `<leader>ff` archivo, `fg` texto (necesitas ripgrep), `fo` recientes, `fk` atajos. `,,` también busca archivos.
+**telescope**: `<leader>ff` archivo, `fg` texto (necesitas ripgrep), `fo` recientes, `fk` atajos. `,,` también busca archivos.
 
-**neo-tree / oil** — `pv` árbol. `-` o `oe` editar la carpeta como si fuera un buffer (renombrar archivos escribiendo).
+**neo-tree / oil**: `pv` árbol. `-` o `oe` editar la carpeta como si fuera un buffer (renombrar archivos escribiendo).
 
-**harpoon** — archivos de cabecera del día: `ma` marca, `1`–`9` saltan.
+**harpoon**: archivos de cabecera del día: `<leader>ma` añade, `<leader>1` a `<leader>9` saltan.
 
-**Comment / surround / flash** — `gcc` comenta la línea. Surround: `ysiw"` pone comillas a la palabra, `ds"` las quita, `cs"'` cambia `"` por `'`. Flash: `s` salta a un carácter. **Visual `S` es surround, no Flash.**
+**Comment / surround / flash**: `gcc` comenta la línea. Surround: `ysiw"` pone comillas a la palabra, `ds"` las quita, `cs"'` cambia `"` por `'`. Flash: `s` salta a un carácter. **Visual `S` es surround, no Flash.**
 
-**treesitter** — resaltado basado en la estructura del código. En visual/operador: `af`/`if` función, `ac`/`ic` clase (cuando el parser está). Eso es *además* de `iw`/`i"`.
+**treesitter**: resaltado basado en la estructura del código. En visual/operador: `af`/`if` función, `ac`/`ic` clase (cuando el parser está). Eso es *además* de `iw`/`i"`.
 
-**LSP + cmp + none-ls** — `gd` definición, `K` documentación, `gR` referencias, `<leader>rn` renombrar, `ca` code action, `fm` format. Completar: `Ctrl-Space` en insertar. Dart lo arranca flutter-tools (Flutter SDK), no Mason.
+**LSP + cmp + none-ls**: `gd` definición, `K` documentación, `gR` referencias, `<leader>rn` renombrar, `<leader>ca` code action, `<leader>fm` formatear. Completar: `Ctrl-Space` en insertar. Dart lo arranca flutter-tools (Flutter SDK), no Mason.
 
-**trouble** — `xx` lista de problemas, `xn`/`xp` siguiente/anterior error.
+**trouble**: `xx` lista de problemas, `xn`/`xp` siguiente/anterior error.
 
-**git** — `gs` estado, `gn` siguiente hunk, `gsa` stage del hunk, `gc` commit, `gp` push. Diff grande: `gdo`. Conflictos de merge: `gco`/`gct`/`gcb`.
+**git**: `gs` estado, `gn` siguiente hunk, `gsa` stage del hunk, `gc` commit, `gp` push. Diff grande: `gdo`. Conflictos de merge: `gco`/`gct`/`gcb`.
 
-**terminal / runner / tests** — `tt` terminal, `jj` para salir del modo terminal. `r` ejecuta. `ten` test más cercano (si el runner del lenguaje existe).
+**terminal / runner / tests**: `tt` terminal, `jj` para salir del modo terminal. `r` ejecuta. `ten` test más cercano (si el runner del lenguaje existe).
 
-**DAP** — `db` breakpoint, `dc` continuar, `du` UI. Sin adaptador instalado no hace magia.
+**DAP**: `db` breakpoint, `dc` continuar, `du` UI. Sin adaptador instalado no hace magia.
 
-**Flutter** — `fla` run, `flr` reload, `fls` restart, `flq` quit.
+**Flutter**: `fla` run, `flr` reload, `fls` restart, `flq` quit.
 
-**Copilot / AI** — CopilotChat `cc`. Visual `<leader>as` prepara la selección y abre el CLI. Pega el prompt cuando esté listo, revisa y envía. Hay copia en el registro `a` aunque no haya portapapeles.
+**Copilot / AI**: CopilotChat `cc`. Visual `<leader>as` envía la selección al agente que elijas con tu instrucción, y el agente empieza a trabajar. Siempre queda una copia en el registro `a`.
 
-**undotree** — `<leader>u` en *normal* es el árbol de undo. En *visual*, `u` sigue siendo minúsculas.
+**undotree**: `<leader>u` en *normal* es el árbol de undo. En *visual*, `<leader>u` convierte a minúsculas; no activa el árbol.
 
 ---
 
@@ -415,15 +461,19 @@ Los prefijos coinciden. No copies el `.vimrc` clásico dentro de IdeaVim (lleva 
 
 # Orden sugerido en clase
 
-1. Mecanografía + `nvim --clean +Tutor` (una sesión).
-2. Modos, `hjkl`, `i`/`Esc`, `:w` `:q` (una sesión).
-3. Gramática `d/c/y` + movimientos y números (una sesión).
-4. Objetos `ciw` `ci"` `ci{` y visual (una sesión).
-5. Buscar, `:s`, buffers y `Ctrl-w` (una sesión).
-6. Registros y una macro tonta (media sesión).
-7. Instalar *esta* config y Telescope / git / LSP sobre un archivo real.
+Cada sesión: presentación del módulo, práctica en la página y, desde el capítulo 8, la configuración real.
 
-Si alguien pide “el atajo de buscar archivo” el día 1, se puede enseñar `<leader>ff`, pero que sepa que es azúcar. El editor de verdad es el capítulo 4.
+1. Mecanografía + `nvim --clean +Tutor` (capítulo 0, una sesión).
+2. Modos, insertar, `:w` `:q` y ayuda (capítulo 1, lección 1).
+3. Moverse sin flechas, números y `f`/`t` (capítulo 2, lección 2).
+4. Gramática `d/c/y` + movimientos, deshacer (capítulo 3, lección 3).
+5. Objetos `ciw` `ci"` `ci{` (capítulo 4, lección 4).
+6. Buscar y `:s` (capítulo 5, lección 5), registros y una macro (capítulo 6, lección 6).
+7. Buffers, ventanas y terminales (capítulo 7, lección 7).
+8. Instalar *esta* config y usarla como IDE: Telescope, git, LSP (capítulos 8 y 9, lección 8).
+9. IA con Neovim, plugins, IdeaVim y diagnóstico (capítulos 10 a 13).
+
+Si alguien pide “el atajo de buscar archivo” el día 1, se puede enseñar `<leader>ff`, pero que sepa que es azúcar. El editor de verdad es el capítulo 3.
 
 Grabación Udemy (secciones, vídeos, slides, checklist): [UDEMY.md](UDEMY.md).
 
