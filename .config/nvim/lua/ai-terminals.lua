@@ -113,13 +113,14 @@ function M.build_prompt(instruction, selection, where)
 end
 
 -- Starting the CLI with its prompt needs a real executable: Windows npm
--- shims (.cmd/.bat) run through cmd.exe, which mangles multi-line arguments.
+-- shims (.cmd/.bat/.ps1) run through a shell, which mangles multi-line arguments.
 local function can_start(a)
     if not a.start then
         return false
     end
     local exe = vim.fn.exepath(a.cmd:match("^%S+"))
-    return exe ~= "" and not exe:lower():match("%.cmd$") and not exe:lower():match("%.bat$")
+    local lower = exe:lower()
+    return exe ~= "" and not lower:match("%.cmd$") and not lower:match("%.bat$") and not lower:match("%.ps1$")
 end
 
 -- Open the agent on the right, in the project root (where it reads

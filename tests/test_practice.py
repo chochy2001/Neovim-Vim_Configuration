@@ -101,6 +101,89 @@ class ExerciseData(unittest.TestCase):
             playwright_keys(ex["keys"])
 
 
+def normal_commands(keys):
+    """Normal-mode command tokens of a key sequence, skipping typed text.
+
+    Text typed in Insert/Replace mode, the character after f t F T r, the
+    register after " q @ and the text of / ? : commands are not commands.
+    Text objects (iw, a(, ...) after an operator are returned as one token.
+    """
+    tokens = re.findall(r"<[^<>]+>|.", keys)
+    out, i = [], 0
+    def until(stop):
+        nonlocal i
+        while i < len(tokens) and tokens[i] not in stop:
+            i += 1
+        i += 1
+    while i < len(tokens):
+        t = tokens[i]
+        i += 1
+        if t.isdigit() and t != "0" or (t == "0" and out and out[-1].isdigit()):
+            out.append("count")
+            continue
+        if t in ("i", "a", "I", "A", "o", "O", "R", "s", "S", "C"):
+            out.append(t)
+            until({"<Esc>"})
+        elif t in ("f", "t", "F", "T", "r"):
+            out.append(t)
+            i += 1
+        elif t in ('"', "q", "@"):
+            out.append(t)
+            i += 1
+        elif t in ("/", "?", ":"):
+            out.append(t)
+            until({"<CR>"})
+        elif t == "g":
+            out.append("g" + (tokens[i] if i < len(tokens) else ""))
+            i += 1
+        elif t in ("d", "c", "y", ">", "<"):
+            out.append(t)
+            nxt = tokens[i] if i < len(tokens) else ""
+            if nxt in ("i", "a") and i + 1 < len(tokens):
+                out.append(nxt + tokens[i + 1])  # text object
+                i += 2
+            elif nxt in ("f", "t", "F", "T"):
+                out.append(nxt)
+                i += 2
+            elif nxt == "g":
+                out.append("g" + (tokens[i + 1] if i + 1 < len(tokens) else ""))  # dgg
+                i += 2
+            elif nxt:
+                out.append(nxt if nxt != t else t)  # motion, or doubled (dd)
+                i += 1
+            if t == "c":
+                until({"<Esc>"})  # c leaves you typing the new text
+        else:
+            out.append(t)
+    return out
+
+
+# What each lesson may use: its own commands plus everything before it.
+LESSON_COMMANDS = {
+    "lesson-1": {"i", "a", "I", "A", "o", "O", "R", "<Esc>", "<BS>", "<C-w>", "<C-u>"},
+    "lesson-2": {"h", "j", "k", "l", "w", "b", "e", "W", "B", "E", "ge", "0", "^", "$", "gg", "G",
+                 "f", "t", "F", "T", ";", ",", "%", "{", "}", "count"},
+    "lesson-3": {"x", "d", "c", "y", "p", "P", "D", "C", "J", "r", "~", ">", "<", "u", "<C-r>", ".", "s"},
+    "lesson-4": {"iw", "aw", "iW", "aW", 'i"', 'a"', "i'", "a'", "i(", "a(", "i)", "a)", "i{", "a{",
+                 "i[", "a[", "it", "at", "ip", "ap"},
+    "lesson-5": {"/", "?", "n", "N", "*", "#", ":"},
+    "lesson-6": {'"', "q", "@"},
+}
+
+
+class Progression(unittest.TestCase):
+    def test_no_exercise_uses_a_command_taught_in_a_later_lesson(self):
+        allowed, problems = set(), []
+        for lesson in DATA["lessons"]:
+            allowed |= LESSON_COMMANDS.get(lesson["id"], set())
+            for ex in lesson.get("exercises", []):
+                # a doubled operator (dd, cc, yy, >>) is the operator itself
+                late = [t for t in normal_commands(ex["keys"]) if t not in allowed]
+                if late:
+                    problems.append("%s %s uses %s" % (lesson["id"], ex["id"], sorted(set(late))))
+        self.assertEqual([], problems, "\n".join(problems))
+
+
 class Quiet(http.server.SimpleHTTPRequestHandler):
     def log_message(self, *args):
         pass

@@ -3,6 +3,10 @@ on:
   push:
   pull_request:
   workflow_dispatch:
+  # Weekly run: catches breakage from outside (runner images, Neovim, Mason
+  # registry, plugin hosts) even when nobody pushes.
+  schedule:
+    - cron: "17 6 * * 1"
 permissions:
   contents: read
 jobs:
@@ -41,6 +45,9 @@ jobs:
           neovim: true
           version: v0.12.6
       - run: python scripts/vim_reference.py --check
+      # The practice page cheat sheet is built from WORKFLOW.md: a doc edit
+      # without rebuilding exercises.json must fail here, not only on Pages.
+      - run: python scripts/build_practice.py --check
       - run: flutter pub get
         working-directory: trainer
       - run: flutter analyze

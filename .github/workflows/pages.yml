@@ -7,7 +7,10 @@ on:
     branches: [main]
     paths:
       - "practice/**"
+      - "course/slides/**"
+      - "tests/test_slides.py"
       - "scripts/build_practice.py"
+      - "WORKFLOW.md"
       - "scripts/export_katas.dart"
       - "trainer/lib/data/content.dart"
       - "tests/vim_reference.lua"
@@ -16,13 +19,19 @@ on:
   pull_request:
     paths:
       - "practice/**"
+      - "course/slides/**"
+      - "tests/test_slides.py"
       - "scripts/build_practice.py"
+      - "WORKFLOW.md"
       - "scripts/export_katas.dart"
       - "trainer/lib/data/content.dart"
       - "tests/vim_reference.lua"
       - "tests/test_practice.py"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
+  # Weekly: the page and slides must still build and pass in a fresh browser.
+  schedule:
+    - cron: "37 6 * * 1"
 
 permissions:
   contents: read
@@ -64,6 +73,11 @@ jobs:
           PRACTICE_REQUIRE_BROWSER: "1"
         run: python -m unittest tests/test_practice.py -v
         timeout-minutes: 10
+      - name: Slides render and every demo matches real Neovim
+        env:
+          SLIDES_REQUIRE_BROWSER: "1"
+        run: python -m unittest tests/test_slides.py -v
+        timeout-minutes: 10
 
   deploy:
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
@@ -81,8 +95,15 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: actions/configure-pages@v5
+      # Practice page at the root, the course slides under /slides/.
+      - name: Assemble site
+        run: |
+          mkdir -p _site/slides
+          cp -R practice/. _site/
+          rm -rf _site/vendor/node_modules
+          cp -R course/slides/. _site/slides/
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: practice/
+          path: _site/
       - id: deployment
         uses: actions/deploy-pages@v4

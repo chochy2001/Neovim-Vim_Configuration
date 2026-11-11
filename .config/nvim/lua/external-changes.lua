@@ -83,8 +83,10 @@ function M.watch(buf)
     if not handle or not timer then
         return
     end
-    local ok = handle:start(path, {}, function(err, _, events)
-        if err then
+    local base = vim.fs.basename(path)
+    local ok = handle:start(path, {}, function(err, name, events)
+        -- On Windows the watch covers the whole folder: ignore other files.
+        if err or (name and name ~= "" and vim.fs.basename(name) ~= base) then
             return
         end
         timer:stop()
