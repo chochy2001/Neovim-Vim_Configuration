@@ -21,6 +21,36 @@ ROOT = Path(__file__).resolve().parents[1]
 # ---------------------------------------------------------------------------
 
 REF_META = {
+    "insert-before": {
+        "titleEs": "Insertar antes del cursor (i)",
+        "titleEn": "Insert before the cursor (i)",
+        "hintEs": "i entra en modo Insertar justo antes del carácter del cursor. Escribe a y vuelve a Normal con Esc.",
+        "hintEn": "i enters Insert mode right before the character under the cursor. Type a and go back to Normal with Esc.",
+    },
+    "append-after": {
+        "titleEs": "Añadir después del cursor (a)",
+        "titleEn": "Append after the cursor (a)",
+        "hintEs": "a entra en modo Insertar justo después del carácter del cursor. Escribe b y pulsa Esc.",
+        "hintEn": "a enters Insert mode right after the character under the cursor. Type b and press Esc.",
+    },
+    "append-end": {
+        "titleEs": "Añadir al final de la línea (A)",
+        "titleEn": "Append at the end of the line (A)",
+        "hintEs": "A entra en modo Insertar al final de la línea, esté donde esté el cursor. Escribe ! y pulsa Esc.",
+        "hintEn": "A enters Insert mode at the end of the line wherever the cursor is. Type ! and press Esc.",
+    },
+    "open-below": {
+        "titleEs": "Abrir una línea debajo (o)",
+        "titleEn": "Open a line below (o)",
+        "hintEs": "o crea una línea nueva debajo y entra en modo Insertar. Escribe two y pulsa Esc.",
+        "hintEn": "o creates a new line below and enters Insert mode. Type two and press Esc.",
+    },
+    "open-above": {
+        "titleEs": "Abrir una línea encima (O)",
+        "titleEn": "Open a line above (O)",
+        "hintEs": "O (mayúscula) crea una línea nueva encima y entra en modo Insertar. Escribe one y pulsa Esc.",
+        "hintEn": "O (capital) creates a new line above and enters Insert mode. Type one and press Esc.",
+    },
     "change-word": {
         "titleEs": "Cambia una palabra (cw)",
         "titleEn": "Change a word (cw)",
@@ -286,72 +316,79 @@ EXCLUSIONS = {
 # Only sections 2-5 have interactive exercises; 6-9 are reference only.
 # ---------------------------------------------------------------------------
 
+# Course route, from less to more: each lesson only uses what earlier ones
+# taught (the slides follow the same numbering, course/slides/deck.json).
 LESSONS = [
+    {
+        "id": "lesson-1",
+        "section": 1,
+        "titleEs": "Lección 1: Modos y sobrevivir",
+        "titleEn": "Lesson 1: Modes and survival",
+        "descriptionEs": (
+            "Vim es un editor modal: en modo Normal las teclas son órdenes y en modo "
+            "Insertar escriben texto. i, a, I, A, o y O entran a Insertar en sitios "
+            "distintos; Esc vuelve a Normal."
+        ),
+        "descriptionEn": (
+            "Vim is modal: in Normal mode keys are commands, in Insert mode they type "
+            "text. i, a, I, A, o and O enter Insert mode at different places; Esc goes "
+            "back to Normal."
+        ),
+        "exerciseIds": [
+            "insert-before",
+            "append-after",
+            "kata-insert",
+            "insert-start",
+            "append-end",
+            "open-below",
+            "open-above",
+            "insert-backspace",
+        ],
+    },
     {
         "id": "lesson-2",
         "section": 2,
-        "titleEs": "Lección 2: Modos",
-        "titleEn": "Lesson 2: Modes",
+        "titleEs": "Lección 2: Moverse sin flechas",
+        "titleEn": "Lesson 2: Moving without arrow keys",
         "descriptionEs": (
-            "Vim es un editor modal. La misma tecla hace cosas distintas "
-            "según el modo. Estos ejercicios practican entrar y salir del "
-            "modo insertar con distintas teclas."
+            "h j k l, palabras (w), párrafos ({ }), principio y final (gg G), "
+            "buscar en la línea (f t ;) y la pareja de un paréntesis (%). "
+            "Un número delante multiplica el movimiento: 3gg, 2fX."
         ),
         "descriptionEn": (
-            "Vim is a modal editor. The same key does different things "
-            "depending on the mode. These exercises practise entering and "
-            "exiting insert mode using different keys."
+            "h j k l, words (w), paragraphs ({ }), start and end (gg G), "
+            "find on the line (f t ;) and a bracket's pair (%). "
+            "A number in front multiplies the motion: 3gg, 2fX."
         ),
         "exerciseIds": [
-            "kata-insert",
-            "insert-start",
-            "change-line",
-            "change-empty",
+            "kata-hjkl",
+            "empty-word-motion",
+            "paragraph-next",
+            "paragraph-previous",
+            "counted-gg",
+            "counted-find",
+            "repeat-till",
+            "backwards-till-repeat",
+            "cancel-find",
+            "kata-percent",
+            "cancel-count",
+            "insert-join-backspace",
         ],
     },
     {
         "id": "lesson-3",
         "section": 3,
-        "titleEs": "Lección 3: Moverse sin flechas",
-        "titleEn": "Lesson 3: Moving without arrow keys",
+        "titleEs": "Lección 3: Gramática: operador + movimiento",
+        "titleEn": "Lesson 3: Grammar: operator + motion",
         "descriptionEs": (
-            "hjkl, movimientos por palabra (w, b, e), f/t, {/}, gg/G y %. "
-            "Poner un número delante de casi cualquier movimiento lo multiplica: "
-            "3j baja tres líneas, 2fX busca la segunda X."
+            "Un operador (d borrar, c cambiar, y copiar, > sangrar) seguido de un "
+            "movimiento actúa sobre ese tramo; doblado (dd, cc, yy, >>) actúa sobre la "
+            "línea. u deshace."
         ),
         "descriptionEn": (
-            "hjkl, word motions, f/t, {/}, gg/G and %. "
-            "Prepending a number to almost any motion multiplies it: "
-            "3j moves down three lines, 2fX finds the second X."
-        ),
-        "exerciseIds": [
-            "kata-hjkl",
-            "counted-gg",
-            "paragraph-next",
-            "paragraph-previous",
-            "empty-word-motion",
-            "counted-find",
-            "find-adjacent",
-            "repeat-till",
-            "backwards-till-repeat",
-            "kata-percent",
-            "cancel-count",
-        ],
-    },
-    {
-        "id": "lesson-4",
-        "section": 4,
-        "titleEs": "Lección 4: Gramática: operador + movimiento",
-        "titleEn": "Lesson 4: Grammar: operator + motion",
-        "descriptionEs": (
-            "d, c, y más un movimiento (o doble = línea completa). "
-            "u para deshacer, Ctrl-r para rehacer. "
-            ". repite el último cambio."
-        ),
-        "descriptionEn": (
-            "d, c, y plus a motion (or doubled = whole line). "
-            "u to undo, Ctrl-r to redo. "
-            ". repeats the last change."
+            "An operator (d delete, c change, y yank, > indent) followed by a motion "
+            "acts on that stretch; doubled (dd, cc, yy, >>) it acts on the line. "
+            "u undoes."
         ),
         "exerciseIds": [
             "kata-x",
@@ -359,122 +396,75 @@ LESSONS = [
             "kata-dw",
             "delete-last-word",
             "kata-D",
+            "reverse-delete",
             "change-word",
             "change-last-word",
+            "change-line",
+            "change-empty",
             "change-tail",
-            "reverse-delete",
-            "kata-join",
             "kata-yy",
+            "kata-join",
             "counted-replace",
-            "insert-backspace",
-            "insert-join-backspace",
+            "kata-indent",
+            "unindent-lines",
             "cancel-operator",
-            "cancel-find",
             "delete-undo-twice",
             "insert-undo",
-            "change-undo",
-            "new-line-undo",
-            "open-above-undo",
         ],
     },
     {
-        "id": "lesson-5",
-        "section": 5,
-        "titleEs": "Lección 5: Objetos de texto",
-        "titleEn": "Lesson 5: Text objects",
+        "id": "lesson-4",
+        "section": 4,
+        "titleEs": "Lección 4: Objetos de texto",
+        "titleEn": "Lesson 4: Text objects",
         "descriptionEs": (
-            "i (inner) y a (around) aplicados a palabras, comillas, "
-            "paréntesis, etc. La receta más usada al programar: "
-            "ciw, ci\", ci{."
+            "i (interior) y a (alrededor) seleccionan una palabra, unas comillas o unos "
+            "paréntesis completos sin importar dónde esté el cursor dentro. La receta "
+            "más usada al programar: ciw, ci\", ci{."
         ),
         "descriptionEn": (
-            "i (inner) and a (around) applied to words, quotes, "
-            "parentheses, etc. The most-used recipe when coding: "
-            "ciw, ci\", ci{."
+            "i (inner) and a (around) select a whole word, quotes or brackets wherever "
+            "the cursor is inside them. The most-used recipe when coding: ciw, ci\", ci{."
         ),
         "exerciseIds": [
+            "kata-diw",
             "kata-ciw",
             "inner-last-word",
-            "kata-diw",
             "kata-quotes",
             "inner-quotes-at-open",
             "yank-inner-and-paste",
             "empty-inner-change-undo",
-            "kata-indent",
-            "unindent-lines",
         ],
     },
 ]
 
 REFERENCE_SECTION_NOTES = [
     {
+        "id": "lesson-5",
+        "section": 5,
+        "titleEs": "Lección 5: Buscar y sustituir",
+        "titleEn": "Lesson 5: Search and replace",
+        "exerciseIds": [],
+    },
+    {
         "id": "lesson-6",
         "section": 6,
-        "titleEs": "Lección 6: Buscar y sustituir",
-        "titleEn": "Lesson 6: Search and replace",
-        "descriptionEs": (
-            "/palabra busca hacia adelante, ?palabra hacia atrás. "
-            "n/N siguiente/anterior. :%s/viejo/nuevo/g sustituye en todo el archivo. "
-            "Estos comandos no se pueden practicar directamente en este entrenador "
-            "(requieren la línea de comandos de Vim)."
-        ),
-        "descriptionEn": (
-            "/word searches forward, ?word backward. "
-            "n/N next/previous. :%s/old/new/g substitutes across the whole file. "
-            "These commands cannot be practised directly in this trainer "
-            "(they require Vim's command line)."
-        ),
+        "titleEs": "Lección 6: Registros y macros",
+        "titleEn": "Lesson 6: Registers and macros",
         "exerciseIds": [],
     },
     {
         "id": "lesson-7",
         "section": 7,
-        "titleEs": "Lección 7: Buffers, ventanas y pestañas",
-        "titleEn": "Lesson 7: Buffers, windows and tabs",
-        "descriptionEs": (
-            ":e archivo, :ls, :b2, Ctrl-w v/s, Ctrl-w hjkl. "
-            "No se pueden practicar en el navegador."
-        ),
-        "descriptionEn": (
-            ":e file, :ls, :b2, Ctrl-w v/s, Ctrl-w hjkl. "
-            "Cannot be practised in the browser."
-        ),
+        "titleEs": "Lección 7: Buffers, ventanas y terminales",
+        "titleEn": "Lesson 7: Buffers, windows and terminals",
         "exerciseIds": [],
     },
     {
         "id": "lesson-8",
         "section": 8,
-        "titleEs": "Lección 8: Registros y macros",
-        "titleEn": "Lesson 8: Registers and macros",
-        "descriptionEs": (
-            "\"ayy copia al registro a. \"ap pega. "
-            "qa graba macro, q para, @a reproduce. "
-            "No se pueden practicar en el navegador (los registros "
-            "y macros tienen soporte parcial)."
-        ),
-        "descriptionEn": (
-            "\"ayy copies to register a. \"ap pastes. "
-            "qa records a macro, q stops, @a replays. "
-            "Cannot be practised in the browser (registers and macros "
-            "have only partial support)."
-        ),
-        "exerciseIds": [],
-    },
-    {
-        "id": "lesson-9",
-        "section": 9,
-        "titleEs": "Lección 9: Ayuda, guardar, salir",
-        "titleEn": "Lesson 9: Help, save, quit",
-        "descriptionEs": (
-            ":w guardar, :q salir, :wq o ZZ guardar y salir, :q! descartar. "
-            ":help x, :help :w, Ctrl-] seguir enlace. "
-            "No se pueden practicar en el navegador."
-        ),
-        "descriptionEn": (
-            ":w save, :q quit, :wq or ZZ save and quit, :q! discard. "
-            ":help x, :help :w, Ctrl-] follow link. "
-            "Cannot be practised in the browser."
-        ),
+        "titleEs": "Lección 8: Tu configuración",
+        "titleEn": "Lesson 8: Your configuration",
         "exerciseIds": [],
     },
 ]
@@ -549,6 +539,11 @@ def build_exercises_json():
     ref_cases = [
         {"id": name, "start": start, "keys": keys}
         for name, start, keys in [
+            ("insert-before", "bc", "ia<Esc>"),
+            ("append-after", "ac", "ab<Esc>"),
+            ("append-end", "end", "A!<Esc>"),
+            ("open-below", "one", "otwo<Esc>"),
+            ("open-above", "two", "Oone<Esc>"),
             ("change-word", "old new", "cwNEW<Esc>"),
             ("change-last-word", "old", "cwNEW<Esc>"),
             ("delete-last-word", "old", "dw"),

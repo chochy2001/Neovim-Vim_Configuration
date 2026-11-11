@@ -51,13 +51,13 @@ async function main() {
   renderSidebar();
   renderProgressBar();
 
-  // Start on the first lesson that has exercises
-  const firstLesson = DATA.lessons.find(l => (l.exercises || []).length > 0);
-  if (firstLesson) {
-    showLesson(firstLesson.id);
-  } else {
-    showLesson(DATA.lessons[0].id);
-  }
+  // #lesson-N opens that lesson (links from the slides); otherwise lesson 1.
+  const fromHash = () => DATA.lessons.find(l => `#${l.id}` === location.hash);
+  showLesson((fromHash() || DATA.lessons[0]).id);
+  window.addEventListener("hashchange", () => {
+    const lesson = fromHash();
+    if (lesson) showLesson(lesson.id);
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -266,11 +266,16 @@ function showLesson(lessonId, destroyEditors = true) {
 
   const exercises = lesson.exercises || [];
 
+  // Keep the URL in sync so slides can link straight to a lesson.
+  if (location.hash !== `#${lesson.id}`) window.history.replaceState(null, "", `#${lesson.id}`); // "history" is CodeMirror's undo import
+
   if (exercises.length === 0) {
     // Reference-only section
     renderRefSection(lesson, main);
     return;
   }
+  // A lesson can also carry reference text (lesson 1: save and quit).
+  if (REFERENCE_CONTENT[lesson.id]) renderRefSection(lesson, main, true);
 
   exercises.forEach((ex, i) => {
     const card = buildExerciseCard(ex, i, exercises.length);
@@ -300,14 +305,14 @@ function scrollToExercise(exId) {
 // ---------------------------------------------------------------------------
 
 const REFERENCE_CONTENT = {
-  "lesson-6": {
+  "lesson-5": {
     es: {
       title: "Buscar y sustituir",
       body: `Vim tiene un motor de búsqueda y sustitución integrado en la línea de comandos.
 
 Búsqueda: escribe <code>/patrón</code> y Enter para buscar hacia adelante, <code>?patrón</code> hacia atrás. Repite con <code>n</code> (siguiente) y <code>N</code> (anterior). <code>*</code> busca la palabra bajo el cursor.
 
-Sustitución: <code>:s/viejo/nuevo/</code> cambia la primera ocurrencia en la línea. <code>:s/viejo/nuevo/g</code> cambia todas. <code>:%s/viejo/nuevo/g</code> cambia en todo el fichero. Añade la bandera <code>c</code> para confirmar cada cambio.
+Sustitución: <code>:s/viejo/nuevo/</code> cambia la primera ocurrencia en la línea. <code>:s/viejo/nuevo/g</code> cambia todas. <code>:%s/viejo/nuevo/g</code> cambia en todo el archivo. Añade la bandera <code>c</code> para confirmar cada cambio.
 
 Estos comandos no se pueden emular fielmente en el navegador, por lo que esta lección es de referencia.`,
     },
@@ -324,27 +329,31 @@ These commands cannot be reliably emulated in the browser, so this lesson is ref
   },
   "lesson-7": {
     es: {
-      title: "Buffers, ventanas y pestañas",
-      body: `Vim puede tener varios ficheros abiertos en memoria al mismo tiempo.
+      title: "Buffers, ventanas, pestañas y terminales",
+      body: `Vim puede tener varios archivos abiertos en memoria al mismo tiempo.
 
-<b>Buffers:</b> <code>:e fichero</code> abre un fichero. <code>:ls</code> lista los buffers. <code>:bn</code> va al siguiente, <code>:bp</code> al anterior. <code>:bd</code> cierra el buffer actual.
+<b>Buffers:</b> <code>:e archivo</code> abre un archivo. <code>:ls</code> lista los buffers. <code>:bn</code> va al siguiente, <code>:bp</code> al anterior. <code>:bd</code> cierra el buffer actual.
 
 <b>Ventanas (splits):</b> <code>:sp</code> divide horizontalmente, <code>:vsp</code> verticalmente. Muévete entre ventanas con <code>Ctrl-w h/j/k/l</code>. Cierra con <code>:q</code> o <code>Ctrl-w q</code>.
 
-<b>Pestañas:</b> <code>:tabnew</code> abre una nueva pestaña. <code>gt</code> va a la siguiente, <code>gT</code> a la anterior. <code>:tabclose</code> cierra la actual.`,
+<b>Pestañas:</b> <code>:tabnew</code> abre una nueva pestaña. <code>gt</code> va a la siguiente, <code>gT</code> a la anterior. <code>:tabclose</code> cierra la actual.
+
+<b>Terminales (esta configuración):</b> <code>&lt;leader&gt;tv</code> abre una terminal a la derecha y <code>&lt;leader&gt;th</code> abajo; con un número delante abres otra (<code>2&lt;leader&gt;th</code>). <code>jj</code> vuelve a modo Normal dentro de la terminal y <code>Ctrl-h/j/k/l</code> cambia de ventana. <code>&lt;leader&gt;ta</code> las oculta o muestra sin cerrar los procesos y <code>&lt;leader&gt;tl</code> elige una.`,
     },
     en: {
-      title: "Buffers, windows and tabs",
+      title: "Buffers, windows, tabs and terminals",
       body: `Vim can keep several files open in memory at the same time.
 
 <b>Buffers:</b> <code>:e file</code> opens a file. <code>:ls</code> lists buffers. <code>:bn</code> goes to the next, <code>:bp</code> to the previous. <code>:bd</code> closes the current buffer.
 
 <b>Windows (splits):</b> <code>:sp</code> splits horizontally, <code>:vsp</code> vertically. Move between windows with <code>Ctrl-w h/j/k/l</code>. Close with <code>:q</code> or <code>Ctrl-w q</code>.
 
-<b>Tabs:</b> <code>:tabnew</code> opens a new tab. <code>gt</code> goes to the next, <code>gT</code> to the previous. <code>:tabclose</code> closes the current one.`,
+<b>Tabs:</b> <code>:tabnew</code> opens a new tab. <code>gt</code> goes to the next, <code>gT</code> to the previous. <code>:tabclose</code> closes the current one.
+
+<b>Terminals (this configuration):</b> <code>&lt;leader&gt;tv</code> opens a terminal on the right and <code>&lt;leader&gt;th</code> at the bottom; a number in front opens another one (<code>2&lt;leader&gt;th</code>). <code>jj</code> goes back to Normal mode inside the terminal and <code>Ctrl-h/j/k/l</code> switches windows. <code>&lt;leader&gt;ta</code> hides or shows them without stopping their processes and <code>&lt;leader&gt;tl</code> picks one.`,
     },
   },
-  "lesson-8": {
+  "lesson-6": {
     es: {
       title: "Registros y macros",
       body: `Vim permite guardar texto en registros y grabar secuencias de teclas.
@@ -366,7 +375,25 @@ These commands cannot be reliably emulated in the browser, so this lesson is ref
 <b>Tip:</b> paste the macro with <code>"ap</code>, edit it, go to the start of the line with <code>0</code> and save it back with <code>"ay$</code>.`,
     },
   },
-  "lesson-9": {
+  "lesson-8": {
+    es: {
+      title: "Tu configuración",
+      body: `Ya dominas Vim sin plugins. Ahora pasa a la configuración real de este curso: instálala siguiendo el README (Windows, macOS o Linux) y pon una Nerd Font en tu terminal.
+
+La tecla líder es <b>Espacio</b>: <code>&lt;leader&gt;ff</code> significa Espacio, f, f. Pulsa Espacio y espera un momento: aparece un menú con todos los grupos de atajos.
+
+Abajo tienes todos los atajos de la configuración, sacados de WORKFLOW.md. Búscalos por nombre o por tecla.`,
+    },
+    en: {
+      title: "Your configuration",
+      body: `You now know Vim without plugins. Move on to this course's real configuration: install it following the README (Windows, macOS or Linux) and set a Nerd Font in your terminal.
+
+The leader key is <b>Space</b>: <code>&lt;leader&gt;ff</code> means Space, f, f. Press Space and wait a moment: a menu shows every group of shortcuts.
+
+Below are all the shortcuts of the configuration, taken from WORKFLOW.md. Search them by name or key.`,
+    },
+  },
+  "lesson-1": {
     es: {
       title: "Ayuda, guardar y salir",
       body: `Los comandos esenciales para el día a día.
@@ -392,7 +419,7 @@ These commands cannot be reliably emulated in the browser, so this lesson is ref
 
 // Key shortcut groups from WORKFLOW.md
 
-function renderRefSection(lesson, container) {
+function renderRefSection(lesson, container, beforeExercises = false) {
   const content = REFERENCE_CONTENT[lesson.id];
   if (!content) {
     const sec = document.createElement("div");
@@ -408,14 +435,22 @@ function renderRefSection(lesson, container) {
   sec.innerHTML = `
     <h2>${data.title}</h2>
     <p>${data.body.replace(/\n\n/g, '</p><p>')}</p>
-    <p class="ref-note">${LANG === "es"
-      ? "Practica esta lección en Neovim: el navegador no reproduce con fidelidad la línea de comandos (:), los registros, las ventanas ni los buffers."
-      : "Practise this lesson in Neovim: the browser cannot faithfully reproduce the command line (:), registers, windows or buffers."}</p>
+    <p class="ref-note">${beforeExercises
+      ? (LANG === "es"
+        ? "Estas órdenes se usan en Neovim. Los ejercicios de abajo practican los modos en el navegador."
+        : "These commands are used in Neovim. The exercises below practise the modes in the browser.")
+      : lesson.id === "lesson-8"
+      ? (LANG === "es"
+        ? "Estos atajos existen en la configuración real: instálala (README) y pruébalos en Neovim."
+        : "These shortcuts exist in the real configuration: install it (README) and try them in Neovim.")
+      : (LANG === "es"
+        ? "Practica esta lección en Neovim: el navegador no reproduce con fidelidad la línea de comandos (:), los registros, las ventanas ni los buffers."
+        : "Practise this lesson in Neovim: the browser cannot faithfully reproduce the command line (:), registers, windows or buffers.")}</p>
   `;
   container.appendChild(sec);
 
-  // Shortcut cheatsheet (only on lesson-9 as a summary)
-  if (lesson.id === "lesson-9") {
+  // The whole cheat sheet closes the route, in "Your configuration".
+  if (lesson.id === "lesson-8") {
     renderCheatsheet(container);
   }
 }

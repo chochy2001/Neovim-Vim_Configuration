@@ -216,7 +216,7 @@ class PracticePage(unittest.TestCase):
 
     def test_cheat_sheet_search_filters_rows(self):
         page = self.fresh_page()
-        page.click('.sidebar-lesson-title[data-lesson-id="lesson-9"]')
+        page.click('.sidebar-lesson-title[data-lesson-id="lesson-8"]')
         rows = page.locator(".shortcut-row")
         total = rows.count()
         self.assertGreater(total, 10)
@@ -251,10 +251,28 @@ class PracticePage(unittest.TestCase):
         self.assertIn("Lección", page.locator(".sidebar").inner_text())
         page.context.close()
 
+    def test_hash_opens_a_lesson_for_links_from_the_slides(self):
+        page = self.browser.new_context().new_page()
+        page.goto(self.url + "#lesson-3")
+        page.wait_for_selector(".sidebar-ex-btn", timeout=15_000)
+        lesson = next(l for l in DATA["lessons"] if l["id"] == "lesson-3")
+        self.assertEqual(lesson["titleEs"], page.locator(".main-content .lesson-header h2").inner_text())
+        page.evaluate("location.hash = '#lesson-7'")
+        page.wait_for_timeout(200)
+        self.assertIn("terminal", page.locator(".main-content").inner_text().lower())
+        page.context.close()
+
+    def test_lessons_go_from_less_to_more(self):
+        # Every lesson is numbered in order and the route ends in the config.
+        ids = [l["id"] for l in DATA["lessons"]]
+        self.assertEqual(["lesson-%d" % n for n in range(1, len(ids) + 1)], ids)
+        self.assertTrue(DATA["lessons"][0]["exercises"], "the route starts practising")
+        self.assertIn("configur", DATA["lessons"][-1]["titleEs"].lower())
+
     def test_phone_width_has_no_horizontal_scroll(self):
         page = self.fresh_page(viewport={"width": 375, "height": 740})
         self.assertFalse(page.evaluate("document.documentElement.scrollWidth > innerWidth"))
-        page.click('.sidebar-lesson-title[data-lesson-id="lesson-9"]')
+        page.click('.sidebar-lesson-title[data-lesson-id="lesson-8"]')
         self.assertFalse(
             page.evaluate("document.documentElement.scrollWidth > innerWidth"),
             "cheat sheet overflows at phone width",
