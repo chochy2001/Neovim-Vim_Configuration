@@ -280,9 +280,11 @@ tmux-style workflow: `<leader>tv` opens a shell on the right, `2<leader>th` a se
 | `<leader>au` | Normal | cursor agent terminal (`cursor-agent`) |
 | `<leader>an` | Normal | antigravity terminal (`agy`) |
 | `<leader>ai` | Normal | kimi terminal |
-| `<leader>as` | Visual | Prepare selection for an agent (picker + instruction) |
+| `<leader>as` | Visual | Send the selection to an agent with an instruction (picker) |
 
-Workflow: select code → `<leader>as` → pick agent → type what to change → the CLI opens and the prompt is copied to the clipboard and register a. Paste when ready, review, then submit. Missing CLIs show their install command instead of failing.
+Workflow: select code → `<leader>as` → pick agent → type what to change (for example "refactor this and add tests"). The file is saved, and the agent opens on the right, in the repository root (where it reads `AGENTS.md`), already working on a prompt with your instruction, the file and line range, and the selected code. When it saves, the file reloads in your window; review it with `<leader>gsp` or `<leader>gdo`.
+
+Every agent starts this way except kimi, which has no flag for an initial prompt, and Windows npm shims (`.cmd`), which cannot pass multi-line text: there the CLI opens and the prompt is copied to the clipboard and register a, so paste it, review and submit. Missing CLIs show their install command instead of failing.
 
 Files changed on disk by an agent reload automatically, even while Neovim keeps focus: every open file is watched (`lua/external-changes.lua`), with `checktime` on focus, terminal leave, buffer switch and CursorHold as a fallback. A buffer with unsaved edits is never overwritten: you get a warning, then `:e!` takes the disk version and `:w` keeps yours.
 

@@ -119,6 +119,91 @@ end, 1500)
     vim.fn.delete(path)
     vim.fn.delete(out)
 end)
+test("the AI workflow: browse a repo, select code, an agent edits it, Neovim reloads", function()
+    -- A fake `codex` on PATH records its arguments and rewrites the file like
+    -- a real agent (write a temp file, rename it over the original).
+    local dir = vim.fn.tempname()
+    local bin, repo = dir .. "/bin", dir .. "/repo"
+    vim.fn.mkdir(bin, "p")
+    vim.fn.mkdir(repo .. "/src", "p")
+    vim.fn.writefile({ "# Rules for agents" }, repo .. "/AGENTS.md")
+    local file = repo .. "/src/app.lua"
+    vim.fn.writefile({ "local x = 1", "local function add(a, b)", "return a+b end", "return add" }, file)
+    local args, out = dir .. "/args.txt", dir .. "/out.json"
+    local windows = vim.fn.has("win32") == 1
+    if windows then
+        -- npm shims are .cmd: the config must fall back to the clipboard.
+        vim.fn.writefile({ "@echo off", "ping -n 30 127.0.0.1 >nul" }, bin .. "/codex.cmd")
+    else
+        vim.fn.writefile({
+            "#!/bin/sh",
+            'printf "%s\\n" "$PWD" "$@" > "$AGENT_ARGS"',
+            'printf "local x = 1\\nlocal function add(a, b)\\n    return a + b\\nend\\nreturn add\\n" > "$AGENT_FILE.tmp"',
+            'mv "$AGENT_FILE.tmp" "$AGENT_FILE"',
+            "sleep 30",
+        }, bin .. "/codex")
+        vim.fn.setfperm(bin .. "/codex", "rwxr-xr-x")
+    end
+    local script = string.format(
+        [==[
+vim.defer_fn(function()
+    local r = {}
+    vim.cmd.cd(%q)
+    vim.cmd("Neotree show")
+    vim.wait(3000, function() return vim.fn.bufwinid(vim.fn.bufnr("neo-tree filesystem")) ~= -1 or #vim.tbl_filter(function(w) return vim.bo[vim.api.nvim_win_get_buf(w)].filetype == "neo-tree" end, vim.api.nvim_list_wins()) > 0 end)
+    r.tree = #vim.tbl_filter(function(w) return vim.bo[vim.api.nvim_win_get_buf(w)].filetype == "neo-tree" end, vim.api.nvim_list_wins()) > 0
+    vim.cmd("Neotree close")
+    vim.cmd.edit(%q)
+    vim.cmd("normal! 2GVj")
+    vim.ui.input = function(_, cb) cb("Refactor this") end
+    require("ai-terminals").send_visual("codex")
+    if %s then
+        r.register = vim.fn.getreg("a")
+    else
+        vim.wait(8000, function() return vim.fn.filereadable(%q) == 1 end)
+        r.args = vim.fn.readfile(%q)
+        local layout = vim.fn.winlayout()
+        local last = layout[1] == "row" and layout[2][#layout[2]]
+        r.agent_right = last and last[1] == "leaf" and vim.bo[vim.api.nvim_win_get_buf(last[2])].buftype == "terminal"
+        local src = vim.fn.bufnr(%q)
+        vim.wait(8000, function() return vim.api.nvim_buf_get_lines(src, 2, 3, false)[1] == "    return a + b" end)
+        r.reloaded = vim.api.nvim_buf_get_lines(src, 0, -1, false)
+    end
+    vim.fn.writefile({ vim.json.encode(r) }, %q)
+    vim.cmd("qa!")
+end, 1500)
+]==],
+        repo,
+        file,
+        tostring(windows),
+        args,
+        args,
+        file,
+        out
+    )
+    local env =
+        { AGENT_ARGS = args, AGENT_FILE = file, PATH = bin .. (windows and ";" or ":") .. vim.env.PATH }
+    local result = vim.system(
+        { vim.v.progpath, "--headless", "-u", "tests/integration_init.lua", "-c", "lua " .. script },
+        { env = env }
+    ):wait(60000)
+    assert(result.code == 0, "nvim exited with " .. tostring(result.code))
+    local r = vim.json.decode(vim.fn.readfile(out)[1])
+    assert(r.tree, "the file tree did not open")
+    if windows then
+        assert(r.register:find("Refactor this", 1, true), "prompt not in register a: " .. r.register)
+        assert(r.register:find("src/app.lua (lines 2-3)", 1, true), r.register)
+    else
+        local argv = table.concat(r.args, "\n")
+        eq(vim.fs.normalize(vim.uv.fs_realpath(repo)), vim.fs.normalize(vim.uv.fs_realpath(r.args[1])))
+        assert(argv:find("Refactor this", 1, true), "instruction missing: " .. argv)
+        assert(argv:find("File: src/app.lua (lines 2-3)", 1, true), "location missing: " .. argv)
+        assert(argv:find("local function add(a, b)\nreturn a+b end", 1, true), "selection missing: " .. argv)
+        assert(r.agent_right, "agent did not open on the right")
+        eq({ "local x = 1", "local function add(a, b)", "    return a + b", "end", "return add" }, r.reloaded)
+    end
+    vim.fn.delete(dir, "rf")
+end)
 test("RunFile preserves literal template words in paths", function()
     local dir = vim.fn.tempname() .. " space's $file $dir"
     vim.fn.mkdir(dir, "p")

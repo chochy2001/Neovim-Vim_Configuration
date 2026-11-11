@@ -165,10 +165,12 @@ Terminales: `<leader>tv` derecha, `<leader>th` abajo, `2<leader>tv` una segunda
 terminal; `jj` vuelve a modo Normal y `Ctrl-h/j/k/l` cambia de ventana como en tmux.
 `<leader>ta` oculta o muestra todas sin cerrar sus procesos, `<leader>tl` elige una.
 
-Visual `<leader>as` captura la selección **antes** del selector, pide una instrucción,
-copia el prompt al portapapeles y registro `a`, y abre el CLI.
-**Pega cuando esté listo, revisa y envía**. Sin portapapeles, usa `"ap` en modo
-terminal-normal. No se adivina el arranque con temporizadores.
+Visual `<leader>as` captura la selección **antes** del selector y pide una
+instrucción. Guarda el archivo y abre el agente a la derecha, en la raíz del repo,
+ya trabajando con la instrucción, el archivo, las líneas y el código. Cuando el
+agente guarda, el archivo se recarga. Con kimi (sin opción de prompt inicial) o con
+CLIs `.cmd` de npm en Windows, el prompt queda en el portapapeles y en el registro
+`a`: pégalo, revisa y envía. No se adivina el arranque con temporizadores.
 
 ## 🌐 Lenguajes y formato
 
