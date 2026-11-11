@@ -4,6 +4,7 @@ ActivateDebugToolWindow	JetBrains/intellij-community
 ActivateProblemsViewToolWindow	JetBrains/intellij-community
 ActivateProjectToolWindow	JetBrains/intellij-community
 ActivateRunToolWindow	JetBrains/intellij-community
+ActivateTODOToolWindow	JetBrains/intellij-community
 ActivateTerminalToolWindow	JetBrains/intellij-community
 ActivateVersionControlToolWindow	JetBrains/intellij-community
 Annotate	JetBrains/intellij-community
@@ -20,6 +21,10 @@ Compare.LastVersion	JetBrains/intellij-community
 Compare.SameVersion	JetBrains/intellij-community
 CompileDirty	JetBrains/intellij-community
 Debug	JetBrains/intellij-community
+Diff.ApplyLeftSide	JetBrains/intellij-community
+Diff.ApplyRightSide	JetBrains/intellij-community
+Diff.NextConflict	JetBrains/intellij-community
+Diff.PreviousConflict	JetBrains/intellij-community
 EditBreakpoint	JetBrains/intellij-community
 EvaluateExpression	JetBrains/intellij-community
 ExpandAllRegions	JetBrains/intellij-community
@@ -46,14 +51,18 @@ GotoPreviousError	JetBrains/intellij-community
 GotoSymbol	JetBrains/intellij-community
 GotoTypeDeclaration	JetBrains/intellij-community
 HelpTopics	JetBrains/intellij-community
+HideActiveWindow	JetBrains/intellij-community
 LocalHistory.ShowHistory	JetBrains/intellij-community
 ManageRecentProjects	JetBrains/intellij-community
+MaximizeEditorInSplit	JetBrains/intellij-community
 NextTab	JetBrains/intellij-community
 ParameterInfo	JetBrains/intellij-community
+PinActiveTabToggle	JetBrains/intellij-community
 PreviousTab	JetBrains/intellij-community
 RecentFiles	JetBrains/intellij-community
 ReformatCode	JetBrains/intellij-community
 RenameElement	JetBrains/intellij-community
+ReplaceInPath	JetBrains/intellij-community
 Rerun	JetBrains/intellij-community
 Resume	JetBrains/intellij-community
 Run	JetBrains/intellij-community
@@ -78,6 +87,7 @@ Unsplit	JetBrains/intellij-community
 UnsplitAll	JetBrains/intellij-community
 Vcs.Push	JetBrains/intellij-community
 Vcs.RollbackChangedLines	JetBrains/intellij-community
+Vcs.Show.Local.Changes	JetBrains/intellij-community
 Vcs.Show.Log	JetBrains/intellij-community
 Vcs.ShowTabbedFileHistory	JetBrains/intellij-community
 Vcs.UpdateProject	JetBrains/intellij-community
@@ -85,5 +95,4 @@ VcsShowCurrentChangeMarker	JetBrains/intellij-community
 VcsShowNextChangeMarker	JetBrains/intellij-community
 VcsShowPrevChangeMarker	JetBrains/intellij-community
 editRunConfigurations	JetBrains/intellij-community
-id	JetBrains/intellij-community
 io.flutter.OpenDevToolsAction	flutter/flutter-intellij

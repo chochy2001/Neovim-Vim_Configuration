@@ -21,7 +21,6 @@ set relativenumber
 set tabstop=4
 set shiftwidth=4
 set expandtab
-set smartindent
 set scrolloff=8
 set cursorline
 set colorcolumn=80
@@ -29,8 +28,6 @@ set clipboard=unnamedplus,ideaput
 set showcmd
 set showmode
 set timeoutlen=300
-set splitright
-set splitbelow
 set nowrap
 set incsearch
 set hlsearch
@@ -111,6 +108,7 @@ nmap <leader>ps <Action>(GotoSymbol)
 nmap <leader>. <Action>(GotoFile)
 nmap ,, <Action>(GotoFile)
 nmap <leader>fp <Action>(ManageRecentProjects)
+nmap <leader>sr <Action>(ReplaceInPath)
 
 " Project / files (neo-tree / oil equivalents)
 nmap <leader>pv <Action>(ActivateProjectToolWindow)
@@ -137,6 +135,8 @@ nmap <leader>bd <Action>(CloseContent)
 nmap <leader>bl <Action>(CloseAllToTheRight)
 nmap <leader>bh <Action>(CloseAllToTheLeft)
 nmap <leader>to <Action>(CloseAllEditorsButActive)
+nmap <leader>bP <Action>(Switcher)
+nmap <leader>bt <Action>(PinActiveTabToggle)
 
 " Terminal
 nmap <leader>tt <Action>(ActivateTerminalToolWindow)
@@ -158,6 +158,7 @@ nmap <leader>gdo <Action>(Compare.LastVersion)
 nmap <leader>gdq <Action>(CloseContent)
 nmap <leader>gdh <Action>(Vcs.ShowTabbedFileHistory)
 nmap <leader>gdf <Action>(ActivateVersionControlToolWindow)
+nmap <leader>gdl <Action>(Vcs.Show.Local.Changes)
 nmap <leader>gn <Action>(VcsShowNextChangeMarker)
 nmap <leader>gnp <Action>(VcsShowPrevChangeMarker)
 nmap <leader>gsa <Action>(Git.Add)
@@ -165,6 +166,11 @@ nmap <leader>gsr <Action>(Vcs.RollbackChangedLines)
 " No gsu alias: RollbackChangedLines discards edits; it does not unstage a hunk.
 nmap <leader>gsb <Action>(ChangesView.Revert)
 nmap <leader>gsp <Action>(VcsShowCurrentChangeMarker)
+" Conflict resolution (3-way merge tool — left=ours, right=theirs)
+nmap <leader>gco <Action>(Diff.ApplyLeftSide)
+nmap <leader>gct <Action>(Diff.ApplyRightSide)
+nmap <leader>gcp <Action>(Diff.PreviousConflict)
+nmap <leader>gcnn <Action>(Diff.NextConflict)
 nmap <leader>u <Action>(LocalHistory.ShowHistory)
 
 " LSP / code (IDE inspections — not neovim lspconfig)
@@ -188,6 +194,7 @@ nmap <leader>xl <Action>(ActivateProblemsViewToolWindow)
 nmap <leader>xq <Action>(ActivateProblemsViewToolWindow)
 nmap <leader>xn <Action>(GotoNextError)
 nmap <leader>xp <Action>(GotoPreviousError)
+nmap <leader>xt <Action>(ActivateTODOToolWindow)
 
 " Folding
 nmap <leader>za <Action>(ExpandCollapseToggleAction)
@@ -234,6 +241,8 @@ nmap <leader>sv <Action>(SplitVertically)
 nmap <leader>sh <Action>(SplitHorizontally)
 nmap <leader>sc <Action>(Unsplit)
 nmap <leader>so <Action>(UnsplitAll)
+nmap <leader>_ <Action>(MaximizeEditorInSplit)
+nmap <leader>rc <Action>(HideActiveWindow)
 
 " Flutter — IDs from flutter-intellij plugin.xml (needs Flutter plugin)
 " If missing: :actionlist flutter
