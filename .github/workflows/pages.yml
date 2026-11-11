@@ -67,7 +67,13 @@ jobs:
       - name: Install Chromium
         run: |
           pip install playwright==1.64.0
-          python -m playwright install --with-deps chromium
+          # apt mirrors on the runner fail DNS now and then: retry, bounded.
+          for attempt in 1 2 3; do
+            python -m playwright install --with-deps chromium && exit 0
+            echo "attempt $attempt failed, retrying in 30s"
+            sleep 30
+          done
+          exit 1
       - name: Every exercise is solvable in the browser, and only when solved
         env:
           PRACTICE_REQUIRE_BROWSER: "1"
