@@ -15,6 +15,12 @@ import subprocess
 import sys
 import tempfile
 
+# Suites print Neovim output (box drawing, icons). A Windows console in cp1252
+# cannot encode those and the report itself crashed; replace instead.
+for stream in (sys.stdout, sys.stderr):
+    if hasattr(stream, "reconfigure"):
+        stream.reconfigure(encoding="utf-8", errors="replace")
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
