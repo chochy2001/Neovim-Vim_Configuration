@@ -702,3 +702,28 @@ kbd.special { color: var(--navy-light); }
   color: #1a1a2e;
   border-radius: 2px;
 }
+
+/* Lesson titles are buttons: reset the native look, keep the old style. */
+button.sidebar-lesson-title {
+  display: block;
+  width: 100%;
+  background: none;
+  border: 0;
+  margin: 0;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+button.sidebar-lesson-title:hover { color: var(--gold); }
+button.sidebar-lesson-title:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+.shortcut-mode {
+  font-size: .72rem;
+  color: var(--text2);
+  min-width: 5.5rem;
+}
+.shortcut-desc { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+@media (max-width: 480px) {
+  .shortcut-row { flex-wrap: wrap; }
+  .shortcut-mode { min-width: 0; }
+}

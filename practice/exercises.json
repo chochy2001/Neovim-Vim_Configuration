@@ -1,14 +1,14 @@
 {
   "version": "0.1.0",
   "neovim_version": "0.12.6",
-  "built_at": "2026-11-10T23:51:24Z",
+  "built_at": "2026-11-11T00:40:16Z",
   "lessons": [
     {
       "id": "lesson-2",
       "section": 2,
       "titleEs": "Lección 2: Modos",
       "titleEn": "Lesson 2: Modes",
-      "descriptionEs": "Vim es un editor modal. La misma tecla hace cosas distintas segun el modo. Estos ejercicios practican entrar y salir del modo insertar con distintas teclas.",
+      "descriptionEs": "Vim es un editor modal. La misma tecla hace cosas distintas según el modo. Estos ejercicios practican entrar y salir del modo insertar con distintas teclas.",
       "descriptionEn": "Vim is a modal editor. The same key does different things depending on the mode. These exercises practise entering and exiting insert mode using different keys.",
       "exercises": [
         {
@@ -31,7 +31,7 @@
           "id": "insert-start",
           "titleEs": "Insertar antes del primer carácter no-espacio (I)",
           "titleEn": "Insert before the first non-space character (I)",
-          "hintEs": "I (mayuscula) entra en insertar al primer carácter no-espacio de la línea. Escribe el nuevo texto y pulsa Esc.",
+          "hintEs": "I (mayúscula) entra en insertar al primer carácter no-espacio de la línea. Escribe el nuevo texto y pulsa Esc.",
           "hintEn": "I (uppercase) enters insert mode at the first non-space character of the line. Type the new text and press Esc.",
           "start": "  body",
           "startRow": 0,
@@ -82,7 +82,7 @@
       "section": 3,
       "titleEs": "Lección 3: Moverse sin flechas",
       "titleEn": "Lesson 3: Moving without arrow keys",
-      "descriptionEs": "hjkl, word motions, f/t, {/}, gg/G y %. Poner un número delante de casi cualquier movimiento lo multiplica: 3j baja tres líneas, 2fX busca la segunda X.",
+      "descriptionEs": "hjkl, movimientos por palabra (w, b, e), f/t, {/}, gg/G y %. Poner un número delante de casi cualquier movimiento lo multiplica: 3j baja tres líneas, 2fX busca la segunda X.",
       "descriptionEn": "hjkl, word motions, f/t, {/}, gg/G and %. Prepending a number to almost any motion multiplies it: 3j moves down three lines, 2fX finds the second X.",
       "exercises": [
         {
@@ -153,8 +153,8 @@
           "id": "empty-word-motion",
           "titleEs": "w sobre una línea vacía",
           "titleEn": "w over an empty line",
-          "hintEs": "w avanza al inicio de la siguiente 'palabra'. Una línea vacía es una frontera de párrafo y cuenta como destino de w.",
-          "hintEn": "w advances to the start of the next 'word'. An empty line is a paragraph boundary and counts as a w destination.",
+          "hintEs": "w avanza al inicio de la siguiente palabra. Vim cuenta una línea vacía como una palabra, así que w se detiene en ella.",
+          "hintEn": "w moves to the start of the next word. Vim counts an empty line as a word, so w stops on it.",
           "start": "one\n\ntwo",
           "startRow": 0,
           "startCol": 0,
@@ -169,7 +169,7 @@
           "id": "counted-find",
           "titleEs": "Buscar la segunda X con 2fX",
           "titleEn": "Find the second X with 2fX",
-          "hintEs": "2fX busca la segunda aparición de X hacia adelante en la línea. fX buscaria solo la primera.",
+          "hintEs": "2fX busca la segunda aparición de X hacia adelante en la línea. fX buscaría solo la primera.",
           "hintEn": "2fX finds the second occurrence of X forward on the line. fX would find only the first.",
           "start": "aXbXcX",
           "startRow": 0,
@@ -233,7 +233,7 @@
           "id": "cancel-count",
           "titleEs": "Cancela un conteo con Esc",
           "titleEn": "Cancel a count with Esc",
-          "hintEs": "Si empiezas un conteo numerico (3...) y pulsas Esc, el conteo se cancela. Luego j baja una línea.",
+          "hintEs": "Si empiezas un conteo numérico (3...) y pulsas Esc, el conteo se cancela. Luego j baja una línea.",
           "hintEn": "If you start a numeric count (3...) and press Esc, the count is canceled. Then j moves down one line.",
           "start": "a\nb\nc\nd",
           "startRow": 0,
@@ -339,8 +339,8 @@
           "id": "change-word",
           "titleEs": "Cambia una palabra (cw)",
           "titleEn": "Change a word (cw)",
-          "hintEs": "cw borra desde el cursor hasta el inicio de la siguiente palabra y te deja en modo insertar. Escribe el nuevo texto y pulsa Esc.",
-          "hintEn": "cw deletes from the cursor to the start of the next word and enters insert mode. Type the new text and press Esc.",
+          "hintEs": "cw cambia hasta el final de la palabra (igual que ce, no como dw): el espacio que sigue se conserva. Escribe el nuevo texto y pulsa Esc.",
+          "hintEn": "cw changes to the end of the word (like ce, unlike dw): the following space is kept. Type the new text and press Esc.",
           "start": "old new",
           "startRow": 0,
           "startCol": 0,
@@ -435,8 +435,8 @@
           "id": "counted-replace",
           "titleEs": "Reemplazar 3 caracteres con 3rx",
           "titleEn": "Replace 3 characters with 3rx",
-          "hintEs": "3r reemplaza los 3 caracteres siguientes con la letra que escribas. No entras en modo insertar: todo ocurre en normal.",
-          "hintEn": "3r replaces the next 3 characters with the letter you type. You do not enter insert mode: everything happens in normal mode.",
+          "hintEs": "3rx reemplaza 3 caracteres, empezando por el que está bajo el cursor, por x. No entras en modo insertar: todo ocurre en normal.",
+          "hintEn": "3rx replaces 3 characters, starting with the one under the cursor, with x. You never enter insert mode.",
           "start": "abcd",
           "startRow": 0,
           "startCol": 0,
@@ -552,7 +552,7 @@
       "section": 5,
       "titleEs": "Lección 5: Objetos de texto",
       "titleEn": "Lesson 5: Text objects",
-      "descriptionEs": "i (inner) y a (around) aplicados a palabras, comillas, parentesis, etc. La receta mas usada al programar: ciw, ci\", ci{.",
+      "descriptionEs": "i (inner) y a (around) aplicados a palabras, comillas, paréntesis, etc. La receta más usada al programar: ciw, ci\", ci{.",
       "descriptionEn": "i (inner) and a (around) applied to words, quotes, parentheses, etc. The most-used recipe when coding: ciw, ci\", ci{.",
       "exercises": [
         {
@@ -623,7 +623,7 @@
           "id": "inner-quotes-at-open",
           "titleEs": "ci\" desde la comilla de apertura",
           "titleEn": "ci\" from the opening quote",
-          "hintEs": "4l mueve el cursor a la comilla de apertura \". ci\" desde la propia comilla aun funciona: cambia el texto entre comillas.",
+          "hintEs": "4l mueve el cursor a la comilla de apertura \". ci\" desde la propia comilla aún funciona: cambia el texto entre comillas.",
           "hintEn": "4l moves the cursor to the opening \" character. ci\" from the opening quote still works: it changes the text inside the quotes.",
           "start": "x = \"old\";",
           "startRow": 0,
@@ -639,8 +639,8 @@
           "id": "yank-inner-and-paste",
           "titleEs": "Copiar palabra y pegar al final (yiw$p)",
           "titleEn": "Yank word and paste at end (yiw$p)",
-          "hintEs": "yiw copia la palabra sin entrar en insertar. $ va al final de la línea. p pega después del cursor.",
-          "hintEn": "yiw copies the word without entering insert mode. $ goes to end of line. p pastes after the cursor.",
+          "hintEs": "yiw copia la palabra bajo el cursor. $ va al último carácter de la línea. p pega después del cursor.",
+          "hintEn": "yiw copies the word under the cursor. $ goes to the last character of the line. p pastes after the cursor.",
           "start": "cat dog",
           "startRow": 0,
           "startCol": 0,
@@ -793,6 +793,1208 @@
       "reason": "The start state already equals the goal in real Neovim, so the page would mark it solved before any key is pressed.",
       "keys": "tX",
       "start": "aXXbX"
+    }
+  ],
+  "shortcuts": [
+    {
+      "title": "Core Editing",
+      "rows": [
+        {
+          "key": "jj",
+          "mode": "Insert",
+          "desc": "Exit insert mode"
+        },
+        {
+          "key": "<leader><leader>",
+          "mode": "Normal",
+          "desc": "Clear search highlight"
+        },
+        {
+          "key": "<leader>f",
+          "mode": "Normal",
+          "desc": "Forward (go to next location)"
+        },
+        {
+          "key": "<A-j>",
+          "mode": "Normal",
+          "desc": "Move line down"
+        },
+        {
+          "key": "<A-k>",
+          "mode": "Normal",
+          "desc": "Move line up"
+        },
+        {
+          "key": "<A-j>",
+          "mode": "Visual",
+          "desc": "Move selection down"
+        },
+        {
+          "key": "<A-k>",
+          "mode": "Visual",
+          "desc": "Move selection up"
+        },
+        {
+          "key": ">",
+          "mode": "Visual",
+          "desc": "Indent (keep selection)"
+        },
+        {
+          "key": "<",
+          "mode": "Visual",
+          "desc": "Unindent (keep selection)"
+        },
+        {
+          "key": "n",
+          "mode": "Normal",
+          "desc": "Next search result (centered)"
+        },
+        {
+          "key": "N",
+          "mode": "Normal",
+          "desc": "Previous search result (centered)"
+        },
+        {
+          "key": "*",
+          "mode": "Normal",
+          "desc": "Search word forward (centered)"
+        },
+        {
+          "key": "#",
+          "mode": "Normal",
+          "desc": "Search word backward (centered)"
+        },
+        {
+          "key": "g*",
+          "mode": "Normal",
+          "desc": "Search partial word forward (centered)"
+        },
+        {
+          "key": "g#",
+          "mode": "Normal",
+          "desc": "Search partial word backward (centered)"
+        },
+        {
+          "key": "<leader>u",
+          "mode": "Visual",
+          "desc": "Convert to lowercase"
+        },
+        {
+          "key": "<leader>U",
+          "mode": "Visual",
+          "desc": "Convert to uppercase"
+        },
+        {
+          "key": "gcc",
+          "mode": "Normal",
+          "desc": "Toggle line comment"
+        },
+        {
+          "key": "gc",
+          "mode": "Visual",
+          "desc": "Toggle comment on selection"
+        },
+        {
+          "key": "s",
+          "mode": "Normal/Visual/Operator",
+          "desc": "Flash: jump to any character"
+        },
+        {
+          "key": "S",
+          "mode": "Normal/Operator",
+          "desc": "Flash: treesitter select (visual `S` is surround)"
+        }
+      ]
+    },
+    {
+      "title": "Treesitter Text Objects",
+      "rows": [
+        {
+          "key": "af / if",
+          "mode": "Visual/Operator",
+          "desc": "Around/inside function"
+        },
+        {
+          "key": "ac / ic",
+          "mode": "Visual/Operator",
+          "desc": "Around/inside class"
+        },
+        {
+          "key": "aa / ia",
+          "mode": "Visual/Operator",
+          "desc": "Around/inside argument"
+        },
+        {
+          "key": "ai / ii",
+          "mode": "Visual/Operator",
+          "desc": "Around/inside conditional"
+        },
+        {
+          "key": "al / il",
+          "mode": "Visual/Operator",
+          "desc": "Around/inside loop"
+        },
+        {
+          "key": "]f / [f",
+          "mode": "Normal",
+          "desc": "Next/previous function start"
+        },
+        {
+          "key": "]c / [c",
+          "mode": "Normal",
+          "desc": "Next/previous class start"
+        },
+        {
+          "key": "]a / [a",
+          "mode": "Normal",
+          "desc": "Next/previous argument"
+        },
+        {
+          "key": "]F / [F",
+          "mode": "Normal",
+          "desc": "Next/previous function end"
+        },
+        {
+          "key": "<leader>sa",
+          "mode": "Normal",
+          "desc": "Swap argument with next"
+        },
+        {
+          "key": "<leader>sA",
+          "mode": "Normal",
+          "desc": "Swap argument with previous"
+        }
+      ]
+    },
+    {
+      "title": "Find & Search (Telescope)",
+      "rows": [
+        {
+          "key": "<leader>ff",
+          "mode": "Normal",
+          "desc": "Find files"
+        },
+        {
+          "key": "<leader>fg",
+          "mode": "Normal",
+          "desc": "Live grep (search in files)"
+        },
+        {
+          "key": "<leader>fo",
+          "mode": "Normal",
+          "desc": "Recent/old files"
+        },
+        {
+          "key": "<leader>fb",
+          "mode": "Normal",
+          "desc": "Buffers"
+        },
+        {
+          "key": "<leader>fh",
+          "mode": "Normal",
+          "desc": "Help tags"
+        },
+        {
+          "key": "<leader>fc",
+          "mode": "Normal",
+          "desc": "Commands"
+        },
+        {
+          "key": "<leader>fk",
+          "mode": "Normal",
+          "desc": "Keymaps"
+        },
+        {
+          "key": "<leader>fp",
+          "mode": "Normal",
+          "desc": "Projects"
+        },
+        {
+          "key": "<leader>ps",
+          "mode": "Normal",
+          "desc": "Workspace symbols (LSP)"
+        },
+        {
+          "key": "<leader>.",
+          "mode": "Normal",
+          "desc": "Quick find files"
+        },
+        {
+          "key": ",,",
+          "mode": "Normal",
+          "desc": "Quick find files (alternative)"
+        },
+        {
+          "key": "<leader>sr",
+          "mode": "Normal/Visual",
+          "desc": "Search and replace (grug-far)"
+        }
+      ]
+    },
+    {
+      "title": "Neo-tree",
+      "rows": [
+        {
+          "key": "<leader>pv",
+          "mode": "Normal",
+          "desc": "Toggle file tree"
+        },
+        {
+          "key": "<leader>pe",
+          "mode": "Normal",
+          "desc": "Focus file tree"
+        },
+        {
+          "key": "<leader>pf",
+          "mode": "Normal",
+          "desc": "Focus project tree"
+        },
+        {
+          "key": "<leader>fr",
+          "mode": "Normal",
+          "desc": "Reveal current file in tree"
+        },
+        {
+          "key": "<leader>bf",
+          "mode": "Normal",
+          "desc": "Show buffers (floating)"
+        },
+        {
+          "key": "<leader>we",
+          "mode": "Normal (neo-tree buffer)",
+          "desc": "Focus editor window"
+        },
+        {
+          "key": "<leader>wt",
+          "mode": "Normal (neo-tree buffer)",
+          "desc": "Focus tree window"
+        }
+      ]
+    },
+    {
+      "title": "Oil.nvim (edit directory as buffer)",
+      "rows": [
+        {
+          "key": "<leader>-",
+          "mode": "Normal",
+          "desc": "Open parent directory"
+        },
+        {
+          "key": "<leader>oe",
+          "mode": "Normal",
+          "desc": "Open file explorer"
+        }
+      ]
+    },
+    {
+      "title": "Core Git",
+      "rows": [
+        {
+          "key": "<leader>gs",
+          "mode": "Normal",
+          "desc": "Git status"
+        },
+        {
+          "key": "<leader>gc",
+          "mode": "Normal",
+          "desc": "Git commit"
+        },
+        {
+          "key": "<leader>gp",
+          "mode": "Normal",
+          "desc": "Git push"
+        },
+        {
+          "key": "<leader>gl",
+          "mode": "Normal",
+          "desc": "Git pull"
+        },
+        {
+          "key": "<leader>gf",
+          "mode": "Normal",
+          "desc": "Git fetch"
+        }
+      ]
+    },
+    {
+      "title": "Blame & History",
+      "rows": [
+        {
+          "key": "<leader>gb",
+          "mode": "Normal",
+          "desc": "Git blame"
+        },
+        {
+          "key": "<leader>gbl",
+          "mode": "Normal",
+          "desc": "Git blame line"
+        },
+        {
+          "key": "<leader>gbt",
+          "mode": "Normal",
+          "desc": "Toggle inline blame"
+        },
+        {
+          "key": "<leader>gbr",
+          "mode": "Normal",
+          "desc": "Git browse/branches"
+        },
+        {
+          "key": "<leader>gbc",
+          "mode": "Normal",
+          "desc": "Branch compare (HEAD~1)"
+        },
+        {
+          "key": "<leader>gh",
+          "mode": "Normal",
+          "desc": "Git log (oneline)"
+        },
+        {
+          "key": "<leader>ghd",
+          "mode": "Normal",
+          "desc": "Git log (graph, all branches)"
+        }
+      ]
+    },
+    {
+      "title": "Diff",
+      "rows": [
+        {
+          "key": "<leader>gd",
+          "mode": "Normal",
+          "desc": "Git diff split"
+        },
+        {
+          "key": "<leader>gdo",
+          "mode": "Normal",
+          "desc": "Open diffview"
+        },
+        {
+          "key": "<leader>gdq",
+          "mode": "Normal",
+          "desc": "Close diffview"
+        },
+        {
+          "key": "<leader>gdh",
+          "mode": "Normal",
+          "desc": "Diff file history"
+        },
+        {
+          "key": "<leader>gdf",
+          "mode": "Normal",
+          "desc": "Toggle diff files panel"
+        },
+        {
+          "key": "<leader>gdl",
+          "mode": "Normal",
+          "desc": "Diff local changes"
+        }
+      ]
+    },
+    {
+      "title": "Hunk Navigation (Gitsigns)",
+      "rows": [
+        {
+          "key": "<leader>gn",
+          "mode": "Normal",
+          "desc": "Next hunk"
+        },
+        {
+          "key": "<leader>gnp",
+          "mode": "Normal",
+          "desc": "Previous hunk"
+        },
+        {
+          "key": "<leader>gsa",
+          "mode": "Normal",
+          "desc": "Stage hunk"
+        },
+        {
+          "key": "<leader>gsr",
+          "mode": "Normal",
+          "desc": "Reset hunk"
+        },
+        {
+          "key": "<leader>gsu",
+          "mode": "Normal",
+          "desc": "Toggle stage of hunk under cursor (same action as gsa)"
+        },
+        {
+          "key": "<leader>gsp",
+          "mode": "Normal",
+          "desc": "Preview hunk"
+        },
+        {
+          "key": "<leader>gsb",
+          "mode": "Normal",
+          "desc": "Reset entire buffer"
+        },
+        {
+          "key": "ih",
+          "mode": "Operator/Visual",
+          "desc": "Select hunk (text object)"
+        }
+      ]
+    },
+    {
+      "title": "Conflict Resolution",
+      "rows": [
+        {
+          "key": "<leader>gco",
+          "mode": "Normal",
+          "desc": "Choose ours"
+        },
+        {
+          "key": "<leader>gct",
+          "mode": "Normal",
+          "desc": "Choose theirs"
+        },
+        {
+          "key": "<leader>gcb",
+          "mode": "Normal",
+          "desc": "Choose both"
+        },
+        {
+          "key": "<leader>gcn",
+          "mode": "Normal",
+          "desc": "Choose none"
+        },
+        {
+          "key": "<leader>gcp",
+          "mode": "Normal",
+          "desc": "Previous conflict"
+        },
+        {
+          "key": "<leader>gcnn",
+          "mode": "Normal",
+          "desc": "Next conflict"
+        }
+      ]
+    },
+    {
+      "title": "Navigation (no leader - instant)",
+      "rows": [
+        {
+          "key": "gd",
+          "mode": "Normal",
+          "desc": "Go to definition (configured on LspAttach)"
+        },
+        {
+          "key": "gi",
+          "mode": "Normal",
+          "desc": "Go to implementation (configured on LspAttach)"
+        },
+        {
+          "key": "go",
+          "mode": "Normal",
+          "desc": "Go to type definition"
+        },
+        {
+          "key": "gs",
+          "mode": "Normal",
+          "desc": "Signature help / parameter info"
+        },
+        {
+          "key": "gR",
+          "mode": "Normal",
+          "desc": "References in Trouble"
+        },
+        {
+          "key": "K",
+          "mode": "Normal",
+          "desc": "Hover documentation"
+        }
+      ]
+    },
+    {
+      "title": "Actions (with leader)",
+      "rows": [
+        {
+          "key": "<leader>rn",
+          "mode": "Normal",
+          "desc": "Rename symbol"
+        },
+        {
+          "key": "<leader>ca",
+          "mode": "Normal/Visual",
+          "desc": "Code action"
+        },
+        {
+          "key": "<leader>fm",
+          "mode": "Normal",
+          "desc": "Format (one attached none-ls client with an applicable source, otherwise one attached LSP)"
+        },
+        {
+          "key": "<C-space>",
+          "mode": "Insert",
+          "desc": "Trigger completion"
+        }
+      ]
+    },
+    {
+      "title": "Harpoon (Quick File Marks)",
+      "rows": [
+        {
+          "key": "<leader>ma",
+          "mode": "Normal",
+          "desc": "Add file to harpoon"
+        },
+        {
+          "key": "<leader>mh",
+          "mode": "Normal",
+          "desc": "Toggle harpoon UI"
+        },
+        {
+          "key": "<leader>1 - <leader>9",
+          "mode": "Normal",
+          "desc": "Jump to mark 1-9"
+        },
+        {
+          "key": "<leader>mp",
+          "mode": "Normal",
+          "desc": "Previous mark"
+        },
+        {
+          "key": "<leader>mn",
+          "mode": "Normal",
+          "desc": "Next mark"
+        }
+      ]
+    },
+    {
+      "title": "Diagnostics & Trouble",
+      "rows": [
+        {
+          "key": "<leader>xx",
+          "mode": "Normal",
+          "desc": "Toggle trouble"
+        },
+        {
+          "key": "<leader>xw",
+          "mode": "Normal",
+          "desc": "Workspace diagnostics"
+        },
+        {
+          "key": "<leader>xd",
+          "mode": "Normal",
+          "desc": "Document diagnostics"
+        },
+        {
+          "key": "<leader>xl",
+          "mode": "Normal",
+          "desc": "Location list"
+        },
+        {
+          "key": "<leader>xq",
+          "mode": "Normal",
+          "desc": "Quickfix list"
+        },
+        {
+          "key": "<leader>xt",
+          "mode": "Normal",
+          "desc": "TODOs in trouble"
+        },
+        {
+          "key": "<leader>xn",
+          "mode": "Normal",
+          "desc": "Next error/diagnostic"
+        },
+        {
+          "key": "<leader>xp",
+          "mode": "Normal",
+          "desc": "Previous error/diagnostic"
+        },
+        {
+          "key": "]t",
+          "mode": "Normal",
+          "desc": "Next TODO comment"
+        },
+        {
+          "key": "[t",
+          "mode": "Normal",
+          "desc": "Previous TODO comment"
+        }
+      ]
+    },
+    {
+      "title": "Terminal",
+      "rows": [
+        {
+          "key": "<leader>tt",
+          "mode": "Normal",
+          "desc": "Float terminal (main)"
+        },
+        {
+          "key": "<leader>tv",
+          "mode": "Normal",
+          "desc": "Terminal split on the right (`2<leader>tv` = terminal 2)"
+        },
+        {
+          "key": "<leader>th",
+          "mode": "Normal",
+          "desc": "Terminal split at the bottom (`3<leader>th` = terminal 3)"
+        },
+        {
+          "key": "<leader>ta",
+          "mode": "Normal",
+          "desc": "Show / hide all terminals"
+        },
+        {
+          "key": "<leader>tl",
+          "mode": "Normal",
+          "desc": "Pick a terminal from a list"
+        },
+        {
+          "key": "<leader>tg",
+          "mode": "Normal",
+          "desc": "LazyGit terminal"
+        },
+        {
+          "key": "<leader>tn",
+          "mode": "Normal",
+          "desc": "Node REPL"
+        },
+        {
+          "key": "<leader>tp",
+          "mode": "Normal",
+          "desc": "Python REPL"
+        },
+        {
+          "key": "<leader>tu",
+          "mode": "Normal",
+          "desc": "System monitor (htop/tasklist)"
+        },
+        {
+          "key": "<leader>tF",
+          "mode": "Normal",
+          "desc": "Flutter terminal"
+        },
+        {
+          "key": "<leader>tm",
+          "mode": "Normal",
+          "desc": "Markdown: rendered (headings, tables, code) / raw"
+        },
+        {
+          "key": "jj",
+          "mode": "Terminal",
+          "desc": "Exit terminal mode"
+        },
+        {
+          "key": "<C-[><C-[>",
+          "mode": "Terminal",
+          "desc": "Exit terminal mode (alternative)"
+        }
+      ]
+    },
+    {
+      "title": "Code Runner",
+      "rows": [
+        {
+          "key": "<leader>r",
+          "mode": "Normal",
+          "desc": "Run code"
+        },
+        {
+          "key": "<leader>rf",
+          "mode": "Normal",
+          "desc": "Run file"
+        },
+        {
+          "key": "<leader>rft",
+          "mode": "Normal",
+          "desc": "Run file in new tab"
+        },
+        {
+          "key": "<leader>rp",
+          "mode": "Normal",
+          "desc": "Run project task (Overseer)"
+        },
+        {
+          "key": "<leader>rc",
+          "mode": "Normal",
+          "desc": "Close runner"
+        },
+        {
+          "key": "<leader>rs",
+          "mode": "Normal",
+          "desc": "Stop current terminal job or choose an active terminal"
+        },
+        {
+          "key": "<leader>rb",
+          "mode": "Normal",
+          "desc": "Build (make)"
+        }
+      ]
+    },
+    {
+      "title": "Overseer (Task Runner)",
+      "rows": [
+        {
+          "key": "<leader>oo",
+          "mode": "Normal",
+          "desc": "Toggle overseer"
+        },
+        {
+          "key": "<leader>or",
+          "mode": "Normal",
+          "desc": "Run task"
+        },
+        {
+          "key": "<leader>ob",
+          "mode": "Normal",
+          "desc": "Build"
+        },
+        {
+          "key": "<leader>oi",
+          "mode": "Normal",
+          "desc": "Edit configurations"
+        }
+      ]
+    },
+    {
+      "title": "Copilot AI Chat",
+      "rows": [
+        {
+          "key": "<leader>cc",
+          "mode": "Normal",
+          "desc": "Toggle chat window"
+        },
+        {
+          "key": "<leader>ce",
+          "mode": "Normal/Visual",
+          "desc": "Explain selected code"
+        },
+        {
+          "key": "<leader>cr",
+          "mode": "Normal/Visual",
+          "desc": "Review code"
+        },
+        {
+          "key": "<leader>cf",
+          "mode": "Normal/Visual",
+          "desc": "Fix code"
+        },
+        {
+          "key": "<leader>co",
+          "mode": "Normal/Visual",
+          "desc": "Optimize code"
+        },
+        {
+          "key": "<leader>ct",
+          "mode": "Normal/Visual",
+          "desc": "Generate tests"
+        }
+      ]
+    },
+    {
+      "title": "AI Assistants (terminal CLIs, your subscriptions, no API keys)",
+      "rows": [
+        {
+          "key": "<leader>aa",
+          "mode": "Normal",
+          "desc": "opencode terminal"
+        },
+        {
+          "key": "<leader>ax",
+          "mode": "Normal",
+          "desc": "codex terminal"
+        },
+        {
+          "key": "<leader>ac",
+          "mode": "Normal",
+          "desc": "claude terminal"
+        },
+        {
+          "key": "<leader>ag",
+          "mode": "Normal",
+          "desc": "gemini terminal"
+        },
+        {
+          "key": "<leader>ak",
+          "mode": "Normal",
+          "desc": "grok terminal"
+        },
+        {
+          "key": "<leader>ap",
+          "mode": "Normal",
+          "desc": "copilot CLI terminal"
+        },
+        {
+          "key": "<leader>am",
+          "mode": "Normal",
+          "desc": "muse terminal"
+        },
+        {
+          "key": "<leader>au",
+          "mode": "Normal",
+          "desc": "cursor agent terminal (`cursor-agent`)"
+        },
+        {
+          "key": "<leader>an",
+          "mode": "Normal",
+          "desc": "antigravity terminal (`agy`)"
+        },
+        {
+          "key": "<leader>ai",
+          "mode": "Normal",
+          "desc": "kimi terminal"
+        },
+        {
+          "key": "<leader>as",
+          "mode": "Visual",
+          "desc": "Prepare selection for an agent (picker + instruction)"
+        }
+      ]
+    },
+    {
+      "title": "Flutter Development",
+      "rows": [
+        {
+          "key": "<leader>flr",
+          "mode": "Normal",
+          "desc": "Hot reload"
+        },
+        {
+          "key": "<leader>fls",
+          "mode": "Normal",
+          "desc": "Hot restart"
+        },
+        {
+          "key": "<leader>fld",
+          "mode": "Normal",
+          "desc": "Open DevTools"
+        },
+        {
+          "key": "<leader>fla",
+          "mode": "Normal",
+          "desc": "Run app"
+        },
+        {
+          "key": "<leader>flsd",
+          "mode": "Normal",
+          "desc": "Select device"
+        },
+        {
+          "key": "<leader>fle",
+          "mode": "Normal",
+          "desc": "Start emulator"
+        },
+        {
+          "key": "<leader>flq",
+          "mode": "Normal",
+          "desc": "Quit/stop"
+        },
+        {
+          "key": "<leader>flo",
+          "mode": "Normal",
+          "desc": "Toggle outline"
+        },
+        {
+          "key": "<leader>flc",
+          "mode": "Normal",
+          "desc": "Clear log"
+        },
+        {
+          "key": "<leader>flp",
+          "mode": "Normal",
+          "desc": "Copy profiler URL"
+        },
+        {
+          "key": "<leader>fll",
+          "mode": "Normal",
+          "desc": "Restart LSP"
+        }
+      ]
+    },
+    {
+      "title": "Testing",
+      "rows": [
+        {
+          "key": "<leader>ten",
+          "mode": "Normal",
+          "desc": "Test nearest"
+        },
+        {
+          "key": "<leader>tenf",
+          "mode": "Normal",
+          "desc": "Test file"
+        },
+        {
+          "key": "<leader>tena",
+          "mode": "Normal",
+          "desc": "Test all (suite)"
+        },
+        {
+          "key": "<leader>tenl",
+          "mode": "Normal",
+          "desc": "Rerun last test"
+        }
+      ]
+    },
+    {
+      "title": "Debugging (DAP)",
+      "rows": [
+        {
+          "key": "<leader>db",
+          "mode": "Normal",
+          "desc": "Toggle breakpoint"
+        },
+        {
+          "key": "<leader>dB",
+          "mode": "Normal",
+          "desc": "Conditional breakpoint"
+        },
+        {
+          "key": "<leader>dc",
+          "mode": "Normal",
+          "desc": "Continue / start debugging"
+        },
+        {
+          "key": "<leader>do",
+          "mode": "Normal",
+          "desc": "Step over"
+        },
+        {
+          "key": "<leader>di",
+          "mode": "Normal",
+          "desc": "Step into"
+        },
+        {
+          "key": "<leader>dO",
+          "mode": "Normal",
+          "desc": "Step out"
+        },
+        {
+          "key": "<leader>dr",
+          "mode": "Normal",
+          "desc": "Toggle REPL"
+        },
+        {
+          "key": "<leader>dl",
+          "mode": "Normal",
+          "desc": "Run last debug config"
+        },
+        {
+          "key": "<leader>dx",
+          "mode": "Normal",
+          "desc": "Terminate debug session"
+        },
+        {
+          "key": "<leader>du",
+          "mode": "Normal",
+          "desc": "Toggle debug UI"
+        }
+      ]
+    },
+    {
+      "title": "Buffer & Tab Management",
+      "rows": [
+        {
+          "key": "<leader>b",
+          "mode": "Normal",
+          "desc": "Back (previous location)"
+        },
+        {
+          "key": "<leader>bn",
+          "mode": "Normal",
+          "desc": "Next buffer"
+        },
+        {
+          "key": "<leader>bp",
+          "mode": "Normal",
+          "desc": "Previous buffer"
+        },
+        {
+          "key": "<leader>bd",
+          "mode": "Normal",
+          "desc": "Close buffer"
+        },
+        {
+          "key": "<leader>bl",
+          "mode": "Normal",
+          "desc": "Close buffers to the right"
+        },
+        {
+          "key": "<leader>bh",
+          "mode": "Normal",
+          "desc": "Close buffers to the left"
+        },
+        {
+          "key": "<leader>bP",
+          "mode": "Normal",
+          "desc": "Pick buffer"
+        },
+        {
+          "key": "<leader>bt",
+          "mode": "Normal",
+          "desc": "Toggle pin buffer"
+        },
+        {
+          "key": "<leader>to",
+          "mode": "Normal",
+          "desc": "Close all other buffers"
+        },
+        {
+          "key": "<S-l>",
+          "mode": "Normal",
+          "desc": "Next buffer (quick)"
+        },
+        {
+          "key": "<S-h>",
+          "mode": "Normal",
+          "desc": "Previous buffer (quick)"
+        }
+      ]
+    },
+    {
+      "title": "Window & Split Management",
+      "rows": [
+        {
+          "key": "<leader>wh",
+          "mode": "Normal",
+          "desc": "Go to left window"
+        },
+        {
+          "key": "<leader>wj",
+          "mode": "Normal",
+          "desc": "Go to bottom window"
+        },
+        {
+          "key": "<leader>wk",
+          "mode": "Normal",
+          "desc": "Go to top window"
+        },
+        {
+          "key": "<leader>wl",
+          "mode": "Normal",
+          "desc": "Go to right window"
+        },
+        {
+          "key": "<space>h",
+          "mode": "Normal",
+          "desc": "Go to left split"
+        },
+        {
+          "key": "<space>l",
+          "mode": "Normal",
+          "desc": "Go to right split"
+        },
+        {
+          "key": "<leader>sv",
+          "mode": "Normal",
+          "desc": "Split vertical"
+        },
+        {
+          "key": "<leader>sh",
+          "mode": "Normal",
+          "desc": "Split horizontal"
+        },
+        {
+          "key": "<leader>sc",
+          "mode": "Normal",
+          "desc": "Close current split"
+        },
+        {
+          "key": "<leader>so",
+          "mode": "Normal",
+          "desc": "Close all other splits"
+        },
+        {
+          "key": "<leader>_",
+          "mode": "Normal",
+          "desc": "Maximize split height"
+        },
+        {
+          "key": "<leader>wm",
+          "mode": "Normal",
+          "desc": "Move window (WinShift)"
+        },
+        {
+          "key": "<leader>ws",
+          "mode": "Normal",
+          "desc": "Swap window"
+        }
+      ]
+    },
+    {
+      "title": "Folding (ufo.nvim - treesitter smart folding)",
+      "rows": [
+        {
+          "key": "<leader>za",
+          "mode": "Normal",
+          "desc": "Toggle fold"
+        },
+        {
+          "key": "<leader>zR",
+          "mode": "Normal",
+          "desc": "Expand all folds"
+        },
+        {
+          "key": "<leader>zM",
+          "mode": "Normal",
+          "desc": "Collapse all folds"
+        },
+        {
+          "key": "<leader>zr",
+          "mode": "Normal",
+          "desc": "Expand one level"
+        },
+        {
+          "key": "<leader>zm",
+          "mode": "Normal",
+          "desc": "Collapse one level"
+        },
+        {
+          "key": "zR",
+          "mode": "Normal",
+          "desc": "Open all folds (ufo)"
+        },
+        {
+          "key": "zM",
+          "mode": "Normal",
+          "desc": "Close all folds (ufo)"
+        },
+        {
+          "key": "zK",
+          "mode": "Normal",
+          "desc": "Peek folded lines or hover"
+        },
+        {
+          "key": "<leader>zz",
+          "mode": "Normal",
+          "desc": "Zen mode (focus)"
+        }
+      ]
+    },
+    {
+      "title": "Session Management",
+      "rows": [
+        {
+          "key": "<leader>qs",
+          "mode": "Normal",
+          "desc": "Restore session"
+        },
+        {
+          "key": "<leader>ql",
+          "mode": "Normal",
+          "desc": "Restore last session"
+        },
+        {
+          "key": "<leader>qd",
+          "mode": "Normal",
+          "desc": "Don't save current session"
+        }
+      ]
+    },
+    {
+      "title": "Undo History",
+      "rows": [
+        {
+          "key": "<leader>u",
+          "mode": "Normal",
+          "desc": "Toggle undo tree"
+        }
+      ]
     }
   ]
 }

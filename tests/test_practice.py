@@ -119,6 +119,8 @@ class PracticePage(unittest.TestCase):
         cls.server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), handler)
         threading.Thread(target=cls.server.serve_forever, daemon=True).start()
         cls.url = "http://127.0.0.1:%d/" % cls.server.server_address[1]
+        # PRACTICE_URL tests a deployed copy (e.g. GitHub Pages) instead.
+        cls.url = os.environ.get("PRACTICE_URL", cls.url)
         cls.pw = sync_playwright().start()
         cls.browser = cls.pw.chromium.launch()
 
@@ -193,6 +195,71 @@ class PracticePage(unittest.TestCase):
             page.wait_for_timeout(150)
             self.assertFalse(self.solved(page, ex), ex["id"] + " solved without a change")
         context.close()
+
+    def fresh_page(self, **options):
+        page = self.browser.new_context(**options).new_page()
+        page.goto(self.url)
+        page.wait_for_selector(".sidebar-ex-btn", timeout=15_000)
+        return page
+
+    def test_every_lesson_opens_from_the_sidebar(self):
+        page = self.fresh_page()
+        for lesson in DATA["lessons"]:
+            page.click('.sidebar-lesson-title[data-lesson-id="%s"]' % lesson["id"])
+            heading = page.locator(".main-content .lesson-header h2").inner_text()
+            self.assertEqual(lesson["titleEs"], heading)
+            cards = page.locator(".main-content .exercise-card").count()
+            self.assertEqual(len(lesson.get("exercises", [])), cards, lesson["id"])
+            if not cards:
+                self.assertGreater(len(page.locator(".main-content").inner_text()), 200, lesson["id"])
+        page.context.close()
+
+    def test_cheat_sheet_search_filters_rows(self):
+        page = self.fresh_page()
+        page.click('.sidebar-lesson-title[data-lesson-id="lesson-9"]')
+        rows = page.locator(".shortcut-row")
+        total = rows.count()
+        self.assertGreater(total, 10)
+        page.fill(".cheatsheet-search", "harpoon")
+        page.wait_for_timeout(100)
+        visible = [r for r in rows.all() if r.is_visible()]
+        self.assertTrue(visible)
+        self.assertLess(len(visible), total)
+        for row in visible:
+            self.assertIn("harpoon", row.inner_text().lower())
+        page.context.close()
+
+    def test_progress_reset_and_language(self):
+        page = self.fresh_page()
+        ex = next(e for e in EXERCISES if e["id"] == "kata-x")
+        self.open_exercise(page, ex)
+        page.keyboard.press("x")
+        page.locator("#ok-kata-x").wait_for(state="visible", timeout=2_000)
+        page.reload()
+        page.wait_for_selector(".sidebar-ex-btn")
+        done = page.get_attribute('.sidebar-ex-btn[data-ex-id="kata-x"]', "class")
+        self.assertIn("done", done, "progress was not saved")
+        # Reset restores the start text and the exercise can be solved again.
+        self.open_exercise(page, ex)
+        card = page.locator('[data-exercise-id="kata-x"]')
+        card.get_by_role("button", name="Reiniciar").click()
+        self.assertEqual(ex["start"], page.locator("#cm-kata-x .cm-content").inner_text())
+        page.click("#btn-lang")
+        self.assertIn("Lesson", page.locator(".sidebar").inner_text())
+        self.assertEqual(1, card.get_by_role("button", name="Reset").count())
+        page.click("#btn-lang")
+        self.assertIn("Lección", page.locator(".sidebar").inner_text())
+        page.context.close()
+
+    def test_phone_width_has_no_horizontal_scroll(self):
+        page = self.fresh_page(viewport={"width": 375, "height": 740})
+        self.assertFalse(page.evaluate("document.documentElement.scrollWidth > innerWidth"))
+        page.click('.sidebar-lesson-title[data-lesson-id="lesson-9"]')
+        self.assertFalse(
+            page.evaluate("document.documentElement.scrollWidth > innerWidth"),
+            "cheat sheet overflows at phone width",
+        )
+        page.context.close()
 
     def test_wrong_keys_are_not_accepted(self):
         context = self.browser.new_context()

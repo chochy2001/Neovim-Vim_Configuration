@@ -154,9 +154,18 @@ function renderSidebar() {
     wrap.className = "sidebar-lesson";
     wrap.setAttribute("data-lesson-id", lesson.id);
 
-    const title = document.createElement("div");
+    // A button, so every lesson opens from the sidebar (reference-only
+    // lessons have no exercise buttons) and works from the keyboard.
+    const title = document.createElement("button");
+    title.type = "button";
     title.className = "sidebar-lesson-title";
+    title.dataset.lessonId = lesson.id;
     title.textContent = t(lesson, "titleEs", "titleEn");
+    title.addEventListener("click", () => {
+      showLesson(lesson.id);
+      window.scrollTo({ top: 0 });
+      document.querySelector(".main-content")?.scrollTo?.({ top: 0 });
+    });
     wrap.appendChild(title);
 
     if (exercises.length === 0) {
@@ -298,7 +307,7 @@ const REFERENCE_CONTENT = {
 
 Búsqueda: escribe <code>/patrón</code> y Enter para buscar hacia adelante, <code>?patrón</code> hacia atrás. Repite con <code>n</code> (siguiente) y <code>N</code> (anterior). <code>*</code> busca la palabra bajo el cursor.
 
-Sustitución: <code>:s/viejo/nuevo/</code> cambia la primera ocurrencia en la línea. <code>:s/viejo/nuevo/g</code> cambia todas. <code>:%s/viejo/nuevo/g</code> cambia en todo el fichero. Anade la bandera <code>c</code> para confirmar cada cambio.
+Sustitución: <code>:s/viejo/nuevo/</code> cambia la primera ocurrencia en la línea. <code>:s/viejo/nuevo/g</code> cambia todas. <code>:%s/viejo/nuevo/g</code> cambia en todo el fichero. Añade la bandera <code>c</code> para confirmar cada cambio.
 
 Estos comandos no se pueden emular fielmente en el navegador, por lo que esta lección es de referencia.`,
     },
@@ -320,9 +329,9 @@ These commands cannot be reliably emulated in the browser, so this lesson is ref
 
 <b>Buffers:</b> <code>:e fichero</code> abre un fichero. <code>:ls</code> lista los buffers. <code>:bn</code> va al siguiente, <code>:bp</code> al anterior. <code>:bd</code> cierra el buffer actual.
 
-<b>Ventanas (splits):</b> <code>:sp</code> divide horizontalmente, <code>:vsp</code> verticalmente. Muevete entre ventanas con <code>Ctrl-w h/j/k/l</code>. Cierra con <code>:q</code> o <code>Ctrl-w q</code>.
+<b>Ventanas (splits):</b> <code>:sp</code> divide horizontalmente, <code>:vsp</code> verticalmente. Muévete entre ventanas con <code>Ctrl-w h/j/k/l</code>. Cierra con <code>:q</code> o <code>Ctrl-w q</code>.
 
-<b>Pestanas:</b> <code>:tabnew</code> abre una nueva pestaña. <code>gt</code> va a la siguiente, <code>gT</code> a la anterior. <code>:tabclose</code> cierra la actual.`,
+<b>Pestañas:</b> <code>:tabnew</code> abre una nueva pestaña. <code>gt</code> va a la siguiente, <code>gT</code> a la anterior. <code>:tabclose</code> cierra la actual.`,
     },
     en: {
       title: "Buffers, windows and tabs",
@@ -340,11 +349,11 @@ These commands cannot be reliably emulated in the browser, so this lesson is ref
       title: "Registros y macros",
       body: `Vim permite guardar texto en registros y grabar secuencias de teclas.
 
-<b>Registros:</b> cada registro es un slot identificado por una letra (<code>"a</code> a <code>"z</code>). Yank a un registro: <code>"ayy</code> copia la línea al registro <code>a</code>. Pegar desde el: <code>"ap</code>. El registro <code>"+</code> es el portapapeles del sistema.
+<b>Registros:</b> cada registro es un slot identificado por una letra (<code>"a</code> a <code>"z</code>). Yank a un registro: <code>"ayy</code> copia la línea al registro <code>a</code>. Pegar desde él: <code>"ap</code>. El registro <code>"+</code> es el portapapeles del sistema.
 
 <b>Macros:</b> <code>qa</code> empieza a grabar en el registro <code>a</code>. Haz los cambios. <code>q</code> detiene la grabación. <code>@a</code> reproduce la macro. <code>@@</code> repite la última. <code>5@a</code> la repite 5 veces.
 
-<b>Truco:</b> edita una macro con <code>"ap</code>, modifica el texto y vuelve a guardarlo con <code>"ay$</code>.`,
+<b>Truco:</b> pega la macro con <code>"ap</code>, edítala, ve al inicio de la línea con <code>0</code> y guárdala de nuevo con <code>"ay$</code>.`,
     },
     en: {
       title: "Registers and macros",
@@ -354,17 +363,17 @@ These commands cannot be reliably emulated in the browser, so this lesson is ref
 
 <b>Macros:</b> <code>qa</code> starts recording into register <code>a</code>. Make your changes. <code>q</code> stops recording. <code>@a</code> replays the macro. <code>@@</code> repeats the last one. <code>5@a</code> repeats it 5 times.
 
-<b>Tip:</b> edit a macro by pasting it with <code>"ap</code>, editing the text, and saving it back with <code>"ay$</code>.`,
+<b>Tip:</b> paste the macro with <code>"ap</code>, edit it, go to the start of the line with <code>0</code> and save it back with <code>"ay$</code>.`,
     },
   },
   "lesson-9": {
     es: {
       title: "Ayuda, guardar y salir",
-      body: `Los comandos esenciales para el dia a dia.
+      body: `Los comandos esenciales para el día a día.
 
 <b>Ayuda:</b> <code>:h tópico</code> abre la documentación de Vim. <code>Ctrl-]</code> sigue un enlace, <code>Ctrl-o</code> vuelve atrás. Cierra la ventana de ayuda con <code>:q</code>.
 
-<b>Guardar y salir:</b> <code>:w</code> guarda. <code>:q</code> sale si no hay cambios pendientes. <code>:wq</code> o <code>ZZ</code> guarda y sale. <code>:q!</code> o <code>ZQ</code> sale descartando cambios. <code>:wqa</code> guarda y cierra todos los buffers.
+<b>Guardar y salir:</b> <code>:w</code> guarda. <code>:q</code> sale si no hay cambios pendientes. <code>:wq</code> o <code>ZZ</code> guarda y sale. <code>:q!</code> o <code>ZQ</code> sale descartando cambios. <code>:wqa</code> guarda todos los buffers y sale de Vim.
 
 <b>Deshacer/Rehacer:</b> <code>u</code> deshace, <code>Ctrl-r</code> rehace. Vim mantiene un árbol de cambios: <code>:earlier 5m</code> vuelve al estado de hace 5 minutos.`,
     },
@@ -374,7 +383,7 @@ These commands cannot be reliably emulated in the browser, so this lesson is ref
 
 <b>Help:</b> <code>:h topic</code> opens Vim's documentation. <code>Ctrl-]</code> follows a link, <code>Ctrl-o</code> goes back. Close the help window with <code>:q</code>.
 
-<b>Save and quit:</b> <code>:w</code> saves. <code>:q</code> quits if there are no pending changes. <code>:wq</code> or <code>ZZ</code> saves and quits. <code>:q!</code> or <code>ZQ</code> quits discarding changes. <code>:wqa</code> saves and closes all buffers.
+<b>Save and quit:</b> <code>:w</code> saves. <code>:q</code> quits if there are no pending changes. <code>:wq</code> or <code>ZZ</code> saves and quits. <code>:q!</code> or <code>ZQ</code> quits discarding changes. <code>:wqa</code> saves every buffer and quits Vim.
 
 <b>Undo/Redo:</b> <code>u</code> undoes, <code>Ctrl-r</code> redoes. Vim keeps a change tree: <code>:earlier 5m</code> returns the state from 5 minutes ago.`,
     },
@@ -382,56 +391,6 @@ These commands cannot be reliably emulated in the browser, so this lesson is ref
 };
 
 // Key shortcut groups from WORKFLOW.md
-const SHORTCUT_GROUPS = [
-  {
-    groupEs: "Edición básica", groupEn: "Basic editing",
-    rows: [
-      { key: "jj", desc_es: "Salir del modo insertar", desc_en: "Exit insert mode" },
-      { key: "<leader><leader>", desc_es: "Limpiar resaltado de búsqueda", desc_en: "Clear search highlight" },
-      { key: "gcc", desc_es: "Comentar línea", desc_en: "Toggle line comment" },
-      { key: "gc", desc_es: "Comentar selección (visual)", desc_en: "Toggle comment on selection" },
-      { key: "s / S", desc_es: "Flash: saltar a carácter", desc_en: "Flash: jump to character" },
-    ],
-  },
-  {
-    groupEs: "Búsqueda y archivos (Telescope)", groupEn: "Search and files (Telescope)",
-    rows: [
-      { key: "<leader>ff", desc_es: "Buscar archivos", desc_en: "Find files" },
-      { key: "<leader>fg", desc_es: "Búsqueda en contenido", desc_en: "Live grep" },
-      { key: "<leader>fo", desc_es: "Archivos recientes", desc_en: "Recent files" },
-      { key: "<leader>fb", desc_es: "Buffers abiertos", desc_en: "Open buffers" },
-      { key: "<leader>sr", desc_es: "Buscar y reemplazar", desc_en: "Search and replace" },
-    ],
-  },
-  {
-    groupEs: "Git (Fugitive/Gitsigns)", groupEn: "Git (Fugitive/Gitsigns)",
-    rows: [
-      { key: "<leader>gs", desc_es: "Estado de git", desc_en: "Git status" },
-      { key: "<leader>gc", desc_es: "Git commit", desc_en: "Git commit" },
-      { key: "<leader>gp", desc_es: "Git push", desc_en: "Git push" },
-      { key: "<leader>gb", desc_es: "Git blame", desc_en: "Git blame" },
-      { key: "<leader>gbt", desc_es: "Activar blame inline", desc_en: "Toggle inline blame" },
-    ],
-  },
-  {
-    groupEs: "Explorador de archivos", groupEn: "File explorer",
-    rows: [
-      { key: "<leader>pv", desc_es: "Abrir/cerrar árbol", desc_en: "Toggle file tree" },
-      { key: "<leader>-", desc_es: "Abrir directorio padre (oil)", desc_en: "Open parent directory" },
-    ],
-  },
-  {
-    groupEs: "LSP y diagnósticos", groupEn: "LSP and diagnostics",
-    rows: [
-      { key: "gd", desc_es: "Ir a definición", desc_en: "Go to definition" },
-      { key: "gR", desc_es: "Referencias (Trouble)", desc_en: "References (Trouble)" },
-      { key: "K", desc_es: "Hover / documentación", desc_en: "Hover / documentation" },
-      { key: "<leader>ca", desc_es: "Accion de código", desc_en: "Code action" },
-      { key: "<leader>rn", desc_es: "Renombrar símbolo", desc_en: "Rename symbol" },
-      { key: "]d / [d", desc_es: "Diagnóstico siguiente / anterior", desc_en: "Next / previous diagnostic" },
-    ],
-  },
-];
 
 function renderRefSection(lesson, container) {
   const content = REFERENCE_CONTENT[lesson.id];
@@ -450,8 +409,8 @@ function renderRefSection(lesson, container) {
     <h2>${data.title}</h2>
     <p>${data.body.replace(/\n\n/g, '</p><p>')}</p>
     <p class="ref-note">${LANG === "es"
-      ? "Esta lección requiere Neovim real: los comandos de ex-line (:) y los registros no son emulables fiablemente en el navegador."
-      : "This lesson requires real Neovim: ex-line commands (:) and registers cannot be reliably emulated in the browser."}</p>
+      ? "Practica esta lección en Neovim: el navegador no reproduce con fidelidad la línea de comandos (:), los registros, las ventanas ni los buffers."
+      : "Practise this lesson in Neovim: the browser cannot faithfully reproduce the command line (:), registers, windows or buffers."}</p>
   `;
   container.appendChild(sec);
 
@@ -477,21 +436,27 @@ function renderCheatsheet(container) {
 
   const groups = document.createElement("div");
   groups.id = "cheatsheet-groups";
-  SHORTCUT_GROUPS.forEach(g => {
+  // Generated from WORKFLOW.md by build_practice.py (descriptions in English);
+  // tests/integration.lua checks every key exists in the Neovim config.
+  (DATA.shortcuts || []).forEach(g => {
     const div = document.createElement("div");
     div.className = "cheatsheet-group";
     const h3 = document.createElement("h3");
-    h3.textContent = LANG === "es" ? g.groupEs : g.groupEn;
+    h3.textContent = g.title;
     div.appendChild(h3);
     g.rows.forEach(r => {
       const row = document.createElement("div");
       row.className = "shortcut-row";
       const k = document.createElement("kbd");
       k.textContent = r.key;
+      const m = document.createElement("span");
+      m.className = "shortcut-mode";
+      m.textContent = r.mode;
       const d = document.createElement("span");
       d.className = "shortcut-desc";
-      d.textContent = LANG === "es" ? r.desc_es : r.desc_en;
+      d.textContent = r.desc;
       row.appendChild(k);
+      row.appendChild(m);
       row.appendChild(d);
       div.appendChild(row);
     });
@@ -502,8 +467,8 @@ function renderCheatsheet(container) {
   const note = document.createElement("p");
   note.className = "cheatsheet-note";
   note.textContent = LANG === "es"
-    ? "Referencia de WORKFLOW.md. Tecla lider: Espacio."
-    : "Reference from WORKFLOW.md. Leader key: Space.";
+    ? "Todos los atajos de WORKFLOW.md (descripciones en inglés). Tecla líder: Espacio."
+    : "Every shortcut from WORKFLOW.md. Leader key: Space.";
   wrap.appendChild(note);
 
   // Filter on search

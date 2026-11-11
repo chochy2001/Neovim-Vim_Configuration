@@ -24,8 +24,8 @@ REF_META = {
     "change-word": {
         "titleEs": "Cambia una palabra (cw)",
         "titleEn": "Change a word (cw)",
-        "hintEs": "cw borra desde el cursor hasta el inicio de la siguiente palabra y te deja en modo insertar. Escribe el nuevo texto y pulsa Esc.",
-        "hintEn": "cw deletes from the cursor to the start of the next word and enters insert mode. Type the new text and press Esc.",
+        "hintEs": "cw cambia hasta el final de la palabra (igual que ce, no como dw): el espacio que sigue se conserva. Escribe el nuevo texto y pulsa Esc.",
+        "hintEn": "cw changes to the end of the word (like ce, unlike dw): the following space is kept. Type the new text and press Esc.",
     },
     "change-last-word": {
         "titleEs": "cw sobre la única palabra del buffer",
@@ -60,7 +60,7 @@ REF_META = {
     "cancel-count": {
         "titleEs": "Cancela un conteo con Esc",
         "titleEn": "Cancel a count with Esc",
-        "hintEs": "Si empiezas un conteo numerico (3...) y pulsas Esc, el conteo se cancela. Luego j baja una línea.",
+        "hintEs": "Si empiezas un conteo numérico (3...) y pulsas Esc, el conteo se cancela. Luego j baja una línea.",
         "hintEn": "If you start a numeric count (3...) and press Esc, the count is canceled. Then j moves down one line.",
     },
     "cancel-find": {
@@ -96,7 +96,7 @@ REF_META = {
     "counted-find": {
         "titleEs": "Buscar la segunda X con 2fX",
         "titleEn": "Find the second X with 2fX",
-        "hintEs": "2fX busca la segunda aparición de X hacia adelante en la línea. fX buscaria solo la primera.",
+        "hintEs": "2fX busca la segunda aparición de X hacia adelante en la línea. fX buscaría solo la primera.",
         "hintEn": "2fX finds the second occurrence of X forward on the line. fX would find only the first.",
     },
     "find-adjacent": {
@@ -144,20 +144,20 @@ REF_META = {
     "inner-quotes-at-open": {
         "titleEs": 'ci" desde la comilla de apertura',
         "titleEn": 'ci" from the opening quote',
-        "hintEs": '4l mueve el cursor a la comilla de apertura ". ci" desde la propia comilla aun funciona: cambia el texto entre comillas.',
+        "hintEs": '4l mueve el cursor a la comilla de apertura ". ci" desde la propia comilla aún funciona: cambia el texto entre comillas.',
         "hintEn": '4l moves the cursor to the opening " character. ci" from the opening quote still works: it changes the text inside the quotes.',
     },
     "counted-replace": {
         "titleEs": "Reemplazar 3 caracteres con 3rx",
         "titleEn": "Replace 3 characters with 3rx",
-        "hintEs": "3r reemplaza los 3 caracteres siguientes con la letra que escribas. No entras en modo insertar: todo ocurre en normal.",
-        "hintEn": "3r replaces the next 3 characters with the letter you type. You do not enter insert mode: everything happens in normal mode.",
+        "hintEs": "3rx reemplaza 3 caracteres, empezando por el que está bajo el cursor, por x. No entras en modo insertar: todo ocurre en normal.",
+        "hintEn": "3rx replaces 3 characters, starting with the one under the cursor, with x. You never enter insert mode.",
     },
     "empty-word-motion": {
         "titleEs": "w sobre una línea vacía",
         "titleEn": "w over an empty line",
-        "hintEs": "w avanza al inicio de la siguiente 'palabra'. Una línea vacía es una frontera de párrafo y cuenta como destino de w.",
-        "hintEn": "w advances to the start of the next 'word'. An empty line is a paragraph boundary and counts as a w destination.",
+        "hintEs": "w avanza al inicio de la siguiente palabra. Vim cuenta una línea vacía como una palabra, así que w se detiene en ella.",
+        "hintEn": "w moves to the start of the next word. Vim counts an empty line as a word, so w stops on it.",
     },
     "insert-backspace": {
         "titleEs": "Backspace en modo insertar (A<BS>)",
@@ -174,7 +174,7 @@ REF_META = {
     "insert-start": {
         "titleEs": "Insertar antes del primer carácter no-espacio (I)",
         "titleEn": "Insert before the first non-space character (I)",
-        "hintEs": "I (mayuscula) entra en insertar al primer carácter no-espacio de la línea. Escribe el nuevo texto y pulsa Esc.",
+        "hintEs": "I (mayúscula) entra en insertar al primer carácter no-espacio de la línea. Escribe el nuevo texto y pulsa Esc.",
         "hintEn": "I (uppercase) enters insert mode at the first non-space character of the line. Type the new text and press Esc.",
     },
     "open-above-undo": {
@@ -186,8 +186,8 @@ REF_META = {
     "yank-inner-and-paste": {
         "titleEs": "Copiar palabra y pegar al final (yiw$p)",
         "titleEn": "Yank word and paste at end (yiw$p)",
-        "hintEs": "yiw copia la palabra sin entrar en insertar. $ va al final de la línea. p pega después del cursor.",
-        "hintEn": "yiw copies the word without entering insert mode. $ goes to end of line. p pastes after the cursor.",
+        "hintEs": "yiw copia la palabra bajo el cursor. $ va al último carácter de la línea. p pega después del cursor.",
+        "hintEn": "yiw copies the word under the cursor. $ goes to the last character of the line. p pastes after the cursor.",
     },
     "reverse-delete": {
         "titleEs": "Borrar hacia atrás hasta el inicio ($d0)",
@@ -294,7 +294,7 @@ LESSONS = [
         "titleEn": "Lesson 2: Modes",
         "descriptionEs": (
             "Vim es un editor modal. La misma tecla hace cosas distintas "
-            "segun el modo. Estos ejercicios practican entrar y salir del "
+            "según el modo. Estos ejercicios practican entrar y salir del "
             "modo insertar con distintas teclas."
         ),
         "descriptionEn": (
@@ -315,7 +315,7 @@ LESSONS = [
         "titleEs": "Lección 3: Moverse sin flechas",
         "titleEn": "Lesson 3: Moving without arrow keys",
         "descriptionEs": (
-            "hjkl, word motions, f/t, {/}, gg/G y %. "
+            "hjkl, movimientos por palabra (w, b, e), f/t, {/}, gg/G y %. "
             "Poner un número delante de casi cualquier movimiento lo multiplica: "
             "3j baja tres líneas, 2fX busca la segunda X."
         ),
@@ -384,7 +384,7 @@ LESSONS = [
         "titleEn": "Lesson 5: Text objects",
         "descriptionEs": (
             "i (inner) y a (around) aplicados a palabras, comillas, "
-            "parentesis, etc. La receta mas usada al programar: "
+            "paréntesis, etc. La receta más usada al programar: "
             "ciw, ci\", ci{."
         ),
         "descriptionEn": (
@@ -514,6 +514,32 @@ def export_katas():
         check=True,
     )
     return json.loads(result.stdout)
+
+
+# WORKFLOW.md sections that list keys usable while editing. Dashboard keys only
+# work on the start screen; the prefix table and tips are not shortcuts.
+SKIP_SECTIONS = ("Dashboard Quick Actions", "Prefix Reference", "Useful Commands", "Workflow Tips")
+
+
+def read_shortcuts():
+    """Shortcut groups parsed from WORKFLOW.md, the single source of the keys."""
+    groups, current, skip = [], None, False
+    for line in (ROOT / "WORKFLOW.md").read_text(encoding="utf-8").splitlines():
+        heading = re.match(r"^(##+) (.+)$", line)
+        if heading:
+            title = heading.group(2).strip()
+            if heading.group(1) == "##":
+                skip = title.startswith(SKIP_SECTIONS)
+            current = None if skip else {"title": title, "rows": []}
+            if current:
+                groups.append(current)
+            continue
+        row = re.match(r"^\| `([^|]+?)` \| ([^|]+?) \| ([^|]+?) \|$", line)
+        if current is not None and row:
+            # "af` / `if" and "<leader>1` - `<leader>9" hold several keys.
+            key = re.sub(r"`\s*([/-])\s*`", r" \1 ", row.group(1).strip())
+            current["rows"].append({"key": key, "mode": row.group(2).strip(), "desc": row.group(3).strip()})
+    return [g for g in groups if g["rows"]]
 
 
 def build_exercises_json():
@@ -674,6 +700,7 @@ def build_exercises_json():
         ),
         "lessons": lessons_out,
         "excluded": excluded_out,
+        "shortcuts": read_shortcuts(),
     }
     return result
 

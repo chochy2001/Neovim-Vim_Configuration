@@ -365,27 +365,55 @@ test("IdeaVim keys do the same thing as in Neovim", function()
     assert(#problems == 0, table.concat(problems, "\n"))
 end)
 test("practice page cheat sheet lists only real Neovim keys", function()
+    -- The page shows every WORKFLOW.md shortcut (built by build_practice.py).
+    -- maparg() reads key notation like Neovim does (<A-j> is <M-j>).
     local buf = vim.api.nvim_create_buf(true, false)
     vim.api.nvim_exec_autocmds("LspAttach", { buffer = buf, data = { client_id = 0 } })
-    local known = { K = true } -- built-in hover
-    for _, mode in ipairs({ "n", "x", "o", "i", "t" }) do
-        for _, map in
-            ipairs(vim.list_extend(vim.api.nvim_get_keymap(mode), vim.api.nvim_buf_get_keymap(buf, mode)))
-        do
-            known[(map.lhs:gsub(" ", "<leader>"))] = true
+    local builtin = { K = true, ["<C-space>"] = true } -- hover; nvim-cmp's own insert key
+    local function mapped(key)
+        if builtin[key] then
+            return true
         end
+        for _, mode in ipairs({ "n", "x", "o", "i", "t" }) do
+            if vim.fn.maparg(key, mode) ~= "" then
+                return true
+            end
+            local found = vim.api.nvim_buf_call(buf, function()
+                return vim.fn.maparg(key, mode) ~= ""
+            end)
+            if found then
+                return true
+            end
+        end
+        return false
     end
-    vim.api.nvim_buf_delete(buf, { force = true })
-    local missing = {}
-    local source = table.concat(vim.fn.readfile("practice/app.js"), "\n")
-    for key in source:gmatch('{ key: "([^"]+)", desc_es:') do
-        for one in vim.gsplit(key, "%s*/%s*") do
-            if not known[one] then
-                table.insert(missing, one)
+    local data = vim.json.decode(table.concat(vim.fn.readfile("practice/exercises.json"), "\n"))
+    local missing, count = {}, 0
+    for _, group in ipairs(data.shortcuts) do
+        for _, row in ipairs(group.rows) do
+            -- Keys of the neo-tree window only exist inside that buffer.
+            if not row.mode:find("buffer", 1, true) then
+                local keys = {}
+                local from, to = row.key:match("^(<leader>)%d %- <leader>%d$"), row.key:match("(%d)$")
+                if from then
+                    for n = tonumber(row.key:match("(%d) %-")), tonumber(to) do
+                        table.insert(keys, "<leader>" .. n)
+                    end
+                else
+                    keys = vim.split(row.key, " / ", { plain = true })
+                end
+                for _, key in ipairs(keys) do
+                    count = count + 1
+                    if not mapped(key) then
+                        table.insert(missing, key .. " (" .. group.title .. ")")
+                    end
+                end
             end
         end
     end
-    assert(#missing == 0, "cheat sheet keys not mapped in Neovim: " .. table.concat(missing, ", "))
+    vim.api.nvim_buf_delete(buf, { force = true })
+    assert(count > 150, "too few shortcuts checked: " .. count)
+    assert(#missing == 0, "WORKFLOW.md keys not mapped in Neovim: " .. table.concat(missing, ", "))
 end)
 test("opening code files triggers no deprecated API", function()
     -- project.nvim's LSP root detection called vim.lsp.buf_get_clients().
