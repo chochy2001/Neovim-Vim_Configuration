@@ -31,6 +31,212 @@ const STORAGE_KEY = "vim-practice-progress-v1";
 const LANG_KEY    = "vim-practice-lang-v1";
 
 // ---------------------------------------------------------------------------
+// Token verification helpers (Bug 1 fix: false-positive prevention)
+// ---------------------------------------------------------------------------
+
+// Port of Python's normal_commands() in tests/test_practice.py.
+// Extracts normal-mode command tokens from a vim key sequence, skipping text
+// typed in insert/replace mode, char arguments after f/t/F/T/r, register
+// names after "/q/@, and search text after //?/:.
+// Returns an array of token strings, e.g. ["count","gg","j"] for "3ggj".
+function normalCommands(keys) {
+  const tokens = [];
+  let p = 0;
+  while (p < keys.length) {
+    if (keys[p] === "<") {
+      const e = keys.indexOf(">", p + 1);
+      if (e !== -1) { tokens.push(keys.slice(p, e + 1)); p = e + 1; continue; }
+    }
+    tokens.push(keys[p]);
+    p++;
+  }
+
+  const out = [];
+  let i = 0;
+
+  function until(stopSet) {
+    while (i < tokens.length && !stopSet.has(tokens[i])) i++;
+    i++; // consume the stop token
+  }
+
+  while (i < tokens.length) {
+    const t = tokens[i++];
+
+    // Count: digits 1-9 (0 is the goto-col-0 command, not a count by itself)
+    if (t.length === 1 && t >= "1" && t <= "9") {
+      out.push("count");
+      continue;
+    }
+
+    // Insert/Replace mode: skip typed text until <Esc>
+    if (t === "i" || t === "a" || t === "I" || t === "A" || t === "o" ||
+        t === "O" || t === "R" || t === "s" || t === "S" || t === "C") {
+      out.push(t);
+      until(new Set(["<Esc>"]));
+      continue;
+    }
+
+    // f, t, F, T, r: skip one character argument
+    if (t === "f" || t === "t" || t === "F" || t === "T" || t === "r") {
+      out.push(t);
+      i++;
+      continue;
+    }
+
+    // ", q, @: skip register/macro name
+    if (t === '"' || t === "q" || t === "@") {
+      out.push(t);
+      i++;
+      continue;
+    }
+
+    // /, ?, :: skip search/command text until <CR>
+    if (t === "/" || t === "?" || t === ":") {
+      out.push(t);
+      until(new Set(["<CR>"]));
+      continue;
+    }
+
+    // g combines with next char (gg, ge, gE, g~, etc.)
+    if (t === "g") {
+      const nxt = i < tokens.length ? tokens[i] : "";
+      out.push("g" + nxt);
+      if (nxt) i++;
+      continue;
+    }
+
+    // Operators: d, c, y, >, <
+    if (t === "d" || t === "c" || t === "y" || t === ">" || t === "<") {
+      out.push(t);
+      const nxt = i < tokens.length ? tokens[i] : "";
+      if ((nxt === "i" || nxt === "a") && i + 1 < tokens.length) {
+        out.push(nxt + tokens[i + 1]); // text object: iw, a(, etc.
+        i += 2;
+      } else if (nxt === "f" || nxt === "t" || nxt === "F" || nxt === "T") {
+        out.push(nxt);
+        i += 2; // skip nxt and its char argument
+      } else if (nxt === "g") {
+        out.push("g" + (i + 1 < tokens.length ? tokens[i + 1] : ""));
+        i += 2;
+      } else if (nxt) {
+        out.push(nxt !== t ? nxt : t); // motion or doubled operator (dd, cc)
+        i++;
+      }
+      if (t === "c") until(new Set(["<Esc>"])); // c enters insert mode
+      continue;
+    }
+
+    out.push(t);
+  }
+  return out;
+}
+
+// Returns true if `required` is an ordered subsequence of `actual`.
+function isSubsequence(required, actual) {
+  let j = 0;
+  for (let i = 0; i < actual.length && j < required.length; i++) {
+    if (actual[i] === required[j]) j++;
+  }
+  return j === required.length;
+}
+
+// Returns true if `actual` is a non-empty proper prefix of `required`.
+// This handles exercises where the expected state matches at an intermediate
+// point in the full key sequence (e.g. macro exercises where @a changes state
+// AWAY from the expected state, so the check must fire mid-sequence).
+function isPrefixOf(required, actual) {
+  if (actual.length === 0 || actual.length > required.length) return false;
+  for (let i = 0; i < actual.length; i++) {
+    if (actual[i] !== required[i]) return false;
+  }
+  return true;
+}
+
+// Convert a KeyboardEvent to a vim-notation token string.
+// Returns null for keys that have no vim-command meaning.
+function keyEventToVimToken(e) {
+  const key = e.key;
+  if (key === "Control" || key === "Shift" || key === "Alt" || key === "Meta" ||
+      key === "CapsLock" || key === "NumLock" || key === "ScrollLock") return null;
+  if (/^(Arrow|F\d|Home|End|Page|Insert|Delete|Scroll|Pause|Print)/.test(key)) return null;
+  if (key === "Escape")    return "<Esc>";
+  if (key === "Enter")     return "<CR>";
+  if (key === "Backspace") return "<BS>";
+  if (key === "Tab")       return "<Tab>";
+  if (e.ctrlKey && key.length === 1) return "<C-" + key.toLowerCase() + ">";
+  if (key.length === 1 && !e.ctrlKey && !e.altKey && !e.metaKey) return key;
+  return null;
+}
+
+// Split a key sequence into human-readable command strings for the hint.
+// "3ggj" => ["3gg", "j"]   "itext<Esc>" => ["i"]
+function keysToHintList(keys) {
+  const toks = [];
+  let p = 0;
+  while (p < keys.length) {
+    if (keys[p] === "<") {
+      const e = keys.indexOf(">", p + 1);
+      if (e !== -1) { toks.push(keys.slice(p, e + 1)); p = e + 1; continue; }
+    }
+    toks.push(keys[p]);
+    p++;
+  }
+  const groups = [];
+  let count = "";
+  let inInsert = false;
+  let i = 0;
+  while (i < toks.length) {
+    const t = toks[i++];
+    if (inInsert) { if (t === "<Esc>") inInsert = false; continue; }
+    if (t.length === 1 && t >= "1" && t <= "9") { count += t; continue; }
+    if (t === "i" || t === "a" || t === "I" || t === "A" || t === "o" ||
+        t === "O" || t === "R" || t === "s" || t === "S" || t === "C") {
+      groups.push(count + t); count = ""; inInsert = true; continue;
+    }
+    if ((t === "f" || t === "t" || t === "F" || t === "T" || t === "r") && t.length === 1) {
+      const ch = i < toks.length ? toks[i++] : "";
+      groups.push(count + t + ch); count = ""; continue;
+    }
+    if (t === "g") {
+      const nxt = i < toks.length ? toks[i++] : "";
+      groups.push(count + t + nxt); count = ""; continue;
+    }
+    if (t === '"' || t === "q" || t === "@") {
+      const reg = i < toks.length ? toks[i++] : "";
+      groups.push(count + t + reg); count = ""; continue;
+    }
+    if (t === "/" || t === "?" || t === ":") {
+      while (i < toks.length && toks[i] !== "<CR>") i++;
+      if (i < toks.length) i++;
+      groups.push(count + t + "..."); count = ""; continue;
+    }
+    groups.push(count + t); count = "";
+  }
+  return groups;
+}
+
+function showTokenHint(ex) {
+  const hint = document.getElementById("token-hint-" + ex.id);
+  if (!hint) return;
+  const list = keysToHintList(ex.keys);
+  const joined = list.length <= 1 ? (list[0] || ex.keys)
+    : LANG === "es"
+      ? list.slice(0, -1).join(", ") + " y " + list[list.length - 1]
+      : list.slice(0, -1).join(", ") + " and " + list[list.length - 1];
+  const msgEs = "Llegaste al resultado, pero el ejercicio pide usar "
+    + joined + ". Reinicia e inténtalo con esas teclas.";
+  const msgEn = "You reached the goal, but this exercise asks you to use "
+    + joined + ". Reset and try with those keys.";
+  hint.textContent = LANG === "es" ? msgEs : msgEn;
+  hint.style.display = "block";
+}
+
+function clearTokenHint(exId) {
+  const hint = document.getElementById("token-hint-" + exId);
+  if (hint) hint.style.display = "none";
+}
+
+// ---------------------------------------------------------------------------
 // Bootstrap
 // ---------------------------------------------------------------------------
 
@@ -158,9 +364,20 @@ function renderSidebar() {
     // lessons have no exercise buttons) and works from the keyboard.
     const title = document.createElement("button");
     title.type = "button";
-    title.className = "sidebar-lesson-title";
+    title.className = "sidebar-lesson-title" + (lesson.locked ? " locked" : "");
     title.dataset.lessonId = lesson.id;
-    title.textContent = t(lesson, "titleEs", "titleEn");
+    if (lesson.locked) {
+      const lockIcon = document.createElement("span");
+      lockIcon.className = "sidebar-lock-icon";
+      lockIcon.setAttribute("aria-hidden", "true");
+      lockIcon.textContent = "🔒";
+      title.appendChild(lockIcon);
+      const titleText = document.createElement("span");
+      titleText.textContent = t(lesson, "titleEs", "titleEn");
+      title.appendChild(titleText);
+    } else {
+      title.textContent = t(lesson, "titleEs", "titleEn");
+    }
     title.addEventListener("click", () => {
       showLesson(lesson.id);
       window.scrollTo({ top: 0 });
@@ -168,7 +385,15 @@ function renderSidebar() {
     });
     wrap.appendChild(title);
 
-    if (exercises.length === 0) {
+    if (lesson.locked) {
+      const lockNote = document.createElement("div");
+      lockNote.className = "sidebar-ref-note sidebar-locked-note";
+      const count = lesson.exercise_count || 0;
+      lockNote.setAttribute("data-es", count + " ejercicios");
+      lockNote.setAttribute("data-en", count + " exercises");
+      lockNote.textContent = LANG === "es" ? count + " ejercicios" : count + " exercises";
+      wrap.appendChild(lockNote);
+    } else if (exercises.length === 0) {
       const note = document.createElement("div");
       note.className = "sidebar-ref-note";
       note.setAttribute("data-es", "Solo referencia");
@@ -226,9 +451,9 @@ function setSidebarDone(exId) {
 function renderProgressBar() {
   const wrap = document.querySelector(".progress-bar-wrap");
   if (!wrap || !DATA) return;
-  const total = DATA.lessons.reduce((s, l) => s + (l.exercises || []).length, 0);
+  const total = DATA.lessons.reduce((s, l) => l.locked ? s : s + (l.exercises || []).length, 0);
   const done = [...PROGRESS].filter(id => {
-    return DATA.lessons.some(l => (l.exercises || []).some(e => e.id === id));
+    return DATA.lessons.some(l => !l.locked && (l.exercises || []).some(e => e.id === id));
   }).length;
   const pct = total > 0 ? Math.round((done / total) * 100) : 0;
   wrap.setAttribute("role", "progressbar");
@@ -265,6 +490,15 @@ function showLesson(lessonId, destroyEditors = true) {
   main.appendChild(progress);
   renderProgressBar();
 
+  // Keep the URL in sync so slides can link straight to a lesson.
+  if (location.hash !== `#${lesson.id}`) window.history.replaceState(null, "", `#${lesson.id}`); // "history" is CodeMirror's undo import
+
+  // Locked lesson: show CTA card and stop.
+  if (lesson.locked) {
+    renderLockedLesson(lesson, main);
+    return;
+  }
+
   // Header
   const header = document.createElement("div");
   header.className = "lesson-header";
@@ -278,9 +512,6 @@ function showLesson(lessonId, destroyEditors = true) {
   main.appendChild(header);
 
   const exercises = lesson.exercises || [];
-
-  // Keep the URL in sync so slides can link straight to a lesson.
-  if (location.hash !== `#${lesson.id}`) window.history.replaceState(null, "", `#${lesson.id}`); // "history" is CodeMirror's undo import
 
   if (exercises.length === 0) {
     // Reference-only section
@@ -296,6 +527,50 @@ function showLesson(lessonId, destroyEditors = true) {
     // Lazily initialize the editor on first intersection
     scheduleEditor(ex);
   });
+}
+
+function renderLockedLesson(lesson, container) {
+  const academyUrl = (DATA && DATA.academy_url) || "https://academy.capdesis.com";
+  const count = lesson.exercise_count || 0;
+  const titleText = t(lesson, "titleEs", "titleEn");
+
+  const cta = document.createElement("div");
+  cta.className = "locked-lesson-cta";
+  cta.setAttribute("data-lesson-id", lesson.id);
+
+  const icon = document.createElement("div");
+  icon.className = "locked-cta-icon";
+  icon.setAttribute("aria-hidden", "true");
+  icon.textContent = "🔒";
+
+  const h2 = document.createElement("h2");
+  h2.className = "locked-cta-title";
+  h2.textContent = titleText;
+
+  const body = document.createElement("p");
+  body.className = "locked-cta-body";
+  if (LANG === "es") {
+    body.textContent = "Esta lección está en Capdesis Academy. Es gratis: crea tu cuenta y continúa con "
+      + count + " ejercicio" + (count !== 1 ? "s" : "") + ".";
+  } else {
+    body.textContent = "This lesson is on Capdesis Academy. It is free: create your account and continue with "
+      + count + " exercise" + (count !== 1 ? "s" : "") + ".";
+  }
+
+  const link = document.createElement("a");
+  link.className = "btn btn-academy";
+  link.href = academyUrl;
+  link.target = "_blank";
+  link.rel = "noopener";
+  link.setAttribute("data-es", "Ir a Capdesis Academy");
+  link.setAttribute("data-en", "Go to Capdesis Academy");
+  link.textContent = LANG === "es" ? "Ir a Capdesis Academy" : "Go to Capdesis Academy";
+
+  cta.appendChild(icon);
+  cta.appendChild(h2);
+  cta.appendChild(body);
+  cta.appendChild(link);
+  container.appendChild(cta);
 }
 
 function scrollToExercise(exId) {
@@ -690,12 +965,12 @@ function buildExerciseCard(ex, index, total) {
   const successText = document.createElement("span");
   successText.setAttribute("data-es", nextEx
     ? "Correcto. Pasa al siguiente ejercicio."
-    : "Correcto. Leccion completada.");
+    : "Correcto. Lección completada.");
   successText.setAttribute("data-en", nextEx
     ? "Correct. Move to the next exercise."
     : "Correct. Lesson complete.");
   successText.textContent = LANG === "es"
-    ? (nextEx ? "Correcto. Pasa al siguiente ejercicio." : "Correcto. Leccion completada.")
+    ? (nextEx ? "Correcto. Pasa al siguiente ejercicio." : "Correcto. Lección completada.")
     : (nextEx ? "Correct. Move to the next exercise." : "Correct. Lesson complete.");
 
   successMsg.appendChild(successIcon);
@@ -712,6 +987,16 @@ function buildExerciseCard(ex, index, total) {
   }
 
   card.appendChild(successMsg);
+
+  // --- Token hint (shown when state matches but required keys were not used) ---
+  const tokenHint = document.createElement("div");
+  tokenHint.className = "token-hint";
+  tokenHint.id = `token-hint-${ex.id}`;
+  tokenHint.setAttribute("role", "status");
+  tokenHint.setAttribute("aria-live", "polite");
+  tokenHint.setAttribute("aria-atomic", "true");
+  tokenHint.style.display = "none";
+  card.appendChild(tokenHint);
 
   return card;
 }
@@ -890,7 +1175,22 @@ function initEditor(ex) {
     const cm = getCM(view);
     if (!cm) return;
 
-    editors.set(ex.id, { view, cm, done: PROGRESS.has(ex.id) });
+    editors.set(ex.id, { view, cm, done: PROGRESS.has(ex.id), typedKeyStr: "" });
+
+    // Track keys typed in this editor for token verification (Bug 1 fix).
+    // We build a full vim-notation key string so that normalCommands() can
+    // tokenize it the same way it tokenizes ex.keys -- handling counts (3gg),
+    // text objects (iw), and insert-mode text correctly.
+    // Use capture phase so we record keys before CodeMirror processes them.
+    // Mouse events that move the cursor do NOT append tokens.
+    view.dom.addEventListener("keydown", (e) => {
+      // Skip synthetic events (macro playback, programmatic dispatch).
+      if (!e.isTrusted) return;
+      const info = editors.get(ex.id);
+      if (!info || info.done) return;
+      const tok = keyEventToVimToken(e);
+      if (tok !== null) info.typedKeyStr += tok;
+    }, { capture: true });
 
     // Mode change events
     cm.on("vim-mode-change", ({ mode }) => {
@@ -976,6 +1276,33 @@ function onEditorUpdate(ex, view) {
     (ex.checkCursor === false || (row === ex.expectedRow && col === ex.expectedCol)) &&
     (!ex.requiresChange || info.changed)
   ) {
+    // Token verification: the required command tokens must appear as an ordered
+    // subsequence of the keys the learner actually typed.
+    // Accept ex.keys, ex.alternatives, or ex.accepts (any match is enough).
+    const keySets = [ex.keys];
+    if (ex.alternatives) keySets.push(...(Array.isArray(ex.alternatives) ? ex.alternatives : [ex.alternatives]));
+    if (ex.accepts) keySets.push(...(Array.isArray(ex.accepts) ? ex.accepts : [ex.accepts]));
+    // Run normalCommands on the recorded key string so tokenization (counts,
+    // text objects, insert-mode text) is handled the same on both sides.
+    const typedToks = normalCommands(info.typedKeyStr || "");
+    const tokenOk = keySets.some(ks => {
+      if (!ks) return false;
+      const required = normalCommands(ks);
+      if (required.length === 0) return true;
+      // Full match: required tokens appear as ordered subsequence of typed tokens.
+      // Prefix match: typed tokens are a correct prefix of required tokens (handles
+      // exercises where the goal state matches mid-sequence, e.g. macro exercises).
+      // The prefix rule only applies to macro exercises (q... @...), where the
+      // goal is reached mid-sequence; elsewhere every taught key is required.
+      const isMacro = required.some(t => /^\d*@|^q/.test(t));
+      return isSubsequence(required, typedToks) || (isMacro && isPrefixOf(required, typedToks));
+    });
+    if (!tokenOk) {
+      // State is correct but the learner didn't use the required command.
+      showTokenHint(ex);
+      return;
+    }
+    clearTokenHint(ex.id);
     info.done = true;
     PROGRESS.add(ex.id);
     saveProgress();
@@ -1028,10 +1355,13 @@ function resetExercise(ex) {
   info.done = false;
   // The reset itself is not the learner's change (undo exercises need one).
   info.changed = false;
+  // Clear the recorded key history so the learner starts fresh.
+  info.typedKeyStr = "";
   const outer = document.getElementById(`editor-${ex.id}`);
   if (outer) outer.classList.remove("correct");
   const msg = document.getElementById(`ok-${ex.id}`);
   if (msg) msg.style.display = "none";
+  clearTokenHint(ex.id);
 
   view.focus();
 }

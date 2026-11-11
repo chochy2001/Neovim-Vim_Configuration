@@ -1,7 +1,7 @@
 name: practice-pages
 
 # Builds the browser practice page from real Neovim results, proves every
-# exercise in headless Chromium, then publishes practice/ to GitHub Pages.
+# exercise in headless Chromium, then publishes the teaser site to GitHub Pages.
 on:
   push:
     branches: [main]
@@ -9,7 +9,9 @@ on:
       - "practice/**"
       - "course/slides/**"
       - "tests/test_slides.py"
+      - "tests/test_pages_teaser.py"
       - "scripts/build_practice.py"
+      - "scripts/build_pages_site.py"
       - "WORKFLOW.md"
       - "scripts/export_katas.dart"
       - "trainer/lib/data/content.dart"
@@ -21,7 +23,9 @@ on:
       - "practice/**"
       - "course/slides/**"
       - "tests/test_slides.py"
+      - "tests/test_pages_teaser.py"
       - "scripts/build_practice.py"
+      - "scripts/build_pages_site.py"
       - "WORKFLOW.md"
       - "scripts/export_katas.dart"
       - "trainer/lib/data/content.dart"
@@ -88,6 +92,13 @@ jobs:
           SLIDES_REQUIRE_BROWSER: "1"
         run: python -m unittest tests/test_slides.py -v
         timeout-minutes: 10
+      - name: Build _site teaser
+        run: python scripts/build_pages_site.py --out _site
+      - name: Test _site teaser (data + browser)
+        env:
+          SLIDES_REQUIRE_BROWSER: "1"
+        run: python -m unittest tests/test_pages_teaser.py -v
+        timeout-minutes: 5
 
   deploy:
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
@@ -104,14 +115,14 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
       - uses: actions/configure-pages@v6
-      # Practice page at the root, the course slides under /slides/.
+      # Practice page at the root (lessons 1-2 free; rest locked),
+      # slides under /slides/ (modules 0-2 free; rest locked).
       - name: Assemble site
-        run: |
-          mkdir -p _site/slides
-          cp -R practice/. _site/
-          rm -rf _site/vendor/node_modules
-          cp -R course/slides/. _site/slides/
+        run: python scripts/build_pages_site.py --out _site
       - uses: actions/upload-pages-artifact@v5
         with:
           path: _site/

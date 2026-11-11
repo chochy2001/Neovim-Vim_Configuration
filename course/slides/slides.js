@@ -202,6 +202,7 @@
       case 'practice': return renderPractice(slide);
       case 'config':   return renderConfig(slide);
       case 'summary':  return renderSummary(slide);
+      case 'locked':   return renderLocked(slide, mod);
       default:         return renderFallback(slide);
     }
   }
@@ -450,6 +451,34 @@
     p.textContent = 'Slide tipo desconocido: ' + sl.type;
     p.style.color = '#888';
     d.appendChild(p);
+    return d;
+  }
+
+  /* Locked (teaser only -- module continues at Academy) */
+  function renderLocked(sl) {
+    const d = div('slide slide-locked');
+    const inner = div('locked-inner');
+    const icon = div('locked-icon');
+    icon.setAttribute('aria-hidden', 'true');
+    inner.appendChild(icon);
+    const h = document.createElement('h2');
+    h.className = 'slide-heading locked-heading';
+    h.textContent = sl.heading || 'Continua en Capdesis Academy';
+    inner.appendChild(h);
+    if (sl.body) {
+      const p = document.createElement('p');
+      p.className = 'locked-body';
+      p.textContent = sl.body;
+      inner.appendChild(p);
+    }
+    const a = document.createElement('a');
+    a.className = 'locked-academy-link';
+    a.href = sl.academy_url || '';
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    a.textContent = 'Ver curso completo gratis en Capdesis Academy';
+    inner.appendChild(a);
+    d.appendChild(inner);
     return d;
   }
 

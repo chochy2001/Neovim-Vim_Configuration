@@ -507,5 +507,253 @@ class PracticePage(unittest.TestCase):
         page.context.close()
 
 
+    # ------------------------------------------------------------------
+    # Bug 1: false-positive prevention (token verification)
+    # ------------------------------------------------------------------
+
+    def test_no_false_positive_counted_gg_via_jjj(self):
+        """counted-gg must NOT be marked solved when reaching goal row via jjj."""
+        ex = next((e for e in EXERCISES if e["id"] == "counted-gg"), None)
+        if ex is None:
+            self.skipTest("counted-gg not found in exercises.json")
+        page = self.fresh_page()
+        self.open_exercise(page, ex)
+        # 3 j presses land on the same goal row but without using 3gg + j.
+        for _ in range(3):
+            page.keyboard.press("j")
+        page.wait_for_timeout(400)
+        self.assertFalse(
+            self.solved(page, ex),
+            "counted-gg was marked solved via jjj (false positive)",
+        )
+        page.context.close()
+
+    def test_no_false_positive_counted_gg_via_G(self):
+        """counted-gg must NOT be marked solved when reaching goal row via G."""
+        ex = next((e for e in EXERCISES if e["id"] == "counted-gg"), None)
+        if ex is None:
+            self.skipTest("counted-gg not found in exercises.json")
+        page = self.fresh_page()
+        self.open_exercise(page, ex)
+        page.keyboard.press("G")
+        page.wait_for_timeout(400)
+        self.assertFalse(
+            self.solved(page, ex),
+            "counted-gg was marked solved via G (false positive)",
+        )
+        page.context.close()
+
+    def test_token_hint_shown_on_wrong_path(self):
+        """Token hint must be visible when goal state is reached by wrong keys."""
+        ex = next((e for e in EXERCISES if e["id"] == "counted-gg"), None)
+        if ex is None:
+            self.skipTest("counted-gg not found in exercises.json")
+        page = self.fresh_page()
+        self.open_exercise(page, ex)
+        for _ in range(3):
+            page.keyboard.press("j")
+        page.wait_for_timeout(400)
+        hint = page.locator("#token-hint-%s" % ex["id"])
+        self.assertTrue(
+            hint.is_visible(),
+            "token hint must be visible when goal is reached via wrong keys",
+        )
+        page.context.close()
+
+    def test_token_hint_hidden_after_reset(self):
+        """Token hint must be cleared after the exercise is reset."""
+        ex = next((e for e in EXERCISES if e["id"] == "counted-gg"), None)
+        if ex is None:
+            self.skipTest("counted-gg not found in exercises.json")
+        page = self.fresh_page()
+        self.open_exercise(page, ex)
+        for _ in range(3):
+            page.keyboard.press("j")
+        page.wait_for_timeout(400)
+        card = page.locator('[data-exercise-id="counted-gg"]')
+        card.get_by_role("button", name="Reiniciar").click()
+        page.wait_for_timeout(300)
+        hint = page.locator("#token-hint-%s" % ex["id"])
+        self.assertFalse(
+            hint.is_visible(),
+            "token hint must be hidden after the exercise is reset",
+        )
+        page.context.close()
+
+    def test_correct_keys_still_solve_counted_gg(self):
+        """The official solution 3ggj must still solve counted-gg after the fix."""
+        ex = next((e for e in EXERCISES if e["id"] == "counted-gg"), None)
+        if ex is None:
+            self.skipTest("counted-gg not found in exercises.json")
+        page = self.fresh_page()
+        self.open_exercise(page, ex)
+        for key in playwright_keys(ex["keys"]):
+            page.keyboard.press(key)
+        page.locator("#ok-%s" % ex["id"]).wait_for(state="visible", timeout=3_000)
+        self.assertTrue(self.solved(page, ex), "counted-gg not solved by its own keys")
+        page.context.close()
+
+
+# ---------------------------------------------------------------------------
+# Feature 2: locked lessons teaser
+# ---------------------------------------------------------------------------
+
+import copy
+import shutil
+import tempfile
+
+
+@unittest.skipUnless(
+    HAVE_BROWSER or REQUIRE_BROWSER,
+    "playwright not installed: browser tests skipped (pip install playwright)",
+)
+class LockedLessonsPage(unittest.TestCase):
+    ACADEMY_URL = "https://academy.capdesis.com/cursos/vim-mejora-velocidad-codificar"
+    UNLOCK_COUNT = 2  # lessons 1 and 2 remain open; rest are locked
+
+    @classmethod
+    def setUpClass(cls):
+        if not HAVE_BROWSER:
+            raise AssertionError("PRACTICE_REQUIRE_BROWSER=1 but playwright is missing")
+
+        # Build teaser data: replace lessons after UNLOCK_COUNT with locked objects.
+        teaser = copy.deepcopy(DATA)
+        teaser["academy_url"] = cls.ACADEMY_URL
+        for i, lesson in enumerate(teaser["lessons"]):
+            if i >= cls.UNLOCK_COUNT:
+                teaser["lessons"][i] = {
+                    "id": lesson["id"],
+                    "titleEs": lesson.get("titleEs", ""),
+                    "titleEn": lesson.get("titleEn", ""),
+                    "locked": True,
+                    "exercise_count": len(lesson.get("exercises", [])),
+                }
+        cls.teaser_data = teaser
+
+        # Write a practice copy with the teaser exercises.json.
+        cls.tmpdir = Path(tempfile.mkdtemp()) / "practice"
+        shutil.copytree(str(PRACTICE), str(cls.tmpdir))
+        (cls.tmpdir / "exercises.json").write_text(
+            json.dumps(teaser), encoding="utf-8"
+        )
+
+        handler = functools.partial(Quiet, directory=str(cls.tmpdir))
+        cls.server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), handler)
+        threading.Thread(target=cls.server.serve_forever, daemon=True).start()
+        cls.url = "http://127.0.0.1:%d/" % cls.server.server_address[1]
+
+        cls.pw = sync_playwright().start()
+        cls.browser = cls.pw.chromium.launch()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.browser.close()
+        cls.pw.stop()
+        cls.server.shutdown()
+        shutil.rmtree(str(cls.tmpdir.parent), ignore_errors=True)
+
+    def fresh_page(self, **options):
+        ctx = self.browser.new_context(**options)
+        page = ctx.new_page()
+        errors = []
+        page.on("pageerror", lambda e: errors.append(str(e)))
+        page.goto(self.url)
+        page.wait_for_selector(".sidebar-lesson-title", timeout=15_000)
+        return page, errors
+
+    def test_locked_lesson_sidebar_has_lock_class(self):
+        """Locked lesson titles must carry the .locked class."""
+        page, _ = self.fresh_page()
+        locked = page.locator('.sidebar-lesson-title.locked[data-lesson-id="lesson-3"]')
+        self.assertEqual(1, locked.count(), "lesson-3 must have .locked class on its title button")
+        page.context.close()
+
+    def test_locked_lesson_sidebar_has_lock_icon(self):
+        """Locked lesson entries must show a lock icon element."""
+        page, _ = self.fresh_page()
+        icon = page.locator(
+            '.sidebar-lesson-title[data-lesson-id="lesson-3"] .sidebar-lock-icon'
+        )
+        self.assertEqual(1, icon.count(), "locked lesson title must contain a .sidebar-lock-icon")
+        page.context.close()
+
+    def test_locked_lesson_shows_cta(self):
+        """Clicking a locked lesson must render the CTA card, not an exercise list."""
+        page, errors = self.fresh_page()
+        page.click('.sidebar-lesson-title[data-lesson-id="lesson-3"]')
+        page.wait_for_timeout(400)
+        cta = page.locator(".locked-lesson-cta")
+        self.assertEqual(1, cta.count(), "locked lesson must render a .locked-lesson-cta card")
+        # Must mention Academy
+        self.assertIn("Academy", cta.inner_text())
+        self.assertEqual([], errors, "JS errors on locked lesson page: " + str(errors))
+        page.context.close()
+
+    def test_locked_lesson_cta_has_academy_link(self):
+        """CTA card link must point to the academy_url from exercises.json."""
+        page, _ = self.fresh_page()
+        page.click('.sidebar-lesson-title[data-lesson-id="lesson-3"]')
+        page.wait_for_timeout(400)
+        link = page.locator(".locked-lesson-cta .btn-academy")
+        self.assertEqual(1, link.count(), "CTA must have a .btn-academy link")
+        href = link.get_attribute("href")
+        self.assertEqual(self.ACADEMY_URL, href, "CTA link href must equal academy_url")
+        page.context.close()
+
+    def test_locked_lesson_cta_mentions_exercise_count(self):
+        """CTA body must mention the number of exercises for the locked lesson."""
+        page, _ = self.fresh_page()
+        page.click('.sidebar-lesson-title[data-lesson-id="lesson-3"]')
+        page.wait_for_timeout(400)
+        cta = page.locator(".locked-lesson-cta")
+        body_text = cta.inner_text()
+        expected_count = str(self.teaser_data["lessons"][2]["exercise_count"])
+        self.assertIn(expected_count, body_text, "CTA must mention the exercise count")
+        page.context.close()
+
+    def test_progress_bar_ignores_locked_lessons(self):
+        """Progress bar max must only count exercises from unlocked lessons."""
+        page, _ = self.fresh_page()
+        unlocked_total = sum(
+            len(l.get("exercises", []))
+            for l in self.teaser_data["lessons"]
+            if not l.get("locked")
+        )
+        value_max = page.get_attribute(".progress-bar-wrap", "aria-valuemax")
+        self.assertEqual(
+            str(unlocked_total),
+            value_max,
+            "progress bar aria-valuemax must count only unlocked exercises",
+        )
+        page.context.close()
+
+    def test_no_js_errors_navigating_locked_lessons(self):
+        """No JS errors when navigating between locked and unlocked lessons."""
+        page, errors = self.fresh_page()
+        for lesson in self.teaser_data["lessons"]:
+            btn = page.locator('.sidebar-lesson-title[data-lesson-id="%s"]' % lesson["id"])
+            if btn.count():
+                btn.click()
+                page.wait_for_timeout(200)
+        self.assertEqual([], errors, "JS errors while navigating locked lessons")
+        page.context.close()
+
+    def test_unlocked_lessons_unaffected_by_locked_data(self):
+        """Unlocked lessons must still show exercise cards when data has locked lessons."""
+        page, errors = self.fresh_page()
+        # Lesson 1 is unlocked; it must still render exercise cards
+        page.click('.sidebar-lesson-title[data-lesson-id="lesson-1"]')
+        page.wait_for_selector(".exercise-card", timeout=10_000)
+        cards = page.locator(".exercise-card").count()
+        expected = len(
+            next(l for l in self.teaser_data["lessons"] if l["id"] == "lesson-1").get(
+                "exercises", []
+            )
+        )
+        self.assertEqual(expected, cards, "lesson-1 must still show all its exercise cards")
+        self.assertEqual([], errors, "JS errors on unlocked lesson with teaser data")
+        page.context.close()
+
+
 if __name__ == "__main__":
     unittest.main()

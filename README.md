@@ -15,6 +15,12 @@ Mismos atajos en Neovim e IntelliJ/Android Studio. Windows, Linux y macOS.
 
 </div>
 
+## Curso completo gratis en Capdesis Academy
+
+El [curso completo de Neovim desde cero](https://academy.capdesis.com/cursos/vim-mejora-velocidad-codificar) está disponible gratis en [Capdesis Academy](https://academy.capdesis.com) con una cuenta gratuita: 14 módulos, 93 ejercicios interactivos validados contra Neovim real, diapositivas y práctica en el navegador.
+
+La página de GitHub Pages es una muestra: incluye las **lecciones 1-2** de práctica y los **módulos 0, 1 y 2** de diapositivas. El resto del curso espera en Academy.
+
 ## ✨ Qué trae
 
 | | |

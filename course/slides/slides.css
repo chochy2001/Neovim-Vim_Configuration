@@ -593,6 +593,63 @@ kbd {
 .help-box td { padding: 7px 12px; font-size: 15px; }
 .help-box td:first-child { width: 180px; }
 
+/* ---- SLIDE TYPE: locked (teaser -- module continues at Academy) ---- */
+.slide-locked {
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(160deg, #1A1B2E 0%, #2D2D64 100%);
+}
+.locked-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  padding: 56px 64px;
+  background: rgba(13, 14, 26, 0.6);
+  border-radius: 16px;
+  border: 2px solid var(--gold);
+  max-width: 760px;
+  width: 100%;
+  text-align: center;
+}
+.locked-icon {
+  width: 64px;
+  height: 64px;
+  background: var(--gold);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  flex-shrink: 0;
+}
+.locked-icon::before {
+  content: '\1F512';
+  font-size: 28px;
+}
+.locked-heading {
+  color: var(--white);
+  border-bottom-color: var(--gold);
+}
+.locked-body {
+  font-size: 20px;
+  color: var(--text);
+  line-height: 1.6;
+  max-width: 600px;
+}
+.locked-academy-link {
+  display: inline-block;
+  padding: 14px 36px;
+  background: var(--gold);
+  color: #0D0E1A;
+  font-weight: 700;
+  font-size: 18px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: opacity 0.15s;
+}
+.locked-academy-link:hover { opacity: 0.85; }
+
 /* ==================================================================
    PRINT STYLE (PDF export: one slide per page)
    ================================================================== */
