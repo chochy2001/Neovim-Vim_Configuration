@@ -14,18 +14,18 @@ return {
     },
     config = function()
         -- Test commands: keep only the essentials
-        vim.keymap.set("n", "<leader>ten", ":TestNearest<CR>", { desc = "Test: Nearest" })
-        vim.keymap.set("n", "<leader>tenf", ":TestFile<CR>", { desc = "Test: File" })
-        vim.keymap.set("n", "<leader>tena", ":TestSuite<CR>", { desc = "Test: All Suite" })
-        vim.keymap.set("n", "<leader>tenl", ":TestLast<CR>", { desc = "Test: Last" })
+        vim.keymap.set("n", "<leader>ten", "<cmd>TestNearest<cr>", { desc = "Test: Nearest" })
+        vim.keymap.set("n", "<leader>tenf", "<cmd>TestFile<cr>", { desc = "Test: File" })
+        vim.keymap.set("n", "<leader>tena", "<cmd>TestSuite<cr>", { desc = "Test: All Suite" })
+        vim.keymap.set("n", "<leader>tenl", "<cmd>TestLast<cr>", { desc = "Test: Last" })
         -- TestVisit removed due to infrequent use
         -- vimux requires a live tmux server; use the embedded neovim
         -- terminal on Windows or whenever tmux is absent (all OS).
         local in_tmux = vim.env.TMUX ~= nil and vim.env.TMUX ~= ""
         if vim.fn.has("win32") == 1 or not in_tmux then
-            vim.cmd("let test#strategy = 'neovim'")
+            vim.g["test#strategy"] = "neovim"
         else
-            vim.cmd("let test#strategy = 'vimux'")
+            vim.g["test#strategy"] = "vimux"
         end
     end,
 }

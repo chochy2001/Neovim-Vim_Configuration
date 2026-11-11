@@ -150,27 +150,32 @@ return {
             vim.keymap.set("n", "<leader>b", "<C-o>", { desc = "Back (Go to previous location)" })
 
             -- Buffer navigation (matches .ideavimrc)
-            vim.keymap.set("n", "<leader>bn", ":BufferLineCycleNext<CR>", { desc = "Buffer: Next" })
-            vim.keymap.set("n", "<leader>bp", ":BufferLineCyclePrev<CR>", { desc = "Buffer: Previous" }) -- FIXED: was Pick, now Previous
+            vim.keymap.set("n", "<leader>bn", "<cmd>BufferLineCycleNext<cr>", { desc = "Buffer: Next" })
+            vim.keymap.set("n", "<leader>bp", "<cmd>BufferLineCyclePrev<cr>", { desc = "Buffer: Previous" }) -- FIXED: was Pick, now Previous
 
             -- Buffer closing (aligned with .ideavimrc)
-            vim.keymap.set("n", "<leader>bd", ":bd<CR>", { desc = "Buffer: Delete/Close" }) -- FIXED: use bd directly like CloseContent
-            vim.keymap.set("n", "<leader>bl", ":BufferLineCloseRight<CR>", { desc = "Buffer: Close Right" })
-            vim.keymap.set("n", "<leader>bh", ":BufferLineCloseLeft<CR>", { desc = "Buffer: Close Left" })
+            vim.keymap.set("n", "<leader>bd", "<cmd>bd<cr>", { desc = "Buffer: Delete/Close" }) -- FIXED: use bd directly like CloseContent
+            vim.keymap.set(
+                "n",
+                "<leader>bl",
+                "<cmd>BufferLineCloseRight<cr>",
+                { desc = "Buffer: Close Right" }
+            )
+            vim.keymap.set("n", "<leader>bh", "<cmd>BufferLineCloseLeft<cr>", { desc = "Buffer: Close Left" })
             vim.keymap.set(
                 "n",
                 "<leader>to",
-                ":BufferLineCloseLeft<CR>:BufferLineCloseRight<CR>",
+                "<cmd>BufferLineCloseLeft<cr><cmd>BufferLineCloseRight<cr>",
                 { desc = "Close All Others (Tabs Only)" }
             )
 
             -- Additional bufferline commands (no conflict with .ideavimrc)
-            vim.keymap.set("n", "<leader>bP", ":BufferLinePick<CR>", { desc = "Buffer: Pick" }) -- Moved to uppercase P
-            vim.keymap.set("n", "<leader>bt", ":BufferLineTogglePin<CR>", { desc = "Toggle Pin Buffer" })
+            vim.keymap.set("n", "<leader>bP", "<cmd>BufferLinePick<cr>", { desc = "Buffer: Pick" }) -- Moved to uppercase P
+            vim.keymap.set("n", "<leader>bt", "<cmd>BufferLineTogglePin<cr>", { desc = "Toggle Pin Buffer" })
 
             -- Shift mappings that worked well
-            vim.keymap.set("n", "<S-l>", ":BufferLineCycleNext<CR>", { desc = "Buffer: Next" })
-            vim.keymap.set("n", "<S-h>", ":BufferLineCyclePrev<CR>", { desc = "Buffer: Previous" })
+            vim.keymap.set("n", "<S-l>", "<cmd>BufferLineCycleNext<cr>", { desc = "Buffer: Next" })
+            vim.keymap.set("n", "<S-h>", "<cmd>BufferLineCyclePrev<cr>", { desc = "Buffer: Previous" })
         end,
     },
 

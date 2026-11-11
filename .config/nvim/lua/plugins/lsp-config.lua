@@ -138,7 +138,8 @@ return {
                             gopls = {
                                 analyses = { unusedparams = true },
                                 staticcheck = true,
-                                gofumpt = true,
+                                -- Go is formatted with gofmt via none-ls; gofumpt in gopls is redundant here.
+                                gofumpt = false,
                             },
                         },
                     })
@@ -299,7 +300,7 @@ return {
 
             -- LSP keymaps on attach
             vim.api.nvim_create_autocmd("LspAttach", {
-                group = vim.api.nvim_create_augroup("UserLspConfig", {}),
+                group = vim.api.nvim_create_augroup("UserLspConfig", { clear = true }),
                 callback = function(ev)
                     local opts = { buffer = ev.buf, silent = true }
 

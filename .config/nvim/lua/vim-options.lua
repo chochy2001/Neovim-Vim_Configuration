@@ -65,16 +65,16 @@ vim.opt.foldlevelstart = 99
 vim.opt.foldenable = true
 
 -- Navigate vim panes with Ctrl+hjkl
-vim.keymap.set("n", "<C-k>", ":wincmd k<CR>", { silent = true })
-vim.keymap.set("n", "<C-j>", ":wincmd j<CR>", { silent = true })
-vim.keymap.set("n", "<C-h>", ":wincmd h<CR>", { silent = true })
-vim.keymap.set("n", "<C-l>", ":wincmd l<CR>", { silent = true })
+vim.keymap.set("n", "<C-k>", "<C-w>k", { silent = true })
+vim.keymap.set("n", "<C-j>", "<C-w>j", { silent = true })
+vim.keymap.set("n", "<C-h>", "<C-w>h", { silent = true })
+vim.keymap.set("n", "<C-l>", "<C-w>l", { silent = true })
 
 -- Core keymaps - synced with .ideavimrc
 vim.keymap.set("i", "jj", "<Esc>")
 
 -- Clear search highlight - synced with IntelliJ
-vim.keymap.set("n", "<leader><leader>", ":nohl<CR>", { desc = "Clear search highlight" })
+vim.keymap.set("n", "<leader><leader>", "<cmd>nohl<cr>", { desc = "Clear search highlight" })
 
 -- Navigation history - synced with IntelliJ
 vim.keymap.set("n", "<leader>f", "<C-i>", { desc = "Forward (Go to next location)" })
@@ -119,10 +119,10 @@ vim.keymap.set("n", "<leader>zr", "zr", { desc = "Expand one fold level" })
 vim.keymap.set("n", "<leader>zm", "zm", { desc = "Collapse one fold level" })
 
 -- Split/Window management - synced with IntelliJ
-vim.keymap.set("n", "<leader>sv", ":vsplit<CR>", { desc = "Split Vertical" })
-vim.keymap.set("n", "<leader>sh", ":split<CR>", { desc = "Split Horizontal" })
-vim.keymap.set("n", "<leader>sc", ":close<CR>", { desc = "Close Current Split" })
-vim.keymap.set("n", "<leader>so", ":only<CR>", { desc = "Close All Other Splits" })
+vim.keymap.set("n", "<leader>sv", "<cmd>vsplit<cr>", { desc = "Split Vertical" })
+vim.keymap.set("n", "<leader>sh", "<cmd>split<cr>", { desc = "Split Horizontal" })
+vim.keymap.set("n", "<leader>sc", "<cmd>close<cr>", { desc = "Close Current Split" })
+vim.keymap.set("n", "<leader>so", "<cmd>only<cr>", { desc = "Close All Other Splits" })
 vim.keymap.set("n", "<leader>_", "<C-w>_", { desc = "Maximize Split Height" })
 
 -- AI agents (claude, codex, opencode, muse, cursor, agy...) edit files from

@@ -25,8 +25,7 @@ return {
         end
 
         -- Ensure nvim-web-devicons is available
-        local web_devicons_ok, web_devicons = pcall(require, "nvim-web-devicons")
-        if not web_devicons_ok then
+        if not pcall(require, "nvim-web-devicons") then
             vim.notify("nvim-web-devicons is not available", vim.log.levels.WARN)
         end
 

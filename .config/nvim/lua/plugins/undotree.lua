@@ -8,7 +8,7 @@ return {
         cmd = "UndotreeToggle",
         -- keys here (not only in config) so the FIRST press loads the plugin
         keys = {
-            { "<leader>u", ":UndotreeToggle<CR>", desc = "Toggle Undotree" },
+            { "<leader>u", "<cmd>UndotreeToggle<cr>", desc = "Toggle Undotree" },
         },
         config = function()
             -- (Optional) You can configure undotree global variables here if needed
