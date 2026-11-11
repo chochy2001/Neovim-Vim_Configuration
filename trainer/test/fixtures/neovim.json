@@ -410,6 +410,21 @@
     {
       "col": 0,
       "expected": {
+        "col": 1,
+        "mode": "n",
+        "row": 0,
+        "text": "//todo"
+      },
+      "id": "kata-insert",
+      "kataColumn": null,
+      "kataExpected": "//todo",
+      "keys": "I//<Esc>",
+      "row": 0,
+      "start": "todo"
+    },
+    {
+      "col": 0,
+      "expected": {
         "col": 2,
         "mode": "n",
         "row": 0,
@@ -421,6 +436,21 @@
       "keys": "ll",
       "row": 0,
       "start": "abc"
+    },
+    {
+      "col": 3,
+      "expected": {
+        "col": 7,
+        "mode": "n",
+        "row": 0,
+        "text": "foo(bar)"
+      },
+      "id": "kata-percent",
+      "kataColumn": 7,
+      "kataExpected": "foo(bar)",
+      "keys": "%",
+      "row": 0,
+      "start": "foo(bar)"
     },
     {
       "col": 0,
@@ -468,49 +498,19 @@
       "start": "remove remaining text"
     },
     {
-      "col": 4,
+      "col": 5,
       "expected": {
-        "col": 5,
+        "col": 4,
         "mode": "n",
         "row": 0,
-        "text": "say ok now"
+        "text": "keep "
       },
-      "id": "kata-ciw",
+      "id": "kata-D",
       "kataColumn": null,
-      "kataExpected": "say ok now",
-      "keys": "ciwok<Esc>",
+      "kataExpected": "keep ",
+      "keys": "D",
       "row": 0,
-      "start": "say NOPE now"
-    },
-    {
-      "col": 8,
-      "expected": {
-        "col": 9,
-        "mode": "n",
-        "row": 0,
-        "text": "msg = \"yes\";"
-      },
-      "id": "kata-quotes",
-      "kataColumn": null,
-      "kataExpected": "msg = \"yes\";",
-      "keys": "ci\"yes<Esc>",
-      "row": 0,
-      "start": "msg = \"no\";"
-    },
-    {
-      "col": 0,
-      "expected": {
-        "col": 1,
-        "mode": "n",
-        "row": 0,
-        "text": "//todo"
-      },
-      "id": "kata-insert",
-      "kataColumn": null,
-      "kataExpected": "//todo",
-      "keys": "I//<Esc>",
-      "row": 0,
-      "start": "todo"
+      "start": "keep DROP"
     },
     {
       "col": 0,
@@ -543,19 +543,19 @@
       "start": "foo\nbar"
     },
     {
-      "col": 5,
+      "col": 0,
       "expected": {
-        "col": 4,
+        "col": 0,
         "mode": "n",
         "row": 0,
-        "text": "keep "
+        "text": "    x"
       },
-      "id": "kata-D",
+      "id": "kata-indent",
       "kataColumn": null,
-      "kataExpected": "keep ",
-      "keys": "D",
+      "kataExpected": "    x",
+      "keys": ">>",
       "row": 0,
-      "start": "keep DROP"
+      "start": "x"
     },
     {
       "col": 4,
@@ -573,35 +573,35 @@
       "start": "say hello now"
     },
     {
-      "col": 3,
+      "col": 4,
       "expected": {
-        "col": 7,
+        "col": 5,
         "mode": "n",
         "row": 0,
-        "text": "foo(bar)"
+        "text": "say ok now"
       },
-      "id": "kata-percent",
-      "kataColumn": 7,
-      "kataExpected": "foo(bar)",
-      "keys": "%",
+      "id": "kata-ciw",
+      "kataColumn": null,
+      "kataExpected": "say ok now",
+      "keys": "ciwok<Esc>",
       "row": 0,
-      "start": "foo(bar)"
+      "start": "say NOPE now"
     },
     {
-      "col": 0,
+      "col": 8,
       "expected": {
-        "col": 0,
+        "col": 9,
         "mode": "n",
         "row": 0,
-        "text": "    x"
+        "text": "msg = \"yes\";"
       },
-      "id": "kata-indent",
+      "id": "kata-quotes",
       "kataColumn": null,
-      "kataExpected": "    x",
-      "keys": ">>",
+      "kataExpected": "msg = \"yes\";",
+      "keys": "ci\"yes<Esc>",
       "row": 0,
-      "start": "x"
+      "start": "msg = \"no\";"
     }
   ],
-  "version": "0.12.5+v0.12.5"
+  "version": "0.12.6"
 }

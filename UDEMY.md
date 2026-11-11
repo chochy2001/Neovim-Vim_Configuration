@@ -1,4 +1,4 @@
-# Guía Udemy — Neovim desde cero (CAPDESIS)
+# Guía Udemy: Neovim desde cero (CAPDESIS)
 
 Cómo grabar el curso. El cuaderno del alumno es [COURSE.md](COURSE.md). Atajos: [WORKFLOW.md](WORKFLOW.md). Práctica: [trainer/](trainer/). Repo: https://github.com/chochy2001/Neovim-Vim_Configuration (MIT).
 
@@ -11,7 +11,7 @@ Cómo grabar el curso. El cuaderno del alumno es [COURSE.md](COURSE.md). Atajos:
 5. Slides intro: abrir `course/udemy/slides-intro.html` (`N`/`P`). El resto de secciones: demo en terminal, no PowerPoint de stock.
 6. Consulta `:Telescope keymaps` y WORKFLOW.md. Usa `nvim --clean` para Vim nativo.
 
-**Título Udemy sugerido:** Neovim desde cero — de `hjkl` a IDE (config CAPDESIS)  
+**Título Udemy sugerido:** Neovim desde cero, de `hjkl` a IDE (config CAPDESIS)  
 **Subtítulo:** Gramática de Vim primero; después Telescope, Git, LSP y Flutter. Repo MIT incluido.
 
 **No digas en cámara** que IntelliJ quedó validado por un script, ni que CAPDESIS Practice es Neovim, ni que los builds van firmados. Neovim arranca: `nvim --headless "+lua print('boot-ok')" +qa`. La app de práctica: `cd trainer && flutter test`.
@@ -26,7 +26,7 @@ Una habilidad por vídeo. Udemy sugiere introducciones de **2-4 minutos** y lecc
 
 - **vi** (Bill Joy, ~1976), editor modal en Unix.
 - **Vim** (“Vi IMproved”, Bram Moolenaar, 1991). Manual: `:help usr_02`.
-- **Neovim** (2014): continuación de Vim, Lua, API. Visión oficial: [neovim.io/charter](https://neovim.io/charter/) — *no* se proponen “convertir Vim en un IDE” como meta del proyecto; *sí* plugins de terceros. Este curso usa Neovim **como** entorno de trabajo con plugins. Distínguelo en voz alta.
+- **Neovim** (2014): continuación de Vim, Lua, API. Visión oficial: [neovim.io/charter](https://neovim.io/charter/), *no* se proponen “convertir Vim en un IDE” como meta del proyecto; *sí* plugins de terceros. Este curso usa Neovim **como** entorno de trabajo con plugins. Distínguelo en voz alta.
 
 ### Competencia (sé honesto)
 
@@ -54,7 +54,7 @@ Referencia principal: tutor y manual oficial de Neovim. La secuencia es propia; 
 
 Cada carpeta = una sección en el dashboard de Udemy. Cada ítem = un vídeo.
 
-### Carpeta 1 — Introducción
+### Carpeta 1: Introducción
 
 | # | Vídeo | Qué grabas | Slides (títulos) |
 |---|--------|------------|------------------|
@@ -64,7 +64,7 @@ Cada carpeta = una sección en el dashboard de Udemy. Cada ítem = un vídeo.
 | 1.4 | El repo open source | Abre GitHub en pantalla, LICENSE, estructura | clone ≠ copiar dentro de ~/.config/nvim |
 | 1.5 | Cómo está el curso | Orden: manos → Vim puro → esta config → plugins | No plugins el día 1 |
 
-### Carpeta 2 — Manos y entorno
+### Carpeta 2: Manos y entorno
 
 | # | Vídeo | Qué grabas |
 |---|--------|------------|
@@ -75,7 +75,7 @@ Cada carpeta = una sección en el dashboard de Udemy. Cada ítem = un vídeo.
 | 2.5 | Clonar y enlazar **esta** config | Junction Windows / ln -s Unix. `nvim` primera vez, `:Lazy` |
 | 2.6 | CAPDESIS Practice | `cd trainer && flutter run`. Elegir archivos vs carpeta. Decir: no es Neovim |
 
-### Carpeta 3 — Vim puro (sin plugins)
+### Carpeta 3: Vim puro (sin plugins)
 
 | # | Vídeo | Demo obligatoria |
 |---|--------|------------------|
@@ -88,7 +88,7 @@ Cada carpeta = una sección en el dashboard de Udemy. Cada ítem = un vídeo.
 | 3.7 | Buffers y ventanas | `:e` `:ls` `Ctrl-w v` |
 | 3.8 | Registros y una macro | `"ayy` `qa` … `@a` |
 
-### Carpeta 4 — Esta config como IDE
+### Carpeta 4: Esta config como IDE
 
 | # | Vídeo | Teclas (existen en el Lua) |
 |---|--------|----------------------------|
@@ -97,13 +97,13 @@ Cada carpeta = una sección en el dashboard de Udemy. Cada ítem = un vídeo.
 | 4.3 | Telescope | `<leader>ff` `fg` `fk` |
 | 4.4 | neo-tree y oil | `pv` `-` |
 | 4.5 | Git | `gs` `gsa` `gc` `gp` |
-| 4.6 | LSP | `gd` `K` `fm` `:Mason` — archivo **real** |
+| 4.6 | LSP | `gd` `K` `fm` `:Mason`, archivo **real** |
 | 4.7 | Flutter | `fla` `flr` si hay SDK |
 | 4.8 | Diagnósticos | `xx` `xn` |
 | 4.9 | Terminal y tests | `tt` `ten` |
 | 4.10 | Qué es solo Neovim | `<leader>aa` opencode · `<leader>cc` CopilotChat (no están en IdeaVim) |
 
-### Carpeta 5 — IdeaVim y cierre
+### Carpeta 5: IdeaVim y cierre
 
 | # | Vídeo | Qué grabas |
 |---|--------|------------|
@@ -132,9 +132,9 @@ flutter run -d windows   # o macos / linux
 
 No hay fotos de stock en el repo (se ven falsas y no son tu pantalla). En cada slide de “demo”: captura **tu** terminal. Fuentes: Inter o Segoe para títulos, JetBrains Mono para código. Fondo `#0d1117`, acento `#58a6ff`.
 
-**Sección 1 — 10 slides** (archivo `course/udemy/slides-intro.html`, teclas `N`/`P`)
+**Sección 1, 10 slides** (archivo `course/udemy/slides-intro.html`, teclas `N`/`P`)
 
-1. Neovim desde cero — CAPDESIS  
+1. Neovim desde cero, CAPDESIS  
 2. Al terminar  
 3. Esto no es  
 4. vi → Vim → Neovim  
@@ -145,17 +145,17 @@ No hay fotos de stock en el repo (se ven falsas y no son tu pantalla). En cada s
 9. CAPDESIS Practice ≠ Neovim  
 10. Siguiente: instalar
 
-**Sección 2** — una slide por SO (Windows / macOS / Linux) con el bloque de comandos de COURSE.md copiado tal cual.
+**Sección 2**: una slide por SO (Windows / macOS / Linux) con el bloque de comandos de COURSE.md copiado tal cual.
 
-**Sección 3** — una slide por vídeo: comando grande (`dw`, `ciw`) y una frase (“operador + movimiento”).
+**Sección 3**: una slide por vídeo: comando grande (`dw`, `ciw`) y una frase (“operador + movimiento”).
 
-**Sección 4** — una slide por prefijo (`f*` `g*` `fl*`) y “fuente de verdad: `:Telescope keymaps`”.
+**Sección 4**: una slide por prefijo (`f*` `g*` `fl*`) y “fuente de verdad: `:Telescope keymaps`”.
 
-Plantilla HTML oscura (sin red): [course/udemy/slides-intro.html](course/udemy/slides-intro.html) — ábrela en el navegador, `N` / `P` o flechas.
+Plantilla HTML oscura (sin red): [course/udemy/slides-intro.html](course/udemy/slides-intro.html), ábrela en el navegador, `N` / `P` o flechas.
 
 ---
 
-## Guion corto (1.3 — ¿Vim o IDE?)
+## Guion corto (1.3: ¿Vim o IDE?)
 
 No atacar IDEs. Di: el IDE gana en wizards y a veces en debug gráfico. Neovim gana cuando escribes mucho, cuando entras por SSH, cuando quieres la misma gramática en Flutter, Go y el `init.lua`. Esta config **añade** LSP; si Mason no instaló el servidor, no hay autocompletado. Eso es el curso siendo honesto.
 

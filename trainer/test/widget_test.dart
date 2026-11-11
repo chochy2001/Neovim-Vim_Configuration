@@ -1,6 +1,8 @@
 import 'package:capdesis_practice/main.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:capdesis_practice/data/content.dart';
 
 void main() {
   testWidgets('About does not feed hidden Vim commands', (tester) async {
@@ -26,6 +28,10 @@ void main() {
     addTearDown(tester.view.resetDevicePixelRatio);
     await tester.pumpWidget(const PracticeApp());
     await tester.tap(find.text('Vim'));
+    await tester.pumpAndSettle();
+    // Open the hjkl kata by name: the kata order follows the course route.
+    final hjkl = katas.firstWhere((k) => k.id == 'hjkl');
+    await tester.tap(find.widgetWithText(ListTile, hjkl.titleEs));
     await tester.pumpAndSettle();
     for (var i = 0; i < 2; i++) {
       await tester.sendKeyEvent(LogicalKeyboardKey.keyL, character: 'l');

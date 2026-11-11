@@ -400,7 +400,7 @@ Below are all the shortcuts of the configuration, taken from WORKFLOW.md. Search
 
 <b>Ayuda:</b> <code>:h tópico</code> abre la documentación de Vim. <code>Ctrl-]</code> sigue un enlace, <code>Ctrl-o</code> vuelve atrás. Cierra la ventana de ayuda con <code>:q</code>.
 
-<b>Guardar y salir:</b> <code>:w</code> guarda. <code>:q</code> sale si no hay cambios pendientes. <code>:wq</code> o <code>ZZ</code> guarda y sale. <code>:q!</code> o <code>ZQ</code> sale descartando cambios. <code>:wqa</code> guarda todos los buffers y sale de Vim.
+<b>Guardar y salir:</b> <code>:w</code> guarda. <code>:q</code> sale si no hay cambios pendientes. <code>:wq</code> guarda y sale (siempre escribe). <code>ZZ</code> guarda y sale solo si hay cambios (igual que <code>:x</code>). <code>:q!</code> o <code>ZQ</code> sale descartando cambios. <code>:wqa</code> guarda todos los buffers y sale de Vim.
 
 <b>Deshacer/Rehacer:</b> <code>u</code> deshace, <code>Ctrl-r</code> rehace. Vim mantiene un árbol de cambios: <code>:earlier 5m</code> vuelve al estado de hace 5 minutos.`,
     },
@@ -410,7 +410,7 @@ Below are all the shortcuts of the configuration, taken from WORKFLOW.md. Search
 
 <b>Help:</b> <code>:h topic</code> opens Vim's documentation. <code>Ctrl-]</code> follows a link, <code>Ctrl-o</code> goes back. Close the help window with <code>:q</code>.
 
-<b>Save and quit:</b> <code>:w</code> saves. <code>:q</code> quits if there are no pending changes. <code>:wq</code> or <code>ZZ</code> saves and quits. <code>:q!</code> or <code>ZQ</code> quits discarding changes. <code>:wqa</code> saves every buffer and quits Vim.
+<b>Save and quit:</b> <code>:w</code> saves. <code>:q</code> quits if there are no pending changes. <code>:wq</code> saves and quits (always writes). <code>ZZ</code> saves and quits only if the buffer was modified (same as <code>:x</code>). <code>:q!</code> or <code>ZQ</code> quits discarding changes. <code>:wqa</code> saves every buffer and quits Vim.
 
 <b>Undo/Redo:</b> <code>u</code> undoes, <code>Ctrl-r</code> redoes. Vim keeps a change tree: <code>:earlier 5m</code> returns the state from 5 minutes ago.`,
     },
