@@ -8,7 +8,7 @@ Mismos atajos en Neovim e IntelliJ/Android Studio. Windows, Linux y macOS.
 [![validate](https://github.com/chochy2001/Neovim-Vim_Configuration/actions/workflows/validate.yml/badge.svg?branch=main)](https://github.com/chochy2001/Neovim-Vim_Configuration/actions/workflows/validate.yml)
 ![Neovim](https://img.shields.io/badge/Neovim-0.12.6-57A143?logo=neovim&logoColor=white)
 ![Plataformas](https://img.shields.io/badge/Windows%20%7C%20Linux%20%7C%20macOS-probado%20en%20CI-2D2D64)
-![IdeaVim](https://img.shields.io/badge/IdeaVim-87%20acciones%20verificadas-F3A63D)
+![IdeaVim](https://img.shields.io/badge/IdeaVim-96%20acciones%20verificadas-F3A63D)
 [![Licencia MIT](https://img.shields.io/badge/licencia-MIT-blue)](LICENSE)
 
 <img src="docs/images/dashboard.png" alt="Dashboard de Neovim con el logo CAPDESIS y accesos rápidos" width="760">

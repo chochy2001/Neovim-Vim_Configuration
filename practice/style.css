@@ -727,3 +727,17 @@ button.sidebar-lesson-title:focus-visible { outline: 2px solid var(--gold); outl
   .shortcut-row { flex-wrap: wrap; }
   .shortcut-mode { min-width: 0; }
 }
+
+/* Replace mode (R) must not look like Normal. */
+.mode-pill.replace { background: #b45309; color: #fff; }
+
+/* Visible keyboard focus everywhere you can tab to. */
+.btn:focus-visible,
+.sidebar-ex-btn:focus-visible,
+.sidebar-lesson-title:focus-visible,
+#btn-lang:focus-visible,
+.cheatsheet-search:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}

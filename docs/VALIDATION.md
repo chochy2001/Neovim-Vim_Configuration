@@ -11,7 +11,7 @@ Las decisiones técnicas se apoyan en [SOURCES.md](SOURCES.md).
 | Comprobación | Resultado |
 |---|---|
 | Regresiones de configuración | 15 pruebas pasan; cada prueba nueva se comprobó fallando sin su arreglo |
-| Integración cargando todos los plugins | 13 comprobaciones pasan, incluida la hoja de atajos de la página de práctica, incluidas paridad IdeaVim (87 acciones verificadas en el código de JetBrains), terminales laterales, Markdown renderizado y ausencia de APIs obsoletas |
+| Integración cargando todos los plugins | 13 comprobaciones pasan, incluida la hoja de atajos de la página de práctica, incluidas paridad IdeaVim (96 acciones verificadas en el código de JetBrains), terminales laterales, Markdown renderizado y ausencia de APIs obsoletas |
 | Instalación de plugins desde cero en estado aislado | Pasa; restaura el lockfile y carga los plugins |
 | Parsers instalados | 28 bibliotecas cargan, producen árboles y compilan sus consultas: los 27 lenguajes configurados (Rust añadido) más `php_only`, que se instala con PHP |
 | Formateadores reales | StyLua/Lua y Prettier/JSON modifican el texto exactamente como se espera |

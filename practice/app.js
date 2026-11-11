@@ -21,6 +21,7 @@ import { indentUnit } from "./vendor/codemirror.js";
 // Globals
 // ---------------------------------------------------------------------------
 
+let CURRENT_LESSON = null;
 let DATA = null;          // parsed exercises.json
 let LANG = "es";          // "es" | "en"
 let PROGRESS = new Set(); // completed exercise IDs
@@ -107,10 +108,9 @@ function toggleLang() {
   // Re-render everything
   applyLang();
   renderSidebar();
-  // Re-render current lesson
-  const active = document.querySelector(".sidebar-ex-btn.active");
-  const lessonId = active ? active.closest("[data-lesson-id]")?.dataset.lessonId : null;
-  if (lessonId) showLesson(lessonId, false);
+  // Re-render the open lesson with fresh editors: keeping the old editor map
+  // while the DOM is rebuilt left every exercise without an editor.
+  if (CURRENT_LESSON) showLesson(CURRENT_LESSON, true);
 }
 
 // ---------------------------------------------------------------------------
@@ -246,11 +246,19 @@ function showLesson(lessonId, destroyEditors = true) {
 
   const lesson = DATA.lessons.find(l => l.id === lessonId);
   if (!lesson) return;
+  CURRENT_LESSON = lesson.id;
 
   const main = document.querySelector(".main-content");
   if (!main) return;
 
   main.innerHTML = "";
+  // The progress bar lives at the top of the lesson; rebuilding the lesson
+  // used to delete it for good.
+  const progress = document.createElement("div");
+  progress.className = "progress-bar-wrap";
+  progress.id = "progress-bar-wrap";
+  main.appendChild(progress);
+  renderProgressBar();
 
   // Header
   const header = document.createElement("div");
@@ -896,7 +904,17 @@ function onEditorUpdate(ex, view) {
 
   // Mode: must be normal (not insert, not visual)
   const vimState = cm.state.vim;
-  const isNormal = vimState && !vimState.insertMode && !vimState.visualMode;
+  // Normal mode with nothing pending: after `d`, `f`, `"a` or a count the
+  // cursor may already sit on the goal, but the command is not finished.
+  const input = (vimState && vimState.inputState) || {};
+  const pending = Boolean(
+    input.operator ||
+      (input.keyBuffer || []).length ||
+      (input.prefixRepeat || []).length ||
+      (input.motionRepeat || []).length ||
+      input.registerName
+  );
+  const isNormal = vimState && !vimState.insertMode && !vimState.visualMode && !pending;
   if (!isNormal) {
     updateCursorPos(ex.id, ...Object.values(rowColFromPos(view.state, view.state.selection.main.head)));
     return;

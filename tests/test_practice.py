@@ -269,6 +269,44 @@ class PracticePage(unittest.TestCase):
         self.assertTrue(DATA["lessons"][0]["exercises"], "the route starts practising")
         self.assertIn("configur", DATA["lessons"][-1]["titleEs"].lower())
 
+    def test_language_switch_keeps_editors_working(self):
+        page = self.fresh_page()
+        page.click("#btn-lang")
+        ex = next(e for e in EXERCISES if e["id"] == "kata-x")
+        self.open_exercise(page, ex)
+        self.assertEqual(ex["titleEn"], page.locator('[data-exercise-id="kata-x"] .ex-title').inner_text())
+        page.keyboard.press("x")
+        page.locator("#ok-kata-x").wait_for(state="visible", timeout=2_000)
+        page.context.close()
+
+    def test_progress_bar_is_shown_and_advances(self):
+        page = self.fresh_page()
+        fill = page.locator(".progress-bar-wrap .progress-bar-fill")
+        self.assertEqual(1, fill.count(), "progress bar missing")
+        self.assertEqual("0/%d" % len(EXERCISES), fill.get_attribute("title"))
+        self.open_exercise(page, next(e for e in EXERCISES if e["id"] == "kata-x"))
+        page.keyboard.press("x")
+        page.wait_for_timeout(200)
+        self.assertEqual("1/%d" % len(EXERCISES), page.locator(".progress-bar-fill").get_attribute("title"))
+        page.context.close()
+
+    def test_pending_operator_is_not_a_solution(self):
+        # The cursor already sits on the goal while `d` waits for a motion.
+        page = self.fresh_page()
+        ex = next(e for e in EXERCISES if e["id"] == "paragraph-next")
+        self.open_exercise(page, ex)
+        page.keyboard.press("}")
+        page.locator("#ok-paragraph-next").wait_for(state="visible", timeout=2_000)
+        page.context.close()
+        page = self.fresh_page()
+        self.open_exercise(page, ex)
+        page.keyboard.press("d")
+        # A click moves the cursor onto the goal while d still waits.
+        page.locator("#cm-paragraph-next .cm-line").nth(ex["expectedRow"]).click()
+        page.wait_for_timeout(200)
+        self.assertFalse(self.solved(page, ex), "marked solved while d was pending")
+        page.context.close()
+
     def test_phone_width_has_no_horizontal_scroll(self):
         page = self.fresh_page(viewport={"width": 375, "height": 740})
         self.assertFalse(page.evaluate("document.documentElement.scrollWidth > innerWidth"))
