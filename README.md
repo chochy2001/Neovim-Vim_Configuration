@@ -51,7 +51,7 @@ Mismos atajos en Neovim e IntelliJ/Android Studio. Windows, Linux y macOS.
 | 🎬 Grabar el curso | [UDEMY.md](UDEMY.md) |
 | 🔧 Entender el código | [.config/nvim/README.md](.config/nvim/README.md) |
 | ✅ Pruebas y fuentes | [VALIDATION](docs/VALIDATION.md) / [SOURCES](docs/SOURCES.md) |
-| 🌐 Practicar en el navegador | [Página de práctica](https://chochy2001.github.io/Neovim-Vim_Configuration/): 83 ejercicios paso a paso, validados contra Neovim real |
+| 🌐 Practicar en el navegador | [Página de práctica](https://chochy2001.github.io/Neovim-Vim_Configuration/): 93 ejercicios paso a paso, validados contra Neovim real |
 | 🏋️ Practicar sin Neovim | [trainer/README.md](trainer/README.md) |
 
 ## 📦 Requisitos

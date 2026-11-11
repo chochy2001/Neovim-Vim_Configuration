@@ -16,7 +16,8 @@ Las decisiones técnicas se apoyan en [SOURCES.md](SOURCES.md).
 | Parsers instalados | 28 bibliotecas cargan, producen árboles y compilan sus consultas: los 27 lenguajes configurados (Rust añadido) más `php_only`, que se instala con PHP |
 | Formateadores reales | StyLua/Lua y Prettier/JSON modifican el texto exactamente como se espera |
 | LSP en archivos reales | 15 servidores: cliente único, adjunto y petición respondida |
-| Página de práctica | 83 ejercicios resueltos con su solución en Chromium headless, ninguno antes de teclear; respuestas a medias rechazadas; 25 excluidos con su motivo medido; ninguno usa un comando de una lección posterior; sin errores de JavaScript |
+| Página de práctica | 93 ejercicios resueltos con su solución en Chromium headless, ninguno antes de teclear; respuestas a medias rechazadas; 25 excluidos con su motivo medido; ninguno usa un comando de una lección posterior; sin errores de JavaScript |
+| Ruta del curso | Todo comando que enseñan los módulos 1 a 7 de la presentación tiene ejercicio en la página, salvo 21 excepciones justificadas en `tests/test_route.py` (`:w`, `:q`, ventanas, `Ctrl-r`...) |
 | Referencia de edición | 50 casos coinciden con Neovim en texto, cursor y modo, incluidos los 13 ejercicios |
 | Entrenador | 89 tests pasan; análisis sin incidencias; formato Dart correcto |
 | Cobertura del entrenador | 770/821 líneas: 93,79%; mínimo de CI 90%, sin excluir la interfaz |

@@ -111,7 +111,7 @@ Leader prefixes and the chords listed in `.ideavimrc` match Neovim where Intelli
 | Key | Mode | Action |
 |-----|------|--------|
 | `<leader>gb` | Normal | Git blame |
-| `<leader>gbl` | Normal | Git blame line |
+| `<leader>gbl` | Normal | Git blame of the current line (popup) |
 | `<leader>gbt` | Normal | Toggle inline blame |
 | `<leader>gbr` | Normal | Git browse/branches |
 | `<leader>gbc` | Normal | Branch compare (HEAD~1) |
@@ -299,6 +299,8 @@ Layout: Neovim in one herdr pane to read and review code, one agent per pane (`o
 ---
 
 ## Flutter Development
+
+The `:Flutter*` commands appear once a `.dart` file of a Flutter project is open; before that these keys say so instead of failing.
 
 | Key | Mode | Action |
 |-----|------|--------|

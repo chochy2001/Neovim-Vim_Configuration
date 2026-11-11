@@ -308,6 +308,23 @@ test("terminal keys open tmux-style splits and hide them all", function()
     vim.o.shell = shell
     vim.cmd("silent! only")
 end)
+test("Flutter keys explain themselves before a Dart file is open", function()
+    local warned, errors = {}, {}
+    local notify = vim.notify
+    vim.notify = function(msg, level)
+        table.insert(level == vim.log.levels.ERROR and errors or warned, tostring(msg))
+    end
+    local ok, err = pcall(vim.api.nvim_feedkeys, vim.keycode(" flr"), "mx", false)
+    vim.notify = notify
+    assert(ok, tostring(err))
+    eq({}, errors)
+    assert(#warned == 1 and warned[1]:find(".dart", 1, true), vim.inspect(warned))
+end)
+test("<leader>gbl blames the line, not the whole file like <leader>gb", function()
+    local line, file = vim.fn.maparg(" gbl", "n", false, true), vim.fn.maparg(" gb", "n", false, true)
+    assert(line.callback, "<leader>gbl should call gitsigns.blame_line")
+    assert(file.rhs and file.rhs:find("Git blame", 1, true), vim.inspect(file))
+end)
 test("IdeaVim keys do the same thing as in Neovim", function()
     -- Each IntelliJ action has the meaning its key must have in Neovim, as a
     -- Lua pattern over the Neovim mapping description. Renaming a key on one

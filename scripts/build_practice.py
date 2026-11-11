@@ -264,6 +264,18 @@ REF_META = {
         "hintEn": "R enters Replace mode. Each character you type overwrites the one under the cursor instead of inserting. Esc returns to Normal and moves back one character.",
     },
     # --- New lesson-2 exercises ---
+    "move-h": {
+        "titleEs": "Mover el cursor a la izquierda (h)",
+        "titleEn": "Move the cursor left (h)",
+        "hintEs": "h mueve el cursor un caracter a la izquierda. Desde el final de 'abcde' (col 4), hh retrocede dos posiciones hasta la columna 2. Ninguna otra tecla de movimiento llega a esa columna exacta.",
+        "hintEn": "h moves the cursor one character to the left. From the end of 'abcde' (col 4), hh moves two positions back to column 2. No other single motion key reaches that exact column.",
+    },
+    "move-k": {
+        "titleEs": "Mover el cursor hacia arriba (k)",
+        "titleEn": "Move the cursor up (k)",
+        "hintEs": "k sube una linea manteniendo la columna. kk desde la fila 2 columna 2 llega a la fila 0 columna 2. gg llegaria a la misma fila pero en la columna 0, no en la columna 2.",
+        "hintEn": "k moves up one line keeping the column. kk from row 2 column 2 reaches row 0 column 2. gg would reach the same row but at column 0, not column 2.",
+    },
     "move-l": {
         "titleEs": "Mover el cursor a la derecha (l)",
         "titleEn": "Move the cursor right (l)",
@@ -343,6 +355,12 @@ REF_META = {
         "hintEn": "F searches for a character backward from the cursor. $ goes to the end of 'hello world'; Fl finds the nearest 'l' to the left.",
     },
     # --- New lesson-3 exercises ---
+    "dot-dw": {
+        "titleEs": "Repetir el ultimo cambio con . (dw.)",
+        "titleEn": "Repeat the last change with . (dw.)",
+        "hintEs": ". repite el ultimo cambio en la posicion actual del cursor. dw borra la primera palabra 'aa '; . repite el borrado y elimina 'bb ', dejando solo 'cc'.",
+        "hintEn": ". repeats the last change at the current cursor position. dw deletes the first word 'aa '; . repeats the deletion and removes 'bb ', leaving only 'cc'.",
+    },
     "swap-chars": {
         "titleEs": "Intercambiar dos caracteres con xp",
         "titleEn": "Swap two characters with xp",
@@ -524,6 +542,31 @@ REF_META = {
         "hintEs": "cip cambia las lineas del parrafo sin borrar las lineas vacias contiguas. 'one' y 'two' se reemplazan por 'NEW'; la linea vacia y 'three' se conservan.",
         "hintEn": "cip changes the lines of the paragraph without deleting adjacent blank lines. 'one' and 'two' are replaced by 'NEW'; the blank line and 'three' are preserved.",
     },
+    # --- New lesson-4 exercises (visual mode + around text objects) ---
+    "delete-around-quote": {
+        "titleEs": 'Borrar las comillas y su contenido (da")',
+        "titleEn": 'Delete the quotes and their content (da")',
+        "hintEs": 'da" borra el texto entre comillas dobles incluyendo las propias comillas. Desde dentro de "b" en a"b"c (col 2), da" elimina "b" y deja ac con el cursor en la c.',
+        "hintEn": 'da" deletes the text inside double quotes including the quote characters themselves. From inside "b" in a"b"c (col 2), da" removes "b" and leaves ac with the cursor on c.',
+    },
+    "delete-around-brace": {
+        "titleEs": "Borrar las llaves y su contenido (da{)",
+        "titleEn": "Delete the braces and their content (da{)",
+        "hintEs": "da{ borra el bloque entre llaves incluyendo las propias llaves. Desde dentro de '{ x }' (col 3), da{ elimina todo el bloque y deja solo 'fn'.",
+        "hintEn": "da{ deletes the block inside braces including the brace characters themselves. From inside '{ x }' (col 3), da{ removes the whole block and leaves only 'fn'.",
+    },
+    "visual-vd": {
+        "titleEs": "Modo visual: seleccionar y borrar (vlld)",
+        "titleEn": "Visual mode: select and delete (vlld)",
+        "hintEs": "v entra en modo Visual caracter por caracter. ll extiende la seleccion dos caracteres a la derecha. d borra la seleccion. El resultado es el texto fuera de la seleccion.",
+        "hintEn": "v enters character-wise Visual mode. ll extends the selection two characters to the right. d deletes the selection. The result is the text outside the selection.",
+    },
+    "visual-Vd": {
+        "titleEs": "Modo visual de linea: seleccionar y borrar (Vjd)",
+        "titleEn": "Linewise visual mode: select and delete (Vjd)",
+        "hintEs": "V entra en modo Visual de linea, que selecciona lineas enteras. j extiende la seleccion a la linea siguiente. d borra todas las lineas seleccionadas.",
+        "hintEn": "V enters linewise Visual mode, which selects whole lines. j extends the selection to the next line. d deletes all selected lines.",
+    },
     # --- New lesson-5 exercises (Buscar y sustituir) ---
     "search-forward": {
         "titleEs": "Buscar hacia adelante en el buffer (/)",
@@ -542,6 +585,18 @@ REF_META = {
         "titleEn": "Search for the word under the cursor (*)",
         "hintEs": "* busca hacia adelante la siguiente aparicion de la palabra exacta bajo el cursor. En 'foo bar foo', el cursor empieza en 'foo' (col 0) y salta al segundo 'foo' (col 8).",
         "hintEn": "* searches forward for the next occurrence of the exact word under the cursor. In 'foo bar foo', the cursor starts on 'foo' (col 0) and jumps to the second 'foo' (col 8).",
+    },
+    "search-backward": {
+        "titleEs": "Buscar hacia atras en el buffer (?)",
+        "titleEn": "Search backward in the buffer (?)",
+        "hintEs": "?patron<CR> busca hacia atras desde el cursor. Desde la segunda linea en col 8, ?two<CR> cruza a la primera linea y coloca el cursor al inicio de 'two' en col 4.",
+        "hintEn": "?pattern<CR> searches backward from the cursor. From the second line at col 8, ?two<CR> crosses to the first line and places the cursor at the start of 'two' at col 4.",
+    },
+    "search-hash": {
+        "titleEs": "Buscar la palabra bajo el cursor hacia atras (#)",
+        "titleEn": "Search for the word under the cursor backward (#)",
+        "hintEs": "# busca hacia atras la anterior aparicion de la palabra exacta bajo el cursor. Desde 'bar' en la fila 0 col 4, # salta a 'bar' al inicio de la fila 1 (col 0).",
+        "hintEn": "# searches backward for the previous occurrence of the exact word under the cursor. From 'bar' on row 0 col 4, # jumps to 'bar' at the start of row 1 (col 0).",
     },
     "substitute": {
         "titleEs": "Sustituir texto en la linea actual (:s/viejo/nuevo/)",
@@ -567,6 +622,12 @@ REF_META = {
         "titleEn": "Record and play a macro (qa ... q, @a)",
         "hintEs": "qa empieza a grabar en el registro 'a'. A;<Esc>j anade ';' al final de la linea y baja. q detiene la grabacion. @a repite la macro en la linea siguiente.",
         "hintEn": "qa starts recording into register 'a'. A;<Esc>j appends ';' at the end of the line and moves down. q stops recording. @a plays the macro on the next line.",
+    },
+    "macro-double-at": {
+        "titleEs": "Repetir la ultima macro ejecutada (@@)",
+        "titleEn": "Repeat the last played macro (@@)",
+        "hintEs": "qa graba la macro en el registro 'a'. @a la ejecuta una vez mas. @@ repite la ultima macro ejecutada sin indicar de nuevo el registro.",
+        "hintEn": "qa records the macro into register 'a'. @a plays it once more. @@ repeats the last played macro without specifying the register again.",
     },
     # Duplicates kept only for exclusion record
     "indent-cursor": {
@@ -757,6 +818,7 @@ LESSONS = [
         ),
         "exerciseIds": [
             "move-l",
+            "move-h",
             "empty-word-motion",
             "move-b",
             "move-e",
@@ -768,6 +830,7 @@ LESSONS = [
             "move-G",
             "move-gg-from-end",
             "count-j",
+            "move-k",
             "paragraph-next",
             "paragraph-previous",
             "counted-gg",
@@ -830,6 +893,7 @@ LESSONS = [
             "count-indent",
             "delete-undo-twice",
             "insert-undo",
+            "dot-dw",
             "redo-ctrl-r",
         ],
     },
@@ -857,16 +921,20 @@ LESSONS = [
             "kata-quotes",
             "yank-inner-quote",
             "inner-quotes-at-open",
+            "delete-around-quote",
             "change-inner-paren",
             "change-around-paren",
             "change-inner-brace",
             "delete-inner-bracket",
             "delete-around-bracket",
+            "delete-around-brace",
             "change-inner-tag",
             "yank-inner-and-paste",
             "empty-inner-change-undo",
             "delete-around-para",
             "change-inner-para",
+            "visual-vd",
+            "visual-Vd",
             "dot-repeat",
         ],
     },
@@ -887,8 +955,10 @@ LESSONS = [
         ),
         "exerciseIds": [
             "search-forward",
+            "search-backward",
             "search-next",
             "search-star",
+            "search-hash",
             "substitute",
             "global-substitute",
         ],
@@ -911,6 +981,7 @@ LESSONS = [
         "exerciseIds": [
             "register-yank-paste",
             "macro-record",
+            "macro-double-at",
         ],
     },
 ]
@@ -1073,6 +1144,10 @@ def build_exercises_json():
         # comma-repeat: 3fX reaches col 8; , backs to col 5; l alone -> col 1
         ("comma-repeat", "abXcdXefXg", "3fX,"),
         ("move-F", "hello world", "$Fl"),
+        # move-h: start col 4; hh -> col 2.  No single key (0,^,b,w,$,e) reaches col 2.
+        ("move-h", "abcde", "hh", 0, 4),
+        # move-k: start row 2 col 2; kk -> row 0 col 2.  gg -> (0,0) [wrong col].
+        ("move-k", "abc\ndef\nghi", "kk", 2, 2),
         # --- New lesson-3 exercises ---
         ("swap-chars", "ba", "xp"),
         ("delete-end-word", "hello world", "de"),
@@ -1092,6 +1167,8 @@ def build_exercises_json():
         ("count-indent", "one\ntwo\nthree", "3>>"),
         ("dot-repeat", "hello world", "ciwfoo<Esc>w."),
         ("redo-ctrl-r", "abc", "ciwXYZ<Esc>u<C-r>"),
+        # dot-dw: dw deletes "aa "; . repeats and deletes "bb "; only "cc" remains.
+        ("dot-dw", "aa bb cc", "dw."),
         # --- New lesson-4 exercises ---
         ("delete-around-word", "hello world foo", "wdaw"),
         ("change-inner-paren", "foo(bar)", "4lci(NEW<Esc>"),
@@ -1105,10 +1182,22 @@ def build_exercises_json():
         ("guiw", "HELLO world", "guiw"),
         ("delete-around-para", "one\ntwo\n\nthree", "dap"),
         ("change-inner-para", "one\ntwo\n\nthree", "cipNEW<Esc>"),
+        # delete-around-quote: start col 2 (inside "b"); da" removes "b" -> "ac", cursor col 1
+        ('delete-around-quote', 'a"b"c', 'da"', 0, 2),
+        # delete-around-brace: start col 3 (inside { x }); da{ removes "{ x }" -> "fn"
+        ("delete-around-brace", "fn{ x }", "da{", 0, 3),
+        # visual-vd: v + ll selects "hel"; d removes it -> "lo world"
+        ("visual-vd", "hello world", "vlld"),
+        # visual-Vd: V selects line "one"; j extends to "two"; d removes both -> "three"
+        ("visual-Vd", "one\ntwo\nthree", "Vjd"),
         # --- New lesson-5 exercises (search and substitute) ---
         ("search-forward", "one two three", "/three<CR>"),
         ("search-next", "aXbXcX", "/X<CR>n"),
         ("search-star", "foo bar foo", "*"),
+        # search-backward: start row 1 col 8 ("two"); ?two<CR> wraps back -> row 0 col 4
+        ("search-backward", "aaa two bbb\nbbb bbb two", "?two<CR>", 1, 8),
+        # search-hash: start row 0 col 4 ("bar"); # searches back -> row 1 col 0 ("bar")
+        ("search-hash", "foo bar\nbar baz\nfoo qux", "#", 0, 4),
         ("substitute", "hello world", ":s/world/vim/<CR>"),
         ("global-substitute", "foo foo bar", ":%s/foo/baz/g<CR>"),
         # --- New lesson-6 exercises (registers and macros) ---
@@ -1118,6 +1207,8 @@ def build_exercises_json():
             '"ayyj"ap',
         ),
         ("macro-record", "one\ntwo\nthree", "qaA;<Esc>jq@a"),
+        # macro-double-at: qa records "A;<Esc>j"; @a plays on "two"; @@ replays on "three"
+        ("macro-double-at", "one\ntwo\nthree", "qaA;<Esc>jq@a@@"),
     ]
 
     ref_cases = []

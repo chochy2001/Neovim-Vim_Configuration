@@ -26,7 +26,14 @@ return {
 
             -- Git Blame & Branches (gb*)
             { "<leader>gb", "<cmd>Git blame<cr>", desc = "Git Blame Toggle" }, -- Moved from gv
-            { "<leader>gbl", "<cmd>Git blame<cr>", desc = "Git Blame Line" }, -- Line-specific
+            -- The current line's commit in a popup (<leader>gb blames the whole file).
+            {
+                "<leader>gbl",
+                function()
+                    require("gitsigns").blame_line({ full = true })
+                end,
+                desc = "Git Blame Line",
+            },
             { "<leader>gbr", "<cmd>GBrowse<cr>", desc = "Git Branches/Browse" }, -- Moved from gb
             { "<leader>gbc", "<cmd>Git diff HEAD~1<cr>", desc = "Git Branch Compare" }, -- Moved from gcb
 

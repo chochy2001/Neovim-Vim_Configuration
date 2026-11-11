@@ -1,7 +1,7 @@
 {
   "version": "0.1.0",
   "neovim_version": "0.12.6",
-  "built_at": "2026-11-11T01:34:34Z",
+  "built_at": "2026-11-11T02:18:20Z",
   "lessons": [
     {
       "id": "lesson-1",
@@ -214,6 +214,22 @@
           "checkCursor": true
         },
         {
+          "id": "move-h",
+          "titleEs": "Mover el cursor a la izquierda (h)",
+          "titleEn": "Move the cursor left (h)",
+          "hintEs": "h mueve el cursor un caracter a la izquierda. Desde el final de 'abcde' (col 4), hh retrocede dos posiciones hasta la columna 2. Ninguna otra tecla de movimiento llega a esa columna exacta.",
+          "hintEn": "h moves the cursor one character to the left. From the end of 'abcde' (col 4), hh moves two positions back to column 2. No other single motion key reaches that exact column.",
+          "start": "abcde",
+          "startRow": 0,
+          "startCol": 4,
+          "keys": "hh",
+          "expectedText": "abcde",
+          "expectedRow": 0,
+          "expectedCol": 2,
+          "expectedMode": "n",
+          "checkCursor": true
+        },
+        {
           "id": "empty-word-motion",
           "titleEs": "w sobre una línea vacía",
           "titleEn": "w over an empty line",
@@ -386,6 +402,22 @@
           "expectedText": "a\nb\nc\nd\ne\nf\ng\nh",
           "expectedRow": 5,
           "expectedCol": 0,
+          "expectedMode": "n",
+          "checkCursor": true
+        },
+        {
+          "id": "move-k",
+          "titleEs": "Mover el cursor hacia arriba (k)",
+          "titleEn": "Move the cursor up (k)",
+          "hintEs": "k sube una linea manteniendo la columna. kk desde la fila 2 columna 2 llega a la fila 0 columna 2. gg llegaria a la misma fila pero en la columna 0, no en la columna 2.",
+          "hintEn": "k moves up one line keeping the column. kk from row 2 column 2 reaches row 0 column 2. gg would reach the same row but at column 0, not column 2.",
+          "start": "abc\ndef\nghi",
+          "startRow": 2,
+          "startCol": 2,
+          "keys": "kk",
+          "expectedText": "abc\ndef\nghi",
+          "expectedRow": 0,
+          "expectedCol": 2,
           "expectedMode": "n",
           "checkCursor": true
         },
@@ -1040,6 +1072,22 @@
           "expectedMode": "n",
           "checkCursor": true,
           "requiresChange": true
+        },
+        {
+          "id": "dot-dw",
+          "titleEs": "Repetir el ultimo cambio con . (dw.)",
+          "titleEn": "Repeat the last change with . (dw.)",
+          "hintEs": ". repite el ultimo cambio en la posicion actual del cursor. dw borra la primera palabra 'aa '; . repite el borrado y elimina 'bb ', dejando solo 'cc'.",
+          "hintEn": ". repeats the last change at the current cursor position. dw deletes the first word 'aa '; . repeats the deletion and removes 'bb ', leaving only 'cc'.",
+          "start": "aa bb cc",
+          "startRow": 0,
+          "startCol": 0,
+          "keys": "dw.",
+          "expectedText": "cc",
+          "expectedRow": 0,
+          "expectedCol": 0,
+          "expectedMode": "n",
+          "checkCursor": true
         }
       ]
     },
@@ -1164,6 +1212,22 @@
           "checkCursor": true
         },
         {
+          "id": "delete-around-quote",
+          "titleEs": "Borrar las comillas y su contenido (da\")",
+          "titleEn": "Delete the quotes and their content (da\")",
+          "hintEs": "da\" borra el texto entre comillas dobles incluyendo las propias comillas. Desde dentro de \"b\" en a\"b\"c (col 2), da\" elimina \"b\" y deja ac con el cursor en la c.",
+          "hintEn": "da\" deletes the text inside double quotes including the quote characters themselves. From inside \"b\" in a\"b\"c (col 2), da\" removes \"b\" and leaves ac with the cursor on c.",
+          "start": "a\"b\"c",
+          "startRow": 0,
+          "startCol": 2,
+          "keys": "da\"",
+          "expectedText": "ac",
+          "expectedRow": 0,
+          "expectedCol": 1,
+          "expectedMode": "n",
+          "checkCursor": true
+        },
+        {
           "id": "change-inner-paren",
           "titleEs": "Cambiar el interior de los parentesis (ci()",
           "titleEn": "Change the inside of parentheses (ci()",
@@ -1244,6 +1308,22 @@
           "checkCursor": true
         },
         {
+          "id": "delete-around-brace",
+          "titleEs": "Borrar las llaves y su contenido (da{)",
+          "titleEn": "Delete the braces and their content (da{)",
+          "hintEs": "da{ borra el bloque entre llaves incluyendo las propias llaves. Desde dentro de '{ x }' (col 3), da{ elimina todo el bloque y deja solo 'fn'.",
+          "hintEn": "da{ deletes the block inside braces including the brace characters themselves. From inside '{ x }' (col 3), da{ removes the whole block and leaves only 'fn'.",
+          "start": "fn{ x }",
+          "startRow": 0,
+          "startCol": 3,
+          "keys": "da{",
+          "expectedText": "fn",
+          "expectedRow": 0,
+          "expectedCol": 1,
+          "expectedMode": "n",
+          "checkCursor": true
+        },
+        {
           "id": "yank-inner-and-paste",
           "titleEs": "Copiar palabra y pegar al final (yiw$p)",
           "titleEn": "Yank word and paste at end (yiw$p)",
@@ -1275,6 +1355,38 @@
           "expectedMode": "n",
           "checkCursor": true,
           "requiresChange": true
+        },
+        {
+          "id": "visual-vd",
+          "titleEs": "Modo visual: seleccionar y borrar (vlld)",
+          "titleEn": "Visual mode: select and delete (vlld)",
+          "hintEs": "v entra en modo Visual caracter por caracter. ll extiende la seleccion dos caracteres a la derecha. d borra la seleccion. El resultado es el texto fuera de la seleccion.",
+          "hintEn": "v enters character-wise Visual mode. ll extends the selection two characters to the right. d deletes the selection. The result is the text outside the selection.",
+          "start": "hello world",
+          "startRow": 0,
+          "startCol": 0,
+          "keys": "vlld",
+          "expectedText": "lo world",
+          "expectedRow": 0,
+          "expectedCol": 0,
+          "expectedMode": "n",
+          "checkCursor": true
+        },
+        {
+          "id": "visual-Vd",
+          "titleEs": "Modo visual de linea: seleccionar y borrar (Vjd)",
+          "titleEn": "Linewise visual mode: select and delete (Vjd)",
+          "hintEs": "V entra en modo Visual de linea, que selecciona lineas enteras. j extiende la seleccion a la linea siguiente. d borra todas las lineas seleccionadas.",
+          "hintEn": "V enters linewise Visual mode, which selects whole lines. j extends the selection to the next line. d deletes all selected lines.",
+          "start": "one\ntwo\nthree",
+          "startRow": 0,
+          "startCol": 0,
+          "keys": "Vjd",
+          "expectedText": "three",
+          "expectedRow": 0,
+          "expectedCol": 0,
+          "expectedMode": "n",
+          "checkCursor": true
         },
         {
           "id": "dot-repeat",
@@ -1319,6 +1431,22 @@
           "checkCursor": true
         },
         {
+          "id": "search-backward",
+          "titleEs": "Buscar hacia atras en el buffer (?)",
+          "titleEn": "Search backward in the buffer (?)",
+          "hintEs": "?patron<CR> busca hacia atras desde el cursor. Desde la segunda linea en col 8, ?two<CR> cruza a la primera linea y coloca el cursor al inicio de 'two' en col 4.",
+          "hintEn": "?pattern<CR> searches backward from the cursor. From the second line at col 8, ?two<CR> crosses to the first line and places the cursor at the start of 'two' at col 4.",
+          "start": "aaa two bbb\nbbb bbb two",
+          "startRow": 1,
+          "startCol": 8,
+          "keys": "?two<CR>",
+          "expectedText": "aaa two bbb\nbbb bbb two",
+          "expectedRow": 0,
+          "expectedCol": 4,
+          "expectedMode": "n",
+          "checkCursor": true
+        },
+        {
           "id": "search-next",
           "titleEs": "Ir a la siguiente coincidencia de busqueda (n)",
           "titleEn": "Move to the next search match (n)",
@@ -1347,6 +1475,22 @@
           "expectedText": "foo bar foo",
           "expectedRow": 0,
           "expectedCol": 8,
+          "expectedMode": "n",
+          "checkCursor": true
+        },
+        {
+          "id": "search-hash",
+          "titleEs": "Buscar la palabra bajo el cursor hacia atras (#)",
+          "titleEn": "Search for the word under the cursor backward (#)",
+          "hintEs": "# busca hacia atras la anterior aparicion de la palabra exacta bajo el cursor. Desde 'bar' en la fila 0 col 4, # salta a 'bar' al inicio de la fila 1 (col 0).",
+          "hintEn": "# searches backward for the previous occurrence of the exact word under the cursor. From 'bar' on row 0 col 4, # jumps to 'bar' at the start of row 1 (col 0).",
+          "start": "foo bar\nbar baz\nfoo qux",
+          "startRow": 0,
+          "startCol": 4,
+          "keys": "#",
+          "expectedText": "foo bar\nbar baz\nfoo qux",
+          "expectedRow": 1,
+          "expectedCol": 0,
           "expectedMode": "n",
           "checkCursor": true
         }
@@ -1386,6 +1530,22 @@
           "startRow": 0,
           "startCol": 0,
           "keys": "qaA;<Esc>jq@a",
+          "expectedText": "one;\ntwo\nthree",
+          "expectedRow": 1,
+          "expectedCol": 2,
+          "expectedMode": "n",
+          "checkCursor": true
+        },
+        {
+          "id": "macro-double-at",
+          "titleEs": "Repetir la ultima macro ejecutada (@@)",
+          "titleEn": "Repeat the last played macro (@@)",
+          "hintEs": "qa graba la macro en el registro 'a'. @a la ejecuta una vez mas. @@ repite la ultima macro ejecutada sin indicar de nuevo el registro.",
+          "hintEn": "qa records the macro into register 'a'. @a plays it once more. @@ repeats the last played macro without specifying the register again.",
+          "start": "one\ntwo\nthree",
+          "startRow": 0,
+          "startCol": 0,
+          "keys": "qaA;<Esc>jq@a@@",
           "expectedText": "one;\ntwo\nthree",
           "expectedRow": 1,
           "expectedCol": 2,
@@ -1893,7 +2053,7 @@
         {
           "key": "<leader>gbl",
           "mode": "Normal",
-          "desc": "Git blame line"
+          "desc": "Git blame of the current line (popup)"
         },
         {
           "key": "<leader>gbt",

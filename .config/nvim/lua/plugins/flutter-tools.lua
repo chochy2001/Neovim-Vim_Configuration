@@ -1,21 +1,38 @@
 -- Flutter-specific development tools
+-- flutter-tools creates its :Flutter* commands when the first Dart buffer
+-- opens. Before that, say what to do instead of failing with E492.
+local function flutter(command)
+    return function()
+        if vim.fn.exists(":" .. command) == 2 then
+            vim.cmd(command)
+        else
+            vim.notify(
+                "Flutter: open a .dart file of a Flutter project first ("
+                    .. command
+                    .. " is not available yet).",
+                vim.log.levels.WARN
+            )
+        end
+    end
+end
+
 return {
     -- Main Flutter plugin
     {
         "nvim-flutter/flutter-tools.nvim",
         ft = "dart",
         keys = {
-            { "<leader>flr", "<cmd>FlutterReload<cr>", desc = "Flutter: Hot Reload" },
-            { "<leader>fls", "<cmd>FlutterRestart<cr>", desc = "Flutter: Hot Restart" },
-            { "<leader>fld", "<cmd>FlutterDevTools<cr>", desc = "Flutter: DevTools" },
-            { "<leader>fla", "<cmd>FlutterRun<cr>", desc = "Flutter: Start App" },
-            { "<leader>flsd", "<cmd>FlutterDevices<cr>", desc = "Flutter: Select Device" },
-            { "<leader>fle", "<cmd>FlutterEmulators<cr>", desc = "Flutter: Start Emulator" },
-            { "<leader>flq", "<cmd>FlutterQuit<cr>", desc = "Flutter: Quit/Stop" },
-            { "<leader>flo", "<cmd>FlutterOutlineToggle<cr>", desc = "Flutter: Toggle Outline" },
-            { "<leader>flc", "<cmd>FlutterLogClear<cr>", desc = "Flutter: Clear Log" },
-            { "<leader>flp", "<cmd>FlutterCopyProfilerUrl<cr>", desc = "Flutter: Copy Profiler URL" },
-            { "<leader>fll", "<cmd>FlutterLspRestart<cr>", desc = "Flutter: Restart LSP" },
+            { "<leader>flr", flutter("FlutterReload"), desc = "Flutter: Hot Reload" },
+            { "<leader>fls", flutter("FlutterRestart"), desc = "Flutter: Hot Restart" },
+            { "<leader>fld", flutter("FlutterDevTools"), desc = "Flutter: DevTools" },
+            { "<leader>fla", flutter("FlutterRun"), desc = "Flutter: Start App" },
+            { "<leader>flsd", flutter("FlutterDevices"), desc = "Flutter: Select Device" },
+            { "<leader>fle", flutter("FlutterEmulators"), desc = "Flutter: Start Emulator" },
+            { "<leader>flq", flutter("FlutterQuit"), desc = "Flutter: Quit/Stop" },
+            { "<leader>flo", flutter("FlutterOutlineToggle"), desc = "Flutter: Toggle Outline" },
+            { "<leader>flc", flutter("FlutterLogClear"), desc = "Flutter: Clear Log" },
+            { "<leader>flp", flutter("FlutterCopyProfilerUrl"), desc = "Flutter: Copy Profiler URL" },
+            { "<leader>fll", flutter("FlutterLspRestart"), desc = "Flutter: Restart LSP" },
         },
         dependencies = {
             "nvim-lua/plenary.nvim",
