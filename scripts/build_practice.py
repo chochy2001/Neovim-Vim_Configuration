@@ -570,7 +570,8 @@ def build_exercises_json():
 
     # --- Step 2: run through real Neovim ----------------------------------
     nvim_data = run_nvim_reference(all_cases)
-    nvim_version = nvim_data["version"]
+    # Release builds report "0.12.6+v0.12.6", Homebrew "0.12.6": keep the number.
+    nvim_version = nvim_data["version"].split("+")[0]
     case_map = {c["id"]: c for c in nvim_data["cases"]}
 
     # --- Step 3: build exercise objects -----------------------------------
@@ -730,6 +731,15 @@ def main():
             new_lessons = {l["id"]: len(l["exercises"]) for l in new_data.get("lessons", [])}
             if old_lessons != new_lessons:
                 print(f"  Lesson exercise counts changed: {old_lessons} -> {new_lessons}", file=sys.stderr)
+            old_s, new_s = strip_ts(old_data), strip_ts(new_data)
+            for key in sorted(set(old_s) | set(new_s)):
+                if old_s.get(key) != new_s.get(key) and key != "lessons":
+                    print(f"  {key}: {old_s.get(key)!r} -> {new_s.get(key)!r}", file=sys.stderr)
+            old_ex = {e["id"]: e for l in old_data.get("lessons", []) for e in l["exercises"]}
+            for l in new_data.get("lessons", []):
+                for e in l["exercises"]:
+                    if old_ex.get(e["id"]) != e:
+                        print(f"  exercise {e['id']}: {old_ex.get(e['id'])!r} -> {e!r}", file=sys.stderr)
             sys.exit(1)
 
         total = sum(len(l["exercises"]) for l in new_data["lessons"])

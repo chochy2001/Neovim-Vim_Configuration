@@ -143,6 +143,11 @@ end)
 
 test("terminal keys open tmux-style splits and hide them all", function()
     vim.cmd("silent! only")
+    -- A process that only ends when killed: the CI runners have no real
+    -- console, and their shells sometimes exit on their own there.
+    local shell = vim.o.shell
+    local exe = vim.v.progpath
+    vim.o.shell = (exe:find(" ") and ('"' .. exe .. '"') or exe) .. " --clean"
     local function press(keys)
         if vim.bo.buftype == "terminal" then
             vim.cmd.stopinsert()
@@ -212,6 +217,7 @@ test("terminal keys open tmux-style splits and hide them all", function()
             vim.api.nvim_buf_delete(buf, { force = true })
         end
     end
+    vim.o.shell = shell
     vim.cmd("silent! only")
 end)
 test("IdeaVim keys do the same thing as in Neovim", function()
