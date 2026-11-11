@@ -31,6 +31,7 @@ Leader prefixes and the chords listed in `.ideavimrc` match Neovim where Intelli
 | `gc` | Visual | Toggle comment on selection |
 | `s` | Normal/Visual/Operator | Flash: jump to any character |
 | `S` | Normal/Operator | Flash: treesitter select (visual `S` is surround) |
+| `<leader>tb` | Normal | Tagbar: toggle symbol outline |
 
 ---
 
@@ -66,7 +67,6 @@ Leader prefixes and the chords listed in `.ideavimrc` match Neovim where Intelli
 | `<leader>fp` | Normal | Projects |
 | `<leader>ps` | Normal | Workspace symbols (LSP) |
 | `<leader>.` | Normal | Quick find files |
-| `,,` | Normal | Quick find files (alternative) |
 | `<leader>sr` | Normal/Visual | Search and replace (grug-far) |
 
 ---
@@ -83,7 +83,7 @@ Leader prefixes and the chords listed in `.ideavimrc` match Neovim where Intelli
 | `<leader>fr` | Normal | Reveal current file in tree |
 | `<leader>bf` | Normal | Show buffers (floating) |
 | `<leader>we` | Normal (neo-tree buffer) | Focus editor window |
-| `<leader>wt` | Normal (neo-tree buffer) | Focus tree window |
+| `<leader>wt` | Normal | Focus tree window (opens it if closed) |
 
 ### Oil.nvim (edit directory as buffer)
 
@@ -150,8 +150,8 @@ Leader prefixes and the chords listed in `.ideavimrc` match Neovim where Intelli
 | `<leader>gct` | Normal | Choose theirs |
 | `<leader>gcb` | Normal | Choose both |
 | `<leader>gcn` | Normal | Choose none |
-| `<leader>gcp` | Normal | Previous conflict |
-| `<leader>gcnn` | Normal | Next conflict |
+| `[x` | Normal | Previous conflict |
+| `]x` | Normal | Next conflict |
 
 ---
 
@@ -450,7 +450,6 @@ These only work on the CAPDESIS dashboard (`nvim` with no file):
 | `<leader>t*` | Terminal/testing |
 | `<leader>r*` | Run/debug |
 | `<leader>c*` | Copilot AI |
-| `<leader>d*` | Debugging (DAP) |
 | `<leader>d*` | Debugging (DAP) |
 | `<leader>z*` | Folding/zen |
 | `<leader>q*` | Sessions |

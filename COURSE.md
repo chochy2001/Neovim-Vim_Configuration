@@ -410,7 +410,7 @@ Tablas largas: [WORKFLOW.md](WORKFLOW.md). Aquí los atajos abreviados como `fg`
 
 **which-key**: Espacio y espera. Es el índice.
 
-**telescope**: `<leader>ff` archivo, `fg` texto (necesitas ripgrep), `fo` recientes, `fk` atajos. `,,` también busca archivos.
+**telescope**: `<leader>ff` archivo, `fg` texto (necesitas ripgrep), `fo` recientes, `fk` atajos. `<leader>.` también busca archivos.
 
 **neo-tree / oil**: `pv` árbol. `-` o `oe` editar la carpeta como si fuera un buffer (renombrar archivos escribiendo).
 

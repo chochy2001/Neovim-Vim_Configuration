@@ -480,6 +480,11 @@ kbd.special { color: var(--navy-light); }
 }
 
 /* ===== Success message ===== */
+@keyframes vim-slide-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 .success-msg {
   display: flex;
   align-items: center;
@@ -492,9 +497,37 @@ kbd.special { color: var(--navy-light); }
   font-weight: 600;
   color: var(--correct);
   margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.success-msg.animate {
+  animation: vim-slide-in .25s ease;
 }
 
 .success-icon { font-size: 1.1rem; }
+
+/* "Next exercise" button inside the success message */
+.btn-next {
+  margin-left: auto;
+  font-size: .78rem;
+  font-weight: 700;
+  padding: 4px 11px;
+  background: var(--correct);
+  color: #fff;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: opacity .12s;
+  flex-shrink: 0;
+}
+.btn-next:hover { opacity: .8; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .btn-next,
+  :root[data-theme="dark"] .btn-next {
+    background: var(--correct);
+    color: #0d1117;
+  }
+}
 
 /* ===== Reference section ===== */
 .ref-section {
@@ -740,4 +773,8 @@ button.sidebar-lesson-title:focus-visible { outline: 2px solid var(--gold); outl
 button:focus-visible {
   outline: 2px solid var(--gold);
   outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .success-msg.animate { animation: none; }
 }

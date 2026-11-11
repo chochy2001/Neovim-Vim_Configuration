@@ -36,7 +36,6 @@ return {
             { "<leader>fk", desc = "Find Keymaps" },
             { "<leader>ps", desc = "Find Project Symbols" },
             { "<leader>.", desc = "Quick Find Files" },
-            { ",,", desc = "Quick Find Files" },
         },
         config = function()
             require("telescope").setup({
@@ -119,7 +118,6 @@ return {
 
             -- Additional mappings that work well
             vim.keymap.set("n", "<leader>.", builtin.find_files, { desc = "Quick Find Files" })
-            vim.keymap.set("n", ",,", builtin.find_files, { desc = "Quick Find Files" })
 
             -- Load extensions
             require("telescope").load_extension("ui-select")

@@ -308,15 +308,16 @@ return {
             })
 
             -- gco/gct/gcb/gcn live in `keys`; only navigation is mapped here.
+            -- ]x and [x (not <leader>gc*) so no conflict key is a prefix of another.
             vim.keymap.set(
                 "n",
-                "<leader>gcp",
+                "[x",
                 "<Plug>(git-conflict-prev-conflict)",
                 { desc = "Git: Conflict Previous" }
             )
             vim.keymap.set(
                 "n",
-                "<leader>gcnn",
+                "]x",
                 "<Plug>(git-conflict-next-conflict)",
                 { desc = "Git: Conflict Next" }
             )

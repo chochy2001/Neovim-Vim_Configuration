@@ -24,7 +24,7 @@ son simplificados. El alcance preciso está en los casos de prueba.
 
 ## Desarrollo y validación
 
-Referencia validada: **Flutter 3.47.2 / Dart 3.13.2**, con dependencias resueltas en
+Referencia validada: **Flutter 3.47.7 / Dart 3.13**, con dependencias resueltas en
 `pubspec.lock`. `file_picker` 12 utiliza API estática y devuelve una lista vacía
 al cancelar.
 

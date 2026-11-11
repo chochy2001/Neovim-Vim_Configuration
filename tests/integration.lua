@@ -546,6 +546,60 @@ test("opening code files triggers no deprecated API", function()
     assert(not messages:find("deprecated", 1, true), messages)
     assert(not messages:find("Failed to find executable", 1, true), messages)
 end)
+test("no undocumented prefix conflicts in n mode", function()
+    -- A prefix conflict occurs when lhs X is a strict prefix of lhs Y: pressing X
+    -- forces Neovim to wait timeoutlen ms before it can decide which map fires.
+    -- Every intentional conflict MUST appear in this table with a written reason.
+    -- To fix a new conflict: either remove the shorter map, or add it here with a reason.
+    local allow = {
+        -- leader-b and leader-f are intentionally dual-purpose (navigation + subcommands)
+        [" b"]   = "leader-b (Back via <C-o>) is intentionally a prefix of leader-b* buffer commands; documented in WORKFLOW.md",
+        [" f"]   = "leader-f (Forward via <C-i>) is intentionally a prefix of leader-f* telescope find commands; documented in WORKFLOW.md",
+        -- leader-r is the bare Run/Test trigger AND the prefix for run subcommands
+        [" r"]   = "leader-r (Run) is intentionally a prefix of leader-r* run/debug/rename commands; documented in WORKFLOW.md",
+        [" rf"]  = "leader-rf (Run File) is intentionally a prefix of leader-rft (Run File in Tab); documented in WORKFLOW.md",
+        -- Flutter device selector lives under the same prefix as Flutter restart
+        [" fls"] = "leader-fls (Flutter Restart) is a prefix of leader-flsd (Device Selector); documented in WORKFLOW.md",
+        -- Git subcommand groups: blame, commit, diff, history, hunk, status each have a bare key
+        [" gb"]  = "leader-gb (Git Blame) is intentionally a prefix of leader-gb* (blame-line, browse, compare); documented in WORKFLOW.md",
+        [" gc"]  = "leader-gc (Git Commit) is intentionally a prefix of leader-gc* conflict-resolution commands; documented in WORKFLOW.md",
+        [" gd"]  = "leader-gd (Git Diff) is intentionally a prefix of leader-gd* diffview commands; documented in WORKFLOW.md",
+        [" gh"]  = "leader-gh (Git History) is a prefix of leader-ghd (History Details graph); documented in WORKFLOW.md",
+        [" gn"]  = "leader-gn (Next Hunk) is a prefix of leader-gnp (Prev Hunk); documented in WORKFLOW.md",
+        [" gs"]  = "leader-gs (Git Status) is intentionally a prefix of leader-gs* stage/reset hunk commands; documented in WORKFLOW.md",
+        -- Test runner: bare leader-ten plus leader-ten* sub-targets
+        [" ten"] = "leader-ten (Test Nearest) is intentionally a prefix of leader-ten* (tenf all-nearest, tena all, tenl last); documented in WORKFLOW.md",
+        -- vim-fugitive internal <Plug> chain: fugitive: is a namespace prefix, not a user key
+        ["<Plug>fugitive:"] = "vim-fugitive internal <Plug> namespace; <Plug>fugitive: is a prefix of <Plug>fugitive:y<C-G> (yank SHA) -- cannot change plugin internals",
+        -- comment.nvim operator design: gc/gb are operators that accept a motion
+        ["gb"]   = "gb (comment blockwise operator) is a prefix of gbc; standard comment.nvim operator design",
+        ["gc"]   = "gc (comment linewise operator) is a prefix of gcc/gcA/gcO/gco; standard comment.nvim operator design",
+        -- nvim-surround operator design: ys/yS accept a motion before the full sequence
+        ["yS"]   = "yS (surround with newlines) is a prefix of ySS/ySs; standard nvim-surround operator design",
+        ["ys"]   = "ys (surround) is a prefix of yss (surround whole line); standard nvim-surround operator design",
+    }
+    local maps = vim.api.nvim_get_keymap("n")
+    local lhs_set = {}
+    for _, m in ipairs(maps) do
+        lhs_set[m.lhs] = true
+    end
+    local violators = {}
+    local seen = {}
+    for x in pairs(lhs_set) do
+        if not allow[x] and not seen[x] then
+            for y in pairs(lhs_set) do
+                if x ~= y and #y > #x and y:sub(1, #x) == x then
+                    seen[x] = true
+                    -- Report one example of a longer key it conflicts with
+                    table.insert(violators, string.format("n %q is a prefix of %q -- add to allow-list with a reason", x, y))
+                    break
+                end
+            end
+        end
+    end
+    table.sort(violators)
+    assert(#violators == 0, "undocumented prefix conflicts found:\n" .. table.concat(violators, "\n"))
+end)
 test("no configuration errors or deprecations were notified", function()
     assert(#errors == 0, table.concat(errors, "\n"))
 end)

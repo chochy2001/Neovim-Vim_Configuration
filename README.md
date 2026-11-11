@@ -90,7 +90,7 @@ pide instalar la CLI **fuera de npm**: usa el gestor del SO,
 [binarios oficiales](https://github.com/tree-sitter/tree-sitter/releases) o,
 con Rust instalado, `cargo install tree-sitter-cli --locked`.
 
-El entrenador usa **Flutter 3.47.2 / Dart 3.13.2** en CI. Cada lenguaje necesita su
+El entrenador usa **Flutter 3.47.7 / Dart 3.13** en CI. Cada lenguaje necesita su
 SDK. ctags, LazyGit, codelldb, cuentas de IA y swagger-ui-watcher son opcionales.
 
 ## 💻 Instalación

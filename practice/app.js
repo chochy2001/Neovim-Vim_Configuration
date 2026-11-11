@@ -231,7 +231,12 @@ function renderProgressBar() {
     return DATA.lessons.some(l => (l.exercises || []).some(e => e.id === id));
   }).length;
   const pct = total > 0 ? Math.round((done / total) * 100) : 0;
-  wrap.innerHTML = `<div class="progress-bar-fill" style="width:${pct}%" title="${done}/${total}"></div>`;
+  wrap.setAttribute("role", "progressbar");
+  wrap.setAttribute("aria-label", LANG === "es" ? "Progreso del curso" : "Course progress");
+  wrap.setAttribute("aria-valuenow", String(done));
+  wrap.setAttribute("aria-valuemin", "0");
+  wrap.setAttribute("aria-valuemax", String(total));
+  wrap.innerHTML = `<div class="progress-bar-fill" style="width:${pct}%" title="${done}/${total}" aria-hidden="true"></div>`;
 }
 
 // ---------------------------------------------------------------------------
@@ -547,6 +552,7 @@ function buildExerciseCard(ex, index, total) {
   num.textContent = `${index + 1}/${total}`;
   const title = document.createElement("h3");
   title.className = "ex-title";
+  title.id = `ex-title-${ex.id}`;
   title.textContent = t(ex, "titleEs", "titleEn");
   exHeader.appendChild(num);
   exHeader.appendChild(title);
@@ -598,15 +604,19 @@ function buildExerciseCard(ex, index, total) {
   const editorOuter = document.createElement("div");
   editorOuter.className = "editor-wrap";
   editorOuter.id = `editor-${ex.id}`;
+  editorOuter.setAttribute("aria-labelledby", `ex-title-${ex.id}`);
 
   const modeBar = document.createElement("div");
   modeBar.className = "mode-bar";
   modeBar.id = `mode-${ex.id}`;
+  modeBar.setAttribute("aria-label", LANG === "es" ? "Modo Vim" : "Vim mode");
   const modePill = document.createElement("span");
   modePill.className = "mode-pill normal";
+  modePill.setAttribute("aria-live", "polite");
   modePill.textContent = LANG === "es" ? "NORMAL" : "NORMAL";
   const cursorPos = document.createElement("span");
   cursorPos.className = "cursor-pos";
+  cursorPos.setAttribute("aria-hidden", "true");
   cursorPos.textContent = "1:1";
   modeBar.appendChild(modePill);
   modeBar.appendChild(cursorPos);
@@ -633,6 +643,8 @@ function buildExerciseCard(ex, index, total) {
   btnSolve.className = "btn btn-secondary";
   btnSolve.setAttribute("data-es", "Ver solución");
   btnSolve.setAttribute("data-en", "Show solution");
+  btnSolve.setAttribute("aria-expanded", "false");
+  btnSolve.setAttribute("aria-controls", `sol-${ex.id}`);
   btnSolve.textContent = LANG === "es" ? "Ver solución" : "Show solution";
   btnSolve.addEventListener("click", () => toggleSolution(ex, card));
 
@@ -658,14 +670,47 @@ function buildExerciseCard(ex, index, total) {
   card.appendChild(solBox);
 
   // --- Success message ---
+  // Find the next unsolved exercise in this lesson (for the "Next" button).
+  const lesson = DATA.lessons.find(l => (l.exercises || []).some(e => e.id === ex.id));
+  const lessonExercises = lesson ? (lesson.exercises || []) : [];
+  const nextEx = lessonExercises[index + 1] || null;
+
   const successMsg = document.createElement("div");
   successMsg.className = "success-msg";
   successMsg.id = `ok-${ex.id}`;
+  successMsg.setAttribute("role", "status");
+  successMsg.setAttribute("aria-atomic", "true");
   successMsg.style.display = PROGRESS.has(ex.id) ? "flex" : "none";
-  successMsg.innerHTML = `<span class="success-icon">✓</span>
-    <span data-es="Correcto. Pasa al siguiente ejercicio." data-en="Correct. Move to the next exercise.">${
-      LANG === "es" ? "Correcto. Pasa al siguiente ejercicio." : "Correct. Move to the next exercise."
-    }</span>`;
+
+  const successIcon = document.createElement("span");
+  successIcon.className = "success-icon";
+  successIcon.setAttribute("aria-hidden", "true");
+  successIcon.textContent = "✓";
+
+  const successText = document.createElement("span");
+  successText.setAttribute("data-es", nextEx
+    ? "Correcto. Pasa al siguiente ejercicio."
+    : "Correcto. Leccion completada.");
+  successText.setAttribute("data-en", nextEx
+    ? "Correct. Move to the next exercise."
+    : "Correct. Lesson complete.");
+  successText.textContent = LANG === "es"
+    ? (nextEx ? "Correcto. Pasa al siguiente ejercicio." : "Correcto. Leccion completada.")
+    : (nextEx ? "Correct. Move to the next exercise." : "Correct. Lesson complete.");
+
+  successMsg.appendChild(successIcon);
+  successMsg.appendChild(successText);
+
+  if (nextEx) {
+    const btnNext = document.createElement("button");
+    btnNext.className = "btn btn-next";
+    btnNext.setAttribute("data-es", "Siguiente ejercicio");
+    btnNext.setAttribute("data-en", "Next exercise");
+    btnNext.textContent = LANG === "es" ? "Siguiente ejercicio" : "Next exercise";
+    btnNext.addEventListener("click", () => scrollToExercise(nextEx.id));
+    successMsg.appendChild(btnNext);
+  }
+
   card.appendChild(successMsg);
 
   return card;
@@ -949,7 +994,11 @@ function markEditorDone(exId) {
   if (outer) outer.classList.add("correct");
 
   const msg = document.getElementById(`ok-${exId}`);
-  if (msg) msg.style.display = "flex";
+  if (msg) {
+    msg.style.display = "flex";
+    // Animate only when newly solved (not on page load from localStorage).
+    msg.classList.add("animate");
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -994,14 +1043,23 @@ function resetExercise(ex) {
 function toggleSolution(ex, card) {
   const sol = document.getElementById(`sol-${ex.id}`);
   if (!sol) return;
+  const btn = card.querySelector('[data-es="Ver solucion"], [data-es="Ocultar solucion"], [data-es="Ver solución"], [data-es="Ocultar solución"]');
   if (sol.style.display === "none") {
     sol.style.display = "block";
-    const btn = card.querySelector(`[data-es="Ver solución"]`);
-    if (btn) btn.textContent = LANG === "es" ? "Ocultar solución" : "Hide solution";
+    if (btn) {
+      btn.dataset.es = "Ocultar solución";
+      btn.dataset.en = "Hide solution";
+      btn.textContent = LANG === "es" ? "Ocultar solución" : "Hide solution";
+      btn.setAttribute("aria-expanded", "true");
+    }
   } else {
     sol.style.display = "none";
-    const btn = card.querySelector(`[data-es="Ver solución"], [data-es="Ocultar solución"]`);
-    if (btn) btn.textContent = LANG === "es" ? "Ver solución" : "Show solution";
+    if (btn) {
+      btn.dataset.es = "Ver solución";
+      btn.dataset.en = "Show solution";
+      btn.textContent = LANG === "es" ? "Ver solución" : "Show solution";
+      btn.setAttribute("aria-expanded", "false");
+    }
   }
 }
 

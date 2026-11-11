@@ -2,7 +2,7 @@
 
 Fecha: **10 de noviembre de 2026**. Plataforma ejecutada: macOS (Apple
 Silicon), Neovim **0.12.6**; la CI repite las suites en Windows, Linux y macOS.
-El entrenador se validó por última vez el 6 de septiembre con Flutter **3.47.2** y Dart **3.13.2**.
+El entrenador se valida en CI con Flutter **3.47.7** y Dart **3.13** (versión estándar de la flota).
 Este documento registra pruebas concretas, su alcance y cómo repetirlas.
 Las decisiones técnicas se apoyan en [SOURCES.md](SOURCES.md).
 

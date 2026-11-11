@@ -1,7 +1,7 @@
 {
   "version": "0.1.0",
   "neovim_version": "0.12.6",
-  "built_at": "2026-11-11T02:18:20Z",
+  "built_at": "2026-11-11T15:51:28Z",
   "lessons": [
     {
       "id": "lesson-1",
@@ -1829,6 +1829,11 @@
           "key": "S",
           "mode": "Normal/Operator",
           "desc": "Flash: treesitter select (visual `S` is surround)"
+        },
+        {
+          "key": "<leader>tb",
+          "mode": "Normal",
+          "desc": "Tagbar: toggle symbol outline"
         }
       ]
     },
@@ -1946,11 +1951,6 @@
           "desc": "Quick find files"
         },
         {
-          "key": ",,",
-          "mode": "Normal",
-          "desc": "Quick find files (alternative)"
-        },
-        {
           "key": "<leader>sr",
           "mode": "Normal/Visual",
           "desc": "Search and replace (grug-far)"
@@ -1992,8 +1992,8 @@
         },
         {
           "key": "<leader>wt",
-          "mode": "Normal (neo-tree buffer)",
-          "desc": "Focus tree window"
+          "mode": "Normal",
+          "desc": "Focus tree window (opens it if closed)"
         }
       ]
     },
@@ -2186,12 +2186,12 @@
           "desc": "Choose none"
         },
         {
-          "key": "<leader>gcp",
+          "key": "[x",
           "mode": "Normal",
           "desc": "Previous conflict"
         },
         {
-          "key": "<leader>gcnn",
+          "key": "]x",
           "mode": "Normal",
           "desc": "Next conflict"
         }

@@ -421,6 +421,91 @@ class PracticePage(unittest.TestCase):
         context.close()
         self.assertGreaterEqual(checked, 5, "too few exercises rejected a partial solution")
 
+    def test_success_message_is_live_region(self):
+        """success-msg must have role='status' so screen readers announce the solve."""
+        page = self.fresh_page()
+        ex = next(e for e in EXERCISES if e["id"] == "kata-x")
+        self.open_exercise(page, ex)
+        role = page.get_attribute("#ok-kata-x", "role")
+        self.assertEqual("status", role, "success-msg must have role='status' for screen readers")
+        page.context.close()
+
+    def test_progress_bar_is_progressbar_role(self):
+        """Progress bar must have role='progressbar' with ARIA value attributes."""
+        page = self.fresh_page()
+        role = page.get_attribute(".progress-bar-wrap", "role")
+        self.assertEqual("progressbar", role)
+        value_max = page.get_attribute(".progress-bar-wrap", "aria-valuemax")
+        self.assertEqual(str(len(EXERCISES)), value_max, "aria-valuemax must equal total exercises")
+        value_now = page.get_attribute(".progress-bar-wrap", "aria-valuenow")
+        self.assertEqual("0", value_now, "fresh page must start at 0")
+        page.context.close()
+
+    def test_solution_button_has_aria_expanded(self):
+        """Solution toggle button must manage aria-expanded correctly."""
+        page = self.fresh_page()
+        ex = next(e for e in EXERCISES if e["id"] == "kata-x")
+        self.open_exercise(page, ex)
+        card = page.locator('[data-exercise-id="kata-x"]')
+        # Initially collapsed
+        btn = card.get_by_role("button", name="Ver solucion").or_(
+            card.get_by_role("button", name="Ver solución")
+        )
+        self.assertEqual("false", btn.get_attribute("aria-expanded"),
+                         "solution button must start with aria-expanded=false")
+        # After clicking, expanded
+        btn.click()
+        page.wait_for_timeout(100)
+        expanded_btn = card.locator("[aria-expanded='true']")
+        self.assertEqual(1, expanded_btn.count(), "button must set aria-expanded=true when open")
+        # After clicking again, collapsed
+        expanded_btn.click()
+        page.wait_for_timeout(100)
+        self.assertEqual(0, card.locator("[aria-expanded='true']").count(),
+                         "button must set aria-expanded=false when closed")
+        page.context.close()
+
+    def test_next_button_in_success_message(self):
+        """After solving, a next-exercise button must appear and scroll to the next card."""
+        # Find kata-x and its next exercise in the same lesson
+        kata_lesson = next(
+            l for l in DATA["lessons"]
+            if any(e["id"] == "kata-x" for e in l.get("exercises", []))
+        )
+        lesson_exercises = kata_lesson.get("exercises", [])
+        idx = next(i for i, e in enumerate(lesson_exercises) if e["id"] == "kata-x")
+        next_ex_id = lesson_exercises[idx + 1]["id"]
+
+        page = self.fresh_page()
+        ex = next(e for e in EXERCISES if e["id"] == "kata-x")
+        self.open_exercise(page, ex)
+        page.keyboard.press("x")
+        page.locator("#ok-kata-x").wait_for(state="visible", timeout=2_000)
+
+        card = page.locator('[data-exercise-id="kata-x"]')
+        next_btn = card.locator(".btn-next")
+        self.assertEqual(1, next_btn.count(), "next button must appear in success message after solving")
+
+        next_btn.click()
+        page.wait_for_timeout(400)
+        next_card = page.locator('[data-exercise-id="%s"]' % next_ex_id)
+        self.assertTrue(next_card.is_visible(), "next exercise card must be in view after clicking next")
+        page.context.close()
+
+    def test_success_animation_class_added_on_solve(self):
+        """Newly solved exercise must have the animate class for the CSS entrance animation."""
+        page = self.fresh_page()
+        ex = next(e for e in EXERCISES if e["id"] == "kata-x")
+        self.open_exercise(page, ex)
+        # Before solving: no animate class
+        has_animate_before = page.locator("#ok-kata-x.animate").count()
+        self.assertEqual(0, has_animate_before, "animate class must not be set before solving")
+        page.keyboard.press("x")
+        page.locator("#ok-kata-x").wait_for(state="visible", timeout=2_000)
+        has_animate_after = page.locator("#ok-kata-x.animate").count()
+        self.assertEqual(1, has_animate_after, "animate class must be added when newly solved")
+        page.context.close()
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -14,6 +14,7 @@ return {
         { "<leader>fr", "<cmd>Neotree filesystem reveal<cr>", desc = "Reveal current file in tree" },
         { "<leader>pe", "<cmd>Neotree filesystem focus<cr>", desc = "Focus NeoTree (Project Explore)" },
         { "<leader>pf", "<cmd>Neotree filesystem focus<cr>", desc = "Project Focus" },
+        { "<leader>wt", "<cmd>Neotree filesystem focus<cr>", desc = "Window: Focus tree" },
     },
     config = function()
         -- Configuration with error handling
@@ -174,12 +175,6 @@ return {
                         "<leader>we",
                         "<C-w>l",
                         vim.tbl_extend("force", opts, { desc = "Window: Focus editor" })
-                    )
-                    vim.keymap.set(
-                        "n",
-                        "<leader>wt",
-                        "<C-w>h",
-                        vim.tbl_extend("force", opts, { desc = "Window: Focus tree" })
                     )
                 end)
             end,
