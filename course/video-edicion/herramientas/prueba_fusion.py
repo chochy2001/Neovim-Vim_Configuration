@@ -1,0 +1,23 @@
+import os, time
+import DaVinciResolveScript as dvr
+r = dvr.scriptapp("Resolve"); pm = r.GetProjectManager(); p = pm.GetCurrentProject(); mp = p.GetMediaPool()
+OUT = os.path.expanduser("~/Movies/Capdesis-Curso-Vim/04-davinci/animaciones/prueba")
+tl = mp.CreateEmptyTimeline("Prueba Fusion " + time.strftime("%H%M%S")); p.SetCurrentTimeline(tl)
+print("gen dur setting", p.GetSetting("timelineFrameRate"))
+it = tl.InsertFusionCompositionIntoTimeline()
+print("item", it, it and it.GetDuration(), it and it.GetFusionCompCount())
+comp = it.GetFusionCompByIndex(1)
+print("comp attrs", {k: v for k, v in comp.GetAttrs().items() if "Render" in k or "Global" in k})
+tools = comp.GetToolList(False); print("tools", [t.GetAttrs()["TOOLS_RegID"] for t in tools.values()])
+mo = [t for t in tools.values() if t.GetAttrs()["TOOLS_RegID"] == "MediaOut"][0]
+txt = comp.AddTool("TextPlus", -2, 0)
+txt.SetInput("StyledText", "Hola Fusion")
+txt.SetInput("Size", 0.1)
+txt.AddModifier("Size", "BezierSpline"); txt.SetInput("Size", 0.02, 0); txt.SetInput("Size", 0.12, 30)
+sv = comp.AddTool("Saver", 0, 1)
+sv.SetInput("Clip", OUT + "/f.png")
+sv.ConnectInput("Input", txt); mo.ConnectInput("Input", txt)
+print("saver inputs", sv.GetInput("Clip"))
+comp.SetAttrs({"COMPN_RenderStart": 0, "COMPN_RenderEnd": 40})
+ok = comp.Render({"Start": 0, "End": 40, "Wait": True})
+print("render", ok, sorted(os.listdir(OUT))[:5], len(os.listdir(OUT)))

@@ -1,0 +1,22 @@
+{
+ "_doc": "Revisión manual (2026-11-12) del flag corrige_audio contra lo que dice el audio en los 9 s previos a cada tarjeta. false = lo explica bien, la etiqueta CORRECCIÓN confundiría. plan_animaciones_v2.py aplica esto por encima del análisis.",
+ "p1-c03": {"corrige_audio": false, "porque": "tras quitar la toma mala dice 'hacia abajo es con J': correcto"},
+ "p1-c07": {"corrige_audio": true,  "porque": "dice 'final de la letra': es final de la palabra"},
+ "p1-c08": {"corrige_audio": true,  "porque": "dice 'inicio de cada letra': es inicio de palabra"},
+ "p1-c13": {"corrige_audio": true,  "porque": "dice 'o sea rehacer': u deshace"},
+ "p1-c15": {"corrige_audio": false, "porque": "'shift V me selecciona la línea': correcto"},
+ "p1-c19": {"corrige_audio": true,  "porque": "notas del operador: ~16:10 'borrar una letra con DW'"},
+ "p1-c20": {"corrige_audio": false, "porque": "2dw borra dos palabras: correcto"},
+ "p3-c12": {"corrige_audio": false, "porque": "'CW borro la palabra y me pone en modo insertar': correcto"},
+ "p3-c13": {"corrige_audio": true,  "porque": "'con M me podría ir hasta el final': M es la mitad"},
+ "p4-c02": {"corrige_audio": false, "porque": "'GG al principio, G mayúscula hasta abajo': correcto"},
+ "p4-c04": {"corrige_audio": false, "porque": "'llave que cierra' para avanzar: correcto"},
+ "p4-c05": {"corrige_audio": true,  "porque": "dice que la llave que abre lleva adelante y la que cierra atrás: al revés"},
+ "p4-c11": {"corrige_audio": true,  "porque": "dice 'CI y la llave... borra lo del paréntesis': borra lo de las llaves"},
+ "p4-c25": {"corrige_audio": true,  "porque": "'U las hace minúsculas': U las pasa a MAYÚSCULAS"},
+ "p5-c09": {"corrige_audio": false, "porque": "$ al final de la línea: correcto"},
+ "p5-c19": {"corrige_audio": false, "porque": "'si pongo U se restablece': correcto (u deshace)"},
+ "p5-c21": {"corrige_audio": true,  "porque": "'Shift B te pone en toda la línea': B retrocede una palabra"},
+ "p5-c25": {"corrige_audio": false, "porque": "~ cambia mayúsculas/minúsculas: correcto"},
+ "p5-c31": {"corrige_audio": true,  "porque": "dice 'gg20': el conteo va antes, 20gg"}
+}
